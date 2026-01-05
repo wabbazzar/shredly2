@@ -10,10 +10,10 @@ import inquirer from 'inquirer';
 import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { spawn } from 'child_process';
 import { generateWorkout } from '../src/lib/engine/workout-generator.js';
 import type { QuestionnaireAnswers, ParameterizedWorkout } from '../src/lib/engine/types.js';
 import { formatWorkoutForTerminal } from './lib/workout-formatter.js';
-import { editWorkoutInteractive } from './lib/interactive-workout-editor.js';
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -168,24 +168,47 @@ async function main() {
     let finalWorkout = workout;
 
     if (editChoice) {
-      console.log('\nLaunching interactive editor...');
+      console.log('\nLaunching interactive editor in separate process...');
       console.log('Tip: Press ? for help once inside the editor\n');
+
+      // Save workout to temp file
+      const tempFile = join(process.cwd(), `.workout-temp-${Date.now()}.json`);
+      writeFileSync(tempFile, JSON.stringify(workout, null, 2), 'utf-8');
 
       // Give user a moment to read the tip
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // DON'T clean up stdin - let the editor handle it
-      // Just remove keypress listeners that might interfere
-      console.error('[DEBUG questionnaire] Removing keypress listeners before editor');
-      process.stdin.removeAllListeners('keypress');
-
-      const editResult = await editWorkoutInteractive(workout, {
-        experienceLevel: answers.experience_level || 'intermediate'
+      // Spawn editor as completely separate process with fresh stdin
+      const editorProcess = spawn('npx', ['tsx', 'cli/edit-workout.ts', tempFile], {
+        stdio: 'inherit', // Pass stdin/stdout/stderr directly to child
+        cwd: process.cwd()
       });
 
-      finalWorkout = editResult.workout;
-      console.clear();
-      console.log('\nReturned from interactive editor');
+      // Wait for editor to complete
+      await new Promise<void>((resolve) => {
+        editorProcess.on('close', (code) => {
+          console.log(`\nEditor exited with code ${code}`);
+          resolve();
+        });
+      });
+
+      // Read modified workout back
+      try {
+        const modifiedContent = readFileSync(tempFile, 'utf-8');
+        finalWorkout = JSON.parse(modifiedContent);
+        console.log('✓ Loaded modified workout from editor');
+      } catch (error) {
+        console.log('⚠ Could not load modified workout, using original');
+        finalWorkout = workout;
+      }
+
+      // Clean up temp file
+      try {
+        const fs = await import('fs/promises');
+        await fs.unlink(tempFile);
+      } catch (e) {
+        // Ignore cleanup errors
+      }
     }
 
     // Ask to save

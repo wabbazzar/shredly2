@@ -128,11 +128,20 @@ export class InteractiveWorkoutEditor {
         }
       };
 
+      // Debug: Also listen to raw data to see if stdin is working at all
+      const dataHandler = (chunk: Buffer) => {
+        console.error(`[DEBUG] Raw data received: ${JSON.stringify(chunk.toString())}`);
+      };
+      process.stdin.on('data', dataHandler);
+
       process.stdin.on('keypress', this.keypressHandler);
 
       // Debug: check listener count
       const listenerCount = process.stdin.listenerCount('keypress');
+      const dataListenerCount = process.stdin.listenerCount('data');
       console.error(`[DEBUG] Keypress listeners registered: ${listenerCount}`);
+      console.error(`[DEBUG] Data listeners registered: ${dataListenerCount}`);
+      console.error(`[DEBUG] Waiting for input... (try pressing a key)`);
     });
   }
 

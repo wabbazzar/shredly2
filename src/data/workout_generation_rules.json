@@ -617,6 +617,21 @@
     }
   },
 
+  "exercise_count_constraints": {
+    "description": "Limits on exercise counts to ensure workouts fit within session duration",
+    "strength_max_per_day": 3,
+    "total_max_by_duration": {
+      "20-30": 5,
+      "30-45": 7,
+      "45-60": 8,
+      "60-90": 10,
+      "90+": 12
+    },
+    "require_compound_exercises": true,
+    "compound_categories": ["emom", "amrap", "circuit", "interval"],
+    "compound_min_count": 1
+  },
+
   "exercise_selection_strategy": {
     "description": "Hybrid approach: fixed ratios that fill to duration using round-robin algorithm",
     "strategy": "ratio_based_fill_to_duration",

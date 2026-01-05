@@ -214,6 +214,7 @@ export interface GenerationRules {
   split_patterns: SplitPatterns;
   split_muscle_group_mapping: SplitMuscleGroupMapping;
   compound_exercise_construction: CompoundExerciseConstruction;
+  exercise_count_constraints: ExerciseCountConstraints;
   exercise_selection_strategy: ExerciseSelectionStrategy;
 }
 
@@ -242,6 +243,17 @@ export interface CompoundExerciseConstruction {
     exclude_equipment?: string[];
     exclusion_reason?: string;
   };
+}
+
+export interface ExerciseCountConstraints {
+  description?: string;
+  strength_max_per_day: number;
+  total_max_by_duration: {
+    [duration: string]: number;
+  };
+  require_compound_exercises: boolean;
+  compound_categories: string[];
+  compound_min_count: number;
 }
 
 export interface IntensityProfiles {

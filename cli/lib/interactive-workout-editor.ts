@@ -294,8 +294,8 @@ export class InteractiveWorkoutEditor {
       return;
     }
 
-    // Pause current interface
-    this.cleanup();
+    // Pause current interface (temporary - don't pause stdin)
+    this.cleanupTemporary();
 
     const result = await browseExerciseDatabase();
 
@@ -586,7 +586,19 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
-   * Cleanup readline
+   * Temporary cleanup for switching UIs (e.g., exercise database)
+   * Does NOT pause stdin - we need it to resume
+   */
+  private cleanupTemporary(): void {
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(false);
+    }
+    process.stdin.removeAllListeners('keypress');
+  }
+
+  /**
+   * Full cleanup for program exit
+   * Pauses stdin to allow terminal to return
    */
   private cleanup(): void {
     if (process.stdin.isTTY) {

@@ -47,6 +47,7 @@ export class InteractiveWorkoutEditor {
   private dayKeys: string[];
   private options: EditorOptions;
   private running: boolean = false;
+  private keypressHandler: ((str: string, key: any) => Promise<void>) | null = null;
 
   constructor(workout: ParameterizedWorkout, options: EditorOptions = {}) {
     this.editor = new WorkoutEditor(workout);
@@ -85,7 +86,7 @@ export class InteractiveWorkoutEditor {
     this.render();
 
     return new Promise((resolve) => {
-      const onKeypress = async (str: string, key: any) => {
+      this.keypressHandler = async (str: string, key: any) => {
         if (!key || !this.running) return;
 
         await this.handleKeypress(str, key);
@@ -99,7 +100,7 @@ export class InteractiveWorkoutEditor {
         }
       };
 
-      process.stdin.on('keypress', onKeypress);
+      process.stdin.on('keypress', this.keypressHandler);
     });
   }
 
@@ -134,11 +135,9 @@ export class InteractiveWorkoutEditor {
 
     // Navigation
     if (str === hotkeys.navigation.next_editable_field) {
-      this.state.selectedFieldIndex = Math.min(this.editableFields.length - 1, this.state.selectedFieldIndex + 1);
-      this.syncDayViewToSelectedField();
+      this.navigateToNextField();
     } else if (str === hotkeys.navigation.previous_editable_field) {
-      this.state.selectedFieldIndex = Math.max(0, this.state.selectedFieldIndex - 1);
-      this.syncDayViewToSelectedField();
+      this.navigateToPreviousField();
     } else if (key.name === hotkeys.navigation.previous_day) {
       if (this.state.viewMode === 'day') {
         this.state.currentDayIndex = Math.max(0, this.state.currentDayIndex - 1);
@@ -161,7 +160,11 @@ export class InteractiveWorkoutEditor {
     // Jump to exercise number
     else if (str && /^[1-9]$/.test(str)) {
       const exerciseNum = parseInt(str);
-      const targetField = this.findFieldByExerciseNumber(exerciseNum - 1);
+
+      // In day view, only search within current day
+      const dayKey = this.state.viewMode === 'day' ? this.dayKeys[this.state.currentDayIndex] : undefined;
+      const targetField = this.findFieldByExerciseNumber(exerciseNum - 1, dayKey);
+
       if (targetField !== -1) {
         this.state.selectedFieldIndex = targetField;
         this.syncDayViewToSelectedField();
@@ -303,6 +306,11 @@ export class InteractiveWorkoutEditor {
     readline.emitKeypressEvents(process.stdin);
     if (process.stdin.isTTY) {
       process.stdin.setRawMode(true);
+    }
+
+    // Re-attach our keypress handler
+    if (this.keypressHandler) {
+      process.stdin.on('keypress', this.keypressHandler);
     }
 
     if (result.selected && result.exerciseName) {
@@ -572,11 +580,78 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
-   * Find field index by exercise number
+   * Navigate to next editable field (day-aware in day view)
    */
-  private findFieldByExerciseNumber(exerciseIndex: number): number {
+  private navigateToNextField(): void {
+    if (this.state.viewMode === 'week') {
+      // Week view: navigate through all fields
+      this.state.selectedFieldIndex = Math.min(this.editableFields.length - 1, this.state.selectedFieldIndex + 1);
+    } else {
+      // Day view: only navigate within current day
+      const currentDayKey = this.dayKeys[this.state.currentDayIndex];
+      const currentIndex = this.state.selectedFieldIndex;
+
+      for (let i = currentIndex + 1; i < this.editableFields.length; i++) {
+        if (this.editableFields[i].dayKey === currentDayKey) {
+          this.state.selectedFieldIndex = i;
+          return;
+        }
+      }
+
+      // If no next field in current day, wrap to first field of current day
+      for (let i = 0; i <= currentIndex; i++) {
+        if (this.editableFields[i].dayKey === currentDayKey) {
+          this.state.selectedFieldIndex = i;
+          return;
+        }
+      }
+    }
+  }
+
+  /**
+   * Navigate to previous editable field (day-aware in day view)
+   */
+  private navigateToPreviousField(): void {
+    if (this.state.viewMode === 'week') {
+      // Week view: navigate through all fields
+      this.state.selectedFieldIndex = Math.max(0, this.state.selectedFieldIndex - 1);
+    } else {
+      // Day view: only navigate within current day
+      const currentDayKey = this.dayKeys[this.state.currentDayIndex];
+      const currentIndex = this.state.selectedFieldIndex;
+
+      for (let i = currentIndex - 1; i >= 0; i--) {
+        if (this.editableFields[i].dayKey === currentDayKey) {
+          this.state.selectedFieldIndex = i;
+          return;
+        }
+      }
+
+      // If no previous field in current day, wrap to last field of current day
+      for (let i = this.editableFields.length - 1; i >= currentIndex; i--) {
+        if (this.editableFields[i].dayKey === currentDayKey) {
+          this.state.selectedFieldIndex = i;
+          return;
+        }
+      }
+    }
+  }
+
+  /**
+   * Find field index by exercise number
+   * @param exerciseIndex - The exercise index to find (0-based)
+   * @param dayKey - Optional day key to filter by (for day view)
+   */
+  private findFieldByExerciseNumber(exerciseIndex: number, dayKey?: string): number {
     for (let i = 0; i < this.editableFields.length; i++) {
-      if (this.editableFields[i].exerciseIndex === exerciseIndex) {
+      const field = this.editableFields[i];
+
+      // If dayKey specified, only match within that day
+      if (dayKey && field.dayKey !== dayKey) {
+        continue;
+      }
+
+      if (field.exerciseIndex === exerciseIndex) {
         return i;
       }
     }

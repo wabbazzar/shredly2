@@ -7,35 +7,35 @@
       "light": {
         "base_sets": 3,
         "base_reps": 12,
-        "base_rest_time_minutes": 0.25,
+        "base_rest_time_minutes": 1.0,
         "base_weight_percent_tm": 60,
         "base_weight_descriptor": "light"
       },
       "moderate": {
         "base_sets": 3,
         "base_reps": 8,
-        "base_rest_time_minutes": 0.33,
+        "base_rest_time_minutes": 2.0,
         "base_weight_percent_tm": 70,
         "base_weight_descriptor": "moderate"
       },
       "moderate_heavy": {
         "base_sets": 4,
         "base_reps": 6,
-        "base_rest_time_minutes": 0.33,
+        "base_rest_time_minutes": 3.0,
         "base_weight_percent_tm": 75,
         "base_weight_descriptor": "moderate_heavy"
       },
       "heavy": {
         "base_sets": 4,
         "base_reps": 5,
-        "base_rest_time_minutes": 0.33,
+        "base_rest_time_minutes": 4.0,
         "base_weight_percent_tm": 80,
         "base_weight_descriptor": "heavy"
       },
       "max": {
         "base_sets": 5,
         "base_reps": 3,
-        "base_rest_time_minutes": 0.5,
+        "base_rest_time_minutes": 5.0,
         "base_weight_percent_tm": 85,
         "base_weight_descriptor": "max"
       }
@@ -184,14 +184,14 @@
         "reps_delta_per_week": -1,
         "reps_minimum": 3,
         "weight_percent_delta_per_week": 5,
-        "rest_time_delta_per_week_minutes": -0.05,
-        "rest_time_minimum_minutes": 0.17
+        "rest_time_delta_per_week_minutes": -0.5,
+        "rest_time_minimum_minutes": 2.0
       },
       "example_3_weeks": {
         "note": "Starting from intensity_profiles.strength.heavy",
-        "week1": {"sets": 4, "reps": 5, "weight_percent_tm": 80, "rest_time_minutes": 1.5},
-        "week2": {"sets": 4, "reps": 4, "weight_percent_tm": 85, "rest_time_minutes": 1.25},
-        "week3": {"sets": 4, "reps": 3, "weight_percent_tm": 90, "rest_time_minutes": 1.0}
+        "week1": {"sets": 4, "reps": 5, "weight_percent_tm": 80, "rest_time_minutes": 4.0},
+        "week2": {"sets": 4, "reps": 4, "weight_percent_tm": 85, "rest_time_minutes": 3.5},
+        "week3": {"sets": 4, "reps": 3, "weight_percent_tm": 90, "rest_time_minutes": 3.0}
       }
     },
 

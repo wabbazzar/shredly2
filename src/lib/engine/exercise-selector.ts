@@ -258,7 +258,8 @@ function constructCompoundExercise(
   // Get constituent exercise count from config
   const count = rules.compound_exercise_construction[compoundCategory].base_constituent_exercises;
 
-  // Filter for individual exercises only (not compound categories)
+  // CRITICAL: Filter for individual exercises only - NEVER allow compound categories to be nested
+  // Compound exercises can ONLY contain individual exercises (strength, mobility, flexibility, cardio)
   const individualCategories = ['strength', 'mobility', 'flexibility', 'cardio'];
 
   // Get muscle group mapping
@@ -267,8 +268,11 @@ function constructCompoundExercise(
 
   // Filter available exercises
   const availableExercises = allExercises.filter(([name, exercise]) => {
-    // Must be individual exercise category
+    // CRITICAL: Must be individual exercise category - NEVER compound categories
     if (!individualCategories.includes(exercise.category)) return false;
+
+    // Explicit check: Never allow circuit, emom, amrap, interval to be nested
+    if (['circuit', 'emom', 'amrap', 'interval'].includes(exercise.category)) return false;
 
     // Not already used
     if (usedExerciseNames.has(name)) return false;
@@ -301,6 +305,20 @@ function constructCompoundExercise(
 
     return true;
   });
+
+  // VALIDATION: We need at least 2 individual exercises to create any compound exercise
+  // If we can't find enough, return a placeholder that will be filtered out later
+  if (availableExercises.length < 2) {
+    // Return a placeholder with empty sub_exercises array
+    // This will be filtered out in roundRobinSelectExercises
+    return {
+      name: `${compoundCategory.toUpperCase()}: [insufficient exercises]`,
+      category: compoundCategory,
+      sub_exercises: [], // Empty - will be filtered out
+      progressionScheme: 'density',
+      intensityProfile: intensityProfile as any
+    };
+  }
 
   // Select constituent exercises
   const selectedCount = Math.min(count, availableExercises.length);

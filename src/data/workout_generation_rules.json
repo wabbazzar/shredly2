@@ -7,35 +7,35 @@
       "light": {
         "base_sets": 3,
         "base_reps": 12,
-        "base_rest_time_minutes": 1.0,
+        "base_rest_time_minutes": 0.25,
         "base_weight_percent_tm": 60,
         "base_weight_descriptor": "light"
       },
       "moderate": {
         "base_sets": 3,
         "base_reps": 8,
-        "base_rest_time_minutes": 1.25,
+        "base_rest_time_minutes": 0.33,
         "base_weight_percent_tm": 70,
         "base_weight_descriptor": "moderate"
       },
       "moderate_heavy": {
         "base_sets": 4,
         "base_reps": 6,
-        "base_rest_time_minutes": 1.5,
+        "base_rest_time_minutes": 0.33,
         "base_weight_percent_tm": 75,
         "base_weight_descriptor": "moderate_heavy"
       },
       "heavy": {
         "base_sets": 4,
         "base_reps": 5,
-        "base_rest_time_minutes": 1.5,
+        "base_rest_time_minutes": 0.33,
         "base_weight_percent_tm": 80,
         "base_weight_descriptor": "heavy"
       },
       "max": {
         "base_sets": 5,
         "base_reps": 3,
-        "base_rest_time_minutes": 2.0,
+        "base_rest_time_minutes": 0.5,
         "base_weight_percent_tm": 85,
         "base_weight_descriptor": "max"
       }
@@ -45,59 +45,59 @@
       "light": {
         "base_sets": 3,
         "base_reps": 10,
-        "base_rest_time_minutes": 0.75
+        "base_rest_time_minutes": 0.17
       },
       "moderate": {
         "base_sets": 3,
         "base_reps": 15,
-        "base_rest_time_minutes": 1.0
+        "base_rest_time_minutes": 0.25
       },
       "heavy": {
         "base_sets": 4,
         "base_reps": 20,
-        "base_rest_time_minutes": 1.25
+        "base_rest_time_minutes": 0.33
       },
       "amrap": {
         "base_sets": 3,
         "base_reps": "AMRAP",
-        "base_rest_time_minutes": 1.5
+        "base_rest_time_minutes": 0.33
       }
     },
 
     "interval": {
       "light": {
         "base_sets": 3,
-        "base_work_time_minutes": 0.5,
-        "base_rest_time_minutes": 0.5
+        "base_work_time_minutes": 0.17,
+        "base_rest_time_minutes": 0.17
       },
       "moderate": {
         "base_sets": 4,
-        "base_work_time_minutes": 0.667,
-        "base_rest_time_minutes": 0.333
+        "base_work_time_minutes": 0.25,
+        "base_rest_time_minutes": 0.17
       },
       "heavy": {
         "base_sets": 6,
-        "base_work_time_minutes": 0.75,
-        "base_rest_time_minutes": 0.25
+        "base_work_time_minutes": 0.33,
+        "base_rest_time_minutes": 0.17
       },
       "tabata": {
         "base_sets": 8,
-        "base_work_time_minutes": 0.333,
-        "base_rest_time_minutes": 0.167
+        "base_work_time_minutes": 0.33,
+        "base_rest_time_minutes": 0.17
       }
     },
 
     "emom": {
       "light": {
-        "base_work_time_minutes": 8,
+        "base_work_time_minutes": 2,
         "base_target_reps_per_minute": 8
       },
       "moderate": {
-        "base_work_time_minutes": 10,
+        "base_work_time_minutes": 3,
         "base_target_reps_per_minute": 10
       },
       "heavy": {
-        "base_work_time_minutes": 12,
+        "base_work_time_minutes": 4,
         "base_target_reps_per_minute": 12
       }
     },
@@ -121,55 +121,55 @@
       "light": {
         "base_sets": 3,
         "base_exercises_per_circuit": 3,
-        "base_rest_between_circuits_minutes": 1.5
+        "base_rest_between_circuits_minutes": 0.33
       },
       "moderate": {
         "base_sets": 4,
         "base_exercises_per_circuit": 4,
-        "base_rest_between_circuits_minutes": 1.0
+        "base_rest_between_circuits_minutes": 0.25
       },
       "heavy": {
         "base_sets": 5,
         "base_exercises_per_circuit": 5,
-        "base_rest_between_circuits_minutes": 0.75
+        "base_rest_between_circuits_minutes": 0.17
       }
     },
 
     "mobility": {
       "light": {
-        "base_work_time_minutes": 5
+        "base_work_time_minutes": 1
       },
       "moderate": {
-        "base_work_time_minutes": 8
+        "base_work_time_minutes": 2
       },
       "extended": {
-        "base_work_time_minutes": 15
+        "base_work_time_minutes": 3
       }
     },
 
     "flexibility": {
       "light": {
-        "base_work_time_minutes": 5
+        "base_work_time_minutes": 1
       },
       "moderate": {
-        "base_work_time_minutes": 10
+        "base_work_time_minutes": 2
       },
       "extended": {
-        "base_work_time_minutes": 20
+        "base_work_time_minutes": 4
       }
     },
 
     "cardio": {
       "liss": {
-        "base_work_time_minutes": 20,
+        "base_work_time_minutes": 5,
         "intensity_description": "60-70% max HR, conversational pace"
       },
       "moderate": {
-        "base_work_time_minutes": 15,
+        "base_work_time_minutes": 3,
         "intensity_description": "70-80% max HR, steady state"
       },
       "hiit": {
-        "base_work_time_minutes": 10,
+        "base_work_time_minutes": 2,
         "intensity_description": "85-95% max HR with intervals"
       }
     }
@@ -184,8 +184,8 @@
         "reps_delta_per_week": -1,
         "reps_minimum": 3,
         "weight_percent_delta_per_week": 5,
-        "rest_time_delta_per_week_minutes": -0.25,
-        "rest_time_minimum_minutes": 0.75
+        "rest_time_delta_per_week_minutes": -0.05,
+        "rest_time_minimum_minutes": 0.17
       },
       "example_3_weeks": {
         "note": "Starting from intensity_profiles.strength.heavy",
@@ -202,8 +202,8 @@
       "rules": {
         "work_time_increase_percent_total": 25,
         "reps_increase_percent_total": 30,
-        "rest_time_delta_per_week_minutes": -0.083,
-        "rest_time_minimum_minutes": 0.167
+        "rest_time_delta_per_week_minutes": -0.02,
+        "rest_time_minimum_minutes": 0.1
       },
       "example_3_weeks": {
         "emom_parent": {

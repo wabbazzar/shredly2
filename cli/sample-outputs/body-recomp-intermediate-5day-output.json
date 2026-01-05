@@ -1,5 +1,5 @@
 {
-  "id": "workout_body_int_1767617236663",
+  "id": "workout_body_int_1767618292561",
   "name": "Body Recomposition Intermediate Program",
   "description": "5 days per week workout program focused on body recomposition. Each session is 45-60 minutes.",
   "version": "2.0.0",
@@ -29,40 +29,40 @@
         {
           "name": "Dead Bugs",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           }
         },
         {
@@ -108,445 +108,157 @@
             {
               "name": "Mountain Climbers",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Plank Hold",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Side Plank",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Single-Leg Stands",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             }
           ]
@@ -554,148 +266,124 @@
         {
           "name": "EMOM: Push-ups + Pull-ups",
           "week1": {
-            "work_time_minutes": 10
+            "work_time_minutes": 3
           },
           "week2": {
-            "work_time_minutes": 10.227272727272727
+            "work_time_minutes": 3
           },
           "week3": {
-            "work_time_minutes": 10.454545454545453
+            "work_time_minutes": 3
           },
           "week4": {
-            "work_time_minutes": 10.681818181818182
+            "work_time_minutes": 3
           },
           "week5": {
-            "work_time_minutes": 10.909090909090908
+            "work_time_minutes": 3
           },
           "week6": {
-            "work_time_minutes": 11.136363636363637
+            "work_time_minutes": 3
           },
           "week7": {
-            "work_time_minutes": 11.363636363636363
+            "work_time_minutes": 3
           },
           "week8": {
-            "work_time_minutes": 11.590909090909092
+            "work_time_minutes": 3
           },
           "week9": {
-            "work_time_minutes": 11.818181818181818
+            "work_time_minutes": 4
           },
           "week10": {
-            "work_time_minutes": 12.045454545454547
+            "work_time_minutes": 4
           },
           "week11": {
-            "work_time_minutes": 12.272727272727273
+            "work_time_minutes": 4
           },
           "week12": {
-            "work_time_minutes": 12.5
+            "work_time_minutes": 4
           },
           "category": "emom",
           "sub_exercises": [
             {
               "name": "Push-ups",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -705,108 +393,84 @@
             {
               "name": "Pull-ups",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -821,34 +485,34 @@
             "work_time_minutes": 4
           },
           "week2": {
-            "work_time_minutes": 4.090909090909091
+            "work_time_minutes": 4
           },
           "week3": {
-            "work_time_minutes": 4.181818181818182
+            "work_time_minutes": 4
           },
           "week4": {
-            "work_time_minutes": 4.2727272727272725
+            "work_time_minutes": 4
           },
           "week5": {
-            "work_time_minutes": 4.363636363636363
+            "work_time_minutes": 4
           },
           "week6": {
-            "work_time_minutes": 4.454545454545455
+            "work_time_minutes": 4
           },
           "week7": {
-            "work_time_minutes": 4.545454545454545
+            "work_time_minutes": 5
           },
           "week8": {
-            "work_time_minutes": 4.636363636363637
+            "work_time_minutes": 5
           },
           "week9": {
-            "work_time_minutes": 4.7272727272727275
+            "work_time_minutes": 5
           },
           "week10": {
-            "work_time_minutes": 4.818181818181818
+            "work_time_minutes": 5
           },
           "week11": {
-            "work_time_minutes": 4.909090909090909
+            "work_time_minutes": 5
           },
           "week12": {
             "work_time_minutes": 5
@@ -858,108 +522,84 @@
             {
               "name": "Tricep Dips",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -969,108 +609,84 @@
             {
               "name": "Bench Press",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -1080,108 +696,84 @@
             {
               "name": "Overhead Press",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -1193,40 +785,79 @@
         {
           "name": "Child's Pose Stretch",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Leg Raises",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          },
+          "week4": {
+            "work_time_minutes": 1
+          },
+          "week5": {
+            "work_time_minutes": 1
+          },
+          "week6": {
+            "work_time_minutes": 1
+          },
+          "week7": {
+            "work_time_minutes": 1
+          },
+          "week8": {
+            "work_time_minutes": 1
+          },
+          "week9": {
+            "work_time_minutes": 1
+          },
+          "week10": {
+            "work_time_minutes": 1
+          },
+          "week11": {
+            "work_time_minutes": 1
+          },
+          "week12": {
+            "work_time_minutes": 1
           }
         }
       ]
@@ -1239,40 +870,40 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           }
         },
         {
@@ -1318,108 +949,84 @@
             {
               "name": "Jump Squats",
               "week1": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.5,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week2": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.417,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week3": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.334,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week4": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.251,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week5": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.168,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week6": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.085,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week7": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.002,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week8": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week9": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.836,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week10": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.753,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week11": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week12": {
-                "sets": 4,
                 "reps": 7,
-                "rest_time_minutes": 0.587,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
@@ -1429,334 +1036,118 @@
             {
               "name": "Box Jumps",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Side Plank",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Wall Sits",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             }
           ]
@@ -1764,259 +1155,163 @@
         {
           "name": "EMOM: Single-Leg Stands + strength Squats",
           "week1": {
-            "work_time_minutes": 10
+            "work_time_minutes": 3
           },
           "week2": {
-            "work_time_minutes": 10.227272727272727
+            "work_time_minutes": 3
           },
           "week3": {
-            "work_time_minutes": 10.454545454545453
+            "work_time_minutes": 3
           },
           "week4": {
-            "work_time_minutes": 10.681818181818182
+            "work_time_minutes": 3
           },
           "week5": {
-            "work_time_minutes": 10.909090909090908
+            "work_time_minutes": 3
           },
           "week6": {
-            "work_time_minutes": 11.136363636363637
+            "work_time_minutes": 3
           },
           "week7": {
-            "work_time_minutes": 11.363636363636363
+            "work_time_minutes": 3
           },
           "week8": {
-            "work_time_minutes": 11.590909090909092
+            "work_time_minutes": 3
           },
           "week9": {
-            "work_time_minutes": 11.818181818181818
+            "work_time_minutes": 4
           },
           "week10": {
-            "work_time_minutes": 12.045454545454547
+            "work_time_minutes": 4
           },
           "week11": {
-            "work_time_minutes": 12.272727272727273
+            "work_time_minutes": 4
           },
           "week12": {
-            "work_time_minutes": 12.5
+            "work_time_minutes": 4
           },
           "category": "emom",
           "sub_exercises": [
             {
               "name": "Single-Leg Stands",
               "week1": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.25,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week2": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.167,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week3": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.084,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week4": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 1.001,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week5": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week6": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.835,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week7": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.752,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week8": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week9": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.586,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week10": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.503,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week11": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week12": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               }
             },
             {
               "name": "strength Squats",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -2031,34 +1326,34 @@
             "work_time_minutes": 4
           },
           "week2": {
-            "work_time_minutes": 4.090909090909091
+            "work_time_minutes": 4
           },
           "week3": {
-            "work_time_minutes": 4.181818181818182
+            "work_time_minutes": 4
           },
           "week4": {
-            "work_time_minutes": 4.2727272727272725
+            "work_time_minutes": 4
           },
           "week5": {
-            "work_time_minutes": 4.363636363636363
+            "work_time_minutes": 4
           },
           "week6": {
-            "work_time_minutes": 4.454545454545455
+            "work_time_minutes": 4
           },
           "week7": {
-            "work_time_minutes": 4.545454545454545
+            "work_time_minutes": 5
           },
           "week8": {
-            "work_time_minutes": 4.636363636363637
+            "work_time_minutes": 5
           },
           "week9": {
-            "work_time_minutes": 4.7272727272727275
+            "work_time_minutes": 5
           },
           "week10": {
-            "work_time_minutes": 4.818181818181818
+            "work_time_minutes": 5
           },
           "week11": {
-            "work_time_minutes": 4.909090909090909
+            "work_time_minutes": 5
           },
           "week12": {
             "work_time_minutes": 5
@@ -2068,219 +1363,123 @@
             {
               "name": "Glute Bridges",
               "week1": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.25,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week2": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.167,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week3": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.084,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week4": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 1.001,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week5": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week6": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.835,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week7": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.752,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week8": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week9": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.586,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week10": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.503,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week11": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week12": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               }
             },
             {
               "name": "Back Squat",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -2290,108 +1489,84 @@
             {
               "name": "Romanian Deadlift",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -2403,40 +1578,79 @@
         {
           "name": "90/90 Hip Stretch",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Dead Bugs",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          },
+          "week4": {
+            "work_time_minutes": 1
+          },
+          "week5": {
+            "work_time_minutes": 1
+          },
+          "week6": {
+            "work_time_minutes": 1
+          },
+          "week7": {
+            "work_time_minutes": 1
+          },
+          "week8": {
+            "work_time_minutes": 1
+          },
+          "week9": {
+            "work_time_minutes": 1
+          },
+          "week10": {
+            "work_time_minutes": 1
+          },
+          "week11": {
+            "work_time_minutes": 1
+          },
+          "week12": {
+            "work_time_minutes": 1
           }
         }
       ]
@@ -2449,40 +1663,40 @@
         {
           "name": "Dead Bugs",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           }
         },
         {
@@ -2528,445 +1742,157 @@
             {
               "name": "Mountain Climbers",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Plank Hold",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Side Plank",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Single-Leg Stands",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             }
           ]
@@ -2974,148 +1900,124 @@
         {
           "name": "EMOM: Push-ups + Tricep Dips",
           "week1": {
-            "work_time_minutes": 10
+            "work_time_minutes": 3
           },
           "week2": {
-            "work_time_minutes": 10.227272727272727
+            "work_time_minutes": 3
           },
           "week3": {
-            "work_time_minutes": 10.454545454545453
+            "work_time_minutes": 3
           },
           "week4": {
-            "work_time_minutes": 10.681818181818182
+            "work_time_minutes": 3
           },
           "week5": {
-            "work_time_minutes": 10.909090909090908
+            "work_time_minutes": 3
           },
           "week6": {
-            "work_time_minutes": 11.136363636363637
+            "work_time_minutes": 3
           },
           "week7": {
-            "work_time_minutes": 11.363636363636363
+            "work_time_minutes": 3
           },
           "week8": {
-            "work_time_minutes": 11.590909090909092
+            "work_time_minutes": 3
           },
           "week9": {
-            "work_time_minutes": 11.818181818181818
+            "work_time_minutes": 4
           },
           "week10": {
-            "work_time_minutes": 12.045454545454547
+            "work_time_minutes": 4
           },
           "week11": {
-            "work_time_minutes": 12.272727272727273
+            "work_time_minutes": 4
           },
           "week12": {
-            "work_time_minutes": 12.5
+            "work_time_minutes": 4
           },
           "category": "emom",
           "sub_exercises": [
             {
               "name": "Push-ups",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -3125,108 +2027,84 @@
             {
               "name": "Tricep Dips",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -3241,34 +2119,34 @@
             "work_time_minutes": 4
           },
           "week2": {
-            "work_time_minutes": 4.090909090909091
+            "work_time_minutes": 4
           },
           "week3": {
-            "work_time_minutes": 4.181818181818182
+            "work_time_minutes": 4
           },
           "week4": {
-            "work_time_minutes": 4.2727272727272725
+            "work_time_minutes": 4
           },
           "week5": {
-            "work_time_minutes": 4.363636363636363
+            "work_time_minutes": 4
           },
           "week6": {
-            "work_time_minutes": 4.454545454545455
+            "work_time_minutes": 4
           },
           "week7": {
-            "work_time_minutes": 4.545454545454545
+            "work_time_minutes": 5
           },
           "week8": {
-            "work_time_minutes": 4.636363636363637
+            "work_time_minutes": 5
           },
           "week9": {
-            "work_time_minutes": 4.7272727272727275
+            "work_time_minutes": 5
           },
           "week10": {
-            "work_time_minutes": 4.818181818181818
+            "work_time_minutes": 5
           },
           "week11": {
-            "work_time_minutes": 4.909090909090909
+            "work_time_minutes": 5
           },
           "week12": {
             "work_time_minutes": 5
@@ -3278,108 +2156,84 @@
             {
               "name": "Bench Press",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -3389,108 +2243,84 @@
             {
               "name": "Overhead Press",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -3500,108 +2330,84 @@
             {
               "name": "Goblet Squats",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -3613,40 +2419,79 @@
         {
           "name": "Warrior Sequence",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Leg Raises",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          },
+          "week4": {
+            "work_time_minutes": 1
+          },
+          "week5": {
+            "work_time_minutes": 1
+          },
+          "week6": {
+            "work_time_minutes": 1
+          },
+          "week7": {
+            "work_time_minutes": 1
+          },
+          "week8": {
+            "work_time_minutes": 1
+          },
+          "week9": {
+            "work_time_minutes": 1
+          },
+          "week10": {
+            "work_time_minutes": 1
+          },
+          "week11": {
+            "work_time_minutes": 1
+          },
+          "week12": {
+            "work_time_minutes": 1
           }
         }
       ]
@@ -3659,40 +2504,40 @@
         {
           "name": "Dead Bugs",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           }
         },
         {
@@ -3738,330 +2583,162 @@
             {
               "name": "Side Plank",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Single-Leg Stands",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Pull-ups",
               "week1": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.5,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week2": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.417,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week3": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.334,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week4": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.251,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week5": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.168,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week6": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.085,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week7": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.002,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week8": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week9": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.836,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week10": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.753,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week11": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week12": {
-                "sets": 4,
                 "reps": 7,
-                "rest_time_minutes": 0.587,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
@@ -4071,108 +2748,84 @@
             {
               "name": "Bent-Over Row",
               "week1": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.5,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week2": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.417,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week3": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.334,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week4": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.251,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week5": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.168,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week6": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.085,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week7": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.002,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week8": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week9": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.836,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week10": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.753,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week11": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week12": {
-                "sets": 4,
                 "reps": 7,
-                "rest_time_minutes": 0.587,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
@@ -4184,148 +2837,124 @@
         {
           "name": "EMOM: Dumbbell Bicep Curls + Single-arm Dumbbell Rows",
           "week1": {
-            "work_time_minutes": 10
+            "work_time_minutes": 3
           },
           "week2": {
-            "work_time_minutes": 10.227272727272727
+            "work_time_minutes": 3
           },
           "week3": {
-            "work_time_minutes": 10.454545454545453
+            "work_time_minutes": 3
           },
           "week4": {
-            "work_time_minutes": 10.681818181818182
+            "work_time_minutes": 3
           },
           "week5": {
-            "work_time_minutes": 10.909090909090908
+            "work_time_minutes": 3
           },
           "week6": {
-            "work_time_minutes": 11.136363636363637
+            "work_time_minutes": 3
           },
           "week7": {
-            "work_time_minutes": 11.363636363636363
+            "work_time_minutes": 3
           },
           "week8": {
-            "work_time_minutes": 11.590909090909092
+            "work_time_minutes": 3
           },
           "week9": {
-            "work_time_minutes": 11.818181818181818
+            "work_time_minutes": 4
           },
           "week10": {
-            "work_time_minutes": 12.045454545454547
+            "work_time_minutes": 4
           },
           "week11": {
-            "work_time_minutes": 12.272727272727273
+            "work_time_minutes": 4
           },
           "week12": {
-            "work_time_minutes": 12.5
+            "work_time_minutes": 4
           },
           "category": "emom",
           "sub_exercises": [
             {
               "name": "Dumbbell Bicep Curls",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -4335,108 +2964,84 @@
             {
               "name": "Single-arm Dumbbell Rows",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -4451,34 +3056,34 @@
             "work_time_minutes": 4
           },
           "week2": {
-            "work_time_minutes": 4.090909090909091
+            "work_time_minutes": 4
           },
           "week3": {
-            "work_time_minutes": 4.181818181818182
+            "work_time_minutes": 4
           },
           "week4": {
-            "work_time_minutes": 4.2727272727272725
+            "work_time_minutes": 4
           },
           "week5": {
-            "work_time_minutes": 4.363636363636363
+            "work_time_minutes": 4
           },
           "week6": {
-            "work_time_minutes": 4.454545454545455
+            "work_time_minutes": 4
           },
           "week7": {
-            "work_time_minutes": 4.545454545454545
+            "work_time_minutes": 5
           },
           "week8": {
-            "work_time_minutes": 4.636363636363637
+            "work_time_minutes": 5
           },
           "week9": {
-            "work_time_minutes": 4.7272727272727275
+            "work_time_minutes": 5
           },
           "week10": {
-            "work_time_minutes": 4.818181818181818
+            "work_time_minutes": 5
           },
           "week11": {
-            "work_time_minutes": 4.909090909090909
+            "work_time_minutes": 5
           },
           "week12": {
             "work_time_minutes": 5
@@ -4488,108 +3093,84 @@
             {
               "name": "Russian Twists",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -4599,108 +3180,84 @@
             {
               "name": "Dumbbell Weighted Crunches",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -4710,108 +3267,84 @@
             {
               "name": "Rack Pull",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -4823,40 +3356,79 @@
         {
           "name": "Balance Series",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Leg Raises",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          },
+          "week4": {
+            "work_time_minutes": 1
+          },
+          "week5": {
+            "work_time_minutes": 1
+          },
+          "week6": {
+            "work_time_minutes": 1
+          },
+          "week7": {
+            "work_time_minutes": 1
+          },
+          "week8": {
+            "work_time_minutes": 1
+          },
+          "week9": {
+            "work_time_minutes": 1
+          },
+          "week10": {
+            "work_time_minutes": 1
+          },
+          "week11": {
+            "work_time_minutes": 1
+          },
+          "week12": {
+            "work_time_minutes": 1
           }
         }
       ]
@@ -4869,40 +3441,40 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           }
         },
         {
@@ -4948,108 +3520,84 @@
             {
               "name": "Jump Squats",
               "week1": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.5,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week2": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.417,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week3": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.334,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week4": {
-                "sets": 4,
                 "reps": 5,
-                "rest_time_minutes": 1.251,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week5": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.168,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week6": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.085,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week7": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 1.002,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week8": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week9": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.836,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week10": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.753,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week11": {
-                "sets": 4,
                 "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
                 }
               },
               "week12": {
-                "sets": 4,
                 "reps": 7,
-                "rest_time_minutes": 0.587,
                 "weight": {
                   "type": "percent_tm",
                   "value": 80
@@ -5059,334 +3607,118 @@
             {
               "name": "Box Jumps",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Side Plank",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             },
             {
               "name": "Wall Sits",
               "week1": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.5,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week2": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.417,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week3": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.334,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week4": {
-                "sets": 4,
-                "reps": 5,
-                "rest_time_minutes": 1.251,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 5
               },
               "week5": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.168,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week6": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.085,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week7": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 1.002,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week8": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.9189999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week9": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.836,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week10": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.753,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week11": {
-                "sets": 4,
-                "reps": 6,
-                "rest_time_minutes": 0.6699999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 6
               },
               "week12": {
-                "sets": 4,
-                "reps": 7,
-                "rest_time_minutes": 0.587,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 80
-                }
+                "reps": 7
               }
             }
           ]
@@ -5394,259 +3726,163 @@
         {
           "name": "EMOM: Single-Leg Stands + strength Squats",
           "week1": {
-            "work_time_minutes": 10
+            "work_time_minutes": 3
           },
           "week2": {
-            "work_time_minutes": 10.227272727272727
+            "work_time_minutes": 3
           },
           "week3": {
-            "work_time_minutes": 10.454545454545453
+            "work_time_minutes": 3
           },
           "week4": {
-            "work_time_minutes": 10.681818181818182
+            "work_time_minutes": 3
           },
           "week5": {
-            "work_time_minutes": 10.909090909090908
+            "work_time_minutes": 3
           },
           "week6": {
-            "work_time_minutes": 11.136363636363637
+            "work_time_minutes": 3
           },
           "week7": {
-            "work_time_minutes": 11.363636363636363
+            "work_time_minutes": 3
           },
           "week8": {
-            "work_time_minutes": 11.590909090909092
+            "work_time_minutes": 3
           },
           "week9": {
-            "work_time_minutes": 11.818181818181818
+            "work_time_minutes": 4
           },
           "week10": {
-            "work_time_minutes": 12.045454545454547
+            "work_time_minutes": 4
           },
           "week11": {
-            "work_time_minutes": 12.272727272727273
+            "work_time_minutes": 4
           },
           "week12": {
-            "work_time_minutes": 12.5
+            "work_time_minutes": 4
           },
           "category": "emom",
           "sub_exercises": [
             {
               "name": "Single-Leg Stands",
               "week1": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.25,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week2": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.167,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week3": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.084,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week4": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 1.001,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week5": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week6": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.835,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week7": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.752,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week8": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week9": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.586,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week10": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.503,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week11": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week12": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               }
             },
             {
               "name": "strength Squats",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -5661,34 +3897,34 @@
             "work_time_minutes": 4
           },
           "week2": {
-            "work_time_minutes": 4.090909090909091
+            "work_time_minutes": 4
           },
           "week3": {
-            "work_time_minutes": 4.181818181818182
+            "work_time_minutes": 4
           },
           "week4": {
-            "work_time_minutes": 4.2727272727272725
+            "work_time_minutes": 4
           },
           "week5": {
-            "work_time_minutes": 4.363636363636363
+            "work_time_minutes": 4
           },
           "week6": {
-            "work_time_minutes": 4.454545454545455
+            "work_time_minutes": 4
           },
           "week7": {
-            "work_time_minutes": 4.545454545454545
+            "work_time_minutes": 5
           },
           "week8": {
-            "work_time_minutes": 4.636363636363637
+            "work_time_minutes": 5
           },
           "week9": {
-            "work_time_minutes": 4.7272727272727275
+            "work_time_minutes": 5
           },
           "week10": {
-            "work_time_minutes": 4.818181818181818
+            "work_time_minutes": 5
           },
           "week11": {
-            "work_time_minutes": 4.909090909090909
+            "work_time_minutes": 5
           },
           "week12": {
             "work_time_minutes": 5
@@ -5698,219 +3934,123 @@
             {
               "name": "Glute Bridges",
               "week1": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.25,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week2": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.167,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week3": {
-                "sets": 3,
-                "reps": 8,
-                "rest_time_minutes": 1.084,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 8
               },
               "week4": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 1.001,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week5": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week6": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.835,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week7": {
-                "sets": 3,
-                "reps": 9,
-                "rest_time_minutes": 0.752,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 9
               },
               "week8": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week9": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.586,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week10": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.503,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week11": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               },
               "week12": {
-                "sets": 3,
-                "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
+                "reps": 10
               }
             },
             {
               "name": "Back Squat",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -5920,108 +4060,84 @@
             {
               "name": "Romanian Deadlift",
               "week1": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.25,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.167,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "sets": 3,
                 "reps": 8,
-                "rest_time_minutes": 1.084,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week4": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 1.001,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week5": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.9179999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week6": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.835,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week7": {
-                "sets": 3,
                 "reps": 9,
-                "rest_time_minutes": 0.752,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week8": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.6689999999999999,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week9": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.586,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week10": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.503,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week11": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.41999999999999993,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week12": {
-                "sets": 3,
                 "reps": 10,
-                "rest_time_minutes": 0.33699999999999997,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
@@ -6033,40 +4149,79 @@
         {
           "name": "90/90 Hip Stretch",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week5": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week6": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week7": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week8": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week9": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week10": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week11": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week12": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Dead Bugs",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          },
+          "week4": {
+            "work_time_minutes": 1
+          },
+          "week5": {
+            "work_time_minutes": 1
+          },
+          "week6": {
+            "work_time_minutes": 1
+          },
+          "week7": {
+            "work_time_minutes": 1
+          },
+          "week8": {
+            "work_time_minutes": 1
+          },
+          "week9": {
+            "work_time_minutes": 1
+          },
+          "week10": {
+            "work_time_minutes": 1
+          },
+          "week11": {
+            "work_time_minutes": 1
+          },
+          "week12": {
+            "work_time_minutes": 1
           }
         }
       ]

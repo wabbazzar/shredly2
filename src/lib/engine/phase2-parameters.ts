@@ -23,13 +23,17 @@ import type {
  * @param exerciseCategory - Category from exercise database
  * @param rules - Generation rules configuration
  * @param answers - User's questionnaire answers
+ * @param isSubExercise - Whether this is a sub-exercise in a compound block
+ * @param exerciseExternalLoad - External load type from exercise database ("never", "sometimes", "always")
  * @returns Week 1 baseline parameters
  */
 export function applyIntensityProfile(
   exercise: ExerciseStructure,
   exerciseCategory: string,
   rules: GenerationRules,
-  answers: QuestionnaireAnswers
+  answers: QuestionnaireAnswers,
+  isSubExercise: boolean = false,
+  exerciseExternalLoad?: string
 ): WeekParameters {
   const { intensityProfile } = exercise;
 
@@ -53,8 +57,11 @@ export function applyIntensityProfile(
   // Build Week 1 parameters based on profile and experience modifiers
   const week1: WeekParameters = {};
 
-  // Apply sets (with volume multiplier)
-  if (profile.base_sets !== undefined) {
+  // Sub-exercises in compound blocks should NOT have sets or rest_time (those belong to parent)
+  // They only have reps and work_time for density progression
+
+  // Apply sets (with volume multiplier) - SKIP for sub-exercises
+  if (!isSubExercise && profile.base_sets !== undefined) {
     week1.sets = Math.round(profile.base_sets * experienceModifier.volume_multiplier);
   }
 
@@ -72,22 +79,27 @@ export function applyIntensityProfile(
     week1.work_time_minutes = profile.base_work_time_minutes;
   }
 
-  // Apply rest time (with rest time multiplier)
-  if (profile.base_rest_time_minutes !== undefined) {
+  // Apply rest time (with rest time multiplier) - SKIP for sub-exercises
+  if (!isSubExercise && profile.base_rest_time_minutes !== undefined) {
     week1.rest_time_minutes = profile.base_rest_time_minutes * experienceModifier.rest_time_multiplier;
   }
 
   // Apply weight specification
-  if (experienceModifier.weight_type === 'descriptor') {
-    if (profile.base_weight_descriptor) {
-      week1.weight = profile.base_weight_descriptor;
-    }
-  } else if (experienceModifier.weight_type === 'percent_tm') {
-    if (profile.base_weight_percent_tm !== undefined) {
-      week1.weight = {
-        type: 'percent_tm',
-        value: profile.base_weight_percent_tm
-      };
+  // CRITICAL: Never assign weight to exercises with external_load: "never" (e.g., Burpees)
+  const shouldAssignWeight = exerciseExternalLoad !== 'never';
+
+  if (shouldAssignWeight) {
+    if (experienceModifier.weight_type === 'descriptor') {
+      if (profile.base_weight_descriptor) {
+        week1.weight = profile.base_weight_descriptor;
+      }
+    } else if (experienceModifier.weight_type === 'percent_tm') {
+      if (profile.base_weight_percent_tm !== undefined) {
+        week1.weight = {
+          type: 'percent_tm',
+          value: profile.base_weight_percent_tm
+        };
+      }
     }
   }
 
@@ -205,7 +217,9 @@ function applyDensityProgression(
   if (weekN.work_time_minutes !== undefined) {
     const totalIncrease = rules.work_time_increase_percent_total || 25;
     const increasePerWeek = (totalIncrease / 100) / (totalWeeks - 1);
-    weekN.work_time_minutes = week1.work_time_minutes! * (1 + increasePerWeek * weeksDelta);
+    const calculatedTime = week1.work_time_minutes! * (1 + increasePerWeek * weeksDelta);
+    // Round to whole minutes for clarity (especially important for EMOM)
+    weekN.work_time_minutes = Math.round(calculatedTime);
   }
 
   // Increase reps (for sub-exercises in EMOM, etc.)
@@ -311,6 +325,7 @@ function applyVolumeProgression(
  * @param rules - Generation rules
  * @param answers - User answers
  * @param allExercises - Flattened exercise database (for sub-exercise lookup)
+ * @param isSubExercise - Whether this is a sub-exercise in a compound block
  * @returns Parameterized exercise with week1, week2, ..., weekN
  */
 export function parameterizeExercise(
@@ -319,10 +334,20 @@ export function parameterizeExercise(
   totalWeeks: number,
   rules: GenerationRules,
   answers: QuestionnaireAnswers,
-  allExercises?: Array<[string, any]>
+  allExercises?: Array<[string, any]>,
+  isSubExercise: boolean = false
 ): ParameterizedExercise {
+  // Look up exercise external_load to determine if weight should be assigned
+  let exerciseExternalLoad: string | undefined;
+  if (allExercises && !exercise.category) { // Only for individual exercises (not compounds)
+    const exerciseData = allExercises.find(([name, _]) => name === exercise.name);
+    if (exerciseData) {
+      exerciseExternalLoad = exerciseData[1].external_load;
+    }
+  }
+
   // Get Week 1 baseline
-  const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers);
+  const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers, isSubExercise, exerciseExternalLoad);
 
   // Calculate Week 2 and Week 3 (always required)
   const week2 = applyProgressionScheme(week1, exercise.progressionScheme, 2, totalWeeks, rules);
@@ -375,14 +400,15 @@ export function parameterizeExercise(
         intensityProfile: exercise.intensityProfile // Inherit from parent
       };
 
-      // Recursively parameterize the sub-exercise
+      // Recursively parameterize the sub-exercise (passing isSubExercise=true)
       return parameterizeExercise(
         subExerciseStructure,
         subCategory,
         totalWeeks,
         rules,
         answers,
-        allExercises
+        allExercises,
+        true // This is a sub-exercise
       );
     });
   }

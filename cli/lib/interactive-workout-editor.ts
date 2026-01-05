@@ -77,53 +77,27 @@ export class InteractiveWorkoutEditor {
   async start(): Promise<{ saved: boolean; workout: ParameterizedWorkout }> {
     this.running = true;
 
-    console.error('[DEBUG] Starting editor setup...');
-    console.error('[DEBUG] stdin.isTTY:', process.stdin.isTTY);
-    console.error('[DEBUG] stdin.isPaused:', process.stdin.isPaused());
-    console.error('[DEBUG] stdin.readableFlowing:', process.stdin.readableFlowing);
-    console.error('[DEBUG] stdin.readable:', process.stdin.readable);
-    console.error('[DEBUG] stdin.destroyed:', process.stdin.destroyed);
-
     // CRITICAL: The order matters!
     // 1. First set raw mode
     if (process.stdin.isTTY) {
       process.stdin.setRawMode(true);
-      console.error('[DEBUG] Set raw mode to true');
     }
 
     // 2. Remove all existing listeners BEFORE emitKeypressEvents
-    console.error('[DEBUG] Removing all existing stdin listeners');
     process.stdin.removeAllListeners('data');
     process.stdin.removeAllListeners('keypress');
 
     // 3. NOW call emitKeypressEvents
-    console.error('[DEBUG] Calling emitKeypressEvents');
     readline.emitKeypressEvents(process.stdin);
 
     // 4. Finally resume stdin
     process.stdin.resume();
-    console.error('[DEBUG] Called stdin.resume()');
-
-    console.error('[DEBUG] stdin.readableFlowing after setup:', process.stdin.readableFlowing);
-    console.error('[DEBUG] stdin.isPaused after setup:', process.stdin.isPaused());
-    console.error('[DEBUG] Editor setup complete');
 
     this.render();
 
     return new Promise((resolve) => {
       this.keypressHandler = async (str: string, key: any) => {
-        // Debug: log keypresses BEFORE any checks
-        console.error(`[DEBUG] Keypress handler called - str: ${JSON.stringify(str)}, key: ${JSON.stringify(key)}, running: ${this.running}`);
-
-        if (!key) {
-          console.error('[DEBUG] No key object, returning early');
-          return;
-        }
-
-        if (!this.running) {
-          console.error('[DEBUG] Editor not running, returning early');
-          return;
-        }
+        if (!key || !this.running) return;
 
         await this.handleKeypress(str, key);
 
@@ -136,16 +110,7 @@ export class InteractiveWorkoutEditor {
         }
       };
 
-      // Register our keypress handler
       process.stdin.on('keypress', this.keypressHandler);
-      console.error('[DEBUG] Registered keypress handler');
-
-      // Debug: check listener count
-      const listenerCount = process.stdin.listenerCount('keypress');
-      const dataListenerCount = process.stdin.listenerCount('data');
-      console.error(`[DEBUG] Keypress listeners registered: ${listenerCount}`);
-      console.error(`[DEBUG] Data listeners registered: ${dataListenerCount}`);
-      console.error(`[DEBUG] Waiting for input... (try pressing a key)`);
     });
   }
 
@@ -153,32 +118,23 @@ export class InteractiveWorkoutEditor {
    * Handle keyboard input based on current mode
    */
   private async handleKeypress(str: string, key: any): Promise<void> {
-    console.error(`[DEBUG handleKeypress] mode=${this.state.mode}, str=${JSON.stringify(str)}, key.name=${key?.name}, key.ctrl=${key?.ctrl}`);
-
     // Global: Ctrl+C
     if (key.ctrl && key.name === 'c') {
-      console.error('[DEBUG] Ctrl+C detected, exiting');
       this.running = false;
       return;
     }
 
     if (this.state.mode === 'view') {
-      console.error('[DEBUG] Calling handleViewModeKey');
       await this.handleViewModeKey(str, key);
     } else if (this.state.mode === 'edit') {
-      console.error('[DEBUG] Calling handleEditModeKey');
       this.handleEditModeKey(str, key);
     } else if (this.state.mode === 'command') {
-      console.error('[DEBUG] Calling handleCommandModeKey');
       await this.handleCommandModeKey(str, key);
     } else if (this.state.mode === 'help') {
-      console.error('[DEBUG] Calling handleHelpModeKey');
       this.handleHelpModeKey(str, key);
     }
 
-    console.error('[DEBUG] About to render');
     this.render();
-    console.error('[DEBUG] Render complete');
   }
 
   /**

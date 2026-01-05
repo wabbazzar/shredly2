@@ -102,6 +102,7 @@ export function formatExercise(
 
 /**
  * Format sub-exercises for compound exercises (EMOM, Circuit, etc.)
+ * Data-driven: automatically displays all parameter fields present in the JSON
  */
 export function formatSubExercises(
   subExercises: ParameterizedExercise[],
@@ -110,14 +111,64 @@ export function formatSubExercises(
 ): string {
   const lines = [];
   for (const sub of subExercises) {
-    const progression = [];
+    // Collect all parameter fields that exist across all weeks for this sub-exercise
+    const paramFields = new Set<string>();
     for (let w = 1; w <= weekCount; w++) {
-      const params = (sub as any)[`week${w}`];
-      if (params && params.reps) {
-        progression.push(`Week ${w}: ${params.reps} reps`);
+      const weekKey = `week${w}`;
+      const params = (sub as any)[weekKey];
+      if (params) {
+        Object.keys(params).forEach(key => {
+          if (!key.startsWith('_')) {
+            paramFields.add(key);
+          }
+        });
       }
     }
-    lines.push(`  - ${sub.name}: ${progression.join(' | ')}`);
+
+    lines.push(`  - ${sub.name}:`);
+
+    // For each parameter type found, show progression across weeks
+    paramFields.forEach(fieldName => {
+      const progression: string[] = [];
+
+      for (let w = 1; w <= weekCount; w++) {
+        const weekKey = `week${w}`;
+        const params = (sub as any)[weekKey];
+
+        if (params && params[fieldName] !== undefined) {
+          let displayValue: string;
+
+          // Format based on field type
+          if (fieldName === 'weight') {
+            displayValue = formatWeight(params[fieldName]);
+          } else if (fieldName === 'rest_time_minutes') {
+            displayValue = `${params[fieldName]}s`;
+          } else if (fieldName === 'work_time_minutes') {
+            displayValue = `${params[fieldName]}min`;
+          } else if (fieldName === 'sets') {
+            displayValue = `${params[fieldName]} sets`;
+          } else if (fieldName === 'reps') {
+            displayValue = `${params[fieldName]} reps`;
+          } else if (fieldName === 'tempo') {
+            displayValue = params[fieldName];
+          } else {
+            // Default: just show the value
+            displayValue = String(params[fieldName]);
+          }
+
+          progression.push(`Week ${w}: ${displayValue}`);
+        }
+      }
+
+      if (progression.length > 0) {
+        // Capitalize field name for display
+        const displayName = fieldName.split('_').map(word =>
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+
+        lines.push(`     ${displayName}: ${progression.join(' | ')}`);
+      }
+    });
   }
   return lines.join('\n');
 }
@@ -441,6 +492,7 @@ export function formatWeekProgressionInteractive(
 
 /**
  * Format sub-exercises with editable field highlighting
+ * Data-driven: automatically displays all parameter fields present in the JSON
  */
 export function formatSubExercisesInteractive(
   subExercises: ParameterizedExercise[],
@@ -459,20 +511,82 @@ export function formatSubExercisesInteractive(
       ? highlightEditableValue(sub.name, nameIsSelected)
       : sub.name;
 
-    const progression = [];
+    // Collect all parameter fields that exist across all weeks for this sub-exercise
+    const paramFields = new Set<string>();
     for (let w = 1; w <= weekCount; w++) {
       const weekKey = `week${w}`;
       const params = (sub as any)[weekKey];
-      if (params && params.reps) {
-        const repsLocation = `${subLocation}.${weekKey}.reps`;
-        const repsIsSelected = options.selectedFieldLocation === repsLocation;
-        const repsValue = (options.showAllEditable || repsIsSelected)
-          ? highlightEditableValue(`${params.reps}`, repsIsSelected)
-          : params.reps;
-        progression.push(`Week ${w}: ${repsValue} reps`);
+      if (params) {
+        Object.keys(params).forEach(key => {
+          if (!key.startsWith('_')) {
+            paramFields.add(key);
+          }
+        });
       }
     }
-    lines.push(`  - ${subName}: ${progression.join(' | ')}`);
+
+    lines.push(`  - ${subName}:`);
+
+    // For each parameter type found, show progression across weeks
+    paramFields.forEach(fieldName => {
+      const progression: string[] = [];
+
+      for (let w = 1; w <= weekCount; w++) {
+        const weekKey = `week${w}`;
+        const params = (sub as any)[weekKey];
+
+        if (params && params[fieldName] !== undefined) {
+          const location = `${subLocation}.${weekKey}.${fieldName}`;
+          const isSelected = options.selectedFieldLocation === location;
+
+          let displayValue: string;
+
+          // Format based on field type
+          if (fieldName === 'weight') {
+            const formatted = formatWeight(params[fieldName]);
+            displayValue = (options.showAllEditable || isSelected)
+              ? highlightEditableValue(formatted, isSelected)
+              : formatted;
+          } else if (fieldName === 'rest_time_minutes') {
+            displayValue = (options.showAllEditable || isSelected)
+              ? highlightEditableValue(`${params[fieldName]}s`, isSelected)
+              : `${params[fieldName]}s`;
+          } else if (fieldName === 'work_time_minutes') {
+            displayValue = (options.showAllEditable || isSelected)
+              ? highlightEditableValue(`${params[fieldName]}min`, isSelected)
+              : `${params[fieldName]}min`;
+          } else if (fieldName === 'sets') {
+            displayValue = (options.showAllEditable || isSelected)
+              ? highlightEditableValue(`${params[fieldName]} sets`, isSelected)
+              : `${params[fieldName]} sets`;
+          } else if (fieldName === 'reps') {
+            displayValue = (options.showAllEditable || isSelected)
+              ? highlightEditableValue(`${params[fieldName]} reps`, isSelected)
+              : `${params[fieldName]} reps`;
+          } else if (fieldName === 'tempo') {
+            displayValue = (options.showAllEditable || isSelected)
+              ? highlightEditableValue(`${params[fieldName]}`, isSelected)
+              : params[fieldName];
+          } else {
+            // Default: just show the value
+            displayValue = (options.showAllEditable || isSelected)
+              ? highlightEditableValue(String(params[fieldName]), isSelected)
+              : String(params[fieldName]);
+          }
+
+          progression.push(`Week ${w}: ${displayValue}`);
+        }
+      }
+
+      if (progression.length > 0) {
+        // Capitalize field name for display
+        const displayName = fieldName.split('_').map(word =>
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+
+        lines.push(`     ${chalk.gray(displayName + ':')} ${progression.join(' | ')}`);
+      }
+    });
   }
   return lines.join('\n');
 }

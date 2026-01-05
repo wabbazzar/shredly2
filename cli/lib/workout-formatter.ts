@@ -287,7 +287,8 @@ export function formatExerciseInteractive(
 }
 
 /**
- * Format parent exercise sets for compound exercises (CIRCUIT, EMOM, etc.)
+ * Format parent exercise parameters for compound exercises (CIRCUIT, EMOM, etc.)
+ * Displays any week-level parameters that exist at the parent level (sets, reps, rest, work, etc.)
  */
 function formatCompoundParentSets(
   exercise: { [key: string]: any },
@@ -295,26 +296,78 @@ function formatCompoundParentSets(
   baseLocation: string,
   options: HighlightOptions = {}
 ): string | null {
-  const progression = [];
+  // Collect all parent-level week parameters across all weeks
+  const paramFields = new Set<string>();
 
   for (let w = 1; w <= weekCount; w++) {
     const weekKey = `week${w}`;
     const params = exercise[weekKey];
-    if (params && params.sets !== undefined) {
-      const setsLocation = `${baseLocation}.${weekKey}.sets`;
-      const setsIsSelected = options.selectedFieldLocation === setsLocation;
-      const setsValue = (options.showAllEditable || setsIsSelected)
-        ? highlightEditableValue(String(params.sets), setsIsSelected)
-        : params.sets;
-      progression.push(`Week ${w}: ${setsValue}`);
+    if (params) {
+      // Collect parameter names (excluding internal fields)
+      Object.keys(params).forEach(key => {
+        if (!key.startsWith('_')) {
+          paramFields.add(key);
+        }
+      });
     }
   }
 
-  if (progression.length > 0) {
-    return `   ${chalk.gray('Sets:')} ${progression.join(' | ')}`;
+  if (paramFields.size === 0) {
+    return null;
   }
 
-  return null;
+  const lines: string[] = [];
+
+  // For each parameter type found, show progression across weeks
+  paramFields.forEach(fieldName => {
+    const progression: string[] = [];
+
+    for (let w = 1; w <= weekCount; w++) {
+      const weekKey = `week${w}`;
+      const params = exercise[weekKey];
+
+      if (params && params[fieldName] !== undefined) {
+        const location = `${baseLocation}.${weekKey}.${fieldName}`;
+        const isSelected = options.selectedFieldLocation === location;
+
+        let displayValue: string;
+
+        // Format based on field type
+        if (fieldName === 'weight') {
+          const formatted = formatWeight(params[fieldName]);
+          displayValue = (options.showAllEditable || isSelected)
+            ? highlightEditableValue(formatted, isSelected)
+            : formatted;
+        } else if (fieldName === 'rest_time_minutes') {
+          displayValue = (options.showAllEditable || isSelected)
+            ? highlightEditableValue(`${params[fieldName]}s`, isSelected)
+            : `${params[fieldName]}s`;
+        } else if (fieldName === 'work_time_minutes') {
+          displayValue = (options.showAllEditable || isSelected)
+            ? highlightEditableValue(`${params[fieldName]}min`, isSelected)
+            : `${params[fieldName]}min`;
+        } else {
+          // Default: just show the value
+          displayValue = (options.showAllEditable || isSelected)
+            ? highlightEditableValue(String(params[fieldName]), isSelected)
+            : String(params[fieldName]);
+        }
+
+        progression.push(`Week ${w}: ${displayValue}`);
+      }
+    }
+
+    if (progression.length > 0) {
+      // Capitalize field name for display
+      const displayName = fieldName.split('_').map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ');
+
+      lines.push(`   ${chalk.gray(displayName + ':')} ${progression.join(' | ')}`);
+    }
+  });
+
+  return lines.length > 0 ? lines.join('\n') : null;
 }
 
 /**

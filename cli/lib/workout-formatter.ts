@@ -95,9 +95,92 @@ export function formatExercise(
     lines.push(formatWeekProgression(exercise.name, exercise as any, weekCount));
   }
   if (exercise.sub_exercises && exercise.sub_exercises.length > 0) {
+    // Show parent parameters (work time, rest time, etc.) for compound exercises
+    const parentParams = formatCompoundParentParams(exercise as any, weekCount);
+    if (parentParams) {
+      lines.push(parentParams);
+    }
     lines.push(formatSubExercises(exercise.sub_exercises, weekCount, category));
   }
   return lines.join('\n');
+}
+
+/**
+ * Format parent exercise parameters for compound exercises (non-interactive)
+ * Displays any week-level parameters at the parent level (work_time, rest_time, sets, etc.)
+ */
+function formatCompoundParentParams(
+  exercise: { [key: string]: any },
+  weekCount: number
+): string | null {
+  // Collect all parent-level week parameters across all weeks
+  const paramFields = new Set<string>();
+
+  for (let w = 1; w <= weekCount; w++) {
+    const weekKey = `week${w}`;
+    const params = exercise[weekKey];
+    if (params) {
+      // Collect parameter names (excluding internal fields and unit fields)
+      Object.keys(params).forEach(key => {
+        if (!key.startsWith('_') && !key.endsWith('_unit')) {
+          paramFields.add(key);
+        }
+      });
+    }
+  }
+
+  if (paramFields.size === 0) {
+    return null;
+  }
+
+  const lines: string[] = [];
+
+  // For each parameter type found, show progression across weeks
+  paramFields.forEach(fieldName => {
+    const progression: string[] = [];
+
+    for (let w = 1; w <= weekCount; w++) {
+      const weekKey = `week${w}`;
+      const params = exercise[weekKey];
+
+      if (params && params[fieldName] !== undefined) {
+        let displayValue: string;
+
+        // Format based on field type
+        if (fieldName === 'weight') {
+          displayValue = formatWeight(params[fieldName]);
+        } else if (fieldName === 'rest_time_minutes') {
+          const unit = params.rest_time_unit || 'seconds';
+          displayValue = `${params[fieldName]} ${unit}`;
+        } else if (fieldName === 'work_time_minutes') {
+          const unit = params.work_time_unit || 'minutes';
+          displayValue = `${params[fieldName]} ${unit}`;
+        } else if (fieldName === 'sets') {
+          displayValue = `${params[fieldName]} sets`;
+        } else if (fieldName === 'reps') {
+          displayValue = `${params[fieldName]} reps`;
+        } else {
+          // Default: just show the value
+          displayValue = String(params[fieldName]);
+        }
+
+        progression.push(`Week ${w}: ${displayValue}`);
+      }
+    }
+
+    if (progression.length > 0) {
+      // Capitalize field name for display (but clean up the name)
+      const displayName = fieldName
+        .replace('_minutes', '')  // Remove _minutes suffix since we're showing units now
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
+      lines.push(`   ${displayName}: ${progression.join(' | ')}`);
+    }
+  });
+
+  return lines.length > 0 ? lines.join('\n') : null;
 }
 
 /**
@@ -118,7 +201,8 @@ export function formatSubExercises(
       const params = (sub as any)[weekKey];
       if (params) {
         Object.keys(params).forEach(key => {
-          if (!key.startsWith('_')) {
+          // Filter out unit fields - they'll be combined with their base fields
+          if (!key.startsWith('_') && !key.endsWith('_unit')) {
             paramFields.add(key);
           }
         });
@@ -142,9 +226,11 @@ export function formatSubExercises(
           if (fieldName === 'weight') {
             displayValue = formatWeight(params[fieldName]);
           } else if (fieldName === 'rest_time_minutes') {
-            displayValue = `${params[fieldName]}s`;
+            const unit = params.rest_time_unit || 'seconds';
+            displayValue = `${params[fieldName]} ${unit}`;
           } else if (fieldName === 'work_time_minutes') {
-            displayValue = `${params[fieldName]}min`;
+            const unit = params.work_time_unit || 'minutes';
+            displayValue = `${params[fieldName]} ${unit}`;
           } else if (fieldName === 'sets') {
             displayValue = `${params[fieldName]} sets`;
           } else if (fieldName === 'reps') {
@@ -161,10 +247,12 @@ export function formatSubExercises(
       }
 
       if (progression.length > 0) {
-        // Capitalize field name for display
-        const displayName = fieldName.split('_').map(word =>
-          word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
+        // Capitalize field name for display (but clean up the name)
+        let displayName = fieldName
+          .replace('_minutes', '')  // Remove _minutes suffix since we're showing units now
+          .split('_')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
 
         lines.push(`     ${displayName}: ${progression.join(' | ')}`);
       }
@@ -188,8 +276,10 @@ export function formatWeekProgression(
     const sets = params.sets;
     const reps = params.reps;
     const weight = formatWeight(params.weight);
-    const rest = params.rest_time_minutes ? `${params.rest_time_minutes}s rest` : '';
-    const work = params.work_time_minutes ? `${params.work_time_minutes}min work` : '';
+    const restUnit = params.rest_time_unit || 'seconds';
+    const rest = params.rest_time_minutes ? `${params.rest_time_minutes} ${restUnit} rest` : '';
+    const workUnit = params.work_time_unit || 'minutes';
+    const work = params.work_time_minutes ? `${params.work_time_minutes} ${workUnit} work` : '';
     const parts = [];
     if (sets && reps) {
       parts.push(`${sets} sets x ${reps} reps`);
@@ -354,9 +444,9 @@ function formatCompoundParentSets(
     const weekKey = `week${w}`;
     const params = exercise[weekKey];
     if (params) {
-      // Collect parameter names (excluding internal fields)
+      // Collect parameter names (excluding internal fields and unit fields)
       Object.keys(params).forEach(key => {
-        if (!key.startsWith('_')) {
+        if (!key.startsWith('_') && !key.endsWith('_unit')) {
           paramFields.add(key);
         }
       });
@@ -390,13 +480,17 @@ function formatCompoundParentSets(
             ? highlightEditableValue(formatted, isSelected)
             : formatted;
         } else if (fieldName === 'rest_time_minutes') {
+          const unit = params.rest_time_unit || 'seconds';
+          const formatted = `${params[fieldName]} ${unit}`;
           displayValue = (options.showAllEditable || isSelected)
-            ? highlightEditableValue(`${params[fieldName]}s`, isSelected)
-            : `${params[fieldName]}s`;
+            ? highlightEditableValue(formatted, isSelected)
+            : formatted;
         } else if (fieldName === 'work_time_minutes') {
+          const unit = params.work_time_unit || 'minutes';
+          const formatted = `${params[fieldName]} ${unit}`;
           displayValue = (options.showAllEditable || isSelected)
-            ? highlightEditableValue(`${params[fieldName]}min`, isSelected)
-            : `${params[fieldName]}min`;
+            ? highlightEditableValue(formatted, isSelected)
+            : formatted;
         } else {
           // Default: just show the value
           displayValue = (options.showAllEditable || isSelected)
@@ -409,10 +503,12 @@ function formatCompoundParentSets(
     }
 
     if (progression.length > 0) {
-      // Capitalize field name for display
-      const displayName = fieldName.split('_').map(word =>
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join(' ');
+      // Capitalize field name for display (but clean up the name)
+      const displayName = fieldName
+        .replace('_minutes', '')  // Remove _minutes suffix since we're showing units now
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
 
       lines.push(`   ${chalk.gray(displayName + ':')} ${progression.join(' | ')}`);
     }
@@ -462,16 +558,18 @@ export function formatWeekProgressionInteractive(
         : formatWeight(params.weight))
       : null;
 
+    const restUnit = params.rest_time_unit || 'seconds';
     const rest = params.rest_time_minutes !== undefined
       ? (options.showAllEditable || restIsSelected
-        ? highlightEditableValue(`${params.rest_time_minutes}s rest`, restIsSelected)
-        : `${params.rest_time_minutes}s rest`)
+        ? highlightEditableValue(`${params.rest_time_minutes} ${restUnit} rest`, restIsSelected)
+        : `${params.rest_time_minutes} ${restUnit} rest`)
       : null;
 
+    const workUnit = params.work_time_unit || 'minutes';
     const work = params.work_time_minutes !== undefined
       ? (options.showAllEditable || workIsSelected
-        ? highlightEditableValue(`${params.work_time_minutes}min work`, workIsSelected)
-        : `${params.work_time_minutes}min work`)
+        ? highlightEditableValue(`${params.work_time_minutes} ${workUnit} work`, workIsSelected)
+        : `${params.work_time_minutes} ${workUnit} work`)
       : null;
 
     const parts = [];
@@ -518,7 +616,8 @@ export function formatSubExercisesInteractive(
       const params = (sub as any)[weekKey];
       if (params) {
         Object.keys(params).forEach(key => {
-          if (!key.startsWith('_')) {
+          // Filter out unit fields - they'll be combined with their base fields
+          if (!key.startsWith('_') && !key.endsWith('_unit')) {
             paramFields.add(key);
           }
         });
@@ -548,13 +647,17 @@ export function formatSubExercisesInteractive(
               ? highlightEditableValue(formatted, isSelected)
               : formatted;
           } else if (fieldName === 'rest_time_minutes') {
+            const unit = params.rest_time_unit || 'seconds';
+            const formatted = `${params[fieldName]} ${unit}`;
             displayValue = (options.showAllEditable || isSelected)
-              ? highlightEditableValue(`${params[fieldName]}s`, isSelected)
-              : `${params[fieldName]}s`;
+              ? highlightEditableValue(formatted, isSelected)
+              : formatted;
           } else if (fieldName === 'work_time_minutes') {
+            const unit = params.work_time_unit || 'minutes';
+            const formatted = `${params[fieldName]} ${unit}`;
             displayValue = (options.showAllEditable || isSelected)
-              ? highlightEditableValue(`${params[fieldName]}min`, isSelected)
-              : `${params[fieldName]}min`;
+              ? highlightEditableValue(formatted, isSelected)
+              : formatted;
           } else if (fieldName === 'sets') {
             displayValue = (options.showAllEditable || isSelected)
               ? highlightEditableValue(`${params[fieldName]} sets`, isSelected)
@@ -579,10 +682,12 @@ export function formatSubExercisesInteractive(
       }
 
       if (progression.length > 0) {
-        // Capitalize field name for display
-        const displayName = fieldName.split('_').map(word =>
-          word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
+        // Capitalize field name for display (but clean up the name)
+        const displayName = fieldName
+          .replace('_minutes', '')  // Remove _minutes suffix since we're showing units now
+          .split('_')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
 
         lines.push(`     ${chalk.gray(displayName + ':')} ${progression.join(' | ')}`);
       }

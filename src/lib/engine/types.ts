@@ -342,6 +342,16 @@ export interface CategoryWorkoutStructure {
   metabolic_categories?: string[];
   cooldown_categories?: string[];
   category_display_order?: string[];
+  split_category_overrides?: {
+    [splitFocus: string]: {
+      first: string[];
+      primary: string[];
+      secondary: string[];
+      tertiary: string[];
+      finisher: string[];
+      last: string[];
+    };
+  };
   category_priority_by_goal: {
     [goal: string]: {
       first: string[];

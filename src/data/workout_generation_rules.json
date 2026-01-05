@@ -426,37 +426,57 @@
       "cardio"
     ],
 
+    "split_category_overrides": {
+      "description": "Override category priorities for specific split focuses to create focused training styles (e.g., high-tempo Upper/Lower days in ULPPL)",
+      "Upper": {
+        "first": ["mobility"],
+        "primary": ["emom", "amrap", "circuit", "interval"],
+        "secondary": ["bodyweight"],
+        "tertiary": ["strength"],
+        "finisher": ["amrap", "circuit"],
+        "last": ["flexibility"]
+      },
+      "Lower": {
+        "first": ["mobility"],
+        "primary": ["emom", "amrap", "circuit", "interval"],
+        "secondary": ["bodyweight"],
+        "tertiary": ["strength"],
+        "finisher": ["amrap", "circuit"],
+        "last": ["flexibility"]
+      }
+    },
+
     "category_priority_by_goal": {
       "muscle_gain": {
         "first": ["mobility", "flexibility"],
         "primary": ["strength"],
         "secondary": ["bodyweight", "strength"],
-        "tertiary": ["emom", "amrap", "circuit"],
-        "finisher": ["interval", "amrap"],
+        "tertiary": ["emom", "amrap", "circuit", "interval"],
+        "finisher": ["amrap", "circuit"],
         "last": ["flexibility", "cardio"]
       },
       "fat_loss": {
         "first": ["mobility"],
-        "primary": ["circuit", "interval"],
+        "primary": ["emom", "amrap", "circuit", "interval"],
         "secondary": ["strength"],
-        "tertiary": ["emom", "amrap"],
-        "finisher": ["interval"],
+        "tertiary": ["bodyweight"],
+        "finisher": ["amrap", "circuit"],
         "last": ["flexibility"]
       },
       "athletic_performance": {
         "first": ["mobility"],
         "primary": ["strength"],
-        "secondary": ["emom", "circuit"],
-        "tertiary": ["interval", "bodyweight"],
-        "finisher": ["interval"],
+        "secondary": ["emom", "amrap", "circuit", "interval"],
+        "tertiary": ["bodyweight"],
+        "finisher": ["amrap", "circuit"],
         "last": ["flexibility"]
       },
       "general_fitness": {
         "first": ["mobility"],
-        "primary": ["strength", "circuit"],
-        "secondary": ["bodyweight", "emom"],
-        "tertiary": ["amrap", "interval"],
-        "finisher": ["interval"],
+        "primary": ["strength", "bodyweight"],
+        "secondary": ["emom", "amrap", "circuit", "interval"],
+        "tertiary": ["bodyweight"],
+        "finisher": ["amrap", "circuit"],
         "last": ["flexibility"]
       },
       "rehabilitation": {
@@ -469,10 +489,10 @@
       },
       "body_recomposition": {
         "first": ["mobility"],
-        "primary": ["strength", "circuit"],
-        "secondary": ["emom", "interval"],
-        "tertiary": ["amrap"],
-        "finisher": ["interval"],
+        "primary": ["strength"],
+        "secondary": ["emom", "amrap", "circuit", "interval"],
+        "tertiary": ["bodyweight"],
+        "finisher": ["amrap", "circuit"],
         "last": ["flexibility"]
       }
     }
@@ -619,7 +639,7 @@
 
   "exercise_count_constraints": {
     "description": "Limits on exercise counts to ensure workouts fit within session duration",
-    "strength_max_per_day": 3,
+    "strength_max_per_day": 2,
     "total_max_by_duration": {
       "20-30": 5,
       "30-45": 7,

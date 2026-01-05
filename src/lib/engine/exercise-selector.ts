@@ -168,8 +168,12 @@ export function createExercisePoolsForDay(
 ): Map<string, Array<[string, Exercise]>> {
   const pools = new Map<string, Array<[string, Exercise]>>();
 
-  // Get category priorities for this goal
-  const categoryPriorities = rules.category_workout_structure.category_priority_by_goal[answers.primary_goal];
+  // Check for split-specific category overrides first (e.g., high-tempo Upper/Lower in ULPPL)
+  const splitOverrides = (rules.category_workout_structure as any).split_category_overrides?.[focus];
+
+  // Use split overrides if available, otherwise use goal-based priorities
+  const categoryPriorities = splitOverrides ||
+    rules.category_workout_structure.category_priority_by_goal[answers.primary_goal];
 
   if (!categoryPriorities) {
     throw new Error(`No category priorities found for goal: ${answers.primary_goal}`);
@@ -328,9 +332,43 @@ function constructCompoundExercise(
     };
   }
 
-  // Select constituent exercises
+  // Helper function to normalize exercise names for duplicate detection
+  const normalizeExerciseName = (name: string): string => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '') // Remove punctuation, spaces, hyphens
+      .trim();
+  };
+
+  // Select constituent exercises with duplicate detection
   const selectedCount = Math.min(count, availableExercises.length);
-  const constituentExercises = availableExercises.slice(0, selectedCount);
+  const constituentExercises: Array<[string, Exercise]> = [];
+  const normalizedNames = new Set<string>();
+
+  for (const [name, exercise] of availableExercises) {
+    if (constituentExercises.length >= selectedCount) break;
+
+    const normalized = normalizeExerciseName(name);
+
+    // Skip if we already have this exercise (or a very similar variant)
+    if (normalizedNames.has(normalized)) {
+      continue;
+    }
+
+    constituentExercises.push([name, exercise]);
+    normalizedNames.add(normalized);
+  }
+
+  // VALIDATION: Ensure we have enough unique exercises
+  if (constituentExercises.length < 2) {
+    return {
+      name: `${compoundCategory.toUpperCase()}: [insufficient unique exercises]`,
+      category: compoundCategory,
+      sub_exercises: [],
+      progressionScheme: 'density',
+      intensityProfile: intensityProfile as any
+    };
+  }
 
   // Mark as used
   constituentExercises.forEach(([name, _]) => usedExerciseNames.add(name));

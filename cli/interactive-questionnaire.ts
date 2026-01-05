@@ -41,7 +41,7 @@ function createPrompt(question: any) {
   if (question.type === 'multiple_choice') {
     return {
       ...basePrompt,
-      type: 'list',
+      type: 'rawlist',
       choices: question.options.map((opt: any) => ({
         name: `${opt.label} - ${opt.description}`,
         value: opt.value,

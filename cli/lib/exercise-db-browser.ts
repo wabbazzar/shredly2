@@ -28,11 +28,14 @@ interface FilterState {
   difficulty: Set<string>;
 }
 
+type BrowserMode = 'normal' | 'search' | 'filter-category' | 'filter-muscle' | 'filter-equipment';
+
 interface BrowserState {
   filters: FilterState;
   selectedIndex: number; // index in filtered exercise list
   filterSectionExpanded: boolean;
-  searchQuery: string;
+  mode: BrowserMode;
+  inputBuffer: string;
 }
 
 export interface BrowserResult {
@@ -131,56 +134,116 @@ function filterExercises(allExercises: ExerciseData[], filters: FilterState, sea
 }
 
 /**
- * Render filter section with checkboxes
+ * Render filter section showing active filters
  */
-function renderFilters(filters: FilterState, filterOptions: ReturnType<typeof getFilterOptions>, terminalWidth: number): string {
+function renderFilters(filters: FilterState, terminalWidth: number): string {
   const lines: string[] = [];
-  const narrow = terminalWidth < 80;
 
-  lines.push(chalk.cyan('=== EXERCISE FILTERS ==='));
+  lines.push(chalk.cyan('=== ACTIVE FILTERS ==='));
   lines.push('');
 
-  // Categories
-  lines.push(chalk.yellow('[C]ategories:'));
-  const catItems = filterOptions.categories.map(cat => {
-    const checked = filters.categories.has(cat);
-    return `${checked ? chalk.green('[x]') : '[ ]'} ${cat}`;
-  });
-  lines.push(narrow ? catItems.join('\n') : catItems.join('  '));
-  lines.push('');
+  const activeFilters: string[] = [];
 
-  // Muscle Groups
-  lines.push(chalk.yellow('[M]uscle Groups:'));
-  const mgItems = filterOptions.muscleGroups.map(mg => {
-    const checked = filters.muscleGroups.has(mg);
-    return `${checked ? chalk.green('[x]') : '[ ]'} ${mg}`;
-  });
-  if (narrow) {
-    lines.push(mgItems.join('\n'));
-  } else {
-    // Split into chunks of 4 for wide screens
-    for (let i = 0; i < mgItems.length; i += 4) {
-      lines.push(mgItems.slice(i, i + 4).join('  '));
-    }
+  // Show active categories
+  if (filters.categories.size > 0) {
+    const cats = Array.from(filters.categories).join(', ');
+    activeFilters.push(chalk.yellow('Categories: ') + chalk.green(cats));
   }
-  lines.push('');
 
-  // Equipment
-  lines.push(chalk.yellow('[E]quipment:'));
-  const eqItems = filterOptions.equipment.map(eq => {
-    const checked = filters.equipment.has(eq);
-    return `${checked ? chalk.green('[x]') : '[ ]'} ${eq}`;
-  });
-  if (narrow) {
-    lines.push(eqItems.join('\n'));
-  } else {
-    for (let i = 0; i < eqItems.length; i += 3) {
-      lines.push(eqItems.slice(i, i + 3).join('  '));
-    }
+  // Show active muscle groups
+  if (filters.muscleGroups.size > 0) {
+    const muscles = Array.from(filters.muscleGroups).join(', ');
+    activeFilters.push(chalk.yellow('Muscles: ') + chalk.green(muscles));
   }
+
+  // Show active equipment
+  if (filters.equipment.size > 0) {
+    const equip = Array.from(filters.equipment).join(', ');
+    activeFilters.push(chalk.yellow('Equipment: ') + chalk.green(equip));
+  }
+
+  if (activeFilters.length === 0) {
+    lines.push(chalk.gray('No active filters'));
+  } else {
+    lines.push(activeFilters.join('\n'));
+  }
+
   lines.push('');
 
-  lines.push(chalk.gray('Press C/M/E to toggle filter groups | [R]eset all | [/] to search'));
+  return lines.join('\n');
+}
+
+/**
+ * Render mode indicator and input buffer
+ */
+function renderModeIndicator(state: BrowserState): string {
+  const lines: string[] = [];
+
+  if (state.mode === 'search') {
+    lines.push(chalk.cyan('SEARCH MODE: ') + chalk.yellow(`/${state.inputBuffer}`));
+    lines.push(chalk.gray('Type to filter exercises, Enter to exit search mode'));
+  } else if (state.mode === 'filter-category') {
+    lines.push(chalk.cyan('FILTER CATEGORIES: ') + chalk.yellow(`c/${state.inputBuffer}`));
+    lines.push(chalk.gray('Type to find categories, Space to toggle, Enter to finish'));
+  } else if (state.mode === 'filter-muscle') {
+    lines.push(chalk.cyan('FILTER MUSCLES: ') + chalk.yellow(`m/${state.inputBuffer}`));
+    lines.push(chalk.gray('Type to find muscles, Space to toggle, Enter to finish'));
+  } else if (state.mode === 'filter-equipment') {
+    lines.push(chalk.cyan('FILTER EQUIPMENT: ') + chalk.yellow(`e/${state.inputBuffer}`));
+    lines.push(chalk.gray('Type to find equipment, Space to toggle, Enter to finish'));
+  } else {
+    lines.push(chalk.gray('/ search | c filter categories | m filter muscles | e filter equipment | r reset'));
+  }
+
+  lines.push('');
+  return lines.join('\n');
+}
+
+/**
+ * Get matching options for filter selection based on input buffer
+ */
+function getMatchingOptions(options: string[], inputBuffer: string): string[] {
+  if (!inputBuffer) return options;
+  const lower = inputBuffer.toLowerCase();
+  return options.filter(opt => opt.toLowerCase().includes(lower));
+}
+
+/**
+ * Render filter selection list (for c, m, e modes)
+ */
+function renderFilterSelection(
+  options: string[],
+  activeFilters: Set<string>,
+  inputBuffer: string,
+  selectedIndex: number
+): string {
+  const lines: string[] = [];
+  const matching = getMatchingOptions(options, inputBuffer);
+
+  if (matching.length === 0) {
+    lines.push(chalk.gray('No matches found'));
+    return lines.join('\n');
+  }
+
+  const visibleStart = Math.max(0, selectedIndex - 5);
+  const visibleEnd = Math.min(matching.length, visibleStart + 10);
+
+  for (let i = visibleStart; i < visibleEnd; i++) {
+    const opt = matching[i];
+    const isActive = activeFilters.has(opt);
+    const isSelected = i === selectedIndex;
+    const checkbox = isActive ? chalk.green('[x]') : '[ ]';
+    const prefix = isSelected ? chalk.green('> ') : '  ';
+    const text = isSelected ? chalk.bold(opt) : opt;
+    lines.push(`${prefix}${checkbox} ${text}`);
+  }
+
+  if (visibleStart > 0) {
+    lines.unshift(chalk.gray(`  ... ${visibleStart} more above`));
+  }
+  if (visibleEnd < matching.length) {
+    lines.push(chalk.gray(`  ... ${matching.length - visibleEnd} more below`));
+  }
 
   return lines.join('\n');
 }
@@ -251,7 +314,8 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
     },
     selectedIndex: 0,
     filterSectionExpanded: true,
-    searchQuery: ''
+    mode: 'normal',
+    inputBuffer: ''
   };
 
   // Get terminal size
@@ -270,19 +334,34 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
 
   return new Promise((resolve) => {
     const render = () => {
-      const filteredExercises = filterExercises(allExercises, state.filters, state.searchQuery);
-
-      // Clear screen and render
       console.clear();
 
-      if (state.filterSectionExpanded) {
-        console.log(renderFilters(state.filters, filterOptions, terminalWidth));
-        console.log('');
-      }
+      // Show mode indicator
+      console.log(renderModeIndicator(state));
 
-      console.log(renderExerciseList(filteredExercises, state.selectedIndex, terminalHeight, state.filterSectionExpanded));
-      console.log('');
-      console.log(chalk.gray('↑↓: Navigate | Enter: Select | Esc/Q: Cancel | C/M/E: Toggle filters | R: Reset'));
+      if (state.mode === 'filter-category') {
+        // Show category selection list
+        console.log(renderFilterSelection(filterOptions.categories, state.filters.categories, state.inputBuffer, state.selectedIndex));
+      } else if (state.mode === 'filter-muscle') {
+        // Show muscle group selection list
+        console.log(renderFilterSelection(filterOptions.muscleGroups, state.filters.muscleGroups, state.inputBuffer, state.selectedIndex));
+      } else if (state.mode === 'filter-equipment') {
+        // Show equipment selection list
+        console.log(renderFilterSelection(filterOptions.equipment, state.filters.equipment, state.inputBuffer, state.selectedIndex));
+      } else {
+        // Normal or search mode - show filters and exercises
+        const searchQuery = state.mode === 'search' ? state.inputBuffer : '';
+        const filteredExercises = filterExercises(allExercises, state.filters, searchQuery);
+
+        if (state.filterSectionExpanded) {
+          console.log(renderFilters(state.filters, terminalWidth));
+          console.log('');
+        }
+
+        console.log(renderExerciseList(filteredExercises, state.selectedIndex, terminalHeight, state.filterSectionExpanded));
+        console.log('');
+        console.log(chalk.gray('↑↓: Navigate | Enter: Select | Esc/Q: Cancel'));
+      }
     };
 
     const cleanup = () => {
@@ -295,7 +374,24 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
     const onKeypress = (str: string, key: any) => {
       if (!key) return;
 
-      const filteredExercises = filterExercises(allExercises, state.filters, state.searchQuery);
+      // Ctrl+C - always exit
+      if (key.ctrl && key.name === 'c') {
+        cleanup();
+        process.exit(0);
+      }
+
+      // Handle different modes
+      if (state.mode === 'normal') {
+        handleNormalMode(str, key);
+      } else if (state.mode === 'search') {
+        handleSearchMode(str, key);
+      } else if (state.mode === 'filter-category' || state.mode === 'filter-muscle' || state.mode === 'filter-equipment') {
+        handleFilterMode(str, key);
+      }
+    };
+
+    const handleNormalMode = (str: string, key: any) => {
+      const filteredExercises = filterExercises(allExercises, state.filters, '');
 
       // Navigation
       if (key.name === 'up') {
@@ -323,40 +419,139 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
       }
 
       // Cancel
-      else if (key.name === 'escape' || key.name === 'q') {
+      else if (key.name === 'escape' || str === 'q' || str === 'Q') {
         cleanup();
         resolve({ selected: false });
       }
 
-      // Filter toggles (simplified - just reset for now, can be enhanced)
-      else if (str === 'c' || str === 'C') {
-        // Toggle category filter section (for simplicity, just reset)
-        state.filters.categories.clear();
-        state.selectedIndex = 0;
-        render();
-      } else if (str === 'm' || str === 'M') {
-        state.filters.muscleGroups.clear();
-        state.selectedIndex = 0;
-        render();
-      } else if (str === 'e' || str === 'E') {
-        state.filters.equipment.clear();
-        state.selectedIndex = 0;
-        render();
-      } else if (str === 'r' || str === 'R') {
-        // Reset all filters
-        state.filters.categories.clear();
-        state.filters.muscleGroups.clear();
-        state.filters.equipment.clear();
-        state.filters.difficulty.clear();
-        state.searchQuery = '';
+      // Enter search mode
+      else if (str === '/') {
+        state.mode = 'search';
+        state.inputBuffer = '';
         state.selectedIndex = 0;
         render();
       }
 
-      // Ctrl+C
-      else if (key.ctrl && key.name === 'c') {
-        cleanup();
-        process.exit(0);
+      // Enter filter modes
+      else if (str === 'c') {
+        state.mode = 'filter-category';
+        state.inputBuffer = '';
+        state.selectedIndex = 0;
+        render();
+      } else if (str === 'm') {
+        state.mode = 'filter-muscle';
+        state.inputBuffer = '';
+        state.selectedIndex = 0;
+        render();
+      } else if (str === 'e') {
+        state.mode = 'filter-equipment';
+        state.inputBuffer = '';
+        state.selectedIndex = 0;
+        render();
+      }
+
+      // Reset all filters
+      else if (str === 'r' || str === 'R') {
+        state.filters.categories.clear();
+        state.filters.muscleGroups.clear();
+        state.filters.equipment.clear();
+        state.filters.difficulty.clear();
+        state.selectedIndex = 0;
+        render();
+      }
+    };
+
+    const handleSearchMode = (str: string, key: any) => {
+      const filteredExercises = filterExercises(allExercises, state.filters, state.inputBuffer);
+
+      // Exit search mode
+      if (key.name === 'escape' || key.name === 'return') {
+        state.mode = 'normal';
+        render();
+      }
+
+      // Backspace
+      else if (key.name === 'backspace') {
+        state.inputBuffer = state.inputBuffer.slice(0, -1);
+        state.selectedIndex = 0;
+        render();
+      }
+
+      // Navigation
+      else if (key.name === 'up') {
+        state.selectedIndex = Math.max(0, state.selectedIndex - 1);
+        render();
+      } else if (key.name === 'down') {
+        state.selectedIndex = Math.min(filteredExercises.length - 1, state.selectedIndex + 1);
+        render();
+      }
+
+      // Character input
+      else if (str && str.length === 1 && !key.ctrl && !key.meta) {
+        state.inputBuffer += str;
+        state.selectedIndex = 0;
+        render();
+      }
+    };
+
+    const handleFilterMode = (str: string, key: any) => {
+      let options: string[] = [];
+      let activeFilters: Set<string>;
+
+      if (state.mode === 'filter-category') {
+        options = filterOptions.categories;
+        activeFilters = state.filters.categories;
+      } else if (state.mode === 'filter-muscle') {
+        options = filterOptions.muscleGroups;
+        activeFilters = state.filters.muscleGroups;
+      } else {
+        options = filterOptions.equipment;
+        activeFilters = state.filters.equipment;
+      }
+
+      const matching = getMatchingOptions(options, state.inputBuffer);
+
+      // Exit filter mode
+      if (key.name === 'escape' || key.name === 'return') {
+        state.mode = 'normal';
+        state.selectedIndex = 0;
+        render();
+      }
+
+      // Backspace
+      else if (key.name === 'backspace') {
+        state.inputBuffer = state.inputBuffer.slice(0, -1);
+        state.selectedIndex = 0;
+        render();
+      }
+
+      // Navigation
+      else if (key.name === 'up') {
+        state.selectedIndex = Math.max(0, state.selectedIndex - 1);
+        render();
+      } else if (key.name === 'down') {
+        state.selectedIndex = Math.min(matching.length - 1, state.selectedIndex + 1);
+        render();
+      }
+
+      // Toggle selection with space
+      else if (key.name === 'space') {
+        if (matching.length > 0) {
+          const selected = matching[state.selectedIndex];
+          if (activeFilters.has(selected)) {
+            activeFilters.delete(selected);
+          } else {
+            activeFilters.add(selected);
+          }
+          render();
+        }
+      }
+
+      // Character input
+      else if (str && str.length === 1 && !key.ctrl && !key.meta && str !== ' ') {
+        state.inputBuffer += str;
+        state.selectedIndex = 0;
+        render();
       }
     };
 

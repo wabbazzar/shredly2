@@ -57,24 +57,54 @@
   },
 
   "exercise_db_browser_mode": {
-    "description": "Exercise database filtering and selection interface",
-    "navigation": {
-      "move_up": "up",
-      "move_down": "down",
-      "page_up": "pageup",
-      "page_down": "pagedown",
-      "toggle_filter": "space",
-      "select_exercise": "enter",
-      "cancel_browser": "escape",
-      "cancel_browser_alt": "q"
+    "description": "Exercise database filtering and selection interface with modal editing",
+    "normal_mode": {
+      "navigation": {
+        "move_up": "up",
+        "move_down": "down",
+        "page_up": "pageup",
+        "page_down": "pagedown",
+        "select_exercise": "enter",
+        "cancel_browser": "escape",
+        "cancel_browser_alt": "q"
+      },
+      "mode_switching": {
+        "enter_search_mode": "/",
+        "enter_category_filter_mode": "c",
+        "enter_muscle_filter_mode": "m",
+        "enter_equipment_filter_mode": "e",
+        "reset_all_filters": "r"
+      }
     },
-    "filtering": {
-      "focus_search": "/",
-      "clear_search": "escape",
-      "toggle_category_filters": "c",
-      "toggle_muscle_group_filters": "m",
-      "toggle_equipment_filters": "e",
-      "reset_all_filters": "R"
+    "search_mode": {
+      "description": "Pattern match exercise names - type to filter",
+      "actions": {
+        "type_character": "any printable character",
+        "delete_character": "backspace",
+        "exit_search": "enter",
+        "cancel_search": "escape"
+      },
+      "navigation": {
+        "move_up": "up",
+        "move_down": "down"
+      }
+    },
+    "filter_modes": {
+      "description": "Select specific filters - type to narrow list, space to toggle",
+      "category_mode": "initiated with 'c'",
+      "muscle_mode": "initiated with 'm'",
+      "equipment_mode": "initiated with 'e'",
+      "actions": {
+        "type_character": "any printable character",
+        "delete_character": "backspace",
+        "toggle_selected_filter": "space",
+        "finish_filtering": "enter",
+        "cancel_filtering": "escape"
+      },
+      "navigation": {
+        "move_up": "up",
+        "move_down": "down"
+      }
     }
   },
 

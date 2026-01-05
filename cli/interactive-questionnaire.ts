@@ -174,18 +174,10 @@ async function main() {
       // Give user a moment to read the tip
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Clean up stdin from inquirer before launching editor
-      // Remove all listeners to prevent conflicts
+      // DON'T clean up stdin - let the editor handle it
+      // Just remove keypress listeners that might interfere
+      console.error('[DEBUG questionnaire] Removing keypress listeners before editor');
       process.stdin.removeAllListeners('keypress');
-      process.stdin.removeAllListeners('data');
-
-      // Reset raw mode if TTY
-      if (process.stdin.isTTY && process.stdin.setRawMode) {
-        process.stdin.setRawMode(false);
-      }
-
-      // Small delay to let stdin fully clean up
-      await new Promise(resolve => setTimeout(resolve, 150));
 
       const editResult = await editWorkoutInteractive(workout, {
         experienceLevel: answers.experience_level || 'intermediate'

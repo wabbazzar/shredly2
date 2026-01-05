@@ -81,23 +81,31 @@ export class InteractiveWorkoutEditor {
     console.error('[DEBUG] stdin.isTTY:', process.stdin.isTTY);
     console.error('[DEBUG] stdin.isPaused:', process.stdin.isPaused());
     console.error('[DEBUG] stdin.readableFlowing:', process.stdin.readableFlowing);
+    console.error('[DEBUG] stdin.readable:', process.stdin.readable);
+    console.error('[DEBUG] stdin.destroyed:', process.stdin.destroyed);
 
-    // Setup readline for keyboard input
-    // Note: emitKeypressEvents can be called multiple times safely
-    // It's idempotent and won't cause issues if already called
-    readline.emitKeypressEvents(process.stdin);
-
+    // CRITICAL: The order matters!
+    // 1. First set raw mode
     if (process.stdin.isTTY) {
       process.stdin.setRawMode(true);
       console.error('[DEBUG] Set raw mode to true');
     }
 
-    // Ensure stdin is not paused
-    if (process.stdin.isPaused()) {
-      process.stdin.resume();
-      console.error('[DEBUG] Resumed stdin (was paused)');
-    }
+    // 2. Remove all existing listeners BEFORE emitKeypressEvents
+    console.error('[DEBUG] Removing all existing stdin listeners');
+    process.stdin.removeAllListeners('data');
+    process.stdin.removeAllListeners('keypress');
 
+    // 3. NOW call emitKeypressEvents
+    console.error('[DEBUG] Calling emitKeypressEvents');
+    readline.emitKeypressEvents(process.stdin);
+
+    // 4. Finally resume stdin
+    process.stdin.resume();
+    console.error('[DEBUG] Called stdin.resume()');
+
+    console.error('[DEBUG] stdin.readableFlowing after setup:', process.stdin.readableFlowing);
+    console.error('[DEBUG] stdin.isPaused after setup:', process.stdin.isPaused());
     console.error('[DEBUG] Editor setup complete');
 
     this.render();
@@ -128,13 +136,9 @@ export class InteractiveWorkoutEditor {
         }
       };
 
-      // Debug: Also listen to raw data to see if stdin is working at all
-      const dataHandler = (chunk: Buffer) => {
-        console.error(`[DEBUG] Raw data received: ${JSON.stringify(chunk.toString())}`);
-      };
-      process.stdin.on('data', dataHandler);
-
+      // Register our keypress handler
       process.stdin.on('keypress', this.keypressHandler);
+      console.error('[DEBUG] Registered keypress handler');
 
       // Debug: check listener count
       const listenerCount = process.stdin.listenerCount('keypress');

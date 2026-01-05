@@ -570,12 +570,12 @@
     },
     "Push": {
       "include_muscle_groups": ["Chest", "Shoulders", "Triceps", "Core"],
-      "exclude_muscle_groups": ["Back", "Biceps", "Lats", "Rhomboids", "Traps", "Forearms", "Hamstrings"],
+      "exclude_muscle_groups": ["Back", "Biceps", "Lats", "Rhomboids", "Traps", "Forearms", "Quadriceps", "Hamstrings", "Glutes", "Calves", "Adductors"],
       "description": "Pushing muscles - chest, shoulders, triceps"
     },
     "Pull": {
       "include_muscle_groups": ["Back", "Biceps", "Lats", "Rhomboids", "Traps", "Forearms", "Core"],
-      "exclude_muscle_groups": ["Chest", "Shoulders", "Triceps", "Quadriceps", "Glutes"],
+      "exclude_muscle_groups": ["Chest", "Shoulders", "Triceps", "Quadriceps", "Hamstrings", "Glutes", "Calves", "Adductors"],
       "description": "Pulling muscles - back, biceps, rear delts"
     },
     "Legs": {

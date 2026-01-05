@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "cli": "node --loader ts-node/esm cli/test-runner.ts",
+    "cli:interactive": "node --loader ts-node/esm cli/interactive-questionnaire.ts",
     "cli:watch": "nodemon --exec node --loader ts-node/esm cli/test-runner.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.js",
@@ -23,6 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.55.0",
+    "inquirer": "^13.1.0",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

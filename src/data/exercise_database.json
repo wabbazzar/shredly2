@@ -1,0 +1,6477 @@
+{
+  "exercise_database": {
+    "version": "2.0.0",
+    "last_updated": "2025-08-02",
+    "total_exercises": 326,
+    "categories": {
+      "strength": {
+        "description": "Primary resistance training exercises with external load",
+        "exercises": {
+          "Mountain Climbers": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "20-40",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Shoulders",
+              "Legs"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Plank Jacks"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Burpees": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "5-12",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Standard Burpees"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Jump Squats": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Calves"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Squat Jumps"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Box Jumps": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8",
+            "equipment": [
+              "Box",
+              "Platform"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Calves"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Jump Squats"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Plank Hold": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "30-60 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Side Plank",
+              "Planks"
+            ],
+            "isometric": true,
+            "external_load": "never"
+          },
+          "Side Plank": {
+            "category": "strength",
+            "typical_sets": 2,
+            "typical_reps": "20 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Obliques"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Modified Side Plank"
+            ],
+            "isometric": true,
+            "external_load": "never"
+          },
+          "Wall Sits": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "30-60 seconds",
+            "equipment": [
+              "Wall"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Wall Sit"
+            ],
+            "isometric": true,
+            "external_load": "never"
+          },
+          "Single-Leg Stands": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "30 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Stabilizers"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-Leg Balance"
+            ],
+            "isometric": true,
+            "external_load": "never"
+          },
+          "Push-ups": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-20",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders",
+              "Core"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Push-up to T-rotation",
+              "Pike push-ups"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Pull-ups": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "AMRAP",
+            "equipment": [
+              "Pull-up Bar"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Biceps",
+              "Rhomboids"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "strength Chin/Pull-Ups",
+              "Weighted Chin/Pull-Ups"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "strength Squats": {
+            "category": "strength",
+            "typical_sets": 2,
+            "typical_reps": "5-10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Jump Squats",
+              "Squat Jumps",
+              "Squat to calf raise"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Tricep Dips": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Chair",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Triceps",
+              "Shoulders",
+              "Chest"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Bench Dips"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Glute Bridges": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15-25",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Single-leg Glute Bridges",
+              "Single-Leg Glute Bridges"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Bench Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Flat Bench Press",
+              "Incline Bench Press",
+              "Dumbbell Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Deadlift": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Lower Back",
+              "Traps",
+              "Forearms"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Romanian Deadlift",
+              "Sumo Deadlift",
+              "Single-leg Romanian Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Back Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings",
+              "Core"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Low Bar Squat",
+              "Goblet Squats",
+              "Box Squats",
+              "Paused Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Overhead Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Push Press",
+              "Dumbbell Shoulder Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Bent-Over Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Middle Traps",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-arm Dumbbell Rows",
+              "Strict Barbell Row",
+              "Barbell Cheat Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Romanian Deadlift": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "5-8",
+            "equipment": [
+              "Barbell",
+              "Plates",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Lower Back"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-leg Romanian Deadlifts",
+              "Dumbbell Romanian Deadlifts"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Goblet Squats": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Dumbbell",
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Goblet Squats with Pulse"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Hip Thrusts": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-15",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-leg Glute Bridges",
+              "Glute Bridges"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Bulgarian Split Squats": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8",
+            "equipment": [
+              "Bench",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Reverse Lunges",
+              "Walking Lunges",
+              "Lateral Lunges"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Sumo Deadlifts": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "5-8",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Quadriceps",
+              "Lower Back"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Conventional Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Incline Bench Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "6-10",
+            "equipment": [
+              "Barbell",
+              "Incline Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Upper Chest",
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Dumbbell Incline Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Low Bar Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Quadriceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "High Bar Squat",
+              "Front Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Z Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Core",
+              "Triceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Seated Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Paused Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "4-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Box Squats"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Push Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps",
+              "Legs",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Strict Press",
+              "Jerk"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Weighted Chin/Pull-Ups": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "6-15",
+            "equipment": [
+              "Pull-up Bar",
+              "Weight Belt",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Biceps",
+              "Rhomboids"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Bodyweight Chin/Pull-Ups"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Chest Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-15",
+            "equipment": [
+              "Dumbbells",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dumbbell Bench Press",
+              "Incline Dumbbell Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Shoulder Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps",
+              "Core"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Single-arm Overhead Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Bicep Curls": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Biceps",
+              "Forearms"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Hammer Curls",
+              "Reverse Curls"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Single-arm Dumbbell Rows": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "10",
+            "equipment": [
+              "Dumbbells",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Biceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Single-arm Dumbbell Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Walking Lunges": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10",
+            "equipment": [
+              "Dumbbells",
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Reverse Lunges",
+              "Lateral Lunges",
+              "Curtsy Lunges"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Curtsy Lunges": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10",
+            "equipment": [
+              "Dumbbells",
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Quadriceps",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Side Lunges"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Lateral Lunges": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8",
+            "equipment": [
+              "Dumbbells",
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Quadriceps",
+              "Adductors"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Lateral Steps/Lunges"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Single-leg Romanian Deadlifts": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "6",
+            "equipment": [
+              "Dumbbells",
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-Leg Deadlifts"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Thrusters": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-15",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Legs",
+              "Shoulders",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Dumbbell Squat to Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Swings": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15",
+            "equipment": [
+              "Dumbbell"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Kettlebell Swings"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Terminal Knee Extensions": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "VMO"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Short Arc Quads"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Step-Ups": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8",
+            "equipment": [
+              "Step",
+              "Box",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Calves"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dumbbell Step-ups"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Calf Raises": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15-25",
+            "equipment": [
+              "Dumbbells",
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Calves"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Single-leg Calf Raises"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Russian Twists": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "20",
+            "equipment": [
+              "Dumbbell"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Obliques"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Weighted Crunches"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Reverse Lunges": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Walking Lunges",
+              "Lateral Lunges"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Renegade Rows": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-10",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Lats",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Plank with Dumbbell Pull-throughs"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Weighted Crunches": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15",
+            "equipment": [
+              "Dumbbell"
+            ],
+            "muscle_groups": [
+              "Core"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Russian Twists"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Burpees": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "5-8",
+            "equipment": [
+              "Dumbbell"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Thrusters"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Swings": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "15-20",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Dumbbell Swings"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "High Bar Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Low Bar Squat",
+              "Front Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Front Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Core",
+              "Upper Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "High Bar Squat",
+              "Low Bar Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "SSB Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Safety Squat Bar",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Upper Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Back Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Low Box Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Box",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Quadriceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "High Box Squat",
+              "Box Squats"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "High Box Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Box",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Low Box Squat",
+              "Box Squats"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Belt Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Belt Squat Machine",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Back Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Split Squat": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Bulgarian Split Squats",
+              "Lunges"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Wide Stance Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Adductors",
+              "Quadriceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Narrow Stance Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Narrow Stance Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Wide Stance Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Duffalo Bar Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Duffalo Bar",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Upper Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Back Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Lunge": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Walking Lunges",
+              "Reverse Lunges",
+              "SSB Lunge"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "SSB Lunge": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Safety Squat Bar",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Upper Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Lunge"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Hatfield Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Back Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Paused Bench": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Flat Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Flat Bench Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Paused Bench",
+              "Close Grip Bench"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Close Grip Bench": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Triceps",
+              "Chest",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Flat Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "DB Bench": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-10",
+            "equipment": [
+              "Dumbbells",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Dumbbell Chest Press",
+              "DB Incline Bench"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "DB Incline Bench": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-10",
+            "equipment": [
+              "Dumbbells",
+              "Incline Bench"
+            ],
+            "muscle_groups": [
+              "Upper Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "DB Bench",
+              "Incline Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Slingshot Bench": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Slingshot",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Spoto Bench": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Paused Bench"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Feet up Bench": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Flat Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "JM Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Close Grip Bench"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Duffalo Bar Bench": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Duffalo Bar",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Bench With Chains": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Chains",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Sumo Deadlift": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Quadriceps",
+              "Hamstrings",
+              "Lower Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Deadlift",
+              "Sumo Deficit DL"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Deficit Deadlift": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Plates",
+              "Platform"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Lower Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Deadlift",
+              "Sumo Deficit DL"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Sumo Deficit DL": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Plates",
+              "Platform"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Quadriceps",
+              "Hamstrings"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Sumo Deadlift",
+              "Deficit Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Rack Pull": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Power Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Upper Back",
+              "Traps",
+              "Hamstrings"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Sumo Rack Pull"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Sumo Rack Pull": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Power Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Upper Back",
+              "Traps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Rack Pull"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Block Pull": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Blocks",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Upper Back",
+              "Traps",
+              "Hamstrings"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Sumo Block Pull"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Sumo Block Pull": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Blocks",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Upper Back",
+              "Traps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Block Pull"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Paused Deadlift": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Lower Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "SLDL": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Lower Back"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Romanian Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Axle Deadlift": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Axle Bar",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Forearms",
+              "Lower Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Deadlift With Chains": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Chains",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Lower Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Strict OHP": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Overhead Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "DB OHP": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-10",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Dumbbell Shoulder Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Seated Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Seated DB OHP"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Seated DB OHP": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Dumbbells",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Seated Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "1 Arm DB Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Dumbbell"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Core",
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-arm Overhead Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Strict Barbell Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Middle Traps",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Bent-Over Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Cheat Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-10",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Traps",
+              "Biceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Bent-Over Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Reverse Grip BB Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Biceps",
+              "Rhomboids"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Strict Barbell Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "1 Arm DB Row": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Dumbbell",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Biceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Single-arm Dumbbell Rows"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Chest Supported Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Incline Bench",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Middle Traps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "T-Bar Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "T-Bar Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "T-Bar",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Middle Traps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Chest Supported Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Cable Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Middle Traps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Seated Cable Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Incline Barbell Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Barbell",
+              "Incline Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Upper Chest",
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Incline Dumbbell Press",
+              "Incline Bench Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Cable Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Cable Chest Press",
+              "Cable Flyes"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Lateral Raise": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Lateral Delts"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Lateral Raises",
+              "Cable Lateral Raise"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Lateral Raises": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15-20",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Lateral Delts"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Lateral Raise",
+              "Cable Lateral Raise"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Front Raise": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Front Delts",
+              "Shoulders"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Cable Front Raise",
+              "Plate Front Raise"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Cable Pushdown": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-15",
+            "equipment": [
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Triceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Rope Pushdown",
+              "V-Bar Pushdown"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Overhead Extension": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Dumbbell",
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Cable Overhead Extension",
+              "Dumbbell Overhead Extension"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Diamond Push-ups": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Triceps",
+              "Chest",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Close-Grip Push-ups",
+              "Triangle Push-ups"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Weighted Pull-Ups": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Pull-up Bar",
+              "Weight Belt",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Biceps",
+              "Rhomboids"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Weighted Chin/Pull-Ups",
+              "Pull-ups"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Cable High Row": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Upper Back",
+              "Rear Delts",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "High Cable Row",
+              "Face Pulls"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Upright Row": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "12",
+            "equipment": [
+              "Barbell",
+              "Dumbbells",
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Traps",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Cable Upright Row",
+              "Dumbbell Upright Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Pullover": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Dumbbell",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Chest",
+              "Serratus"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Cable Pullover",
+              "Barbell Pullover"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Lat Pulldown": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Cable Machine",
+              "Lat Pulldown Bar"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Biceps",
+              "Middle Back"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Wide Grip Pulldown",
+              "Close Grip Pulldown"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Reverse Fly": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Dumbbells",
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Rear Delts",
+              "Rhomboids",
+              "Middle Traps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Cable Reverse Fly",
+              "Bent-Over Reverse Fly"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Inverted Rows": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Bar",
+              "Suspension Trainer"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "TRX Rows",
+              "Ring Rows"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Pike Push-ups": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps",
+              "Upper Chest"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Handstand Push-ups",
+              "Decline Pike Push-ups"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Cable Squat to Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Legs",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Dumbbell Squat to Press",
+              "Barbell Thruster"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Landmine Single Arm Row": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Landmine Attachment"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "T-Bar Row",
+              "Meadows Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "KB Swing": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "15-20",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Kettlebell Swings",
+              "Dumbbell Swings"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Turkish Get-Up": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Kettlebell",
+              "Dumbbell"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Half Turkish Get-Up",
+              "Bodyweight Get-Up"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Thrusters": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Legs",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Dumbbell Thrusters",
+              "Barbell Thrusters"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Burpee Box Jump": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Box"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Legs",
+              "Core"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Box Jump Burpees",
+              "Step-up Burpees"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Plank to Downward Dog": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-15",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Shoulders",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Pike Walks",
+              "Inchworms"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Pike Toe Touch": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "20-30",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Hip Flexors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "V-Ups",
+              "Toe Touches"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Cable Goblet Squats": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Goblet Squats",
+              "Cable Squats"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Reverse Lunge": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Dumbbells",
+              "Barbell"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Reverse Lunges",
+              "Walking Lunges"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Box Jump": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-10",
+            "equipment": [
+              "Box",
+              "Platform"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Calves"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Box Jumps",
+              "Step-ups"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Leg Extensions": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Leg Extension Machine"
+            ],
+            "muscle_groups": [
+              "Quadriceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Single Leg Extensions",
+              "Terminal Knee Extensions"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Single Leg Glute Bridge": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-leg Glute Bridges",
+              "Glute Bridges"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Single-leg Glute Bridges": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single Leg Glute Bridge",
+              "Glute Bridges"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Lateral Walks with Resistance Band": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hip Abductors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Lateral Band Walks",
+              "Monster Walks"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Lateral Walks": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15-20",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hip Abductors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Lateral Band Walks",
+              "Side Steps"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Bodyweight Squats": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15-20",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Air Squats",
+              "Prisoner Squats"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Wall Sit": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "30-60 seconds",
+            "equipment": [
+              "Wall"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Wall Sits",
+              "Single Leg Wall Sit"
+            ],
+            "isometric": true,
+            "external_load": "sometimes"
+          },
+          "Squat Jumps": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-15",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Calves"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Jump Squats",
+              "Box Jumps"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Plank Jacks": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "20-30",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Shoulders",
+              "Legs"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Mountain Climbers",
+              "Plank Up-Downs"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Single-leg Deadlifts": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-10",
+            "equipment": [
+              "Dumbbells",
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-leg Romanian Deadlifts",
+              "Single-leg RDL"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Glute Kickbacks": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15-20",
+            "equipment": [
+              "Cable Machine",
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Cable Kickbacks",
+              "Donkey Kicks"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Squat Pulses": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "20-30",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Pulse Squats",
+              "Squat Hold"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Dumbbell Bench Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Dumbbells",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "DB Bench",
+              "Dumbbell Chest Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Bent-Over Rows": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Middle Traps",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Bent-Over Row",
+              "Barbell Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Deadlifts": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "5-8",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Lower Back",
+              "Traps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Deadlift",
+              "Romanian Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Banded Glute Bridges": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15-20",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Glute Bridges",
+              "Hip Thrusts"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Flyes": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-15",
+            "equipment": [
+              "Dumbbells",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Chest"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Cable Flyes",
+              "Pec Deck"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Romanian Deadlifts": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Lower Back"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Romanian Deadlift",
+              "RDL"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Single-leg RDL": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-10",
+            "equipment": [
+              "Dumbbells",
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-leg Romanian Deadlifts",
+              "Single-leg Deadlifts"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Goblet Squat": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Dumbbell",
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Goblet Squats",
+              "Front Squats"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Rows": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Biceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Single-arm Dumbbell Rows",
+              "Bent-Over Dumbbell Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Incline Dumbbell Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Dumbbells",
+              "Incline Bench"
+            ],
+            "muscle_groups": [
+              "Upper Chest",
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "DB Incline Bench",
+              "Incline Chest Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Single-arm Overhead Carry + Reverse Lunge": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Dumbbell",
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Shoulders",
+              "Legs"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Overhead Carry",
+              "Waiter's Walk"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Sumo Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Inner Thighs",
+              "Quadriceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Wide Stance Squat",
+              "Sumo Deadlifts"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Glute Bridge": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "12-15",
+            "equipment": [
+              "None",
+              "Barbell"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Glute Bridges",
+              "Hip Thrusts"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Squat to Calf Raise": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "15",
+            "equipment": [
+              "None",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Calves"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Bodyweight Squats",
+              "Calf Raises"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Bodyweight Chin/Pull-Ups": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "AMRAP",
+            "equipment": [
+              "Pull-up Bar"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Biceps",
+              "Rhomboids"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Pull-ups",
+              "Chin-ups"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Kettlebell Clean": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-8",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Shoulders",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "KB Clean and Press",
+              "Double KB Clean"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Snatch": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "5-8",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Shoulders",
+              "Core"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Single-arm KB Snatch",
+              "Double KB Snatch"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Windmill": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "5-8",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Obliques",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Half Windmill",
+              "Double Windmill"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Rack Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Double KB Rack Squat",
+              "KB Front Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Bottoms-Up Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "6-10",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Core",
+              "Forearms"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Bottoms-Up Carry",
+              "Bottoms-Up Clean"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Halo": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-10",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Core",
+              "Upper Back"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Reverse Halo",
+              "Weighted Halo"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Figure 8": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "30-60 seconds",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Legs",
+              "Grip"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Figure 8 to Hold",
+              "Figure 8 Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Gorilla Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Biceps",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Alternating Gorilla Row",
+              "Double KB Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Hip Thrust": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Hip Thrusts",
+              "Single-leg Hip Thrust"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Hack Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Machine Hack Squat",
+              "Reverse Hack Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Zercher Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "6-10",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Zercher Carry",
+              "Zercher Deadlift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Anderson Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-6",
+            "equipment": [
+              "Barbell",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Pin Squat",
+              "Bottom-Up Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Glute Bridge": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Glute Bridge",
+              "Hip Thrust"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Jefferson Squat": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Jefferson Deadlift",
+              "Straddle Lift"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Good Morning": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Lower Back",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Seated Good Morning",
+              "Safety Bar Good Morning"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Pendlay Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "5-8",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Middle Traps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Explosive Row",
+              "Dead Stop Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Yates Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Lower Lats",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Underhand Row",
+              "Supinated Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Shrug": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "12-15",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Traps",
+              "Upper Back"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Power Shrug",
+              "Behind the Back Shrug"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Curl": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Biceps",
+              "Forearms"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "EZ Bar Curl",
+              "Wide Grip Curl"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Skull Crusher": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Barbell",
+              "Bench",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "EZ Bar Skull Crusher",
+              "Lying Tricep Extension"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Upright Row": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10-12",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Traps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Wide Grip Upright Row",
+              "Cable Upright Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Bradford Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-10",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Behind the Neck Press",
+              "Military Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Landmine Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Landmine Attachment",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Core",
+              "Chest"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Single-arm Landmine Press",
+              "Kneeling Landmine Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Rollout": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Ab Wheel Rollout",
+              "Standing Rollout"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Meadows Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Barbell",
+              "Landmine Attachment"
+            ],
+            "muscle_groups": [
+              "Lats",
+              "Rhomboids",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Landmine Row",
+              "T-Bar Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Trap Bar Deadlift": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "5-8",
+            "equipment": [
+              "Trap Bar",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Hamstrings",
+              "Back"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "High Handle Trap Bar",
+              "Low Handle Trap Bar"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Cambered Bar Squat": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "8-12",
+            "equipment": [
+              "Cambered Bar",
+              "Squat Rack",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Safety Squat Bar",
+              "Buffalo Bar Squat"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell High Pull": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Traps",
+              "Shoulders",
+              "Back"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Snatch High Pull",
+              "Clean High Pull"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Power Clean": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Traps",
+              "Legs"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Hang Clean",
+              "Clean and Jerk"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Power Snatch": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "3-5",
+            "equipment": [
+              "Barbell",
+              "Plates"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Shoulders",
+              "Legs"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Hang Snatch",
+              "Snatch Balance"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          }
+        }
+      },
+      "interval": {
+        "description": "1-3 exercises with structured work:rest ratios - supports both time-based and rep-based programming",
+        "exercises": {
+          "Dumbbell Squat to Press (Interval)": {
+            "category": "interval",
+            "typical_sets": 3,
+            "typical_reps": "45 seconds work / 15 seconds rest",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Thruster Intervals"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Single-arm Dumbbell Row (Interval)": {
+            "category": "interval",
+            "typical_sets": 3,
+            "typical_reps": "45 seconds work / 15 seconds rest",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Biceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Bent-over Row Intervals"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Mountain Climbers (Interval)": {
+            "category": "interval",
+            "typical_sets": 4,
+            "typical_reps": "40 seconds work / 20 seconds rest",
+            "equipment": [
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Cardio"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "High Knees Intervals"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Tabata Push-ups": {
+            "category": "interval",
+            "typical_sets": 8,
+            "typical_reps": "20 seconds work / 10 seconds rest",
+            "equipment": [
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Tabata Burpees"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Push-up Interval (Rep-based)": {
+            "category": "interval",
+            "typical_sets": 4,
+            "typical_reps": "15 reps / 30 seconds rest",
+            "equipment": [
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Shoulders",
+              "Triceps",
+              "Core"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Incline Push-up Intervals"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Burpee HIIT Intervals": {
+            "category": "interval",
+            "typical_sets": 5,
+            "typical_reps": "8 reps / 45 seconds rest",
+            "equipment": [
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Modified Burpee Intervals"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Upper Body Tri-Set Interval": {
+            "category": "interval",
+            "typical_sets": 3,
+            "typical_reps": "3 exercises, 12 reps each / 60 seconds rest",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Back",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Lower Body Tri-Set"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Resistance Band Circuit Interval": {
+            "category": "interval",
+            "typical_sets": 4,
+            "typical_reps": "2 exercises, 40 seconds each / 20 seconds rest",
+            "equipment": [
+              "Resistance Bands"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Single Exercise Band Intervals"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Kettlebell Swing Intervals": {
+            "category": "interval",
+            "typical_sets": 6,
+            "typical_reps": "20 reps / 40 seconds rest",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hamstrings",
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Dumbbell Swing Intervals"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Back Thickness Intervals": {
+            "category": "interval",
+            "typical_sets": 8,
+            "typical_reps": "40 seconds work / {{intervalRest}} rest",
+            "equipment": [
+              "Barbell",
+              "T-Bar"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Lats"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Meadows Row Intervals"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Triple Cardio Circuit": {
+            "category": "interval",
+            "typical_sets": 3,
+            "typical_reps": "5 minutes each",
+            "equipment": [
+              "Stair Master",
+              "Rowing Machine",
+              "Assault Bike"
+            ],
+            "muscle_groups": [
+              "Cardiovascular",
+              "Full Body"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Cardio Intervals"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Leg Power Intervals": {
+            "category": "interval",
+            "typical_sets": 6,
+            "typical_reps": "45 seconds work / {{intervalRest}} rest",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Legs",
+              "Glutes",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Power Development"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          }
+        }
+      },
+      "mobility": {
+        "description": "Dynamic movement exercises for joint preparation and activation",
+        "exercises": {
+          "Clamshells": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "15-20",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hip Abductors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Banded Clamshells"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Fire Hydrants": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "12-15",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hip Abductors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Glute kickbacks"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Dead Bugs": {
+            "category": "mobility",
+            "typical_sets": 2,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Hip Flexors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dead Bug"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Bird Dogs": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "8",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Glutes",
+              "Back"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Modified Bird Dog"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Leg Raises": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "12",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Hip Flexors"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Straight Leg Raises"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Bicycle Crunches": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "20",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Obliques"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Standard Crunches"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Knee Extensions (Seated)": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "15",
+            "equipment": [
+              "Chair"
+            ],
+            "muscle_groups": [
+              "Quadriceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Leg Extensions"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Glute Squeezes": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "15",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Glute Activation"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Straight Leg Raises": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "12",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Hip Flexors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Leg Raises"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Short Arc Quads": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "15",
+            "equipment": [
+              "Towel"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "VMO"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Terminal Knee Extensions"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Lateral Bounds": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "8",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Quadriceps",
+              "Calves"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Lateral Steps",
+              "Lateral Bounds or Lateral Steps"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Tandem Walking": {
+            "category": "mobility",
+            "typical_sets": 2,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Calves",
+              "Stabilizers"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Balance Walking"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Walking Knee Hugs": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Knee to Chest"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Heel Walks": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "20",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Calves",
+              "Shins"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Toe Walks"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Jumping Jacks": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "Multiple",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body",
+              "Cardio"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Star Jumps"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "High Knees": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "Multiple",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Calves",
+              "Core"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Running in Place"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Butt Kicks": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "Multiple",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Calves"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Heel Kicks"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Alternating Jump Lunges": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "Multiple",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes",
+              "Calves"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Jump Lunges"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Tuck Jumps": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "Multiple",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Core",
+              "Calves"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Knee Tucks"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Skaters": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "Multiple",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Quadriceps",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Side Bounds"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Band Pull-Aparts": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "100-200",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Rear Delts",
+              "Rhomboids"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Cable Pull-Aparts"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Banded Shoulder Dislocations": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "100",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Chest"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Shoulder Pass-Throughs"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Dynamic Warm-up": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "5-10 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dynamic Movement",
+              "Dynamic Movement Prep"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Leg Swings": {
+            "category": "mobility",
+            "typical_sets": 2,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Lateral Leg Swings",
+              "Dynamic Leg Swings"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Hip Circles": {
+            "category": "mobility",
+            "typical_sets": 2,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Standing Hip Circles"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Knee to Chest": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Walking Knee Hugs"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Ankle Pumps": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "20",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Calves",
+              "Shins"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Ankle Circles"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Cat-Cow Stretches": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Spine",
+              "Core"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Spinal Waves"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Ankle Circles": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Ankles",
+              "Calves"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Ankle Pumps"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Knee Circles (Standing)": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Knees",
+              "Quadriceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Knee Rotations"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Leg Pendulums": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Leg Swings"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "IT Band Roll": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "90 seconds",
+            "equipment": [
+              "Foam Roller"
+            ],
+            "muscle_groups": [
+              "IT Band",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "IT Band Stretch"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Hip Flexor Roll": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "90 seconds",
+            "equipment": [
+              "Foam Roller"
+            ],
+            "muscle_groups": [
+              "Hip Flexors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Hip Flexor Release"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Quad Roll": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "90 seconds",
+            "equipment": [
+              "Foam Roller"
+            ],
+            "muscle_groups": [
+              "Quadriceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Full Quad Release"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Glute Roll": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "60 seconds",
+            "equipment": [
+              "Foam Roller"
+            ],
+            "muscle_groups": [
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Piriformis Release"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Calf Roll": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "60 seconds",
+            "equipment": [
+              "Foam Roller"
+            ],
+            "muscle_groups": [
+              "Calves"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Calf Release"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Mobility Work": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hips",
+              "Ankles"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Mobility Flow"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Shoulder Mobility": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Rotator Cuff"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Shoulder Circles",
+              "Band Pull-Aparts"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Upper Body Dynamic Warm-up": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "5-8 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Upper Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dynamic Upper Body Warm-up",
+              "Arm Circles"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Joint Mobility Drills": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10-15 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Joint Circles",
+              "Dynamic Stretching"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Dynamic Movement Prep": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "5-10 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dynamic Warm-up",
+              "Movement Prep"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Progressive Warm-up": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Light Weights"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "General Warm-up",
+              "Specific Warm-up"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Lower Body Warm-up": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "8 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Lower Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dynamic Lower Body Warm-up",
+              "Leg Swings"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Band Work": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10 minutes",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Band Stretches",
+              "Band Activation"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Arm Circles": {
+            "category": "mobility",
+            "typical_sets": 2,
+            "typical_reps": "10-15",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Shoulders"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Forward Circles",
+              "Backward Circles"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Shoulder Rolls": {
+            "category": "mobility",
+            "typical_sets": 2,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Upper Back"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Forward Rolls",
+              "Backward Rolls"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Arm and Leg Swings": {
+            "category": "mobility",
+            "typical_sets": 2,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dynamic Swings",
+              "Controlled Swings"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Dynamic Movement": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dynamic Warm-up",
+              "Movement Prep"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Dynamic Lower Body Warm-up": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "8 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Lower Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Leg Swings",
+              "Hip Circles"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Dynamic Upper Body Warm-up": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "8 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Upper Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Arm Circles",
+              "Band Pull-Aparts"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Power Prep Warm-up": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "10 minutes",
+            "equipment": [
+              "Light Weights"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Power Development Warm-up",
+              "Explosive Prep"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Dead Bug": {
+            "category": "mobility",
+            "typical_sets": 3,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Hip Flexors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dead Bugs",
+              "Modified Dead Bug"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Mobility Flow": {
+            "category": "mobility",
+            "typical_sets": 1,
+            "typical_reps": "15-20 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Yoga Flow",
+              "Movement Flow"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          }
+        }
+      },
+      "flexibility": {
+        "description": "Static stretching and flexibility exercises for recovery and range of motion",
+        "exercises": {
+          "Couch Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "90-120 seconds",
+            "equipment": [
+              "Couch",
+              "Wall"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Quadriceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Standing Hip Flexor Stretch"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "90/90 Hip Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "90 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Figure-4 Hip Stretch"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Standing Hip Flexor Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "60 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Hip Flexor Stretch"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Pigeon Prep Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "90 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Pigeon Pose"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Gentle Quad Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "60 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Quadriceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Quad Stretch"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Figure-4 Hip Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "60 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hip Flexors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Seated Figure-4"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Seated Forward Fold": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "60 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Lower Back"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Standing Forward Fold"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Child's Pose Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "60 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Shoulders",
+              "Hips"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Extended Child's Pose"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Seated Spinal Twist": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "30 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Spine",
+              "Obliques"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Supine Spinal Twist"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "IT Band Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "90 seconds",
+            "equipment": [
+              "Wall"
+            ],
+            "muscle_groups": [
+              "IT Band",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Cross-leg IT Band Stretch"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Hamstring Stretch": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "90 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hamstrings"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Seated Hamstring Stretch"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Yoga Warm-up Flow": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "10 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dynamic Yoga Flow"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Sun Salutation A": {
+            "category": "flexibility",
+            "typical_sets": 5,
+            "typical_reps": "2 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Sun Salutation B"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Warrior Sequence": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "8 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Legs",
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Warrior I",
+              "Warrior II"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Balance Series": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Legs"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Tree Pose",
+              "Eagle Pose"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Hip Opening Flow": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "8 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hip Flexors",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Deep Hip Stretch"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Restorative Yoga": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "15 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Recovery/Restoration"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Strength-Flexibility Flow": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "25 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Yoga Flow"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Yoga Session": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "40 minutes",
+            "equipment": [
+              "Yoga Mat"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Yoga Flow",
+              "Vinyasa"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Recovery/Restoration": {
+            "category": "flexibility",
+            "typical_sets": 1,
+            "typical_reps": "15 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Restorative Yoga",
+              "Gentle Stretching"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          }
+        }
+      },
+      "emom": {
+        "description": "Every Minute on the Minute structured interval training",
+        "exercises": {
+          "EMOM 12 minutes": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "12 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "EMOM 10 minutes",
+              "EMOM 15 minutes",
+              "EMOM 20 minutes"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Incline Bench EMOM": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "Until failure",
+            "equipment": [
+              "Barbell",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Shoulders",
+              "Triceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Bench Press EMOM"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Strict Barbell Row EMOM": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "Until failure",
+            "equipment": [
+              "Barbell"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Biceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Row EMOM"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Z Press EMOM": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "Until failure",
+            "equipment": [
+              "Barbell"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Core"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Press EMOM"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Push Press EMOM": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "Until failure",
+            "equipment": [
+              "Barbell"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Legs"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Press EMOM"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Barbell Cheat Row EMOM": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "Until failure",
+            "equipment": [
+              "Barbell"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Biceps"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Row EMOM"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Push-Up EMOM": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "8 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Triceps",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Push-up EMOM"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Power EMOM": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "10 minutes",
+            "equipment": [
+              "Barbell",
+              "Box"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Power Development EMOM"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "EMOM 10 minutes": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "10 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Varies"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "10 Minute EMOM"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "EMOM 15 minutes": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "15 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Varies"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "15 Minute EMOM"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "EMOM 10 minutes: Pull-ups / Push-ups": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "10 minutes",
+            "equipment": [
+              "Pull-up Bar"
+            ],
+            "muscle_groups": [
+              "Upper Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Upper Body EMOM"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "EMOM 20 minutes: 4 exercises": {
+            "category": "emom",
+            "typical_sets": 1,
+            "typical_reps": "20 minutes",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Complex EMOM"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          }
+        }
+      },
+      "amrap": {
+        "description": "As Many Rounds/Reps As Possible in given time frame",
+        "exercises": {
+          "AMRAP 8 minutes": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "8 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "AMRAP 5 minutes",
+              "AMRAP 6 minutes",
+              "AMRAP 20 minutes"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "AMRAP Round 1 (5 min)": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "AMRAP Round 2",
+              "AMRAP Round 3",
+              "AMRAP Round 4"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Tricep AMRAP 1": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Cable Machine"
+            ],
+            "muscle_groups": [
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Tricep Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Tricep AMRAP 2": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Bodyweight Tricep Circuit"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "Pull AMRAP 1": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Cable Machine",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Pull Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Pull AMRAP 2": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Suspension Trainer"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Bodyweight Pull Circuit"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Core AMRAP": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Ab Circuit"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Leg AMRAP 1": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Machine"
+            ],
+            "muscle_groups": [
+              "Legs"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Leg Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Leg AMRAP 2": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Legs",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Bodyweight Leg Circuit"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "AMRAP 4 minutes": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "4 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Varies"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "4 Minute AMRAP"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "AMRAP 5 minutes": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Varies"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "5 Minute AMRAP"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "AMRAP 6 minutes": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "6 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Varies"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "6 Minute AMRAP"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "AMRAP Round 1 (4 min)": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "4 minutes",
+            "equipment": [
+              "Kettlebell"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Round 1"
+            ],
+            "isometric": false,
+            "external_load": "sometimes"
+          },
+          "AMRAP Round 2 (4 min)": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "4 minutes",
+            "equipment": [
+              "Barbell",
+              "Pull-up Bar"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Round 2"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "AMRAP Round 3 (4 min)": {
+            "category": "amrap",
+            "typical_sets": 1,
+            "typical_reps": "4 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Round 3"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          }
+        }
+      },
+      "circuit": {
+        "description": "FOR TIME circuits with multiple exercises - NO rest between exercises",
+        "exercises": {
+          "Glute Activation Circuit": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "45 seconds work/15 seconds rest",
+            "equipment": [
+              "Resistance Band"
+            ],
+            "muscle_groups": [
+              "Glutes",
+              "Hip Abductors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Hip Activation Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "HIIT Circuit 1": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "40 seconds work/20 seconds rest",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "HIIT Circuit 2"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Squat to Press": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "45 seconds",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Squat to Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Single-arm Dumbbell Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "45 seconds",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Biceps"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dumbbell Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Reverse Lunges with Bicep Curls": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "45 seconds",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Legs",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Lunge with Curl"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Deadlift to Upright Row": {
+            "category": "strength",
+            "typical_sets": 4,
+            "typical_reps": "45 seconds",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Deadlift to Row"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Romanian Deadlifts": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "40 seconds",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "RDL Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Push-up to T-rotation": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "40 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Chest",
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Push-up Variations"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Goblet Squats with Pulse": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "40 seconds",
+            "equipment": [
+              "Dumbbell"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Pulse Squats"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Single-arm Overhead Press": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "40 seconds",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Core"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Unilateral Press"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Dumbbell Step-ups": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "40 seconds",
+            "equipment": [
+              "Dumbbells",
+              "Bench"
+            ],
+            "muscle_groups": [
+              "Quadriceps",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Step-up Variations"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Plank with Dumbbell Pull-throughs": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "40 seconds",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Shoulders"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Plank Variations"
+            ],
+            "isometric": true,
+            "external_load": "always"
+          },
+          "Farmer's Walk": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "30 seconds",
+            "equipment": [
+              "Heavy Dumbbells"
+            ],
+            "muscle_groups": [
+              "Forearms",
+              "Traps",
+              "Core",
+              "Legs"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Suitcase Carry"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Bodyweight Circuit FOR TIME": {
+            "category": "circuit",
+            "typical_sets": 3,
+            "typical_reps": "3 rounds FOR TIME",
+            "equipment": [
+              "Bodyweight"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "FOR TIME Circuit"
+            ],
+            "notes": "Complete 3 exercises as fast as possible: 10 Burpees, 15 Push-ups, 20 Air Squats",
+            "isometric": false,
+            "external_load": "never"
+          },
+          "CrossFit-style METCON": {
+            "category": "circuit",
+            "typical_sets": 5,
+            "typical_reps": "5 rounds FOR TIME",
+            "equipment": [
+              "Pull-up Bar",
+              "Box"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "METCON Circuit"
+            ],
+            "notes": "Complete as fast as possible: 12 Box Jumps, 9 Thrusters, 6 Pull-ups",
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Push Complex Circuit": {
+            "category": "circuit",
+            "typical_sets": "{{circuitSets}}",
+            "typical_reps": "4 minutes",
+            "equipment": [
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Shoulders",
+              "Chest",
+              "Triceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Upper Body Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Row Complex Circuit": {
+            "category": "circuit",
+            "typical_sets": "{{circuitSets}}",
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Cable Machine",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Back",
+              "Biceps"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Pull Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Full Body Circuit 1": {
+            "category": "circuit",
+            "typical_sets": "{{circuitSets}}",
+            "typical_reps": "6 minutes",
+            "equipment": [
+              "Kettlebell",
+              "Dumbbells"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Total Body Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "Bodyweight Circuit": {
+            "category": "circuit",
+            "typical_sets": 3,
+            "typical_reps": "varies",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Bodyweight HIIT"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Leg Circuit": {
+            "category": "circuit",
+            "typical_sets": "{{circuitSets}}",
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Dumbbells",
+              "Box"
+            ],
+            "muscle_groups": [
+              "Legs",
+              "Glutes"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Lower Body Circuit"
+            ],
+            "isometric": false,
+            "external_load": "always"
+          },
+          "HIIT Circuit 2": {
+            "category": "circuit",
+            "typical_sets": 3,
+            "typical_reps": "45 seconds work/15 seconds rest",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Advanced HIIT"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Jump Squat Circuit": {
+            "category": "circuit",
+            "typical_sets": 1,
+            "typical_reps": "2 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Legs",
+              "Glutes",
+              "Cardio"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Squat Jump Circuit"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Box Jumps or Jump Squats": {
+            "category": "circuit",
+            "typical_sets": 4,
+            "typical_reps": "8",
+            "equipment": [
+              "Box"
+            ],
+            "muscle_groups": [
+              "Legs",
+              "Glutes",
+              "Power"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "Plyometric Circuit"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          }
+        }
+      },
+      "cardio": {
+        "description": "Cardiovascular exercises for endurance and conditioning",
+        "exercises": {
+          "Gentle Walk + Stretching": {
+            "category": "cardio",
+            "typical_sets": 1,
+            "typical_reps": "30-45 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Walking",
+              "Light Cardio"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Optional Cardio": {
+            "category": "cardio",
+            "typical_sets": 1,
+            "typical_reps": "20-30 minutes",
+            "equipment": [
+              "Varies"
+            ],
+            "muscle_groups": [
+              "Cardiovascular"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Light Activity"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Evening Walk/Run": {
+            "category": "cardio",
+            "typical_sets": 1,
+            "typical_reps": "18 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Cardiovascular",
+              "Legs"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Evening Walk",
+              "Light Jog"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Evening Walk": {
+            "category": "cardio",
+            "typical_sets": 1,
+            "typical_reps": "18 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Cardiovascular",
+              "Legs"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Light Walking",
+              "Brisk Walk"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Cardio Build-up": {
+            "category": "cardio",
+            "typical_sets": 1,
+            "typical_reps": "5 minutes",
+            "equipment": [
+              "Treadmill",
+              "Track"
+            ],
+            "muscle_groups": [
+              "Cardiovascular"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Progressive Cardio",
+              "Warm-up Run"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Light Walking": {
+            "category": "cardio",
+            "typical_sets": 1,
+            "typical_reps": "20 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Cardiovascular",
+              "Legs"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Easy Walk",
+              "Recovery Walk"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Sprint in Place": {
+            "category": "cardio",
+            "typical_sets": 1,
+            "typical_reps": "45 seconds",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Cardiovascular",
+              "Legs"
+            ],
+            "difficulty": "Intermediate",
+            "variations": [
+              "High Knees Sprint",
+              "Running in Place"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          }
+        }
+      },
+      "lifestyle": {
+        "description": "Activity-based exercises and life habits",
+        "exercises": {
+          "Light Activity": {
+            "category": "lifestyle",
+            "typical_sets": 1,
+            "typical_reps": "30-45 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dancing",
+              "Swimming",
+              "Recreation"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Meal Prep": {
+            "category": "lifestyle",
+            "typical_sets": 1,
+            "typical_reps": "1-2 hours",
+            "equipment": [
+              "Kitchen"
+            ],
+            "muscle_groups": [
+              "None"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Nutrition Planning"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          }
+        }
+      },
+      "rest_day": {
+        "description": "Complete rest and recovery activities",
+        "exercises": {
+          "Complete Rest": {
+            "category": "rest_day",
+            "typical_sets": 1,
+            "typical_reps": "All day",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "None"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Full Rest"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Light Mobility (Optional)": {
+            "category": "rest_day",
+            "typical_sets": 1,
+            "typical_reps": "15-20 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Full Body"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Optional Mobility"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          }
+        }
+      },
+      "rest_exercise": {
+        "description": "Active recovery between intense exercise periods",
+        "exercises": {
+          "Walking Recovery": {
+            "category": "rest_exercise",
+            "typical_sets": 1,
+            "typical_reps": "2 minutes",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "None"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Active Recovery"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          }
+        }
+      }
+    },
+    "equipment_categories": {
+      "bodyweight": [
+        "None"
+      ],
+      "free_weights": [
+        "Dumbbells",
+        "Barbell",
+        "Plates",
+        "Kettlebell"
+      ],
+      "gym_equipment": [
+        "Bench",
+        "Squat Rack",
+        "Pull-up Bar",
+        "Incline Bench"
+      ],
+      "accessories": [
+        "Resistance Band",
+        "Foam Roller",
+        "Box",
+        "Step",
+        "Wall"
+      ],
+      "rehab_equipment": [
+        "Towel",
+        "Chair"
+      ],
+      "home_equipment": [
+        "Couch",
+        "Kitchen"
+      ]
+    },
+    "muscle_group_categories": {
+      "upper_body": [
+        "Chest",
+        "Shoulders",
+        "Triceps",
+        "Biceps",
+        "Lats",
+        "Rhomboids",
+        "Middle Traps",
+        "Rear Delts",
+        "Forearms",
+        "Upper Chest"
+      ],
+      "lower_body": [
+        "Quadriceps",
+        "Glutes",
+        "Hamstrings",
+        "Calves",
+        "Hip Flexors",
+        "Hip Abductors",
+        "Adductors",
+        "VMO"
+      ],
+      "core": [
+        "Core",
+        "Obliques",
+        "Lower Back"
+      ],
+      "full_body": [
+        "Full Body"
+      ],
+      "stabilizers": [
+        "Stabilizers"
+      ],
+      "cardio": [
+        "Cardiovascular"
+      ],
+      "spine": [
+        "Spine",
+        "Back"
+      ]
+    },
+    "difficulty_levels": {
+      "Beginner": "Basic exercises suitable for those new to fitness or recovering from injury",
+      "Intermediate": "Moderate complexity exercises requiring some fitness base and coordination",
+      "Advanced": "Complex movements requiring significant strength, skill, and experience"
+    },
+    "programming_notes": {
+      "progression_patterns": {
+        "strength": "Typically progress by increasing weight while maintaining or decreasing reps",
+        "bodyweight": "Progress by increasing reps, time, or adding complexity/resistance",
+        "time": "Progress by increasing duration or adding instability",
+        "circuit": "Progress by completing the circuit faster (FOR TIME) or adding rounds/difficulty",
+        "interval": "Progress by increasing work time, decreasing rest time, or adding rounds"
+      },
+      "rest_recommendations": {
+        "strength": "60-180 seconds between sets",
+        "bodyweight": "30-90 seconds between sets",
+        "circuit": "NO rest during circuit (FOR TIME), 60-120 seconds between rounds",
+        "interval": "Structured rest as prescribed in work:rest ratio (e.g., 45s work/15s rest)",
+        "emom": "Built-in rest within minute structure",
+        "amrap": "No planned rest during work period"
+      },
+      "volume_guidelines": {
+        "beginner": "2-3 sets, focus on form and movement quality",
+        "intermediate": "3-4 sets, moderate intensity with progressive overload",
+        "advanced": "4-6 sets, high intensity with complex movement patterns"
+      }
+    },
+    "migration_notes": "Added isometric and external_load attributes. Bodyweight and time categories deprecated but preserved for compatibility."
+  }
+}

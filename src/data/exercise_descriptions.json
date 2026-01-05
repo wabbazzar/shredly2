@@ -1,0 +1,2738 @@
+{
+  "Mountain Climbers": {
+    "description": {
+      "overview": "A dynamic full-body exercise performed in plank position, alternately driving knees toward chest in a running motion. Builds cardiovascular endurance while strengthening core, shoulders, and hip flexors.",
+      "setup": "Start in high plank position, hands shoulder-width apart directly under shoulders. Body forms straight line from head to heels, core engaged.",
+      "movement": "Drive one knee toward chest while keeping other leg extended. Quickly switch legs in alternating pattern, maintaining plank position throughout.",
+      "cues": "Hips level with shoulders, quick feet, breathe rhythmically, shoulders over hands"
+    }
+  },
+  "Burpees": {
+    "description": {
+      "overview": "A high-intensity full-body exercise combining a squat thrust, plank, and jump. One of the most effective exercises for conditioning, working every major muscle group while building explosive power.",
+      "setup": "Stand with feet shoulder-width apart, arms at sides. Prepare to move through multiple positions fluidly.",
+      "movement": "Squat down, place hands on floor. Jump feet back to plank. Optional push-up. Jump feet to hands. Explosively jump up with arms overhead.",
+      "cues": "Land softly, chest touches floor in push-up, full hip extension at top, maintain rhythm"
+    }
+  },
+  "Jump Squats": {
+    "description": {
+      "overview": "An explosive plyometric exercise combining a bodyweight squat with a vertical jump. Develops lower body power, improves athletic performance, and builds strength in quads, glutes, and calves.",
+      "setup": "Feet shoulder-width apart, toes slightly turned out. Arms at sides or in front for balance. Core braced.",
+      "movement": "Lower into squat position, hips back and down. From bottom position, explosively drive through feet to jump vertically. Land softly back into squat position.",
+      "cues": "Explode through heels, reach for ceiling, land toe-ball-heel, absorb landing with bent knees"
+    }
+  },
+  "Box Jumps": {
+    "description": {
+      "overview": "An explosive plyometric exercise jumping onto an elevated platform. Develops lower body power, improves rate of force development, and enhances athletic performance.",
+      "setup": "Stand arm's length from box, feet hip-width apart. Arms back in athletic position. Focus on landing spot on box.",
+      "movement": "Swing arms back while loading hips. Explosively jump using arms for momentum. Land softly on box in partial squat. Step down one foot at a time.",
+      "cues": "Full hip extension on jump, land quiet as a cat, step down don't jump down, reset each rep"
+    }
+  },
+  "Plank Hold": {
+    "description": {
+      "overview": "A foundational isometric core exercise holding the body rigid in a straight line. Builds core stability, shoulder endurance, and teaches proper bracing for other exercises.",
+      "setup": "Forearms on ground, elbows under shoulders. Feet together or hip-width apart. Body forms straight line from head to heels.",
+      "movement": "Hold position while breathing normally. Maintain neutral spine throughout. Engage core, glutes, and quads to prevent sagging.",
+      "cues": "Push floor away with forearms, tuck pelvis slightly, breathe into belly, squeeze everything"
+    }
+  },
+  "Side Plank": {
+    "description": {
+      "overview": "An isometric lateral core exercise targeting obliques and lateral stabilizers. Essential for developing anti-lateral flexion strength and protecting the spine during loaded movements.",
+      "setup": "Lie on side, elbow under shoulder. Stack or stagger feet. Bottom forearm perpendicular to body.",
+      "movement": "Lift hips to create straight line from head to feet. Hold position while breathing normally. Keep hips stacked, don't rotate.",
+      "cues": "Push floor away with elbow, lift hips to ceiling, long straight line, engage everything"
+    }
+  },
+  "Wall Sits": {
+    "description": {
+      "overview": "An isometric lower body exercise holding a squat position against a wall. Builds muscular endurance in quadriceps and glutes while teaching proper squat mechanics.",
+      "setup": "Back flat against wall, walk feet out until thighs parallel to floor. Knees at 90 degrees over ankles. Arms at sides or crossed.",
+      "movement": "Hold position with back pressed into wall. Breathe normally throughout. Maintain knee alignment over toes.",
+      "cues": "Press back into wall, weight in heels, knees track toes, breathe steady"
+    }
+  },
+  "Single-Leg Stands": {
+    "description": {
+      "overview": "A unilateral balance exercise standing on one foot. Improves proprioception, strengthens stabilizing muscles, and enhances balance for injury prevention.",
+      "setup": "Stand tall, weight on one foot. Lift other foot slightly off ground. Arms out for balance or at sides for challenge.",
+      "movement": "Hold position on single leg. Keep standing knee slightly bent. Maintain upright posture. Switch legs after time.",
+      "cues": "Grip floor with toes, soft knee, tall spine, focus on fixed point"
+    }
+  },
+  "Push-ups": {
+    "description": {
+      "overview": "A fundamental bodyweight pushing exercise performed prone. Builds upper body strength and endurance while developing core stability and teaching proper pressing mechanics.",
+      "setup": "High plank position, hands slightly wider than shoulders. Fingers spread, pointing forward. Body straight from head to heels.",
+      "movement": "Lower body as one unit until chest nearly touches floor. Press back to start, maintaining rigid plank throughout.",
+      "cues": "Elbows 45 degrees, screw hands into floor, tight core, push floor away"
+    }
+  },
+  "Pull-ups": {
+    "description": {
+      "overview": "A vertical pulling exercise lifting body weight to a bar. The gold standard for upper body pulling strength, targeting lats, biceps, and upper back.",
+      "setup": "Hang from bar with overhand grip slightly wider than shoulders. Arms fully extended. Core engaged, legs together.",
+      "movement": "Pull body up until chin clears bar. Control descent to full arm extension. Minimize swinging throughout.",
+      "cues": "Pull elbows to ribs, chest to bar, squeeze at top, control the negative"
+    }
+  },
+  "strength Squats": {
+    "description": {
+      "overview": "A bodyweight squat variation focusing on strength development through controlled tempo and proper form. Builds foundational lower body strength patterns.",
+      "setup": "Feet shoulder-width apart, toes slightly out. Arms extended forward for counterbalance. Core braced, chest up.",
+      "movement": "Push hips back and down, knees tracking toes. Descend until thighs parallel or below. Drive through heels to return.",
+      "cues": "Knees out, weight in heels, chest proud, squeeze glutes at top"
+    }
+  },
+  "Tricep Dips": {
+    "description": {
+      "overview": "A bodyweight pressing exercise targeting triceps using a bench or chair. Builds arm strength and teaches lockout mechanics for pressing movements.",
+      "setup": "Hands on edge of bench behind you, fingers forward. Legs extended or bent. Shoulders down and back.",
+      "movement": "Lower body by bending elbows to 90 degrees. Press through palms to return to start. Keep elbows tracking backward.",
+      "cues": "Elbows back not out, shoulders away from ears, control the descent, squeeze triceps at top"
+    }
+  },
+  "Glute Bridges": {
+    "description": {
+      "overview": "A supine hip extension exercise targeting glutes and hamstrings. Fundamental movement for developing posterior chain strength and teaching hip drive.",
+      "setup": "Lie on back, knees bent, feet flat near glutes. Arms at sides. Core engaged, lower back neutral.",
+      "movement": "Drive through heels to lift hips until body forms straight line from knees to shoulders. Squeeze glutes at top. Lower with control.",
+      "cues": "Push floor away with feet, tuck pelvis at top, pause and squeeze, maintain neutral spine"
+    }
+  },
+  "Bench Press": {
+    "description": {
+      "overview": "A horizontal pushing movement performed lying on a bench, pressing weight from chest to full arm extension. Primary upper body strength exercise targeting chest, shoulders, and triceps.",
+      "setup": "Eyes under bar, shoulder blades pinched, slight arch. Grip wider than shoulders, wrists straight.",
+      "movement": "Unrack with control, lower bar to nipple line with elbows 45°. Pause briefly, press straight up.",
+      "cues": "Pull bar apart, tuck elbows, press yourself into bench, bar travels straight line"
+    }
+  },
+  "Deadlift": {
+    "description": {
+      "overview": "A hip-hinge movement lifting weight from the floor to hip level in one motion. The king of compound exercises, working nearly every muscle in the body with emphasis on posterior chain.",
+      "setup": "Bar over mid-foot, shins touching bar. Hinge at hips, grab bar outside legs, chest up.",
+      "movement": "Drive legs through floor while pulling chest up. Bar stays close to body. Lock out with glutes, not back.",
+      "cues": "Leg press the floor, drag bar up body, hips through at top, shoulders over bar"
+    }
+  },
+  "Back Squat": {
+    "description": {
+      "overview": "A fundamental lower body compound movement with barbell on upper back. The king of leg exercises, building strength and mass in quads, glutes, and entire lower body.",
+      "setup": "Bar on upper traps, feet shoulder-width apart, toes slightly out. Brace core, chest up, elbows under bar.",
+      "movement": "Push hips back first, knees track over toes. Descend until hip crease below knee. Drive through heels to stand.",
+      "cues": "Big breath and brace, spread the floor, drive hips up, maintain back angle out of hole"
+    }
+  },
+  "Overhead Press": {
+    "description": {
+      "overview": "A vertical pressing movement from shoulders to overhead. Builds functional upper body strength, shoulder stability, and core strength through full-body tension.",
+      "setup": "Bar in front rack, hands just outside shoulders. Elbows slightly forward, core tight, glutes squeezed.",
+      "movement": "Press bar straight up, moving head through as bar passes face. Lock out directly over shoulders. Return with control.",
+      "cues": "Squeeze glutes hard, push head through window, bar path straight, shrug at top"
+    }
+  },
+  "Bent-Over Row": {
+    "description": {
+      "overview": "A horizontal pulling movement in hinged position. Essential for back development, building thickness through lats, rhomboids, and middle back while strengthening posterior chain.",
+      "setup": "Hinge at hips, bar hanging at arm's length. Back straight, core braced. Grip slightly wider than shoulders.",
+      "movement": "Pull bar to lower chest/upper abdomen. Squeeze shoulder blades together. Lower with control maintaining position.",
+      "cues": "Elbows lead the pull, chest proud, squeeze oranges in armpits, maintain hip hinge"
+    }
+  },
+  "Romanian Deadlift": {
+    "description": {
+      "overview": "A hip-hinge movement emphasizing eccentric hamstring strength. Teaches proper hinge mechanics while building posterior chain strength with constant tension.",
+      "setup": "Bar at hip level, feet hip-width apart. Soft knee bend maintained throughout. Shoulders back, lats engaged.",
+      "movement": "Push hips back while lowering bar down legs. Maintain flat back. Feel stretch in hamstrings. Drive hips forward to return.",
+      "cues": "Hips back not down, drag bar down thighs, chest proud, squeeze glutes to finish"
+    }
+  },
+  "Goblet Squats": {
+    "description": {
+      "overview": "A front-loaded squat holding weight at chest level. Excellent for teaching squat mechanics, building leg strength, and improving mobility through counterbalance.",
+      "setup": "Hold dumbbell/kettlebell at chest, elbows inside knees path. Feet slightly wider than shoulders, toes out.",
+      "movement": "Sit back and down between legs. Elbows push knees out at bottom. Drive through heels to stand. Keep weight at chest.",
+      "cues": "Elbows between knees, proud chest, sit between legs, heels stay down"
+    }
+  },
+  "Hip Thrusts": {
+    "description": {
+      "overview": "A loaded hip extension exercise with back supported on bench. The premier glute-building exercise, allowing heavy loading of hip extension pattern.",
+      "setup": "Upper back on bench, bar in hip crease with pad. Feet flat, knees at 90° at top. Chin tucked.",
+      "movement": "Drive through heels to thrust hips up. Achieve full hip extension with posterior pelvic tilt. Lower with control.",
+      "cues": "Drive through heels, ribs down, big squeeze at top, control the negative"
+    }
+  },
+  "Bulgarian Split Squats": {
+    "description": {
+      "overview": "A unilateral leg exercise with rear foot elevated. Builds single-leg strength, addresses imbalances, and improves hip mobility while challenging balance.",
+      "setup": "Rear foot on bench behind you. Front foot forward in lunge stance. Torso upright, core engaged.",
+      "movement": "Lower straight down bending both knees. Front knee tracks over toes. Drive through front heel to return.",
+      "cues": "Vertical torso, knee tracks toes, push floor away, feel it in front glute"
+    }
+  },
+  "Sumo Deadlifts": {
+    "description": {
+      "overview": "A wide-stance deadlift variation emphasizing quads and glutes. Reduces range of motion and back stress while maximizing hip and leg drive.",
+      "setup": "Wide stance with toes pointed out. Grip inside legs. Hips closer to bar than conventional. Chest up, knees out.",
+      "movement": "Drive floor apart with feet while pulling chest up. Keep bar close. Lock out hips and knees simultaneously.",
+      "cues": "Spread the floor, knees track toes, patient off floor, hips and shoulders rise together"
+    }
+  },
+  "Incline Bench Press": {
+    "description": {
+      "overview": "An angled pressing movement targeting upper chest. Bridges the gap between flat bench and overhead pressing, building complete chest development.",
+      "setup": "Bench at 30-45° incline. Similar setup to flat bench but bar touches higher on chest. Maintain arch and leg drive.",
+      "movement": "Lower bar to upper chest with control. Press back up and slightly back toward face. Keep shoulder blades retracted.",
+      "cues": "Bar to upper chest, press back not just up, maintain arch, drive feet into floor"
+    }
+  },
+  "Low Bar Squat": {
+    "description": {
+      "overview": "A powerlifting squat variation with bar positioned on rear delts. Maximizes hip drive and posterior chain involvement, allowing heavier loads than high bar position.",
+      "setup": "Bar on rear delts, wider grip than high bar. More forward lean required. Feet wider, toes out more.",
+      "movement": "Break at hips first with more forward lean. Maintain hip drive throughout. Depth just below parallel. Drive hips forward to stand.",
+      "cues": "Hips back first, maintain back angle, hip drive out of hole, elbows under bar"
+    }
+  },
+  "Z Press": {
+    "description": {
+      "overview": "A seated overhead press with legs extended on floor. Eliminates leg drive and lower back compensation, demanding exceptional core strength and shoulder mobility.",
+      "setup": "Sit on floor, legs straight out. Bar in front rack position. Core maximally braced, tall spine.",
+      "movement": "Press bar overhead without leaning back. Maintain upright torso throughout. Lock out directly overhead.",
+      "cues": "Legs straight and together, abs on fire, press straight up, no lean back"
+    }
+  },
+  "Paused Squat": {
+    "description": {
+      "overview": "A squat variation with deliberate pause at bottom position. Builds strength out of the hole, reinforces proper position, and eliminates bounce reflex.",
+      "setup": "Standard squat setup for your preferred style. Mental preparation for pause crucial.",
+      "movement": "Descend with control to bottom position. Hold for 2-3 count maintaining tension. Drive up explosively after pause.",
+      "cues": "Stay tight in pause, count one-thousand-one, explode up, maintain position"
+    }
+  },
+  "Push Press": {
+    "description": {
+      "overview": "An explosive overhead press using leg drive for momentum. Builds power, allows heavier loads overhead, and teaches full-body coordination.",
+      "setup": "Bar in front rack, feet hip-width. Elbows slightly forward. Ready to dip and drive.",
+      "movement": "Quick dip by bending knees, explosive drive up. Press out as bar passes forehead. Lock out overhead.",
+      "cues": "Dip straight down, violent hip drive, press through the momentum, quick under bar"
+    }
+  },
+  "Weighted Chin/Pull-Ups": {
+    "description": {
+      "overview": "Pull-ups or chin-ups with added external load. The ultimate test of relative strength, building exceptional back and arm development.",
+      "setup": "Weight belt with plates or dumbbell between feet. Dead hang start, grip of choice.",
+      "movement": "Pull up smoothly without swinging weight. Chin over bar at top. Control the loaded negative.",
+      "cues": "Minimize swing, pull through elbows, squeeze at top, own the negative"
+    }
+  },
+  "Dumbbell Chest Press": {
+    "description": {
+      "overview": "A dumbbell pressing movement allowing greater range of motion than barbell. Builds chest while improving stability and addressing imbalances.",
+      "setup": "Dumbbells at chest level, palms forward. Shoulder blades retracted, feet planted.",
+      "movement": "Press dumbbells up and together in arc motion. Control the deeper stretch at bottom. Squeeze at top.",
+      "cues": "Arc motion not straight up, deep stretch, press and squeeze, control the weights"
+    }
+  },
+  "Dumbbell Shoulder Press": {
+    "description": {
+      "overview": "A vertical pressing movement with dumbbells for shoulder development. Allows natural movement path and addresses strength imbalances between sides.",
+      "setup": "Dumbbells at shoulder height, palms forward or neutral. Core braced, standing or seated.",
+      "movement": "Press dumbbells overhead in slight arc. Weights come together at top. Control descent to shoulders.",
+      "cues": "Press up and in, core stays tight, smooth arc path, control down"
+    }
+  },
+  "Dumbbell Bicep Curls": {
+    "description": {
+      "overview": "An isolation exercise for bicep development using dumbbells. Allows supination through range of motion and addresses arm imbalances.",
+      "setup": "Dumbbells at sides, palms forward or neutral start. Elbows at sides, shoulders back.",
+      "movement": "Curl weights up with control, rotating palms up if starting neutral. Squeeze at top. Lower slowly.",
+      "cues": "Elbows stay put, control the negative, full squeeze, no swinging"
+    }
+  },
+  "Single-arm Dumbbell Rows": {
+    "description": {
+      "overview": "A unilateral rowing movement for back development. Allows heavy loading while providing stability, excellent for addressing imbalances.",
+      "setup": "One hand and knee on bench, other foot planted wide. Flat back, dumbbell hanging straight down.",
+      "movement": "Row dumbbell to hip, elbow close to body. Squeeze lat at top. Control the stretch at bottom.",
+      "cues": "Elbow to hip, pull with back not arm, pause at top, stretch at bottom"
+    }
+  },
+  "Walking Lunges": {
+    "description": {
+      "overview": "A dynamic unilateral leg exercise moving forward with each rep. Builds leg strength, improves balance, and enhances functional movement patterns.",
+      "setup": "Standing tall, weights at sides or in front rack. Core engaged, eyes forward.",
+      "movement": "Step forward into lunge, both knees to 90°. Drive through front heel to step forward. Alternate legs.",
+      "cues": "Long steps, vertical torso, knee tracks toe, push through front heel"
+    }
+  },
+  "Curtsy Lunges": {
+    "description": {
+      "overview": "A lunge variation crossing back leg behind like a curtsy. Targets glutes and outer thighs while challenging balance and hip mobility.",
+      "setup": "Standing with weights, feet hip-width. Core tight for balance.",
+      "movement": "Step one leg back and across behind other leg. Lower into curtsy position. Drive up through front leg.",
+      "cues": "Cross behind not just back, feel outer glute, keep hips square, control the motion"
+    }
+  },
+  "Lateral Lunges": {
+    "description": {
+      "overview": "A side-stepping lunge targeting adductors and glutes. Builds lateral strength and mobility often neglected in sagittal plane movements.",
+      "setup": "Wide stance start or step out wide. Weights at chest or sides. Toes slightly out.",
+      "movement": "Shift weight to one side, bending that knee. Other leg stays straight. Push back to start.",
+      "cues": "Sit back into hip, straight leg stays straight, push through bent leg, chest up"
+    }
+  },
+  "Single-leg Romanian Deadlifts": {
+    "description": {
+      "overview": "A unilateral hip hinge challenging balance and posterior chain. Builds hamstring strength while improving proprioception and core stability.",
+      "setup": "Stand on one leg, slight knee bend. Weight in opposite hand or both hands. Free leg ready to extend back.",
+      "movement": "Hinge forward as back leg extends behind. Maintain straight line from head to heel. Return with control.",
+      "cues": "Hips stay square, reach back with heel, feel hamstring stretch, controlled tempo"
+    }
+  },
+  "Dumbbell Thrusters": {
+    "description": {
+      "overview": "A combination squat to overhead press in one fluid motion. Builds full-body power, conditioning, and coordination while challenging multiple muscle groups.",
+      "setup": "Dumbbells at shoulders, elbows forward. Feet shoulder-width, ready to squat.",
+      "movement": "Squat down with control. Drive up explosively, using momentum to press dumbbells overhead. One smooth motion.",
+      "cues": "Use the bounce, smooth transition, full lockout, breathe at top"
+    }
+  },
+  "Kettlebell Swings": {
+    "description": {
+      "overview": "A ballistic hip hinge movement using momentum. The king of posterior chain power exercises, building explosive hip drive and conditioning.",
+      "setup": "Feet wider than shoulders, kettlebell arm's length front. Hinge to grab handle, shoulders back.",
+      "movement": "Hike kettlebell back between legs. Explosive hip drive forward. Float kettlebell to shoulder height. Repeat rhythm.",
+      "cues": "Hips do the work, float don't lift, snap hips, breathing matches rhythm"
+    }
+  },
+  "High Bar Squat": {
+    "description": {
+      "overview": "Olympic-style squat with bar high on traps. Emphasizes quadriceps development with upright torso position, allowing deeper range of motion.",
+      "setup": "Bar on upper traps, narrower grip. Feet shoulder-width, moderate toe angle. Upright torso position.",
+      "movement": "Descend straight down between legs. Maintain upright torso. Hit maximum depth. Drive straight up.",
+      "cues": "Elbows under bar, knees forward is OK, bounce out of hole, stay upright"
+    }
+  },
+  "Front Squat": {
+    "description": {
+      "overview": "A squat variation with bar in front rack position. Demands tremendous core strength and thoracic mobility while maximizing quadriceps activation.",
+      "setup": "Bar in front rack, elbows high. Clean grip or cross-arm grip. Feet slightly narrower than back squat.",
+      "movement": "Descend straight down maintaining high elbows. Extreme upright position required. Drive up maintaining rack position.",
+      "cues": "Elbows up up up, sit straight down, abs on fire, drive straight up"
+    }
+  },
+  "SSB Squat": {
+    "description": {
+      "overview": "Squat using safety squat bar with handles. Combines benefits of front and back squat, easier on shoulders while challenging upper back.",
+      "setup": "Bar sits on traps with pad, hold handles forward. More upright than low bar. Feet at preferred width.",
+      "movement": "Descend with slight forward lean. Handles pull you forward, fight to stay upright. Drive up maintaining position.",
+      "cues": "Fight the forward pull, big breath and brace, maintain tightness, push the floor"
+    }
+  },
+  "Box Squats": {
+    "description": {
+      "overview": "Squat to seated position on box before standing. Teaches proper depth, eliminates stretch reflex, and builds explosive strength from dead stop.",
+      "setup": "Box at parallel or below, bar position of choice. Wider stance typically used. Vertical shins goal.",
+      "movement": "Sit back to box maintaining tension. Brief pause without relaxing. Explode up from static position.",
+      "cues": "Sit back not down, stay tight on box, explode off box, vertical shins"
+    }
+  },
+  "Terminal Knee Extensions": {
+    "description": {
+      "overview": "A rehabilitation exercise targeting VMO and terminal knee extension. Builds strength in final degrees of extension, crucial for knee health.",
+      "setup": "Band around knee, anchored behind. Slight knee bend start position. Weight on working leg.",
+      "movement": "Extend knee fully against band resistance. Hold brief contraction. Return to slight bend. Focus on VMO.",
+      "cues": "Full extension, squeeze quad hard, feel inside knee, controlled tempo"
+    }
+  },
+  "Step-Ups": {
+    "description": {
+      "overview": "A unilateral exercise stepping onto elevated surface. Builds single-leg strength, addresses imbalances, and mimics real-world movement patterns.",
+      "setup": "Box at knee height or below. Full foot on box. Weights at sides or front rack.",
+      "movement": "Drive through elevated foot to stand on box. Control the descent. Minimal push from bottom leg.",
+      "cues": "Push through top foot, control down, no bouncing, full foot on box"
+    }
+  },
+  "Calf Raises": {
+    "description": {
+      "overview": "An isolation exercise for calf development. Targets gastrocnemius and soleus muscles through plantar flexion movement pattern.",
+      "setup": "Balls of feet on edge or block. Heels hanging off. Weight in hands or on shoulders.",
+      "movement": "Rise up onto toes as high as possible. Pause at peak contraction. Lower slowly for stretch.",
+      "cues": "Full range of motion, pause at top, slow negative, feel the stretch"
+    }
+  },
+  "Russian Twists": {
+    "description": {
+      "overview": "A rotational core exercise performed in V-sit position. Builds oblique strength and rotational power for athletic performance.",
+      "setup": "Seated, lean back to V position. Feet elevated or grounded. Weight held at chest.",
+      "movement": "Rotate weight side to side, touching ground. Maintain V position throughout. Control the rotation speed.",
+      "cues": "Chest follows weight, maintain V angle, breathe through rotation, control tempo"
+    }
+  },
+  "Reverse Lunges": {
+    "description": {
+      "overview": "A lunge variation stepping backward instead of forward. Easier on knees than forward lunges while effectively targeting quads and glutes.",
+      "setup": "Standing tall, weights at sides or front rack. Core engaged for balance.",
+      "movement": "Step back into lunge position. Both knees to 90 degrees. Drive through front heel to return.",
+      "cues": "Step back far enough, vertical torso, push through front heel, control the movement"
+    }
+  },
+  "Renegade Rows": {
+    "description": {
+      "overview": "A combination plank and row exercise. Builds anti-rotation core strength while developing back, challenging total body stability.",
+      "setup": "High plank position with hands on dumbbells. Wide foot stance for stability. Rigid body position.",
+      "movement": "Row one dumbbell to hip while maintaining plank. Resist rotation. Lower with control. Alternate sides.",
+      "cues": "Hips stay level, pull elbow high, fight rotation, breathe through reps"
+    }
+  },
+  "Belt Squat": {
+    "description": {
+      "overview": "A squat variation loading weight through hips via belt. Removes spinal loading while maximizing leg development, ideal for back-friendly training.",
+      "setup": "Belt around hips, attached to load. Wide stance typical. Hands for balance only.",
+      "movement": "Squat down allowing knees to track naturally. No spinal load to manage. Drive up through legs only.",
+      "cues": "Sit back and down, let knees travel, feel it in legs only, use full range"
+    }
+  },
+  "Split Squat": {
+    "description": {
+      "overview": "A stationary lunge position exercise. Builds unilateral strength in stable position, excellent for addressing imbalances and building leg strength.",
+      "setup": "Split stance, back foot on toes. Front shin vertical at bottom. Weights at sides or front rack.",
+      "movement": "Lower straight down, both knees to 90°. Drive through front heel to rise. Stay in split stance throughout.",
+      "cues": "Vertical drop, weight on front leg, back leg for balance, controlled tempo"
+    }
+  },
+  "Paused Bench": {
+    "description": {
+      "overview": "A bench press with mandatory pause on chest. Competition standard movement eliminating bounce, building strength through full range.",
+      "setup": "Standard bench press setup. Mental preparation for pause. Judge's commands in competition.",
+      "movement": "Lower bar with control to chest. Hold complete pause. Press on command or after count. No heaving.",
+      "cues": "Sink the bar, stay tight in pause, press command, maintain arch"
+    }
+  },
+  "Close Grip Bench": {
+    "description": {
+      "overview": "A bench press variation with narrow grip. Emphasizes triceps development while maintaining chest involvement, excellent for lockout strength.",
+      "setup": "Grip inside shoulder width, index fingers on smooth. Same bench setup otherwise. Elbows tucked more.",
+      "movement": "Lower bar to lower chest position. Elbows stay close to body. Press straight up focusing on triceps.",
+      "cues": "Elbows in tight, bar lower on chest, triceps do work, control the weight"
+    }
+  },
+  "Spoto Bench": {
+    "description": {
+      "overview": "A bench press stopping 2-3 inches above chest. Eliminates stretch reflex and builds strength in sticking point, named after champion powerlifter.",
+      "setup": "Standard bench setup. Spotter recommended for safety. Mental cue for stopping point.",
+      "movement": "Lower bar stopping 2-3 inches from chest. Pause briefly. Press from dead stop. Never touch chest.",
+      "cues": "Stop above chest, no bounce available, pause and press, constant tension"
+    }
+  },
+  "JM Press": {
+    "description": {
+      "overview": "A hybrid between close-grip bench and tricep extension. Maximizes triceps involvement while maintaining heavy loading potential.",
+      "setup": "Close grip on bar, lying on bench. Bar starts over lower chest. Elbows will travel forward.",
+      "movement": "Lower bar toward face/neck while elbows drift forward. Reverse to press back over lower chest.",
+      "cues": "Elbows forward, bar to face, press back not up, feel massive tricep stretch"
+    }
+  },
+  "Dumbbell Squat to Press (Interval)": {
+    "description": {
+      "overview": "A metabolic conditioning exercise combining squat and press in interval format. Builds work capacity, full-body strength, and cardiovascular endurance through timed sets.",
+      "setup": "Dumbbells at shoulders, feet shoulder-width. Ready for continuous movement during work periods.",
+      "movement": "Squat down with control, then drive up explosively pressing dumbbells overhead. Continuous rhythm for time.",
+      "cues": "Smooth transitions, breathe with movement, maintain form under fatigue, push the pace"
+    }
+  },
+  "Mountain Climbers (Interval)": {
+    "description": {
+      "overview": "High-intensity cardio exercise in plank position performed for time intervals. Builds conditioning, core strength, and mental toughness through sustained effort.",
+      "setup": "High plank position, ready for rapid leg movement. Mental prep for sustained intensity.",
+      "movement": "Drive knees to chest alternately at maximum sustainable pace. Maintain plank integrity throughout interval.",
+      "cues": "Quick feet, hips low, breathe steadily, push through burn"
+    }
+  },
+  "Tabata Push-ups": {
+    "description": {
+      "overview": "Push-ups performed in Tabata protocol - 20 seconds maximum effort, 10 seconds rest, 8 rounds. Builds muscular endurance and mental fortitude.",
+      "setup": "Standard push-up position. Mental preparation for 8 intense rounds. Modified on knees if needed.",
+      "movement": "Maximum rep push-ups for 20 seconds. Rest 10 seconds. Repeat 8 times. Form over speed when fatigued.",
+      "cues": "All out effort, quick rest, maintain form, embrace the suck"
+    }
+  },
+  "Burpee HIIT Intervals": {
+    "description": {
+      "overview": "High-intensity burpees with specified rep counts and rest periods. Ultimate conditioning exercise building total-body power endurance.",
+      "setup": "Clear space for explosive movement. Mental preparation for high-intensity work.",
+      "movement": "Complete prescribed burpee reps explosively. Rest as indicated. Maintain quality through fatigue.",
+      "cues": "Explosive reps, full range, quick transitions, earn your rest"
+    }
+  },
+  "Triple Cardio Circuit": {
+    "description": {
+      "overview": "Three different cardio machines performed in sequence for time. Builds aerobic capacity through varied movement patterns preventing adaptation.",
+      "setup": "Three stations ready - typically stair master, rower, assault bike. Quick transitions planned.",
+      "movement": "5 minutes hard effort each station. Minimal transition time. Sustained effort throughout 15 minutes.",
+      "cues": "Steady pace, smooth transitions, different muscles each station, finish strong"
+    }
+  },
+  "Kettlebell Swing Intervals": {
+    "description": {
+      "overview": "Explosive kettlebell swings performed for specific rep counts with timed rest. Builds posterior chain power endurance and grip strength.",
+      "setup": "Kettlebell ready, athletic stance. Breathing pattern established for work periods.",
+      "movement": "Explosive swings for prescribed reps. Rest as indicated. Maintain hip snap throughout all intervals.",
+      "cues": "Aggressive hip snap, float the bell, breathe at top, own every rep"
+    }
+  },
+  "Clamshells": {
+    "description": {
+      "overview": "A hip abduction exercise performed side-lying. Activates glute medius and hip stabilizers, essential for knee health and movement preparation.",
+      "setup": "Side-lying, knees bent 90°, heels together. Band around knees for resistance. Head supported, core engaged.",
+      "movement": "Rotate top knee up while keeping heels together. Feel glute activation. Lower with control. Maintain neutral spine.",
+      "cues": "Heels stay together, pure rotation, feel side glute, no rocking back"
+    }
+  },
+  "Fire Hydrants": {
+    "description": {
+      "overview": "A quadruped hip abduction exercise mimicking a dog at hydrant. Activates glutes and hip stabilizers while challenging core stability.",
+      "setup": "All fours position, hands under shoulders, knees under hips. Neutral spine, core engaged.",
+      "movement": "Lift one knee out to side maintaining 90° angle. Hip height only. Lower with control. Keep hips level.",
+      "cues": "Hips stay square, knee to hip height, resist rotation, controlled tempo"
+    }
+  },
+  "Dead Bugs": {
+    "description": {
+      "overview": "A supine core stability exercise with reciprocal limb movement. Teaches core control while moving limbs, essential for spinal stability.",
+      "setup": "Lie on back, arms reaching up, knees bent 90° over hips. Lower back pressed into floor.",
+      "movement": "Lower opposite arm and leg toward floor. Maintain back contact. Return to start. Alternate sides.",
+      "cues": "Back stays flat, slow and controlled, breathe throughout, opposite arm and leg"
+    }
+  },
+  "Bird Dogs": {
+    "description": {
+      "overview": "A quadruped exercise extending opposite arm and leg. Builds core stability, balance, and posterior chain coordination.",
+      "setup": "All fours, hands under shoulders, knees under hips. Neutral spine maintained throughout.",
+      "movement": "Extend opposite arm forward and leg back simultaneously. Hold briefly. Return with control. Alternate.",
+      "cues": "Long and strong, hips level, reach through limbs, no arching back"
+    }
+  },
+  "Leg Raises": {
+    "description": {
+      "overview": "A core exercise lifting legs while supine. Targets lower abs and hip flexors while challenging anti-extension strength.",
+      "setup": "Lie on back, legs straight, hands at sides or under glutes. Lower back pressed down.",
+      "movement": "Raise straight legs to vertical position. Lower with control without touching floor. Maintain back contact.",
+      "cues": "Back stays flat, control the negative, legs straight, breathe out on lift"
+    }
+  },
+  "Inchworms": {
+    "description": {
+      "overview": "A dynamic full-body mobility exercise walking hands forward from standing. Builds flexibility, core strength, and serves as excellent warm-up.",
+      "setup": "Standing tall, feet hip-width. Ready to hinge forward and walk out.",
+      "movement": "Hinge to touch floor, walk hands to plank. Optional push-up. Walk feet to hands. Stand up. Repeat.",
+      "cues": "Keep legs straight as able, strong plank position, controlled movement, feel the stretch"
+    }
+  },
+  "Sumo Deadlift": {
+    "description": {
+      "overview": "A wide-stance deadlift variation emphasizing quads and glutes. Reduces range of motion and back stress while maximizing hip and leg drive.",
+      "setup": "Wide stance with toes pointed out. Grip inside legs. Hips closer to bar than conventional. Chest up, knees out.",
+      "movement": "Drive floor apart with feet while pulling chest up. Keep bar close. Lock out hips and knees simultaneously.",
+      "cues": "Spread the floor, knees track toes, patient off floor, hips and shoulders rise together"
+    }
+  },
+  "Deficit Deadlift": {
+    "description": {
+      "overview": "Deadlift performed from elevated platform increasing range of motion. Builds strength off the floor and improves starting position mechanics.",
+      "setup": "Stand on 1-4 inch platform. Standard deadlift setup otherwise. Extra attention to starting position.",
+      "movement": "Same as regular deadlift but from deficit. Increased leg drive required. Maintain position through extended range.",
+      "cues": "Extra tight setup, more leg drive, maintain back angle, be patient"
+    }
+  },
+  "Rack Pull": {
+    "description": {
+      "overview": "Partial deadlift from elevated position in power rack. Allows heavier loading for lockout strength and back development.",
+      "setup": "Bar in rack at knee level or above. Standard deadlift grip and stance. Big breath before pull.",
+      "movement": "Pull from pins to lockout. Focus on hip drive and back strength. Control the eccentric to pins.",
+      "cues": "Drive hips through, big lats, controlled negative, heavy but perfect"
+    }
+  },
+  "Lat Pulldown": {
+    "description": {
+      "overview": "A cable exercise pulling weight down to chest. Primary lat builder allowing heavy loading with stability, excellent for building width.",
+      "setup": "Grip slightly wider than shoulders. Slight lean back. Chest up, shoulder blades down.",
+      "movement": "Pull bar to upper chest squeezing lats. Control the stretch at top. Maintain torso angle throughout.",
+      "cues": "Pull with elbows, squeeze lats hard, chest to bar, control the negative"
+    }
+  },
+  "Cable Row": {
+    "description": {
+      "overview": "Horizontal pulling exercise using cable station. Builds back thickness with constant tension throughout range of motion.",
+      "setup": "Seated with knees slightly bent. Handle at arm's length. Upright torso, shoulders back.",
+      "movement": "Pull handle to abdomen keeping elbows close. Squeeze shoulder blades. Control the return maintaining position.",
+      "cues": "Sit tall, pull to belly button, squeeze the middle back, stretch but stay tight"
+    }
+  },
+  "Dumbbell Flyes": {
+    "description": {
+      "overview": "An isolation exercise for chest using arc motion. Provides deep stretch and peak contraction focusing on pec development.",
+      "setup": "Dumbbells above chest, slight elbow bend maintained. Shoulder blades retracted, feet planted.",
+      "movement": "Lower weights in wide arc until chest stretch felt. Return in same arc path squeezing chest.",
+      "cues": "Wide arc not press, feel the stretch, hug a tree motion, control heavy weights"
+    }
+  },
+  "Lateral Raises": {
+    "description": {
+      "overview": "Isolation exercise for lateral deltoids. Builds shoulder width and cap development through abduction movement pattern.",
+      "setup": "Dumbbells at sides, slight forward lean. Elbows slightly bent. Core engaged for stability.",
+      "movement": "Raise weights out to sides to shoulder height. Lead with elbows. Control the negative. No swinging.",
+      "cues": "Lead with elbows, pour water at top, no momentum, feel the burn"
+    }
+  },
+  "Face Pulls": {
+    "description": {
+      "overview": "Cable exercise pulling rope to face level. Builds rear delts and upper back while improving posture and shoulder health.",
+      "setup": "Rope at face height, arms extended. Step back for tension. Athletic stance for stability.",
+      "movement": "Pull rope to face spreading hands apart. Elbows high. Squeeze upper back. Control return.",
+      "cues": "Elbows high, pull apart at face, squeeze between shoulders, perfect posture"
+    }
+  },
+  "Sumo Deficit DL": {
+    "description": {
+      "overview": "Sumo deadlift performed from elevated platform. Combines wider stance benefits with increased range of motion for maximum posterior chain development.",
+      "setup": "Stand on 1-4 inch platform with wide sumo stance. Toes out, grip inside legs. Extra attention to start position.",
+      "movement": "Drive feet apart while pulling up from deeper position. Extra quad and glute drive required. Maintain sumo positioning.",
+      "cues": "Spread the floor, patient from deficit, knees out, longer range means more work"
+    }
+  },
+  "Block Pull": {
+    "description": {
+      "overview": "Deadlift from blocks at various heights. Allows focus on specific range of motion and lockout strength development.",
+      "setup": "Barbell resting on blocks at desired height (typically 2-4 inches). Standard deadlift stance and grip.",
+      "movement": "Pull from block height to full lockout. Focus on lockout strength and upper back development. Control return to blocks.",
+      "cues": "Big back arch, drive hips through, own the lockout, controlled negative"
+    }
+  },
+  "Paused Deadlift": {
+    "description": {
+      "overview": "Deadlift with pause at mid-shin or knee level. Builds strength through sticking points and eliminates momentum.",
+      "setup": "Standard deadlift setup. Mental preparation for pause position. Usually paused at mid-shin.",
+      "movement": "Pull to pause position and hold for 2-3 seconds. Continue to lockout after pause. Eliminates bounce reflex.",
+      "cues": "Stay tight in pause, maintain position, drive through after pause, no relaxing"
+    }
+  },
+  "SLDL": {
+    "description": {
+      "overview": "Stiff-leg deadlift emphasizing hamstring flexibility and strength. Legs remain straighter than Romanian deadlift for maximum hamstring stretch.",
+      "setup": "Feet hip-width, legs as straight as flexibility allows. Bar starts at hip level or on blocks.",
+      "movement": "Hinge at hips keeping legs straight. Lower until maximum hamstring stretch. Drive hips forward to return.",
+      "cues": "Legs stay straight, feel massive hamstring stretch, chest proud, hips back and through"
+    }
+  },
+  "Axle Deadlift": {
+    "description": {
+      "overview": "Deadlift using thick axle bar. Builds tremendous grip strength and core stability while challenging conventional deadlift technique.",
+      "setup": "Standard deadlift stance with thick axle bar. Grip will be challenged significantly. Core must be extra tight.",
+      "movement": "Same deadlift mechanics but with compromised grip. Focus on maintaining position despite grip fatigue.",
+      "cues": "Squeeze bar hard, core stays tight, don't let bar slip, shorter sets due to grip"
+    }
+  },
+  "Deadlift With Chains": {
+    "description": {
+      "overview": "Deadlift with chains adding accommodating resistance. Weight increases as bar rises, maximizing lockout strength development.",
+      "setup": "Chains draped over barbell so some links touch floor at bottom. Standard deadlift setup otherwise.",
+      "movement": "Pull with increasing resistance as chains lift off floor. Maximum resistance at lockout. Focus on explosive finish.",
+      "cues": "Accelerate through the pull, finish hard at top, chains make it harder as you go up"
+    }
+  },
+  "Strict OHP": {
+    "description": {
+      "overview": "Standing overhead press with no leg drive. Pure upper body pressing strength, maximum shoulder and core development.",
+      "setup": "Bar in front rack, feet planted, core maximally braced. No leg movement allowed.",
+      "movement": "Press straight up using only upper body. No leg drive, hip thrust, or back lean. Pure shoulder strength.",
+      "cues": "No leg help, core stays tight, bar straight up, control the weight"
+    }
+  },
+  "DB OHP": {
+    "description": {
+      "overview": "Dumbbell overhead press variation. Allows natural movement path and addresses strength imbalances between arms.",
+      "setup": "Dumbbells at shoulder height, standing or seated. Core engaged, slight stagger stance if standing.",
+      "movement": "Press dumbbells overhead in slight arc motion. Weights come together at top. Control descent.",
+      "cues": "Natural arc path, core stays braced, weights meet at top, smooth control"
+    }
+  },
+  "Seated Press": {
+    "description": {
+      "overview": "Overhead press performed seated to eliminate leg drive. Isolates shoulders and triceps while requiring core stability.",
+      "setup": "Seated on bench with back support. Bar in front rack position. Feet planted for stability.",
+      "movement": "Press bar overhead without back support if possible. Focus purely on shoulder strength. Control the descent.",
+      "cues": "No leg help, sit tall, press straight up, core engaged"
+    }
+  },
+  "Seated DB OHP": {
+    "description": {
+      "overview": "Seated dumbbell overhead press with back support. Beginner-friendly shoulder exercise with stability assistance.",
+      "setup": "Seated on bench with back support. Dumbbells at shoulder height. Feet planted firmly.",
+      "movement": "Press dumbbells overhead with back support assistance. Focus on feeling shoulders work. Control the weight.",
+      "cues": "Use the back support, feel shoulders working, control both weights, steady breathing"
+    }
+  },
+  "1 Arm DB Press": {
+    "description": {
+      "overview": "Single-arm overhead press challenging core stability. Builds unilateral strength while forcing anti-lateral flexion.",
+      "setup": "One dumbbell at shoulder height. Free hand can be on hip or at side. Core maximally engaged.",
+      "movement": "Press one dumbbell overhead while resisting lean. Core works overtime to maintain vertical position.",
+      "cues": "Don't lean, core on fire, press straight up, feel the anti-lean challenge"
+    }
+  },
+  "Strict Barbell Row": {
+    "description": {
+      "overview": "Bent-over row with strict form eliminating body English. Pure back strength development without momentum assistance.",
+      "setup": "Hinge position with knees soft. Bar hanging at arm's length. Strict position maintained throughout.",
+      "movement": "Row bar to lower chest with zero body movement. Pure back and arm strength. Squeeze hard at top.",
+      "cues": "No body English, pure back strength, squeeze hard, maintain position"
+    }
+  },
+  "Barbell Cheat Row": {
+    "description": {
+      "overview": "Bent-over row allowing controlled body English for heavier loading. Builds strength and allows overload beyond strict capacity.",
+      "setup": "Athletic position ready to use slight body movement. Heavier weight than strict rows.",
+      "movement": "Row with controlled hip drive and slight momentum. Still focus on back muscles but allow some assistance.",
+      "cues": "Controlled cheating, still feel the back, hip helps the pull, heavier than strict"
+    }
+  },
+  "Reverse Grip BB Row": {
+    "description": {
+      "overview": "Bent-over row with underhand grip emphasizing biceps and lower lats. Changes muscle recruitment pattern from overhand grip.",
+      "setup": "Bent-over position with underhand grip, hands shoulder-width apart. Slightly different pulling angle.",
+      "movement": "Row bar to lower abdomen with underhand grip. Feel different muscle activation. Biceps more involved.",
+      "cues": "Underhand changes everything, feel the biceps help, pull to belly, squeeze and hold"
+    }
+  },
+  "1 Arm DB Row": {
+    "description": {
+      "overview": "Single-arm dumbbell row for unilateral back development. Allows heavy loading with stability and eliminates compensation.",
+      "setup": "One hand and knee on bench, other foot planted wide. Dumbbell hanging straight down from working arm.",
+      "movement": "Row dumbbell to hip focusing on lat contraction. Minimize rotation. Feel strong lat squeeze at top.",
+      "cues": "Hand to hip, no rotation, lat does the work, pause and squeeze at top"
+    }
+  },
+  "Chest Supported Row": {
+    "description": {
+      "overview": "Rowing exercise with chest support eliminating lower back stress. Allows pure back focus without posterior chain fatigue.",
+      "setup": "Incline bench set to 45 degrees. Chest against pad, dumbbells hanging down. Stable base for rowing.",
+      "movement": "Row dumbbells to sides of bench. Chest stays in contact with pad. Pure back and arm movement.",
+      "cues": "Chest stays down, pull to bench level, squeeze shoulder blades, no momentum"
+    }
+  },
+  "T-Bar Row": {
+    "description": {
+      "overview": "V-handle row using barbell or T-bar apparatus. Excellent for building back thickness with heavy loading potential.",
+      "setup": "Straddle bar or T-bar, bent over position. V-handle or close grip. Athletic stance for stability.",
+      "movement": "Row handle to stomach area. Focus on pulling elbows back. Strong contraction between shoulder blades.",
+      "cues": "Elbows lead the pull, handle to stomach, big squeeze between shoulders, control the weight"
+    }
+  },
+  "Incline Barbell Press": {
+    "description": {
+      "overview": "Barbell press on inclined bench targeting upper chest. Combines benefits of flat bench with upper chest emphasis.",
+      "setup": "Bench at 30-45 degree incline. Similar grip to flat bench. Eyes under bar, shoulder blades pinched.",
+      "movement": "Lower bar to upper chest, press back and slightly up. Different angle requires adjusted bar path.",
+      "cues": "Bar to upper chest, press back and up, feel upper chest working, maintain arch"
+    }
+  },
+  "Cable Press": {
+    "description": {
+      "overview": "Chest pressing movement using cables for constant tension. Allows various angles and provides different feel than free weights.",
+      "setup": "Cables at chest height, step forward for tension. Athletic stance, core engaged for stability.",
+      "movement": "Press handles forward and slightly together. Feel constant tension throughout range. Control the return.",
+      "cues": "Constant tension, press and squeeze, feel it throughout, control the stretch"
+    }
+  },
+  "Lateral Raise": {
+    "description": {
+      "overview": "Isolation exercise for lateral deltoids. The gold standard for building shoulder width and medial delt development.",
+      "setup": "Dumbbells at sides, slight forward lean. Elbows slightly bent throughout. Light weight, perfect form.",
+      "movement": "Raise weights out to sides to shoulder height. Lead with elbows, not hands. Control negative phase.",
+      "cues": "Lead with elbows, pour water at top, slow negative, feel the burn, light weight"
+    }
+  },
+  "Front Raise": {
+    "description": {
+      "overview": "Isolation exercise for front deltoids. Builds anterior shoulder strength and balances pressing movements.",
+      "setup": "Dumbbells in front of thighs, standing tall. Slight bend in elbows maintained throughout movement.",
+      "movement": "Raise one or both weights to shoulder height in front. Control the movement both ways. Focus on front delts.",
+      "cues": "Controlled raise, feel front delts, to shoulder height, resist the drop"
+    }
+  },
+  "Cable Pushdown": {
+    "description": {
+      "overview": "Tricep isolation exercise using cable machine. Excellent for building tricep mass and learning lockout mechanics.",
+      "setup": "Cable at head height, rope or bar attachment. Elbows at sides, standing tall with slight lean forward.",
+      "movement": "Push weight down by extending elbows only. Squeeze triceps hard at bottom. Control the return.",
+      "cues": "Elbows stay put, push down hard, squeeze at bottom, control the negative"
+    }
+  },
+  "Overhead Extension": {
+    "description": {
+      "overview": "Tricep exercise with arms overhead targeting long head. Provides deep stretch and strong contraction for tricep development.",
+      "setup": "Dumbbell or cable overhead, elbows pointing forward. Core engaged to prevent back arch.",
+      "movement": "Lower weight behind head by bending elbows only. Feel tricep stretch. Extend back to start.",
+      "cues": "Elbows forward, deep stretch, only elbows move, strong contraction at top"
+    }
+  },
+  "Diamond Push-ups": {
+    "description": {
+      "overview": "Push-up variation with hands in diamond shape. Emphasizes triceps and inner chest while building pushing strength.",
+      "setup": "High plank with hands forming diamond shape under chest. Body straight from head to heels.",
+      "movement": "Lower chest to hands maintaining diamond shape. Press back up focusing on triceps. Keep body rigid.",
+      "cues": "Diamond stays put, chest to hands, feel triceps working, rigid body line"
+    }
+  },
+  "Weighted Pull-Ups": {
+    "description": {
+      "overview": "Pull-ups with added external load. The ultimate upper body pulling strength exercise for advanced trainees.",
+      "setup": "Weight belt with plates or dumbbell between feet. Dead hang start position. Grip of choice.",
+      "movement": "Pull body and weight up until chin clears bar. Control loaded descent. Maintain strict form.",
+      "cues": "Control the extra weight, chin over bar, own the negative, strict form only"
+    }
+  },
+  "Cable High Row": {
+    "description": {
+      "overview": "High cable row targeting upper back and rear delts. Excellent for posture improvement and building upper back thickness.",
+      "setup": "Cable at face height or above. Wide grip or rope attachment. Step back for tension.",
+      "movement": "Pull cable to upper chest/face level. Elbows high throughout movement. Squeeze upper back hard.",
+      "cues": "Elbows high, pull to face, squeeze upper back, retract shoulder blades"
+    }
+  },
+  "Upright Row": {
+    "description": {
+      "overview": "Vertical pulling exercise targeting shoulders and traps. Builds shoulder width and trap development with upward pulling motion.",
+      "setup": "Barbell or dumbbells at arm's length. Narrow grip, standing tall. Core engaged for stability.",
+      "movement": "Pull weight straight up to chest level, leading with elbows. Keep weight close to body. Control descent.",
+      "cues": "Elbows lead, weight stays close, pull to chest, feel shoulders and traps"
+    }
+  },
+  "Dumbbell Pullover": {
+    "description": {
+      "overview": "Arc movement targeting lats and chest with serratus involvement. Unique exercise bridging upper body muscle groups.",
+      "setup": "Lying across bench with shoulders on pad. Dumbbell held overhead with both hands. Hip sag for lat stretch.",
+      "movement": "Lower weight in arc behind head feeling lat stretch. Pull back over chest using lats and chest.",
+      "cues": "Big arc motion, feel lat stretch, sag hips slightly, pull with lats and chest"
+    }
+  },
+  "Reverse Fly": {
+    "description": {
+      "overview": "Rear delt isolation exercise performed bent over. Essential for shoulder health and balancing pressing movements.",
+      "setup": "Bent forward 45 degrees, dumbbells hanging down. Light weight, arms slightly bent throughout.",
+      "movement": "Raise weights out to sides in reverse fly motion. Focus on rear delts and rhomboids. Squeeze between shoulders.",
+      "cues": "Light weight, bent forward, feel rear delts, squeeze between shoulders, control both ways"
+    }
+  },
+  "Inverted Rows": {
+    "description": {
+      "overview": "Bodyweight rowing exercise using bar or suspension trainer. Scalable pulling exercise building back strength and endurance.",
+      "setup": "Hanging under bar or on suspension trainer. Body straight, heels on ground. Adjust angle for difficulty.",
+      "movement": "Pull chest to bar keeping body straight. Focus on back muscles. Lower with control.",
+      "cues": "Body stays straight, chest to bar, squeeze back muscles, control the movement"
+    }
+  },
+  "Pike Push-ups": {
+    "description": {
+      "overview": "Push-up variation in pike position targeting shoulders. Progression toward handstand push-ups while building shoulder strength.",
+      "setup": "Downward dog position, hands shoulder-width apart. Higher pike for more difficulty.",
+      "movement": "Lower head toward hands by bending elbows. Press back to start. Feel shoulders working hard.",
+      "cues": "High pike position, head toward hands, shoulders do the work, controlled movement"
+    }
+  },
+  "Cable Squat to Press": {
+    "description": {
+      "overview": "Full-body exercise combining squat and press using cables. Builds functional strength and coordination.",
+      "setup": "Cable handles at shoulder height. Step back for tension. Feet shoulder-width apart.",
+      "movement": "Squat down while handles stay at shoulders. Drive up and press handles overhead. Fluid combination.",
+      "cues": "Smooth transition, use leg drive for press, handles follow body, controlled tempo"
+    }
+  },
+  "Landmine Single Arm Row": {
+    "description": {
+      "overview": "Unilateral row using landmine setup. Provides unique angle and challenges core stability while building back strength.",
+      "setup": "Barbell in landmine, staggered stance. One hand on bar, other hand on hip or thigh for support.",
+      "movement": "Row barbell to side of body with anti-rotation focus. Feel lat and core working together.",
+      "cues": "Don't rotate, feel the lat, core stays tight, row to hip level"
+    }
+  },
+  "KB Swing": {
+    "description": {
+      "overview": "Ballistic hip hinge using kettlebell. Premier posterior chain power exercise building explosive hip drive.",
+      "setup": "Feet wider than shoulders, kettlebell arm's length away. Athletic position ready for explosive movement.",
+      "movement": "Hike bell back between legs, explosive hip snap forward. Bell floats to shoulder height. Rhythm crucial.",
+      "cues": "Explosive hips, float don't lift, snap like whip, breathing with rhythm"
+    }
+  },
+  "Turkish Get-Up": {
+    "description": {
+      "overview": "Complex full-body movement from floor to standing with weight overhead. Ultimate stability and strength challenge.",
+      "setup": "Lying on back with kettlebell locked out overhead. Opposite leg bent, same side leg straight.",
+      "movement": "Rise to standing through series of positions keeping weight overhead. Reverse to return to floor.",
+      "cues": "Eyes on weight, slow and controlled, strong overhead position, master each position"
+    }
+  },
+  "Thrusters": {
+    "description": {
+      "overview": "Front squat to overhead press in one movement. High-intensity exercise building full-body power and conditioning.",
+      "setup": "Weight in front rack position, feet shoulder-width. Ready for explosive transition from squat to press.",
+      "movement": "Front squat down, drive up explosively using momentum to press weight overhead. One fluid motion.",
+      "cues": "Use the bounce, fluid transition, explode up, full lockout overhead"
+    }
+  },
+  "Burpee Box Jump": {
+    "description": {
+      "overview": "Burpee followed by box jump combining conditioning with explosive power. Advanced full-body conditioning exercise.",
+      "setup": "Standing in front of box at appropriate height. Clear space for burpee movement.",
+      "movement": "Perform burpee, then immediately explode up onto box. Step down and repeat. Maximum intensity.",
+      "cues": "Explosive transition, land softly on box, step down don't jump, high intensity throughout"
+    }
+  },
+  "Plank to Downward Dog": {
+    "description": {
+      "overview": "Dynamic movement from plank to downward dog position. Builds core strength, shoulder mobility, and hamstring flexibility.",
+      "setup": "Start in high plank position. Hands shoulder-width apart, body straight from head to heels.",
+      "movement": "Push hips up and back into downward dog position. Return to plank. Feel core and shoulders working.",
+      "cues": "Strong plank start, push hips high, feel hamstring stretch, controlled transitions"
+    }
+  },
+  "Pike Toe Touch": {
+    "description": {
+      "overview": "Core exercise reaching for toes from V-sit position. Targets rectus abdominis and hip flexors with dynamic movement.",
+      "setup": "V-sit position with legs extended and hands reaching forward. Balance on tailbone.",
+      "movement": "Reach hands toward toes while maintaining V position. Crunch forward and extend back. Keep legs straight.",
+      "cues": "Reach for toes, maintain V position, legs stay straight, rhythmic movement"
+    }
+  },
+  "Cable Goblet Squats": {
+    "description": {
+      "overview": "Goblet squat using cable for constant tension. Combines benefits of goblet position with accommodating resistance.",
+      "setup": "Cable handle held at chest height. Feet slightly wider than shoulders, toes out.",
+      "movement": "Squat down maintaining handle at chest. Drive up against cable resistance. Constant tension throughout.",
+      "cues": "Handle stays at chest, squat between legs, constant tension, drive through heels"
+    }
+  },
+  "Reverse Lunge": {
+    "description": {
+      "overview": "Lunge stepping backward instead of forward. Knee-friendly alternative providing excellent quad and glute development.",
+      "setup": "Standing tall with weights at sides or front rack. Core engaged for balance.",
+      "movement": "Step back into lunge position. Both knees to 90 degrees. Drive through front heel to return.",
+      "cues": "Step back, not down, front knee tracks toe, drive through front heel, controlled movement"
+    }
+  },
+  "Box Jump": {
+    "description": {
+      "overview": "Explosive jump onto elevated platform. Develops lower body power, rate of force development, and athletic performance.",
+      "setup": "Standing arm's length from box. Arms back ready to swing. Focus on landing spot.",
+      "movement": "Swing arms and jump explosively onto box. Land softly in squat position. Step down with control.",
+      "cues": "Explosive takeoff, soft landing, step down don't jump, reset between reps"
+    }
+  },
+  "Leg Extensions": {
+    "description": {
+      "overview": "Isolated quadriceps exercise using machine. Builds quad strength and size while targeting all four heads.",
+      "setup": "Seated in machine with back against pad. Ankles under roller pad, knees aligned with pivot.",
+      "movement": "Extend legs by contracting quadriceps. Squeeze hard at top. Lower with control resisting weight.",
+      "cues": "Squeeze quads hard, full extension, pause at top, control the negative"
+    }
+  },
+  "Single Leg Glute Bridge": {
+    "description": {
+      "overview": "Unilateral glute bridge challenging single-leg strength. Addresses imbalances while building glute and hamstring strength.",
+      "setup": "Lying on back, one foot planted, other leg extended or bent up. Arms at sides for stability.",
+      "movement": "Drive through planted heel to lift hips up. Squeeze glute hard at top. Lower with control.",
+      "cues": "Drive through heel, big glute squeeze, hips stay level, feel the working side"
+    }
+  },
+  "Lateral Walks with Resistance Band": {
+    "description": {
+      "overview": "Side-stepping with band resistance targeting hip abductors. Essential for knee health and glute activation.",
+      "setup": "Band around knees or ankles. Athletic stance with slight squat position. Core engaged.",
+      "movement": "Step sideways maintaining tension in band. Keep knees out and hips back. Small controlled steps.",
+      "cues": "Maintain squat position, knees stay out, feel glutes working, controlled steps"
+    }
+  },
+  "Lateral Walks": {
+    "description": {
+      "overview": "Bodyweight side-stepping exercise for hip stability. Activates glutes and improves lateral movement patterns.",
+      "setup": "Athletic stance, slight squat position. Hands on hips or out for balance.",
+      "movement": "Step sideways while maintaining squat position. Keep hips back and knees out. Focus on glute activation.",
+      "cues": "Stay in squat, step don't shuffle, feel glutes, maintain good posture"
+    }
+  },
+  "Bodyweight Squats": {
+    "description": {
+      "overview": "Fundamental bodyweight squat movement. Foundation exercise for all squatting patterns and lower body strength.",
+      "setup": "Feet shoulder-width apart, toes slightly out. Arms extended forward for balance. Core engaged.",
+      "movement": "Sit back and down until thighs parallel or below. Drive through heels to stand. Keep chest up.",
+      "cues": "Sit back first, knees track toes, chest proud, drive through heels"
+    }
+  },
+  "Wall Sit": {
+    "description": {
+      "overview": "Isometric squat hold against wall. Builds muscular endurance in quadriceps and glutes while teaching proper position.",
+      "setup": "Back against wall, walk feet out until thighs parallel. Arms crossed or at sides.",
+      "movement": "Hold squat position against wall. Maintain 90-degree knee angle. Breathe normally throughout hold.",
+      "cues": "Press back into wall, thighs parallel, breathe normally, fight the burn"
+    }
+  },
+  "Squat Jumps": {
+    "description": {
+      "overview": "Explosive bodyweight squat with jump. Develops power and athleticism while improving squat mechanics under fatigue.",
+      "setup": "Feet shoulder-width apart in squat stance. Arms ready for momentum assistance.",
+      "movement": "Squat down and explode up jumping as high as possible. Land softly back into squat. Continuous rhythm.",
+      "cues": "Explode up, reach for ceiling, soft landing, continuous rhythm, maintain form"
+    }
+  },
+  "Plank Jacks": {
+    "description": {
+      "overview": "Dynamic plank variation adding leg movement. Combines core stability with cardiovascular challenge and coordination.",
+      "setup": "High plank position with feet together. Hands directly under shoulders, body straight.",
+      "movement": "Jump feet apart and together while maintaining plank position. Keep hips level and core tight.",
+      "cues": "Hips stay level, quick feet, maintain plank, breathe with movement"
+    }
+  },
+  "Single-leg Deadlifts": {
+    "description": {
+      "overview": "Unilateral deadlift challenging balance and posterior chain. Builds hamstring strength while improving proprioception.",
+      "setup": "Standing on one leg with weight in opposite hand. Free leg ready to extend behind.",
+      "movement": "Hinge forward extending free leg back. Maintain straight line from head to heel. Drive up with control.",
+      "cues": "Hips stay square, straight line head to heel, feel hamstring working, controlled balance"
+    }
+  },
+  "Glute Kickbacks": {
+    "description": {
+      "overview": "Isolation exercise targeting glutes using cable or band. Builds glute strength and activation in hip extension.",
+      "setup": "Cable or band around ankle. Hold support for balance. Standing leg slightly bent.",
+      "movement": "Kick working leg straight back focusing on glute contraction. Control return. Keep hips square.",
+      "cues": "Glutes do the work, hips stay square, straight leg, squeeze at back"
+    }
+  },
+  "Squat Pulses": {
+    "description": {
+      "overview": "Isometric squat variation with small range pulsing. Builds muscular endurance and burn tolerance.",
+      "setup": "Squat position with thighs parallel or below. Arms extended for balance.",
+      "movement": "Small pulsing movements in bottom squat position. Stay in painful zone. Constant tension.",
+      "cues": "Stay in the burn zone, small pulses, constant tension, breathe through burn"
+    }
+  },
+  "Dumbbell Bench Press": {
+    "description": {
+      "overview": "Chest pressing exercise using dumbbells on bench. Allows greater range of motion and unilateral development.",
+      "setup": "Dumbbells at chest level, lying on bench. Shoulder blades retracted, feet planted.",
+      "movement": "Press dumbbells up and slightly together in arc motion. Lower to chest level with control.",
+      "cues": "Arc motion up and together, deeper stretch than barbell, control heavy dumbbells"
+    }
+  },
+  "Bent-Over Rows": {
+    "description": {
+      "overview": "Hip-hinged rowing exercise using barbell or dumbbells. Classic back building exercise for thickness and strength.",
+      "setup": "Bent over at hips, knees slightly bent. Weight hanging at arm's length. Back straight.",
+      "movement": "Row weight to lower chest/abdomen. Squeeze shoulder blades together. Control the stretch.",
+      "cues": "Pull with elbows, squeeze between shoulders, maintain hip hinge, control the weight"
+    }
+  },
+  "Deadlifts": {
+    "description": {
+      "overview": "Hip-hinge movement lifting weight from floor to lockout. The ultimate posterior chain exercise working entire body.",
+      "setup": "Bar over mid-foot, shins touching bar. Hip hinge to grab bar, chest up, shoulders over bar.",
+      "movement": "Drive legs through floor while chest rises. Bar travels close to body. Lock out with glutes.",
+      "cues": "Leg press the floor, bar hugs body, hips through at top, shoulders over bar"
+    }
+  },
+  "Banded Glute Bridges": {
+    "description": {
+      "overview": "Glute bridge with band resistance around knees. Adds abduction component while building glute strength.",
+      "setup": "Lying on back with band around knees. Feet flat, knees bent. Arms at sides.",
+      "movement": "Drive hips up while pushing knees out against band. Feel glutes working hard. Lower with control.",
+      "cues": "Push knees out, hips drive up, squeeze glutes hard, fight the band"
+    }
+  },
+  "Romanian Deadlifts": {
+    "description": {
+      "overview": "Hip-hinge movement emphasizing hamstring stretch and strength. Builds posterior chain with eccentric emphasis.",
+      "setup": "Weight at hip level, feet hip-width. Knees soft, shoulders back. Ready to hinge.",
+      "movement": "Push hips back lowering weight down legs. Feel hamstring stretch. Drive hips forward to return.",
+      "cues": "Hips back not down, feel hamstring stretch, bar stays close, squeeze glutes to finish"
+    }
+  },
+  "Single-leg RDL": {
+    "description": {
+      "overview": "Romanian deadlift performed on one leg. Challenges balance while building unilateral posterior chain strength.",
+      "setup": "Standing on one leg, weight in opposite or same hand. Free leg ready to extend back.",
+      "movement": "Hinge forward as back leg extends. Feel hamstring stretch in standing leg. Return with control.",
+      "cues": "Hips hinge back, feel standing leg hamstring, balance and control, straight line"
+    }
+  },
+  "Goblet Squat": {
+    "description": {
+      "overview": "Front-loaded squat holding weight at chest. Excellent teaching tool and effective leg exercise.",
+      "setup": "Weight held at chest, elbows pointing down. Feet slightly wider than shoulders.",
+      "movement": "Squat down between legs with elbows tracking inside knees. Drive through heels to stand.",
+      "cues": "Elbows between knees, sit between legs, weight stays at chest, heels down"
+    }
+  },
+  "Dumbbell Rows": {
+    "description": {
+      "overview": "Bent-over rowing using dumbbells for back development. Allows unilateral focus and natural movement path.",
+      "setup": "Bent over at hips, dumbbells hanging down. Back straight, core engaged for stability.",
+      "movement": "Row dumbbells to hips/lower chest. Focus on lat and rhomboid contraction. Control the stretch.",
+      "cues": "Row to hips, squeeze back muscles, maintain bent position, control the weights"
+    }
+  },
+  "Incline Dumbbell Press": {
+    "description": {
+      "overview": "Dumbbell pressing on inclined bench targeting upper chest. Combines incline angle benefits with dumbbell advantages.",
+      "setup": "Incline bench at 30-45 degrees. Dumbbells at chest level. Shoulder blades retracted.",
+      "movement": "Press dumbbells up and together in arc motion. Lower to chest level feeling upper chest stretch.",
+      "cues": "Feel upper chest, arc motion, deeper stretch than barbell, control the weights"
+    }
+  },
+  "Single-arm Overhead Carry + Reverse Lunge": {
+    "description": {
+      "overview": "Complex exercise combining unilateral carry with lunge. Challenges core stability, coordination, and full-body strength.",
+      "setup": "Weight locked out overhead in one hand. Other hand free. Ready for controlled movement.",
+      "movement": "Hold weight overhead while performing reverse lunges. Maintain overhead position throughout. Switch arms.",
+      "cues": "Weight stays overhead, core stays tight, controlled lunges, don't let weight drift"
+    }
+  },
+  "Sumo Squat": {
+    "description": {
+      "overview": "Wide-stance squat emphasizing inner thighs and glutes. Allows deeper range of motion and targets different muscle emphasis.",
+      "setup": "Wide stance with toes pointed out significantly. Weight at chest or hanging down. Core engaged.",
+      "movement": "Squat down between legs tracking knees over toes. Drive through heels focusing on glutes and inner thighs.",
+      "cues": "Wide stance, toes out, knees track toes, feel glutes and inner thighs, deep range"
+    }
+  },
+  "Glute Bridge": {
+    "description": {
+      "overview": "Supine hip extension exercise targeting glutes and hamstrings. Foundation movement for hip drive and glute development.",
+      "setup": "Lying on back, knees bent, feet flat. Arms at sides for stability. Core engaged.",
+      "movement": "Drive hips up by squeezing glutes. Create straight line from knees to shoulders. Lower with control.",
+      "cues": "Squeeze glutes hard, hips drive up, straight line, pause at top, control down"
+    }
+  },
+  "Dumbbell Weighted Crunches": {
+    "description": {
+      "overview": "Traditional crunch with dumbbell for added resistance. Builds rectus abdominis strength through loaded flexion.",
+      "setup": "Lying on back with knees bent. Dumbbell held at chest or behind head. Lower back neutral.",
+      "movement": "Crunch up by flexing spine while holding weight. Feel abs contract. Lower with control.",
+      "cues": "Flex the spine, feel abs working, control the weight, breathe out on crunch"
+    }
+  },
+  "Dumbbell Burpees": {
+    "description": {
+      "overview": "Burpee variation holding dumbbells throughout movement. Increases difficulty and adds upper body loading.",
+      "setup": "Standing with dumbbells at sides. Clear space for movement. Ready for high-intensity work.",
+      "movement": "Perform burpee while holding dumbbells. Squat, jump back, push-up optional, jump forward, stand with press.",
+      "cues": "Keep dumbbells throughout, controlled movements, explosive transitions, maintain form"
+    }
+  },
+  "Wide Stance Squat": {
+    "description": {
+      "overview": "Squat with wider than normal stance. Emphasizes glutes and adductors while allowing different loading patterns.",
+      "setup": "Feet wider than normal squat stance, toes pointed out. Bar position of choice.",
+      "movement": "Squat down tracking knees over toes. Focus on sitting back and spreading the floor. Drive up through heels.",
+      "cues": "Spread the floor, knees out, sit back, feel glutes and inner thighs"
+    }
+  },
+  "Narrow Stance Squat": {
+    "description": {
+      "overview": "Squat with closer than normal stance. Emphasizes quadriceps development and requires greater ankle mobility.",
+      "setup": "Feet closer together than normal squat. May require more upright torso. Bar position of choice.",
+      "movement": "Squat down maintaining narrow stance. Knees travel more forward. Drive up through mid-foot.",
+      "cues": "Narrow stance, knees forward is OK, feel quads working, maintain balance"
+    }
+  },
+  "Duffalo Bar Squat": {
+    "description": {
+      "overview": "Squat using cambered Duffalo bar. Provides different feel and may be easier on shoulders while challenging stability.",
+      "setup": "Duffalo bar on upper back. May feel different than straight bar. Standard squat stance.",
+      "movement": "Squat with cambered bar feeling different balance demands. Maintain control throughout range.",
+      "cues": "Feel the different balance, control the camber, maintain position, use the flexibility"
+    }
+  },
+  "Lunge": {
+    "description": {
+      "overview": "Split stance lunge movement. Fundamental unilateral exercise building leg strength and addressing imbalances.",
+      "setup": "Starting position with weight of choice. Step forward or back into lunge position.",
+      "movement": "Lower into lunge with both knees to 90 degrees. Drive through front heel to return or step into next rep.",
+      "cues": "Both knees to 90, front knee tracks toe, drive through front heel, controlled descent"
+    }
+  },
+  "Single-Leg Stands": {
+    "description": {
+      "overview": "A unilateral balance exercise standing on one foot. Improves proprioception, strengthens stabilizing muscles, and enhances balance for injury prevention.",
+      "setup": "Stand tall, weight on one foot. Lift other foot slightly off ground. Arms out for balance or at sides for challenge.",
+      "movement": "Hold position on single leg. Keep standing knee slightly bent. Maintain upright posture. Switch legs after time.",
+      "cues": "Grip floor with toes, soft knee, tall spine, focus on fixed point"
+    }
+  },
+  "Weighted Chin/Pull-Ups": {
+    "description": {
+      "overview": "Pull-ups or chin-ups with added external load. The ultimate test of relative strength, building exceptional back and arm development.",
+      "setup": "Weight belt with plates or dumbbell between feet. Dead hang start, grip of choice.",
+      "movement": "Pull up smoothly without swinging weight. Chin over bar at top. Control the loaded negative.",
+      "cues": "Minimize swing, pull through elbows, squeeze at top, own the negative"
+    }
+  },
+  "Single-leg Romanian Deadlifts": {
+    "description": {
+      "overview": "A unilateral hip hinge challenging balance and posterior chain. Builds hamstring strength while improving proprioception and core stability.",
+      "setup": "Stand on one leg, slight knee bend. Weight in opposite hand or both hands. Free leg ready to extend back.",
+      "movement": "Hinge forward as back leg extends behind. Maintain straight line from head to heel. Return with control.",
+      "cues": "Hips stay square, reach back with heel, feel hamstring stretch, controlled tempo"
+    }
+  },
+  "Single-arm Dumbbell Rows": {
+    "description": {
+      "overview": "A unilateral rowing movement for back development. Allows heavy loading while providing stability, excellent for addressing imbalances.",
+      "setup": "One hand and knee on bench, other foot planted wide. Flat back, dumbbell hanging straight down.",
+      "movement": "Row dumbbell to hip, elbow close to body. Squeeze lat at top. Control the stretch at bottom.",
+      "cues": "Elbow to hip, pull with back not arm, pause at top, stretch at bottom"
+    }
+  },
+  "SSB Lunge": {
+    "description": {
+      "overview": "Lunge variation using safety squat bar with handles. Provides stability assistance while challenging legs unilaterally.",
+      "setup": "SSB across upper back with handles forward. Step into lunge position. Bar may want to pull forward.",
+      "movement": "Perform lunge while controlling bar position. Handles help with balance. Drive through front heel to return.",
+      "cues": "Control the bar, handles help balance, feel front leg working, stable torso"
+    }
+  },
+  "Hatfield Squat": {
+    "description": {
+      "overview": "Squat holding onto safety bars or uprights for support. Allows heavy leg loading while reducing balance demands.",
+      "setup": "Bar on back, hands holding safety bars or uprights. Feet positioned for comfortable squat.",
+      "movement": "Squat down using hands for balance assistance only. Focus purely on leg strength. Drive up through legs.",
+      "cues": "Hands for balance only, legs do the work, full range of motion, control the weight"
+    }
+  },
+  "Flat Bench Press": {
+    "description": {
+      "overview": "Standard horizontal barbell press on flat bench. The gold standard for upper body pressing strength and chest development.",
+      "setup": "Eyes under bar, shoulder blades retracted, feet planted. Grip slightly wider than shoulders.",
+      "movement": "Lower bar to nipple line with control. Pause briefly on chest. Press straight up maintaining position.",
+      "cues": "Bar to nipples, pause on chest, press straight up, maintain arch and leg drive"
+    }
+  },
+  "DB Bench": {
+    "description": {
+      "overview": "Dumbbell bench press variation allowing greater range of motion. Builds chest while improving stability and addressing imbalances.",
+      "setup": "Dumbbells at chest level on bench. Shoulder blades retracted, feet planted for stability.",
+      "movement": "Press dumbbells up and together in arc motion. Lower for deep stretch. Control heavy weights throughout.",
+      "cues": "Arc motion not straight, deep stretch at bottom, press and squeeze together, control the weights"
+    }
+  },
+  "DB Incline Bench": {
+    "description": {
+      "overview": "Incline dumbbell press targeting upper chest development. Combines incline angle with dumbbell benefits.",
+      "setup": "Incline bench at 30-45 degrees. Dumbbells at chest level. Shoulder blades retracted on pad.",
+      "movement": "Press dumbbells up and together targeting upper chest. Feel stretch at bottom. Control the movement.",
+      "cues": "Feel upper chest working, arc motion together, stretch at bottom, control heavy dumbbells"
+    }
+  },
+  "Slingshot Bench": {
+    "description": {
+      "overview": "Bench press using slingshot device for assistance. Allows overload at lockout while reducing stress at bottom.",
+      "setup": "Slingshot device around arms. Standard bench setup otherwise. Device assists through sticking point.",
+      "movement": "Lower bar feeling reduced load at bottom. Slingshot assists through middle range. Focus on lockout.",
+      "cues": "Feel the assistance, focus on lockout, heavier than raw bench, control with device"
+    }
+  },
+  "Feet up Bench": {
+    "description": {
+      "overview": "Bench press with feet elevated on bench. Eliminates leg drive and arch, focusing purely on chest and arms.",
+      "setup": "Feet up on bench, flat back against pad. No arch available. Grip slightly wider than normal.",
+      "movement": "Press bar with no leg drive assistance. Pure upper body strength. Control the movement throughout.",
+      "cues": "No leg help, flat back, feel chest working harder, control without arch"
+    }
+  },
+  "Duffalo Bar Bench": {
+    "description": {
+      "overview": "Bench press using cambered Duffalo bar. May be easier on shoulders while providing different stimulus.",
+      "setup": "Duffalo bar with camber down toward chest. May feel different balance. Standard bench position.",
+      "movement": "Press cambered bar feeling different balance demands. May allow deeper stretch. Control the camber.",
+      "cues": "Feel the different balance, may go deeper, control the camber, use the flexibility"
+    }
+  },
+  "Bench With Chains": {
+    "description": {
+      "overview": "Bench press with chains adding accommodating resistance. Weight increases through range of motion.",
+      "setup": "Chains draped over barbell. More resistance at top, less at bottom. Standard bench setup.",
+      "movement": "Press bar with increasing resistance as chains lift off floor. Focus on explosive finish.",
+      "cues": "Accelerate through the press, harder at top, finish strong, chains change the feel"
+    }
+  },
+  "Sumo Rack Pull": {
+    "description": {
+      "overview": "Partial sumo deadlift from elevated position. Allows heavy loading for sumo lockout strength development.",
+      "setup": "Wide sumo stance with bar on pins at knee level or above. Hands inside legs.",
+      "movement": "Pull from pins to lockout using sumo mechanics. Focus on spreading floor and hip drive.",
+      "cues": "Spread the floor, hips through, heavy sumo lockout, control to pins"
+    }
+  },
+  "Sumo Block Pull": {
+    "description": {
+      "overview": "Sumo deadlift from blocks reducing range of motion. Builds sumo lockout strength and confidence.",
+      "setup": "Wide sumo stance with bar on blocks. Hands inside legs, chest up, knees out.",
+      "movement": "Pull from blocks using sumo technique. Drive feet apart while pulling chest up. Control return.",
+      "cues": "Spread the floor, knees track toes, chest leads, heavy sumo work"
+    }
+  },
+  "1 Arm DB Press": {
+    "description": {
+      "overview": "Single-arm overhead press challenging core stability. Builds unilateral strength while forcing anti-lateral flexion.",
+      "setup": "One dumbbell at shoulder height. Free hand can be on hip or at side. Core maximally engaged.",
+      "movement": "Press one dumbbell overhead while resisting lean. Core works overtime to maintain vertical position.",
+      "cues": "Don't lean, core on fire, press straight up, feel the anti-lean challenge"
+    }
+  },
+  "1 Arm DB Row": {
+    "description": {
+      "overview": "Single-arm dumbbell row for unilateral back development. Allows heavy loading with stability and eliminates compensation.",
+      "setup": "One hand and knee on bench, other foot planted wide. Dumbbell hanging straight down from working arm.",
+      "movement": "Row dumbbell to hip focusing on lat contraction. Minimize rotation. Feel strong lat squeeze at top.",
+      "cues": "Hand to hip, no rotation, lat does the work, pause and squeeze at top"
+    }
+  },
+  "T-Bar Row": {
+    "description": {
+      "overview": "V-handle row using barbell or T-bar apparatus. Excellent for building back thickness with heavy loading potential.",
+      "setup": "Straddle bar or T-bar, bent over position. V-handle or close grip. Athletic stance for stability.",
+      "movement": "Row handle to stomach area. Focus on pulling elbows back. Strong contraction between shoulder blades.",
+      "cues": "Elbows lead the pull, handle to stomach, big squeeze between shoulders, control the weight"
+    }
+  },
+  "Diamond Push-ups": {
+    "description": {
+      "overview": "Push-up variation with hands in diamond shape. Emphasizes triceps and inner chest while building pushing strength.",
+      "setup": "High plank with hands forming diamond shape under chest. Body straight from head to heels.",
+      "movement": "Lower chest to hands maintaining diamond shape. Press back up focusing on triceps. Keep body rigid.",
+      "cues": "Diamond stays put, chest to hands, feel triceps working, rigid body line"
+    }
+  },
+  "Pike Push-ups": {
+    "description": {
+      "overview": "Push-up variation in pike position targeting shoulders. Progression toward handstand push-ups while building shoulder strength.",
+      "setup": "Downward dog position, hands shoulder-width apart. Higher pike for more difficulty.",
+      "movement": "Lower head toward hands by bending elbows. Press back to start. Feel shoulders working hard.",
+      "cues": "High pike position, head toward hands, shoulders do the work, controlled movement"
+    }
+  },
+  "Turkish Get-Up": {
+    "description": {
+      "overview": "Complex full-body movement from floor to standing with weight overhead. Ultimate stability and strength challenge.",
+      "setup": "Lying on back with kettlebell locked out overhead. Opposite leg bent, same side leg straight.",
+      "movement": "Rise to standing through series of positions keeping weight overhead. Reverse to return to floor.",
+      "cues": "Eyes on weight, slow and controlled, strong overhead position, master each position"
+    }
+  },
+  "Squat to Calf Raise": {
+    "description": {
+      "overview": "Combination movement linking squat with calf raise. Builds lower body strength through multiple planes of motion.",
+      "setup": "Standard squat stance with weight of choice. Ready for fluid transition to calf raise.",
+      "movement": "Perform squat, then immediately rise onto toes for calf raise. Lower heels and repeat sequence.",
+      "cues": "Smooth transitions, full squat first, high onto toes, control both movements"
+    }
+  },
+  "Kettlebell Clean": {
+    "description": {
+      "overview": "Explosive movement bringing kettlebell from floor to rack position. Builds power and teaches clean mechanics.",
+      "setup": "Kettlebell between feet, athletic stance. Ready for explosive hip drive and catch in rack.",
+      "movement": "Hike bell back, explosive hip snap, high pull, catch in rack position at shoulder. Control descent.",
+      "cues": "Explosive hips, high pull, soft catch, bell rests on forearm, smooth descent"
+    }
+  },
+  "Kettlebell Snatch": {
+    "description": {
+      "overview": "Explosive movement from floor to overhead in one motion. Ultimate power exercise requiring technique and conditioning.",
+      "setup": "Kettlebell between feet, wider stance than clean. Ready for explosive full-body movement.",
+      "movement": "Hike back, explosive hip drive, high pull, punch through to overhead lockout. Control down.",
+      "cues": "Violent hip snap, high pull, punch through overhead, soft lockout, controlled descent"
+    }
+  },
+  "Kettlebell Windmill": {
+    "description": {
+      "overview": "Stability exercise with kettlebell overhead while touching floor. Builds shoulder stability and hip mobility.",
+      "setup": "Kettlebell locked out overhead, feet wide. Free hand ready to reach toward floor.",
+      "movement": "Keep bell overhead while hinging to touch floor with free hand. Return maintaining overhead position.",
+      "cues": "Bell stays overhead, hinge at hips, feel hamstring stretch, don't let bell drift"
+    }
+  },
+  "Kettlebell Rack Squat": {
+    "description": {
+      "overview": "Front-loaded squat with kettlebell in rack position. Challenges core stability while building leg strength.",
+      "setup": "Kettlebell in rack position at shoulder. Elbow down, bell rests on forearm. Standard squat stance.",
+      "movement": "Squat down maintaining rack position. Bell challenges posture. Drive up keeping bell stable.",
+      "cues": "Maintain rack position, elbow stays down, fight forward lean, drive through heels"
+    }
+  },
+  "Kettlebell Halo": {
+    "description": {
+      "overview": "Circular movement passing kettlebell around head. Builds shoulder mobility and stability through full range.",
+      "setup": "Light kettlebell held by horns. Standing tall with core engaged. Ready for controlled circular motion.",
+      "movement": "Pass bell around head in smooth circle. Keep core tight. Reverse direction for balance.",
+      "cues": "Smooth circles, core stays tight, control the bell, both directions, light weight only"
+    }
+  },
+  "Kettlebell Gorilla Row": {
+    "description": {
+      "overview": "Alternating single-arm rows in bent-over position with two kettlebells. Builds back strength with anti-rotation challenge.",
+      "setup": "Two kettlebells between feet, bent over position. One hand on each bell, athletic stance.",
+      "movement": "Row one bell to hip while other stays on ground. Alternate sides while maintaining position.",
+      "cues": "One at a time, maintain bent position, fight rotation, feel the lat squeeze"
+    }
+  },
+  "Barbell Hip Thrust": {
+    "description": {
+      "overview": "Hip thrust using barbell for loading. Premier glute exercise allowing maximum load through hip extension.",
+      "setup": "Upper back on bench, barbell in hip crease with pad. Feet flat, knees at 90° at top.",
+      "movement": "Drive through heels to thrust hips up. Full hip extension with glute squeeze. Control descent.",
+      "cues": "Drive through heels, big hip extension, squeeze glutes hard, control the negative"
+    }
+  },
+  "Barbell Hack Squat": {
+    "description": {
+      "overview": "Squat with barbell behind legs. Unique loading pattern emphasizing quads while reducing forward lean.",
+      "setup": "Barbell behind legs, deadlift grip behind body. Heels may be elevated. Upright torso.",
+      "movement": "Squat down with bar behind legs. More upright than back squat. Drive up through heels.",
+      "cues": "Bar stays behind, upright torso, feel quads working, heels down or elevated"
+    }
+  },
+  "Zercher Squat": {
+    "description": {
+      "overview": "Squat holding barbell in elbow crease. Challenges core massively while building leg strength with front loading.",
+      "setup": "Bar in elbow crease, arms crossed. Pad may be needed. Upright torso position required.",
+      "movement": "Squat down maintaining upright position. Bar loading challenges core. Drive up staying upright.",
+      "cues": "Bar in elbows, stay upright, core works overtime, drive through heels"
+    }
+  },
+  "Anderson Squat": {
+    "description": {
+      "overview": "Squat starting from bottom position in pins. Eliminates stretch reflex, builds strength from dead stop.",
+      "setup": "Bar on pins at bottom squat position. Get under bar in squat position. Eliminate momentum.",
+      "movement": "Press up from dead stop in bottom position. No stretch reflex available. Lower back to pins.",
+      "cues": "Start from dead stop, no stretch reflex, pure strength, control back to pins"
+    }
+  },
+  "Barbell Glute Bridge": {
+    "description": {
+      "overview": "Glute bridge using barbell for heavy loading. Builds maximum glute strength through hip extension pattern.",
+      "setup": "Lying on back with barbell over hips, pad recommended. Feet flat, knees bent. Bar secured in place.",
+      "movement": "Drive hips up squeezing glutes maximally. Create straight line from knees to shoulders. Control descent.",
+      "cues": "Drive heels into floor, massive glute squeeze, full hip extension, control the weight"
+    }
+  },
+  "Jefferson Squat": {
+    "description": {
+      "overview": "Straddle squat with barbell between legs. Unique loading pattern reducing spinal compression while targeting legs.",
+      "setup": "Straddle barbell with one hand in front, one behind. Athletic stance. Bar between legs.",
+      "movement": "Squat down with bar between legs. Drive up maintaining straddle position. Switch hand positions between sets.",
+      "cues": "Straddle the bar, upright torso, switch grip between sets, feel the different loading"
+    }
+  },
+  "Barbell Good Morning": {
+    "description": {
+      "overview": "Hip hinge movement with bar on back. Builds posterior chain strength and teaches proper hinge mechanics.",
+      "setup": "Bar on upper back like back squat. Feet hip-width apart. Core braced, shoulder blades tight.",
+      "movement": "Hinge at hips pushing back while maintaining flat back. Feel hamstring stretch. Drive hips forward.",
+      "cues": "Hips back not down, chest proud, feel hamstrings, drive hips through to finish"
+    }
+  },
+  "Pendlay Row": {
+    "description": {
+      "overview": "Bent-over row starting from floor each rep. Builds explosive back strength and eliminates momentum.",
+      "setup": "Bar on floor, bent over position. Reset to floor between each rep. Parallel torso to floor.",
+      "movement": "Explosively row bar from floor to lower chest. Lower back to floor. Reset position each rep.",
+      "cues": "Dead stop each rep, explosive pull, chest high, reset every time"
+    }
+  },
+  "Yates Row": {
+    "description": {
+      "overview": "Underhand barbell row with more upright torso. Emphasizes lower lats and biceps involvement.",
+      "setup": "Underhand grip, more upright than traditional row. Torso at 45-degree angle instead of parallel.",
+      "movement": "Row bar to lower abdomen with underhand grip. Feel biceps and lower lats working. Control descent.",
+      "cues": "Underhand grip, more upright, pull to belly, feel biceps helping, squeeze lats"
+    }
+  },
+  "Barbell Shrug": {
+    "description": {
+      "overview": "Isolation exercise for upper traps using barbell. Builds trap mass and strength through elevation movement.",
+      "setup": "Barbell at arm's length, standing tall. Feet hip-width, shoulders back and down to start.",
+      "movement": "Shrug shoulders straight up as high as possible. Squeeze traps at top. Lower with control.",
+      "cues": "Straight up not forward, squeeze at top, feel traps working, control the negative"
+    }
+  },
+  "Barbell Curl": {
+    "description": {
+      "overview": "Standing bicep curl using barbell. Classic mass-building exercise for bicep development and arm strength.",
+      "setup": "Barbell at arm's length, standing with core engaged. Elbows at sides, shoulders back.",
+      "movement": "Curl bar up using only biceps. No swinging or momentum. Squeeze at top. Lower with control.",
+      "cues": "Elbows stay put, no swinging, squeeze biceps, control the negative, strict form"
+    }
+  },
+  "Barbell Skull Crusher": {
+    "description": {
+      "overview": "Tricep isolation exercise lying on bench. Builds tricep mass and strength through elbow extension.",
+      "setup": "Lying on bench with barbell over chest. Arms extended, narrow grip. Core engaged.",
+      "movement": "Lower bar toward forehead by bending elbows only. Extend back to start. Keep elbows stationary.",
+      "cues": "Only elbows move, to forehead not chest, stretch triceps, strong extension"
+    }
+  },
+  "Barbell Upright Row": {
+    "description": {
+      "overview": "Vertical pulling exercise targeting shoulders and traps. Builds shoulder width and upper back development.",
+      "setup": "Barbell at arm's length with narrow grip. Standing tall, core engaged for stability.",
+      "movement": "Pull bar straight up leading with elbows. Bar stays close to body. Pull to chest level.",
+      "cues": "Elbows lead, bar stays close, pull to chest, feel shoulders and traps"
+    }
+  },
+  "Bradford Press": {
+    "description": {
+      "overview": "Behind-neck to front press without lockout. Builds shoulder endurance and stability through partial range.",
+      "setup": "Bar in front rack position. Light weight recommended. Mobility required for behind-neck position.",
+      "movement": "Press partially up, bring behind neck, press back to front. Continuous tension throughout.",
+      "cues": "Light weight only, mobility required, continuous motion, feel shoulders burning"
+    }
+  },
+  "Barbell Landmine Press": {
+    "description": {
+      "overview": "Single-arm pressing using landmine setup. Provides unique angle and challenges core stability.",
+      "setup": "Barbell in landmine, one hand holding end. Athletic stance, core engaged for stability.",
+      "movement": "Press barbell up and forward in arc motion. Feel chest and shoulders working. Control descent.",
+      "cues": "Arc motion not straight, core stays tight, feel chest and shoulders, control the path"
+    }
+  },
+  "Barbell Rollout": {
+    "description": {
+      "overview": "Core exercise rolling barbell forward from knees. Advanced ab exercise building tremendous core strength.",
+      "setup": "Kneeling with hands on barbell. Core maximally braced. Ready to roll forward while maintaining position.",
+      "movement": "Roll bar forward while maintaining straight line. Feel massive ab stretch. Roll back with control.",
+      "cues": "Core on fire, straight line, feel ab stretch, don't collapse, control back"
+    }
+  },
+  "Meadows Row": {
+    "description": {
+      "overview": "Single-arm landmine row with parallel stance. Unique pulling angle for lat development and core challenge.",
+      "setup": "Barbell in landmine, parallel stance. One hand on bar end, wide base for stability.",
+      "movement": "Row barbell to hip with parallel stance. Feel lat working through unique angle. Control stretch.",
+      "cues": "Parallel stance, row to hip, unique angle, feel the lat, control the stretch"
+    }
+  },
+  "Trap Bar Deadlift": {
+    "description": {
+      "overview": "Deadlift using hexagonal trap bar. More quad-dominant than conventional, easier on lower back.",
+      "setup": "Stand inside trap bar, grab handles. More upright position than conventional deadlift.",
+      "movement": "Drive through legs while chest rises. More leg drive than conventional. Lock out standing tall.",
+      "cues": "Stand up tall, more leg drive, chest up, feel quads working, easier on back"
+    }
+  },
+  "Cambered Bar Squat": {
+    "description": {
+      "overview": "Squat using cambered bar for accommodating resistance. Bar flexes providing different resistance curve.",
+      "setup": "Cambered bar on upper back. May feel bouncy or springy. Standard squat stance and position.",
+      "movement": "Squat with cambered bar feeling different resistance. Bar may assist at bottom, resist at top.",
+      "cues": "Feel the different resistance, control the spring, use the bar's help, unique feel"
+    }
+  },
+  "Barbell High Pull": {
+    "description": {
+      "overview": "Explosive pulling movement from floor to chest level. Builds power and teaches clean mechanics.",
+      "setup": "Deadlift position with barbell. Athletic stance, ready for explosive triple extension.",
+      "movement": "Deadlift explosively, then continue pulling bar to chest level. Elbows high. Control descent.",
+      "cues": "Explosive pull, elbows high, pull to chest, triple extension, control down"
+    }
+  },
+  "Power Clean": {
+    "description": {
+      "overview": "Explosive movement from floor to front rack position. Olympic lift developing total-body power.",
+      "setup": "Deadlift position with clean grip. Athletic stance, ready for explosive movement and catch.",
+      "movement": "Deadlift explosively, high pull, drop under bar catching in front rack. Stand to finish.",
+      "cues": "Explosive pull, drop under bar, catch in front rack, fast elbows, stand tall"
+    }
+  },
+  "Power Snatch": {
+    "description": {
+      "overview": "Explosive movement from floor to overhead in one motion. Olympic lift requiring technique and power.",
+      "setup": "Wide grip deadlift position. Athletic stance, ready for explosive movement to overhead catch.",
+      "movement": "Deadlift explosively, high pull, drop under catching overhead. Stand to complete lift.",
+      "cues": "Wide grip, explosive pull, drop under, catch overhead, fast turnover, stand strong"
+    }
+  },
+  "Dumbbell Squat to Press (Interval)": {
+    "description": {
+      "overview": "High-intensity combination exercise performed for time. Builds cardiovascular fitness and full-body strength endurance.",
+      "setup": "Dumbbells at shoulders in athletic stance. Ready for continuous movement during timed intervals.",
+      "movement": "Squat down, drive up explosively pressing dumbbells overhead. Continuous rhythm for prescribed time.",
+      "cues": "Smooth transitions, use leg drive, breathe with movement, maintain pace under fatigue"
+    }
+  },
+  "Tabata Push-ups": {
+    "description": {
+      "overview": "Push-ups performed in Tabata protocol (20 seconds work, 10 seconds rest, 8 rounds). Builds muscular endurance.",
+      "setup": "Standard push-up position. Mental preparation for 8 rounds of maximum effort work.",
+      "movement": "Maximum push-ups for 20 seconds, rest 10 seconds. Repeat 8 times. Maintain form under fatigue.",
+      "cues": "All-out effort, quick rest, form over speed when tired, embrace the burn"
+    }
+  },
+  "Resistance Band Circuit Interval": {
+    "description": {
+      "overview": "Multi-exercise circuit using resistance bands for time. Builds endurance while targeting multiple muscle groups.",
+      "setup": "Multiple resistance bands ready for various exercises. Stations set up for quick transitions.",
+      "movement": "Rotate through band exercises for prescribed time. Maintain intensity throughout circuit.",
+      "cues": "Quick transitions, maintain tension, feel muscles working, push through fatigue"
+    }
+  },
+  "Back Thickness Intervals": {
+    "description": {
+      "overview": "High-intensity back-focused exercises performed in intervals. Builds back endurance and thickness.",
+      "setup": "Back exercise stations ready (rows, pull-ups, pulldowns). Quick transitions between exercises.",
+      "movement": "Perform back exercises at high intensity for time. Focus on back muscles throughout.",
+      "cues": "Feel back working, maintain intensity, squeeze between shoulders, power through"
+    }
+  },
+  "Leg Power Intervals": {
+    "description": {
+      "overview": "Explosive leg exercises performed in intervals. Develops lower body power and conditioning.",
+      "setup": "Plyometric exercises ready (jump squats, box jumps, bounds). Safe landing surface.",
+      "movement": "Explosive leg movements for time. Focus on power output and quick ground contact.",
+      "cues": "Explosive movements, quick ground contact, maintain power, land softly"
+    }
+  },
+  "Bicycle Crunches": {
+    "description": {
+      "overview": "Dynamic core exercise alternating elbow to knee in supine position. Targets obliques and rectus abdominis.",
+      "setup": "Lying on back, hands behind head, knees bent up. Lower back pressed to floor.",
+      "movement": "Bring opposite elbow to knee while extending other leg. Alternate in cycling motion.",
+      "cues": "Opposite elbow to knee, cycling motion, back stays flat, feel obliques working"
+    }
+  },
+  "Glute Squeezes": {
+    "description": {
+      "overview": "Isometric glute activation exercise. Simple but effective for glute activation and mind-muscle connection.",
+      "setup": "Standing, sitting, or lying position. Focus on glute muscles, ready for contraction.",
+      "movement": "Squeeze glutes as hard as possible. Hold contraction for specified time. Release and repeat.",
+      "cues": "Maximum squeeze, hold the contraction, feel glutes working, mind-muscle connection"
+    }
+  },
+  "Straight Leg Raises": {
+    "description": {
+      "overview": "Core exercise lifting straight legs from supine position. Targets lower abs and hip flexors.",
+      "setup": "Lying on back, legs straight, hands at sides or under glutes. Lower back neutral.",
+      "movement": "Raise straight legs to vertical without touching floor between reps. Control the movement.",
+      "cues": "Legs stay straight, back flat on floor, control up and down, breathe out on lift"
+    }
+  },
+  "Short Arc Quads": {
+    "description": {
+      "overview": "Rehabilitation exercise for quadriceps strengthening. Focuses on terminal knee extension with support.",
+      "setup": "Sitting with towel roll under knee. Leg supported, ready for controlled extension movement.",
+      "movement": "Extend knee over towel roll focusing on quad contraction. Hold briefly, lower with control.",
+      "cues": "Squeeze quad hard, full extension, hold the contraction, controlled movement"
+    }
+  },
+  "Lateral Bounds": {
+    "description": {
+      "overview": "Plyometric exercise jumping laterally from one foot to other. Builds lateral power and stability.",
+      "setup": "Athletic stance ready to bound sideways. Clear lateral space for movement.",
+      "movement": "Bound laterally landing on outside foot, absorb and bound back. Continuous lateral movement.",
+      "cues": "Explosive sideways, soft landings, absorb and explode, maintain rhythm"
+    }
+  },
+  "Tandem Walking": {
+    "description": {
+      "overview": "Balance exercise walking heel-to-toe in straight line. Improves balance and proprioception.",
+      "setup": "Standing ready to walk in straight line. Arms out for balance if needed.",
+      "movement": "Walk placing heel directly in front of toes. Maintain straight line, eyes forward.",
+      "cues": "Heel to toe, straight line, eyes forward, arms for balance, controlled pace"
+    }
+  },
+  "Walking Knee Hugs": {
+    "description": {
+      "overview": "Dynamic hip flexor stretch while walking. Improves hip mobility and activates glutes.",
+      "setup": "Standing ready to walk forward while performing knee hugs to chest.",
+      "movement": "Walk forward pulling alternating knees to chest. Feel hip flexor stretch and glute activation.",
+      "cues": "Knee to chest, feel hip flexor stretch, opposite glute squeeze, maintain walking pace"
+    }
+  },
+  "Heel Walks": {
+    "description": {
+      "overview": "Walking on heels with toes lifted. Strengthens shin muscles and improves ankle dorsiflexion.",
+      "setup": "Standing with toes lifted up, weight on heels. Ready to walk on heels only.",
+      "movement": "Walk forward on heels keeping toes lifted throughout. Feel shin muscles working.",
+      "cues": "Toes stay up, walk on heels only, feel shins working, maintain lifted toes"
+    }
+  },
+  "Jumping Jacks": {
+    "description": {
+      "overview": "Classic full-body exercise jumping feet apart while raising arms. Builds cardiovascular fitness and coordination.",
+      "setup": "Standing with feet together, arms at sides. Ready for rhythmic jumping movement.",
+      "movement": "Jump feet apart while raising arms overhead. Return to start position. Maintain rhythm.",
+      "cues": "Rhythmic movement, arms and legs coordinate, land softly, maintain steady pace"
+    }
+  },
+  "High Knees": {
+    "description": {
+      "overview": "Running in place bringing knees high toward chest. Builds hip flexor strength and cardiovascular fitness.",
+      "setup": "Standing ready to run in place. Focus on bringing knees as high as possible.",
+      "movement": "Run in place bringing alternating knees to chest level. Quick feet, high knees.",
+      "cues": "Knees to chest, quick feet, stay on balls of feet, pump arms"
+    }
+  },
+  "Butt Kicks": {
+    "description": {
+      "overview": "Running in place kicking heels toward glutes. Improves hamstring flexibility and coordination.",
+      "setup": "Standing ready to run in place. Focus on kicking heels back toward glutes.",
+      "movement": "Run in place kicking alternating heels back toward glutes. Quick turnover.",
+      "cues": "Heels to glutes, quick turnover, light on feet, feel hamstrings"
+    }
+  },
+  "Alternating Jump Lunges": {
+    "description": {
+      "overview": "Explosive lunge variation jumping and switching legs mid-air. Builds lower body power and coordination.",
+      "setup": "Start in lunge position. Ready for explosive jumping movement with leg switching.",
+      "movement": "Jump explosively switching legs in air, landing in opposite lunge. Continuous alternating.",
+      "cues": "Explosive jump, switch legs in air, soft landings, maintain rhythm"
+    }
+  },
+  "Tuck Jumps": {
+    "description": {
+      "overview": "Explosive jump bringing knees to chest. Develops vertical power and core strength.",
+      "setup": "Athletic stance ready for maximum vertical jump. Clear overhead space.",
+      "movement": "Jump vertically bringing knees to chest. Land softly and immediately repeat.",
+      "cues": "Maximum jump height, knees to chest, soft landings, continuous rhythm"
+    }
+  },
+  "Skaters": {
+    "description": {
+      "overview": "Lateral plyometric exercise mimicking speed skating motion. Builds lateral power and single-leg stability.",
+      "setup": "Athletic stance ready to bound laterally. Clear lateral space for movement.",
+      "movement": "Bound laterally landing on outside leg while sweeping inside leg behind. Alternate sides.",
+      "cues": "Explosive lateral bounds, land on outside leg, sweep behind, maintain balance"
+    }
+  },
+  "Banded Shoulder Dislocations": {
+    "description": {
+      "overview": "Shoulder mobility exercise using resistance band. Improves shoulder flexibility and prepares shoulders for overhead work.",
+      "setup": "Hold resistance band with wide grip, arms extended. Band should have light tension.",
+      "movement": "Pass band over head and behind back keeping arms straight. Return to front. Feel shoulder stretch.",
+      "cues": "Arms stay straight, wide grip, feel shoulder stretch, control the movement"
+    }
+  },
+  "Leg Swings": {
+    "description": {
+      "overview": "Dynamic hip mobility exercise swinging leg forward and back. Prepares hips for movement and improves range.",
+      "setup": "Hold support for balance, swing leg ready. Standing leg stable, core engaged.",
+      "movement": "Swing leg forward and back in controlled motion. Feel hip flexors and hamstrings warming.",
+      "cues": "Controlled swings, feel hip opening, use support for balance, both directions"
+    }
+  },
+  "Hip Circles": {
+    "description": {
+      "overview": "Hip mobility exercise making circles with raised knee. Improves hip range of motion and activation.",
+      "setup": "Standing with support if needed. Ready to lift knee and make circular motions.",
+      "movement": "Lift knee and make circles, opening hip through full range. Both directions, both legs.",
+      "cues": "Full circles, feel hip opening, both directions, control the movement"
+    }
+  },
+  "Knee to Chest": {
+    "description": {
+      "overview": "Hip flexor and glute stretch bringing knee toward chest. Simple mobility exercise for hip preparation.",
+      "setup": "Standing or lying position. Ready to bring knee toward chest for stretch.",
+      "movement": "Pull knee toward chest feeling stretch in hip and glute. Hold briefly, switch legs.",
+      "cues": "Knee to chest, feel the stretch, gentle pull, breathe into stretch"
+    }
+  },
+  "Ankle Pumps": {
+    "description": {
+      "overview": "Ankle mobility exercise flexing and pointing feet. Improves ankle range and activates lower leg muscles.",
+      "setup": "Sitting or lying with legs extended. Feet ready for flexion and extension movements.",
+      "movement": "Flex feet pulling toes back, then point toes away. Feel ankle and calf muscles working.",
+      "cues": "Pull toes back, point toes away, feel ankle moving, controlled movement"
+    }
+  },
+  "Ankle Circles": {
+    "description": {
+      "overview": "Ankle mobility exercise making circles with feet. Improves ankle range in all directions.",
+      "setup": "Sitting or standing, ready to lift foot and make circular motions.",
+      "movement": "Make circles with foot, moving ankle through full range. Both directions, both ankles.",
+      "cues": "Full circles, move ankle through range, both directions, feel the movement"
+    }
+  },
+  "Leg Pendulums": {
+    "description": {
+      "overview": "Gentle leg swings for hip mobility. Low-intensity movement to prepare hips and improve range.",
+      "setup": "Standing with support, ready for gentle leg swinging motions.",
+      "movement": "Gently swing leg side to side like pendulum. Relaxed, rhythmic movement for hip mobility.",
+      "cues": "Gentle swings, relaxed movement, feel hip loosening, rhythmic motion"
+    }
+  },
+  "Inchworms": {
+    "description": {
+      "overview": "Dynamic full-body mobility exercise walking hands forward from standing. Builds flexibility, core strength, and serves as excellent warm-up.",
+      "setup": "Standing tall, feet hip-width. Ready to hinge forward and walk out.",
+      "movement": "Hinge to touch floor, walk hands to plank. Optional push-up. Walk feet to hands. Stand up. Repeat.",
+      "cues": "Keep legs straight as able, strong plank position, controlled movement, feel the stretch"
+    }
+  },
+  "Arm Circles": {
+    "description": {
+      "overview": "Shoulder mobility exercise making circles with arms. Warms up shoulders and improves range of motion.",
+      "setup": "Standing with arms extended to sides. Ready for circular arm movements.",
+      "movement": "Make circles with arms, starting small and increasing size. Both forward and backward directions.",
+      "cues": "Start small, increase size, both directions, feel shoulders warming up"
+    }
+  },
+  "Shoulder Rolls": {
+    "description": {
+      "overview": "Shoulder mobility exercise rolling shoulders up, back, and down. Relieves tension and improves shoulder function.",
+      "setup": "Standing tall with arms at sides. Ready for shoulder rolling movements.",
+      "movement": "Roll shoulders up, back, and down in circular motion. Feel tension releasing.",
+      "cues": "Up, back, and down, feel tension release, smooth circles, both directions"
+    }
+  },
+  "Low Box Squat": {
+    "description": {
+      "overview": "Box squat to lower box targeting deeper range. Builds strength at bottom position while teaching depth.",
+      "setup": "Low box below parallel, bar positioned as preferred. Wider stance typically used.",
+      "movement": "Sit back to low box maintaining tension. Brief pause. Explode up from deeper position.",
+      "cues": "Sit back to low box, stay tight, explode from deep position, control the depth"
+    }
+  },
+  "High Box Squat": {
+    "description": {
+      "overview": "Box squat to higher box around parallel. Teaches squat mechanics while building confidence.",
+      "setup": "Box at parallel height, bar positioned as preferred. Standard squat stance.",
+      "movement": "Sit back to box at parallel. Brief pause maintaining tension. Drive up from seated position.",
+      "cues": "Sit to parallel, stay tight on box, drive up strong, build confidence"
+    }
+  },
+  "Couch Stretch": {
+    "description": {
+      "overview": "Deep hip flexor stretch using couch or elevated surface. Targets tight hip flexors from sitting.",
+      "setup": "Back foot elevated on couch, front leg in lunge position. Hands on front thigh for support.",
+      "movement": "Sink into stretch feeling deep hip flexor stretch. Hold position, breathe into stretch.",
+      "cues": "Deep hip flexor stretch, sink into position, breathe deeply, feel the release"
+    }
+  },
+  "Standing Hip Flexor Stretch": {
+    "description": {
+      "overview": "Hip flexor stretch in standing lunge position. Accessible stretch for tight hip flexors.",
+      "setup": "Lunge position with back leg straight. Hands on front thigh or hips for support.",
+      "movement": "Push hips forward feeling stretch in back leg hip flexor. Hold and breathe into stretch.",
+      "cues": "Push hips forward, feel back leg hip flexor, breathe into stretch, gentle pressure"
+    }
+  },
+  "Pigeon Prep Stretch": {
+    "description": {
+      "overview": "Modified pigeon pose for hip and glute flexibility. Targets hip external rotators and glutes.",
+      "setup": "Front leg bent at 90 degrees, back leg extended. Hands supporting upper body.",
+      "movement": "Sink into stretch feeling hip and glute opening. Breathe deeply into the stretch.",
+      "cues": "Front leg bent, back leg straight, sink into stretch, breathe deeply"
+    }
+  },
+  "Gentle Quad Stretch": {
+    "description": {
+      "overview": "Standing quadriceps stretch holding foot behind. Gentle stretch for front of thigh.",
+      "setup": "Standing with support if needed. Ready to pull foot behind toward glute.",
+      "movement": "Pull foot behind feeling gentle quad stretch. Hold position, breathe into stretch.",
+      "cues": "Gentle pull, feel front of thigh, use support for balance, breathe deeply"
+    }
+  },
+  "Bodyweight Chin/Pull-Ups": {
+    "description": {
+      "overview": "Unweighted pull-ups or chin-ups using body weight only. Fundamental upper body pulling exercise building back and arm strength.",
+      "setup": "Dead hang from bar with grip of choice. Arms fully extended, core engaged, legs together or crossed.",
+      "movement": "Pull body up until chin clears bar. Control descent to full arm extension. Strict form throughout.",
+      "cues": "Pull elbows to ribs, chin over bar, squeeze at top, control the negative, no swinging"
+    }
+  },
+  "Kettlebell Bottoms-Up Press": {
+    "description": {
+      "overview": "Overhead press holding kettlebell upside down by handle. Extreme stability challenge requiring maximum grip and core strength.",
+      "setup": "Kettlebell in rack position upside down, bell pointing up. Maximum grip strength required to stabilize.",
+      "movement": "Press unstable kettlebell overhead maintaining control. Bell stays perfectly vertical. Lower with extreme control.",
+      "cues": "Crush the handle, bell stays vertical, maximum tension, slow and controlled, core on fire"
+    }
+  },
+  "Kettlebell Figure 8": {
+    "description": {
+      "overview": "Dynamic kettlebell movement passing bell between legs in figure-8 pattern. Builds grip strength, coordination, and hip mobility.",
+      "setup": "Wide stance with kettlebell in one hand. Ready to pass bell between legs in continuous figure-8.",
+      "movement": "Pass kettlebell between legs from hand to hand in figure-8 pattern. Smooth, continuous rhythm.",
+      "cues": "Smooth figure-8, hand to hand, hips stay back, grip strength challenge, continuous flow"
+    }
+  },
+  "Dumbbell Swings": {
+    "description": {
+      "overview": "Kettlebell swing motion using dumbbell. Hip-hinge power exercise when kettlebells aren't available.",
+      "setup": "Hold dumbbell by one end with both hands. Feet wider than shoulders, ready for hip drive.",
+      "movement": "Hike dumbbell back between legs, explosive hip snap forward. Float dumbbell to shoulder height.",
+      "cues": "Explosive hips, float don't lift, snap like whip, dumbbell stays close, hip drive"
+    }
+  },
+  "IT Band Roll": {
+    "description": {
+      "overview": "Self-massage using foam roller on IT band. Releases tension in iliotibial band running along outer thigh.",
+      "setup": "Lying on side with foam roller under outer thigh. Support body weight with arms and opposite leg.",
+      "movement": "Roll slowly along IT band from hip to just above knee. Pause on tender spots. Control pressure.",
+      "cues": "Slow rolling, control pressure, pause on tender spots, breathe through discomfort"
+    }
+  },
+  "Hip Flexor Roll": {
+    "description": {
+      "overview": "Foam rolling for hip flexor muscles. Releases tension in front of hips from prolonged sitting.",
+      "setup": "Face down with roller under front of hip/thigh. Support body weight on forearms.",
+      "movement": "Roll slowly over hip flexor area. Apply controlled pressure. Focus on tender areas.",
+      "cues": "Face down position, slow movements, controlled pressure, breathe into tight spots"
+    }
+  },
+  "Quad Roll": {
+    "description": {
+      "overview": "Foam rolling for quadriceps muscles. Releases tension and improves flexibility in front thigh muscles.",
+      "setup": "Face down with roller under front of thighs. Support weight on forearms, feet off ground.",
+      "movement": "Roll slowly from hip to just above knee. Cover all four quadriceps muscles. Pause on tight spots.",
+      "cues": "Face down, slow rolling, cover all quad muscles, pause on tight areas, control pressure"
+    }
+  },
+  "Glute Roll": {
+    "description": {
+      "overview": "Foam rolling for glute muscles. Releases tension in buttocks and improves hip function.",
+      "setup": "Sitting on roller with one leg crossed over. Support with hands, lean into working glute.",
+      "movement": "Roll slowly over glute muscle. Apply pressure by leaning into roller. Focus on tight areas.",
+      "cues": "Lean into working side, slow movements, find tight spots, control the pressure"
+    }
+  },
+  "Calf Roll": {
+    "description": {
+      "overview": "Foam rolling for calf muscles. Releases tension in lower leg and improves ankle mobility.",
+      "setup": "Sitting with roller under calf. Other leg crossed over for added pressure or both legs together.",
+      "movement": "Roll slowly from ankle to just below knee. Cover both gastrocnemius and soleus muscles.",
+      "cues": "Slow rolling motion, cover whole calf, add pressure with other leg, pause on tender spots"
+    }
+  },
+  "Mobility Work": {
+    "description": {
+      "overview": "General term for movement preparation and flexibility exercises. Improves range of motion and prepares body for activity.",
+      "setup": "Various positions depending on specific mobility needs. Focus on areas requiring attention.",
+      "movement": "Perform targeted movements to improve range of motion. Hold stretches, perform dynamic movements.",
+      "cues": "Target specific areas, gentle progressive movement, breathe into stretches, listen to body"
+    }
+  },
+  "Shoulder Mobility": {
+    "description": {
+      "overview": "Specific mobility work for shoulder joint and surrounding muscles. Improves overhead range and shoulder health.",
+      "setup": "Various positions for shoulder movement. May use bands, walls, or partner assistance.",
+      "movement": "Move shoulders through full range of motion. Target tight areas. Progress gradually.",
+      "cues": "Full range of motion, target restrictions, progress gradually, no forcing movement"
+    }
+  },
+  "Joint Mobility Drills": {
+    "description": {
+      "overview": "Systematic movement preparation for all major joints. Prepares body for exercise and improves function.",
+      "setup": "Standing or seated ready to move joints through their ranges. Systematic head-to-toe approach.",
+      "movement": "Move each joint through its full range systematically. Start small, increase range gradually.",
+      "cues": "Systematic approach, start small, increase range, all major joints, controlled movements"
+    }
+  },
+  "Dynamic Movement Prep": {
+    "description": {
+      "overview": "Active warm-up using movement patterns. Prepares nervous system and muscles for training through movement.",
+      "setup": "Clear space for movement. Ready to perform progressively intense movement patterns.",
+      "movement": "Perform dynamic movements that mimic training patterns. Progress from low to higher intensity.",
+      "cues": "Progressive intensity, mimic training movements, activate nervous system, prepare for work"
+    }
+  },
+  "Band Work": {
+    "description": {
+      "overview": "Resistance exercises using elastic bands. Provides variable resistance and excellent for activation and rehabilitation.",
+      "setup": "Resistance bands ready for various exercises. Anchor points secured as needed.",
+      "movement": "Perform resistance exercises using band tension. Focus on controlled movements and muscle activation.",
+      "cues": "Control the resistance, feel muscle activation, variable resistance, smooth movements"
+    }
+  },
+  "Arm and Leg Swings": {
+    "description": {
+      "overview": "Dynamic warm-up movements swinging limbs through range of motion. Prepares joints and muscles for activity.",
+      "setup": "Standing with support if needed. Ready to swing arms and legs through full ranges.",
+      "movement": "Swing arms and legs in various directions. Start small, increase range. Feel joints warming.",
+      "cues": "Progressive range, various directions, feel joints warming, controlled swinging"
+    }
+  },
+  "Dynamic Movement": {
+    "description": {
+      "overview": "Active movement patterns for warm-up and preparation. Engages nervous system and prepares body for training.",
+      "setup": "Clear space for various movement patterns. Ready for progressive activity.",
+      "movement": "Perform active movements that prepare body for training. Increase intensity progressively.",
+      "cues": "Active movements, nervous system activation, progressive intensity, prepare for training"
+    }
+  },
+  "Dead Bug": {
+    "description": {
+      "overview": "Core stability exercise with reciprocal limb movement. Teaches spinal stability while moving arms and legs independently.",
+      "setup": "Lying on back, arms reaching up, knees bent 90° over hips. Lower back pressed into floor.",
+      "movement": "Lower opposite arm and leg toward floor. Maintain back contact with floor. Return to start. Alternate sides.",
+      "cues": "Back stays flat, slow and controlled, breathe throughout, opposite arm and leg"
+    }
+  },
+  "Mobility Flow": {
+    "description": {
+      "overview": "Continuous sequence of mobility exercises flowing from one to another. Comprehensive movement preparation.",
+      "setup": "Clear space for flowing movements. Ready to transition smoothly between mobility exercises.",
+      "movement": "Flow smoothly from one mobility exercise to another. Maintain continuous movement and breathing.",
+      "cues": "Smooth transitions, continuous flow, maintain breathing, comprehensive movement prep"
+    }
+  },
+  "EMOM 12 minutes": {
+    "description": {
+      "overview": "Every Minute on the Minute protocol for 12 minutes. Structured interval training building work capacity and mental toughness.",
+      "setup": "Timer set for 12 minutes. Exercise stations ready. Know your target reps for each minute.",
+      "movement": "Perform prescribed reps at start of each minute. Rest remaining time. Repeat for 12 minutes.",
+      "cues": "Work at minute start, use rest wisely, maintain quality, push through fatigue"
+    }
+  },
+  "Incline Bench EMOM": {
+    "description": {
+      "overview": "Incline bench press performed in EMOM format until failure. Builds pressing endurance and mental toughness.",
+      "setup": "Incline bench ready with appropriate weight. Timer set. Safety bars or spotter recommended.",
+      "movement": "Perform reps every minute until unable to complete prescribed reps. Track total volume.",
+      "cues": "Quality reps every minute, track your volume, fight through fatigue, maintain form"
+    }
+  },
+  "Strict Barbell Row EMOM": {
+    "description": {
+      "overview": "Strict barbell rows in EMOM format until failure. Builds back endurance and rowing strength.",
+      "setup": "Barbell ready in bent-over position. Timer set. Maintain strict form throughout.",
+      "movement": "Perform strict rows every minute until form breaks down. No body english allowed.",
+      "cues": "Strict form only, every minute counts, feel back working, maintain position"
+    }
+  },
+  "Z Press EMOM": {
+    "description": {
+      "overview": "Z press performed in EMOM format until failure. Ultimate core and shoulder endurance challenge.",
+      "setup": "Seated on floor, legs straight. Barbell in rack position. Timer ready for EMOM protocol.",
+      "movement": "Press overhead every minute until unable to complete reps. Core works overtime.",
+      "cues": "Seated position strict, core on fire, every minute press, fight the fatigue"
+    }
+  },
+  "Push Press EMOM": {
+    "description": {
+      "overview": "Push press in EMOM format building explosive overhead strength endurance. Uses leg drive for assistance.",
+      "setup": "Barbell in front rack, timer ready. Space cleared for explosive movement.",
+      "movement": "Explosive push press every minute until failure. Use leg drive efficiently.",
+      "cues": "Explosive every minute, use leg drive, overhead lockout, maintain power"
+    }
+  },
+  "Barbell Cheat Row EMOM": {
+    "description": {
+      "overview": "Barbell rows with controlled body english in EMOM format. Allows heavier loading than strict rows.",
+      "setup": "Heavier barbell ready, timer set. Controlled cheating allowed but still focus on back.",
+      "movement": "Row with slight body assistance every minute until failure. Still emphasize back muscles.",
+      "cues": "Controlled cheating, still feel back, heavier than strict, every minute counts"
+    }
+  },
+  "Seated Forward Fold": {
+    "description": {
+      "overview": "Seated hamstring stretch reaching forward toward toes. Classic flexibility exercise for posterior chain.",
+      "setup": "Seated with legs extended straight. Hands ready to reach toward feet.",
+      "movement": "Fold forward from hips reaching toward toes. Feel hamstring stretch. Breathe into stretch.",
+      "cues": "Fold from hips, reach toward toes, feel hamstring stretch, breathe deeply"
+    }
+  },
+  "Seated Spinal Twist": {
+    "description": {
+      "overview": "Seated rotation stretch for spine and surrounding muscles. Improves spinal mobility and releases tension.",
+      "setup": "Seated with one leg straight, other crossed over. Hand behind for support.",
+      "movement": "Rotate spine toward bent leg using arm for gentle pressure. Feel spinal rotation.",
+      "cues": "Gentle rotation, feel spinal twist, breathe into stretch, both directions"
+    }
+  },
+  "IT Band Stretch": {
+    "description": {
+      "overview": "Stretch for iliotibial band running along outer thigh. Addresses common tightness from running and sitting.",
+      "setup": "Standing with legs crossed or lying on side. Various positions available.",
+      "movement": "Stretch outer thigh by leaning into position. Feel IT band tension release.",
+      "cues": "Feel outer thigh stretch, gentle pressure, breathe into stretch, hold position"
+    }
+  },
+  "Hamstring Stretch": {
+    "description": {
+      "overview": "Targeted stretch for hamstring muscles. Essential for posterior chain flexibility and injury prevention.",
+      "setup": "Various positions available - standing, seated, or supine. Choose comfortable position.",
+      "movement": "Stretch hamstring by extending leg and reaching toward foot. Feel back of thigh stretch.",
+      "cues": "Feel back of thigh, gentle progressive stretch, breathe deeply, maintain position"
+    }
+  },
+  "Sun Salutation A": {
+    "description": {
+      "overview": "Traditional yoga sequence flowing through multiple poses. Builds flexibility, strength, and mind-body connection.",
+      "setup": "Yoga mat ready. Clear space for flowing movements. Focus on breath and movement.",
+      "movement": "Flow through mountain pose, forward fold, half lift, chaturanga, upward dog, downward dog sequence.",
+      "cues": "Flow with breath, smooth transitions, focus inward, traditional sequence"
+    }
+  },
+  "Warrior Sequence": {
+    "description": {
+      "overview": "Yoga sequence focusing on warrior poses. Builds strength, balance, and flexibility through standing poses.",
+      "setup": "Yoga mat with space for lunging movements. Focus on alignment and breathing.",
+      "movement": "Flow through warrior I, II, and III poses. Hold positions, breathe deeply.",
+      "cues": "Strong foundation, breathe deeply, hold positions, focus on alignment"
+    }
+  },
+  "Balance Series": {
+    "description": {
+      "overview": "Sequence of balance-challenging poses and movements. Improves proprioception and stability.",
+      "setup": "Clear space for balance challenges. May use props for assistance initially.",
+      "movement": "Progress through various balance positions. Hold steady, breathe normally.",
+      "cues": "Find center, breathe normally, use focus point, progress gradually"
+    }
+  },
+  "Hip Opening Flow": {
+    "description": {
+      "overview": "Yoga sequence targeting hip flexibility and mobility. Addresses common hip tightness from modern lifestyle.",
+      "setup": "Yoga mat ready. Props available for support. Focus on hip area.",
+      "movement": "Flow through hip opening poses. Breathe into tight areas. Progress gradually.",
+      "cues": "Breathe into hips, gentle progressive opening, listen to body, flow smoothly"
+    }
+  },
+  "Restorative Yoga": {
+    "description": {
+      "overview": "Gentle yoga practice using props for support. Focuses on relaxation, stress relief, and recovery.",
+      "setup": "Props available - bolsters, blocks, straps. Comfortable environment for relaxation.",
+      "movement": "Hold supported poses for extended time. Focus on breathing and relaxation.",
+      "cues": "Deep relaxation, supported positions, breathe deeply, release tension"
+    }
+  },
+  "Yoga Session": {
+    "description": {
+      "overview": "Complete yoga practice combining various elements. Includes warm-up, poses, and relaxation.",
+      "setup": "Yoga mat in quiet space. Props available as needed. Set intention for practice.",
+      "movement": "Flow through complete practice including various poses and breathing exercises.",
+      "cues": "Set intention, breathe consciously, listen to body, end with relaxation"
+    }
+  },
+  "Glute Activation Circuit": {
+    "description": {
+      "overview": "Circuit targeting glute muscles for activation and strength. Essential for hip health and athletic performance.",
+      "setup": "Resistance bands and space for various glute exercises. Timer set for work/rest intervals.",
+      "movement": "Rotate through glute-focused exercises. Maintain constant muscle tension. Feel glutes working.",
+      "cues": "Feel glutes working, maintain tension, focus on muscle activation, quality over speed"
+    }
+  },
+  "HIIT Circuit 1": {
+    "description": {
+      "overview": "High-intensity interval circuit using bodyweight exercises. Builds cardiovascular fitness and strength endurance.",
+      "setup": "Clear space for explosive movements. Timer set for 40 seconds work, 20 seconds rest.",
+      "movement": "Maximum effort for work periods. Full rest during rest periods. Push intensity throughout.",
+      "cues": "All-out effort, use rest fully, maintain intensity, embrace the challenge"
+    }
+  },
+  "Single-arm Dumbbell Row": {
+    "description": {
+      "overview": "Unilateral rowing movement in circuit format. Builds back strength while challenging core stability.",
+      "setup": "Dumbbell ready, support surface available. Timed intervals for continuous work.",
+      "movement": "Row dumbbell continuously for time. Switch arms as prescribed. Maintain form under fatigue.",
+      "cues": "Feel lat working, maintain form, switch arms smoothly, control under fatigue"
+    }
+  },
+  "Reverse Lunges with Bicep Curls": {
+    "description": {
+      "overview": "Combination exercise linking lower body lunge with upper body curl. Maximizes time efficiency in circuits.",
+      "setup": "Dumbbells at sides, space for lunging. Ready for coordinated upper and lower body work.",
+      "movement": "Perform reverse lunge while curling dumbbells. Coordinate movements. Feel legs and arms working.",
+      "cues": "Coordinate movements, feel legs and arms, smooth transitions, maintain balance"
+    }
+  },
+  "Dumbbell Deadlift to Upright Row": {
+    "description": {
+      "overview": "Combination movement flowing from deadlift to upright row. Full-body exercise maximizing muscle recruitment.",
+      "setup": "Dumbbells ready for fluid transition from deadlift to row. Space for complete movement.",
+      "movement": "Deadlift dumbbells, then flow into upright row. Smooth transition between movements.",
+      "cues": "Smooth transition, feel posterior chain then shoulders, fluid movement, control the weights"
+    }
+  },
+  "Dumbbell Romanian Deadlifts": {
+    "description": {
+      "overview": "Hip-hinge movement using dumbbells for posterior chain development. Circuit version emphasizes endurance.",
+      "setup": "Dumbbells ready for continuous RDL movement. Focus on hamstring and glute activation.",
+      "movement": "Continuous RDLs for prescribed time. Maintain hip hinge pattern. Feel hamstrings working.",
+      "cues": "Hips back, feel hamstrings, maintain pattern, control the weight"
+    }
+  },
+  "Push-up to T-rotation": {
+    "description": {
+      "overview": "Push-up followed by rotation to side plank. Combines pushing strength with core rotation and stability.",
+      "setup": "Clear space for push-up and rotation. Ready for coordinated upper body movement.",
+      "movement": "Push-up, then rotate to side plank reaching arm up. Return to start. Alternate sides.",
+      "cues": "Strong push-up, smooth rotation, reach high, feel core working, alternate sides"
+    }
+  },
+  "Goblet Squats with Pulse": {
+    "description": {
+      "overview": "Goblet squat with pulsing at bottom position. Increases time under tension and muscular endurance.",
+      "setup": "Dumbbell held at chest, ready for squat with pulses. Focus on maintaining position.",
+      "movement": "Squat down, pulse at bottom, then return to top. Continuous tension in legs.",
+      "cues": "Pulse at bottom, maintain position, feel leg burn, continuous tension"
+    }
+  },
+  "Single-arm Overhead Press": {
+    "description": {
+      "overview": "Unilateral overhead pressing in circuit format. Challenges shoulder stability and core strength.",
+      "setup": "Dumbbell at shoulder ready for pressing. Core engaged for stability challenge.",
+      "movement": "Press dumbbell overhead continuously. Switch arms as prescribed. Fight anti-lateral flexion.",
+      "cues": "Don't lean, core works hard, press straight up, switch arms smoothly"
+    }
+  },
+  "Dumbbell Step-ups": {
+    "description": {
+      "overview": "Unilateral leg exercise stepping onto elevated surface with dumbbells. Builds single-leg strength and power.",
+      "setup": "Sturdy box or bench, dumbbells at sides. Focus on using top leg to step up.",
+      "movement": "Step up onto box using top leg. Control descent. Minimal push from bottom leg.",
+      "cues": "Top leg does work, control up and down, no bouncing, feel working leg"
+    }
+  },
+  "Power EMOM": {
+    "description": {
+      "overview": "Power-focused exercises performed in EMOM format. Builds explosive strength and power endurance.",
+      "setup": "Power exercises ready (cleans, snatches, jumps). Timer set for EMOM protocol.",
+      "movement": "Explosive power movements every minute. Focus on power output. Rest between minutes.",
+      "cues": "Maximum power, explosive movement, reset between minutes, quality over quantity"
+    }
+  },
+  "Core AMRAP": {
+    "description": {
+      "overview": "As Many Reps As Possible core-focused circuit. Builds core endurance and strength through high volume.",
+      "setup": "Core exercise stations ready. Timer set for AMRAP duration. Track total reps.",
+      "movement": "Maximum core exercise reps in time limit. Maintain form as fatigue sets in.",
+      "cues": "Maximum reps, maintain form, track your score, push through core fatigue"
+    }
+  },
+  "Gentle Walk + Stretching": {
+    "description": {
+      "overview": "Low-intensity walking combined with stretching. Perfect for recovery, stress relief, and gentle movement.",
+      "setup": "Comfortable walking route planned. Stretching space available after walk.",
+      "movement": "Walk at comfortable, conversational pace. Follow with gentle full-body stretching.",
+      "cues": "Comfortable pace, breathe easily, gentle stretching, listen to body"
+    }
+  },
+  "Optional Cardio": {
+    "description": {
+      "overview": "Flexible cardiovascular exercise of choice. Allows individual preference while meeting cardio needs.",
+      "setup": "Cardio equipment or outdoor space available. Choose preferred activity.",
+      "movement": "Perform preferred cardio activity at moderate intensity. Maintain conversational pace.",
+      "cues": "Choose what you enjoy, moderate effort, conversational pace, stay consistent"
+    }
+  },
+  "Evening Walk/Run": {
+    "description": {
+      "overview": "Gentle evening cardiovascular activity. Promotes recovery and helps with sleep quality.",
+      "setup": "Safe walking or running route. Comfortable pace that doesn't interfere with sleep.",
+      "movement": "Walk or light jog at comfortable pace. Focus on relaxation and stress relief.",
+      "cues": "Comfortable pace, relax and unwind, prepare for rest, enjoy the movement"
+    }
+  },
+  "Evening Walk": {
+    "description": {
+      "overview": "Relaxing walk in the evening for stress relief and light activity. Promotes recovery and mental wellness.",
+      "setup": "Pleasant walking route, comfortable shoes. Focus on relaxation and mindfulness.",
+      "movement": "Walk at leisurely pace focusing on relaxation. Use time for reflection or mindfulness.",
+      "cues": "Leisurely pace, focus on relaxation, mindful walking, stress relief"
+    }
+  },
+  "Cardio Build-up": {
+    "description": {
+      "overview": "Progressive cardiovascular warm-up building intensity gradually. Prepares body for higher intensity work.",
+      "setup": "Cardio equipment ready. Plan progressive intensity increase over 5 minutes.",
+      "movement": "Start easy, gradually increase intensity each minute. Prepare cardiovascular system.",
+      "cues": "Start easy, build gradually, prepare the system, warm up thoroughly"
+    }
+  },
+  "Light Walking": {
+    "description": {
+      "overview": "Easy-paced walking for recovery or gentle activity. Promotes blood flow without adding stress.",
+      "setup": "Comfortable walking environment. Focus on easy, relaxed movement.",
+      "movement": "Walk at very easy pace that feels restorative. No stress or intensity required.",
+      "cues": "Very easy pace, restorative walking, no stress, gentle movement"
+    }
+  },
+  "Sprint in Place": {
+    "description": {
+      "overview": "High-intensity running motion without forward movement. Builds cardiovascular fitness and leg power.",
+      "setup": "Clear space for stationary running. Ready for high-intensity effort.",
+      "movement": "Run in place at maximum effort. High knees, quick feet, pump arms vigorously.",
+      "cues": "Maximum effort, high knees, quick feet, pump arms, breathe hard"
+    }
+  },
+  "Light Activity": {
+    "description": {
+      "overview": "General low-intensity movement and activity. Promotes health without adding training stress.",
+      "setup": "Any comfortable environment for light movement. Focus on enjoyable activity.",
+      "movement": "Engage in preferred light activities - walking, stretching, gentle movement.",
+      "cues": "Light and enjoyable, no training stress, promote health, listen to body"
+    }
+  },
+  "Meal Prep": {
+    "description": {
+      "overview": "Preparation of healthy meals and snacks. Essential lifestyle component supporting fitness goals.",
+      "setup": "Kitchen space, ingredients, and containers ready. Plan meals for upcoming days.",
+      "movement": "Prepare nutritious meals and snacks. Focus on supporting training and recovery.",
+      "cues": "Plan ahead, support training goals, prioritize nutrition, prepare for success"
+    }
+  },
+  "Complete Rest": {
+    "description": {
+      "overview": "Full recovery day with minimal physical activity. Essential for adaptation and preventing overtraining.",
+      "setup": "Comfortable environment for relaxation. Eliminate training stress completely.",
+      "movement": "Minimize physical stress. Focus on sleep, nutrition, and mental recovery.",
+      "cues": "True rest, no training stress, prioritize recovery, listen to body"
+    }
+  },
+  "Walking Recovery": {
+    "description": {
+      "overview": "Very gentle walking for active recovery. Promotes blood flow and recovery without adding stress.",
+      "setup": "Easy walking environment. Focus on movement that aids recovery.",
+      "movement": "Walk at very easy pace that feels good. Stop if any discomfort arises.",
+      "cues": "Recovery pace only, feel good movement, stop if uncomfortable, aid recovery"
+    }
+  },
+  "Bodyweight Circuit FOR TIME": {
+    "description": {
+      "overview": "Timed circuit using only bodyweight exercises. Challenges conditioning and mental toughness.",
+      "setup": "Bodyweight exercises arranged in circuit. Timer ready for completion time tracking.",
+      "movement": "Complete all exercises as fast as possible while maintaining form. Track completion time.",
+      "cues": "Move fast, maintain form, track your time, push through fatigue"
+    }
+  },
+  "Push Complex Circuit": {
+    "description": {
+      "overview": "Circuit focusing on pushing movement patterns. Builds upper body strength and endurance.",
+      "setup": "Pushing exercises arranged in sequence. Various equipment for push movements.",
+      "movement": "Rotate through pushing exercises with minimal rest. Feel chest, shoulders, triceps working.",
+      "cues": "Focus on pushing muscles, minimal rest, maintain form, feel the burn"
+    }
+  },
+  "Row Complex Circuit": {
+    "description": {
+      "overview": "Circuit emphasizing rowing and pulling movements. Develops back strength and pulls balance pressing.",
+      "setup": "Rowing exercises arranged in circuit. Equipment for various pulling movements.",
+      "movement": "Move through rowing exercises targeting all back muscles. Squeeze between shoulder blades.",
+      "cues": "Squeeze back muscles, feel lats working, pull elbows back, maintain posture"
+    }
+  },
+  "Bodyweight Circuit": {
+    "description": {
+      "overview": "General bodyweight exercise circuit. Uses body weight only for resistance and conditioning.",
+      "setup": "Space for various bodyweight movements. No equipment required.",
+      "movement": "Rotate through bodyweight exercises. Adjust intensity as needed for fitness level.",
+      "cues": "Use body weight, adjust intensity, maintain form, no equipment needed"
+    }
+  },
+  "Leg Circuit": {
+    "description": {
+      "overview": "Circuit targeting lower body muscles. Builds leg strength, power, and endurance.",
+      "setup": "Leg exercises arranged in sequence. Space for squats, lunges, and plyometrics.",
+      "movement": "Move through leg exercises feeling quads, glutes, and hamstrings working.",
+      "cues": "Feel legs working, maintain form, push through leg fatigue, focus on lower body"
+    }
+  },
+  "Jump Squat Circuit": {
+    "description": {
+      "overview": "Plyometric circuit emphasizing jump squats. Builds lower body power and explosiveness.",
+      "setup": "Clear space for explosive jumping movements. Soft landing surface preferred.",
+      "movement": "Perform various jump squat variations. Focus on explosive power and soft landings.",
+      "cues": "Explosive jumps, soft landings, maximum power, quick ground contact"
+    }
+  },
+  "Box Jumps or Jump Squats": {
+    "description": {
+      "overview": "Choice between box jumps or jump squats for plyometric training. Develops lower body power.",
+      "setup": "Box available for jumps or clear space for jump squats. Choose based on preference.",
+      "movement": "Perform explosive jumping movements. Focus on power development and safe landings.",
+      "cues": "Explosive takeoff, safe landings, choose your preferred option, maximum power"
+    }
+  },
+  "Single-leg Glute Bridges": {
+    "description": {
+      "overview": "Unilateral glute bridge targeting one side at a time. Addresses strength imbalances while building glute and hamstring strength.",
+      "setup": "Lying on back, one foot planted, other leg extended or bent up. Arms at sides for stability.",
+      "movement": "Drive through planted heel to lift hips up. Squeeze glute hard at top. Lower with control.",
+      "cues": "Drive through heel, big glute squeeze, hips stay level, feel the working side"
+    }
+  },
+  "Single-arm Dumbbell Row (Interval)": {
+    "description": {
+      "overview": "Unilateral dumbbell row performed for timed intervals. Builds back endurance while challenging grip and core stability.",
+      "setup": "Dumbbell ready, support surface available. Timer set for interval work periods.",
+      "movement": "Row dumbbell continuously for time. Switch arms as prescribed. Maintain form under fatigue.",
+      "cues": "Feel lat working, maintain form, switch arms smoothly, breathe with rhythm"
+    }
+  },
+  "Push-up Interval (Rep-based)": {
+    "description": {
+      "overview": "Push-ups performed for specific rep targets in timed intervals. Builds upper body endurance and mental toughness.",
+      "setup": "Clear space for push-ups. Timer ready for interval protocol. Know target reps.",
+      "movement": "Perform target push-up reps within time limit. Rest remaining time. Maintain quality.",
+      "cues": "Quality reps first, use rest time, maintain form, push through fatigue"
+    }
+  },
+  "Upper Body Tri-Set Interval": {
+    "description": {
+      "overview": "Three upper body exercises performed back-to-back in interval format. Builds upper body endurance and strength.",
+      "setup": "Three upper body exercise stations ready. Minimal transition time between exercises.",
+      "movement": "Move through three exercises rapidly. Complete all three, then rest. Repeat for intervals.",
+      "cues": "Quick transitions, feel upper body working, complete all three, earn your rest"
+    }
+  },
+  "Knee Extensions (Seated)": {
+    "description": {
+      "overview": "Seated quadriceps isolation exercise extending knee against resistance. Builds quad strength and targets VMO.",
+      "setup": "Seated position with resistance (machine, band, or weight). Back supported, knee at 90 degrees.",
+      "movement": "Extend knee fully against resistance. Squeeze quadriceps hard at top. Lower with control.",
+      "cues": "Full extension, squeeze quad hard, control the resistance, feel front thigh working"
+    }
+  },
+  "Band Pull-Aparts": {
+    "description": {
+      "overview": "Rear delt and rhomboid exercise using resistance band. Excellent for posture improvement and shoulder health.",
+      "setup": "Resistance band held at chest level, arms extended. Light to moderate resistance.",
+      "movement": "Pull band apart by squeezing shoulder blades together. Feel rear delts working. Control return.",
+      "cues": "Squeeze shoulder blades, feel rear delts, pull band apart, control the return"
+    }
+  },
+  "Dynamic Warm-up": {
+    "description": {
+      "overview": "Active movement preparation using dynamic exercises. Prepares nervous system and muscles for training.",
+      "setup": "Clear space for various dynamic movements. Progress from low to higher intensity.",
+      "movement": "Perform dynamic movements that mimic training patterns. Gradually increase range and speed.",
+      "cues": "Start easy, build intensity, mimic training movements, prepare nervous system"
+    }
+  },
+  "Cat-Cow Stretches": {
+    "description": {
+      "overview": "Spinal mobility exercise alternating between flexion and extension. Improves spinal health and core awareness.",
+      "setup": "On hands and knees, neutral spine position. Hands under shoulders, knees under hips.",
+      "movement": "Arch back looking up (cow), then round spine looking down (cat). Smooth alternating rhythm.",
+      "cues": "Smooth rhythm, arch and round, breathe with movement, feel spine moving"
+    }
+  },
+  "Knee Circles (Standing)": {
+    "description": {
+      "overview": "Standing knee mobility exercise making circles with lifted knee. Improves hip range of motion.",
+      "setup": "Standing with support if needed. Ready to lift knee and make circular motions.",
+      "movement": "Lift knee and make circles, opening hip through full range. Both directions, both legs.",
+      "cues": "Full circles, feel hip opening, both directions, control the movement"
+    }
+  },
+  "Upper Body Dynamic Warm-up": {
+    "description": {
+      "overview": "Dynamic movement preparation focusing on upper body. Prepares shoulders, arms, and torso for training.",
+      "setup": "Clear space for arm and shoulder movements. Progress through range of motion.",
+      "movement": "Perform dynamic upper body movements. Arm circles, swings, and activation exercises.",
+      "cues": "Warm shoulders gradually, increase range, feel muscles activating, prepare for work"
+    }
+  },
+  "Progressive Warm-up": {
+    "description": {
+      "overview": "Systematic warm-up building intensity progressively. Prepares entire body for training demands.",
+      "setup": "Plan progression from gentle to training intensity. Include general and specific preparation.",
+      "movement": "Start with gentle movement, progress to training-specific patterns. Build intensity gradually.",
+      "cues": "Start gentle, build progressively, mimic training, ready to work"
+    }
+  },
+  "Lower Body Warm-up": {
+    "description": {
+      "overview": "Dynamic preparation focusing on lower body muscles and joints. Essential before leg training.",
+      "setup": "Space for leg swings, squats, and dynamic movements. Progress through ranges.",
+      "movement": "Perform dynamic lower body movements. Leg swings, squats, lunges, activation.",
+      "cues": "Warm legs gradually, feel muscles activating, prepare for training, full ranges"
+    }
+  },
+  "Dynamic Lower Body Warm-up": {
+    "description": {
+      "overview": "Active lower body preparation using movement patterns. Prepares legs and hips for training.",
+      "setup": "Clear space for leg movements. Include hip circles, leg swings, bodyweight squats.",
+      "movement": "Move through dynamic lower body patterns. Build from gentle to training intensity.",
+      "cues": "Activate glutes and legs, build intensity, prepare movement patterns, feel ready"
+    }
+  },
+  "Dynamic Upper Body Warm-up": {
+    "description": {
+      "overview": "Active upper body preparation using movement patterns. Prepares arms, shoulders, and back.",
+      "setup": "Space for arm movements and shoulder preparation. Include circles, swings, pulls.",
+      "movement": "Progress through upper body movements. Prepare shoulders for pressing and pulling.",
+      "cues": "Warm shoulders thoroughly, prepare for pressing and pulling, feel activation"
+    }
+  },
+  "Power Prep Warm-up": {
+    "description": {
+      "overview": "Dynamic warm-up specifically preparing for power and explosive movements. Neural activation focus.",
+      "setup": "Space for explosive movements. Progress from general to power-specific preparation.",
+      "movement": "Include jumps, throws, and explosive patterns. Prepare nervous system for power.",
+      "cues": "Explosive preparation, activate nervous system, prepare for power, feel explosive"
+    }
+  },
+  "90/90 Hip Stretch": {
+    "description": {
+      "overview": "Seated hip stretch with both legs at 90-degree angles. Targets hip internal and external rotation.",
+      "setup": "Seated with both legs bent at 90 degrees. One leg in front, one to side.",
+      "movement": "Lean forward over front leg, then rotate to stretch both hips. Hold positions.",
+      "cues": "Both legs at 90 degrees, lean forward, feel hip stretch, breathe deeply"
+    }
+  },
+  "Figure-4 Hip Stretch": {
+    "description": {
+      "overview": "Hip stretch placing ankle on opposite knee in figure-4 position. Targets hip external rotators and glutes.",
+      "setup": "Lying on back or seated. Place ankle of one leg on opposite knee.",
+      "movement": "Pull legs toward chest feeling stretch in hip and glute. Hold position.",
+      "cues": "Ankle on knee, pull toward chest, feel hip and glute stretch, breathe into stretch"
+    }
+  },
+  "Child's Pose Stretch": {
+    "description": {
+      "overview": "Restorative yoga pose stretching back and hips. Promotes relaxation and spinal decompression.",
+      "setup": "Kneeling position ready to sit back on heels. Arms can extend forward or rest at sides.",
+      "movement": "Sit back on heels, extend arms forward or rest at sides. Feel back and hip stretch.",
+      "cues": "Sit back on heels, relax into stretch, breathe deeply, let gravity help"
+    }
+  },
+  "Yoga Warm-up Flow": {
+    "description": {
+      "overview": "Flowing yoga sequence for warm-up and preparation. Combines movement, breathing, and mindfulness.",
+      "setup": "Yoga mat ready. Focus on breath and smooth movement transitions.",
+      "movement": "Flow through yoga poses with breath awareness. Prepare body and mind for practice.",
+      "cues": "Flow with breath, smooth transitions, prepare body and mind, focus inward"
+    }
+  },
+  "Strength-Flexibility Flow": {
+    "description": {
+      "overview": "Movement sequence combining strength and flexibility elements. Builds strength through range of motion.",
+      "setup": "Space for flowing movements. Combine strengthening positions with stretches.",
+      "movement": "Flow between strength positions and stretches. Build strength while improving flexibility.",
+      "cues": "Strength through range, flow smoothly, build and stretch, integrated approach"
+    }
+  },
+  "Recovery/Restoration": {
+    "description": {
+      "overview": "General recovery and restoration activities. Focuses on promoting healing and reducing stress.",
+      "setup": "Comfortable environment for relaxation. May include stretching, breathing, or gentle movement.",
+      "movement": "Engage in activities that promote recovery. Listen to body's needs for restoration.",
+      "cues": "Focus on recovery, listen to body, reduce stress, promote healing"
+    }
+  },
+  "Push-Up EMOM": {
+    "description": {
+      "overview": "Push-ups performed every minute on the minute until failure. Builds upper body endurance and mental toughness.",
+      "setup": "Clear space for push-ups. Timer ready for EMOM protocol. Track reps each minute.",
+      "movement": "Perform push-ups at start of each minute until unable to complete target reps.",
+      "cues": "Quality push-ups, every minute counts, track your reps, push through fatigue"
+    }
+  },
+  "EMOM 10 minutes": {
+    "description": {
+      "overview": "Every Minute on the Minute protocol for 10 minutes. Builds work capacity and mental toughness.",
+      "setup": "Timer set for 10 minutes. Exercise stations ready. Know target reps per minute.",
+      "movement": "Perform prescribed reps at start of each minute. Rest remaining time.",
+      "cues": "Work at minute start, use rest wisely, maintain quality, 10 minutes of focus"
+    }
+  },
+  "EMOM 15 minutes": {
+    "description": {
+      "overview": "Every Minute on the Minute protocol for 15 minutes. Extended work capacity challenge.",
+      "setup": "Timer set for 15 minutes. Exercise stations ready. Pace yourself appropriately.",
+      "movement": "Perform prescribed work each minute. Manage effort for 15-minute duration.",
+      "cues": "Pace for 15 minutes, consistent effort, manage fatigue, steady rhythm"
+    }
+  },
+  "EMOM 10 minutes: Pull-ups / Push-ups": {
+    "description": {
+      "overview": "Alternating pull-ups and push-ups every minute for 10 minutes. Upper body strength endurance challenge.",
+      "setup": "Pull-up bar and push-up space ready. Alternate exercises each minute for 10 minutes.",
+      "movement": "Minute 1: Pull-ups, Minute 2: Push-ups, repeat. Maintain quality throughout.",
+      "cues": "Alternate exercises, maintain form, push through upper body fatigue, 10 minutes total"
+    }
+  },
+  "EMOM 20 minutes: 4 exercises": {
+    "description": {
+      "overview": "Four different exercises rotating every minute for 20 minutes. Ultimate work capacity test.",
+      "setup": "Four exercise stations ready. Rotate through exercises every minute for 20 minutes.",
+      "movement": "Exercise 1-4 rotating every minute. Complete 5 rounds of each exercise.",
+      "cues": "Rotate exercises, manage effort, 20 minutes total, pace yourself"
+    }
+  },
+  "AMRAP 8 minutes": {
+    "description": {
+      "overview": "As Many Reps/Rounds As Possible in 8 minutes. Builds work capacity and mental toughness.",
+      "setup": "Exercise circuit ready. Timer set for 8 minutes. Track total rounds or reps.",
+      "movement": "Maximum effort for 8 minutes. Maintain form while pushing pace.",
+      "cues": "Maximum effort, track your score, maintain form, 8 minutes of work"
+    }
+  },
+  "AMRAP Round 1 (5 min)": {
+    "description": {
+      "overview": "First round of AMRAP workout lasting 5 minutes. Sets intensity for subsequent rounds.",
+      "setup": "Exercise circuit ready. Timer set for 5 minutes. This is round 1 of multiple.",
+      "movement": "Maximum rounds/reps in 5 minutes. Pace for multiple rounds if applicable.",
+      "cues": "Round 1 intensity, pace if more rounds coming, track score, quality reps"
+    }
+  },
+  "Tricep AMRAP 1": {
+    "description": {
+      "overview": "First tricep-focused AMRAP workout. Maximum tricep exercises in time limit.",
+      "setup": "Tricep exercise stations ready. Timer set for AMRAP duration.",
+      "movement": "Maximum tricep exercise reps in time limit. Feel triceps burning.",
+      "cues": "Focus on triceps, maximum reps, feel the burn, push through fatigue"
+    }
+  },
+  "Tricep AMRAP 2": {
+    "description": {
+      "overview": "Second tricep-focused AMRAP workout. Continued tricep endurance challenge.",
+      "setup": "Tricep exercise stations ready. This is the second tricep AMRAP session.",
+      "movement": "Maximum tricep work despite fatigue from previous session. Push limits.",
+      "cues": "Push through fatigue, triceps on fire, maximum effort, second round intensity"
+    }
+  },
+  "Pull AMRAP 1": {
+    "description": {
+      "overview": "First pulling-focused AMRAP workout. Maximum pulling exercises in time limit.",
+      "setup": "Pulling exercise stations ready (rows, pull-ups, etc). Timer set for duration.",
+      "movement": "Maximum pulling exercise reps. Feel back muscles working hard.",
+      "cues": "Pull focus, squeeze back muscles, maximum reps, feel lats working"
+    }
+  },
+  "Pull AMRAP 2": {
+    "description": {
+      "overview": "Second pulling-focused AMRAP workout. Continued back and pulling endurance.",
+      "setup": "Pulling exercise stations ready. Second round of pulling focus.",
+      "movement": "Maximum pulling work despite back fatigue. Push through muscle burn.",
+      "cues": "Back on fire, pull through fatigue, squeeze shoulder blades, second round"
+    }
+  },
+  "Leg AMRAP 1": {
+    "description": {
+      "overview": "First leg-focused AMRAP workout. Maximum lower body exercises in time limit.",
+      "setup": "Leg exercise stations ready (squats, lunges, etc). Timer set for duration.",
+      "movement": "Maximum leg exercise reps. Feel quads, glutes, and hamstrings working.",
+      "cues": "Leg focus, feel legs burning, maximum reps, push through leg fatigue"
+    }
+  },
+  "Leg AMRAP 2": {
+    "description": {
+      "overview": "Second leg-focused AMRAP workout. Continued lower body endurance challenge.",
+      "setup": "Leg exercise stations ready. Second round of leg-focused work.",
+      "movement": "Maximum leg work despite lower body fatigue. Push limits.",
+      "cues": "Legs on fire, push through fatigue, feel the burn, second round intensity"
+    }
+  },
+  "AMRAP 4 minutes": {
+    "description": {
+      "overview": "As Many Reps/Rounds As Possible in 4 minutes. Short, intense work capacity test.",
+      "setup": "Exercise circuit ready. Timer set for 4 minutes. High intensity expected.",
+      "movement": "Maximum effort for 4 minutes. High pace due to short duration.",
+      "cues": "High intensity, 4 minutes only, push the pace, maximum effort"
+    }
+  },
+  "AMRAP 5 minutes": {
+    "description": {
+      "overview": "As Many Reps/Rounds As Possible in 5 minutes. Moderate duration intensity challenge.",
+      "setup": "Exercise circuit ready. Timer set for 5 minutes. Balance pace and intensity.",
+      "movement": "Maximum sustainable effort for 5 minutes. Track total work completed.",
+      "cues": "Sustainable pace, 5 minutes total, track your work, maintain quality"
+    }
+  },
+  "AMRAP 6 minutes": {
+    "description": {
+      "overview": "As Many Reps/Rounds As Possible in 6 minutes. Work capacity and endurance test.",
+      "setup": "Exercise circuit ready. Timer set for 6 minutes. Pace appropriately.",
+      "movement": "Maximum work for 6 minutes. Balance intensity with duration.",
+      "cues": "6 minute pace, balance intensity, track progress, push through fatigue"
+    }
+  },
+  "AMRAP Round 1 (4 min)": {
+    "description": {
+      "overview": "First 4-minute AMRAP round. Sets pace for subsequent rounds if applicable.",
+      "setup": "Exercise circuit ready. Timer set for 4 minutes. First of multiple rounds.",
+      "movement": "Maximum effort for 4 minutes. Pace if more rounds to follow.",
+      "cues": "Round 1 pace, 4 minutes, pace for more rounds, track score"
+    }
+  },
+  "AMRAP Round 2 (4 min)": {
+    "description": {
+      "overview": "Second 4-minute AMRAP round. Maintain intensity despite fatigue from round 1.",
+      "setup": "Exercise circuit ready. This is round 2 after previous AMRAP work.",
+      "movement": "Maximum effort despite accumulated fatigue. Push through burn.",
+      "cues": "Round 2 intensity, push through fatigue, maintain pace, dig deep"
+    }
+  },
+  "AMRAP Round 3 (4 min)": {
+    "description": {
+      "overview": "Third 4-minute AMRAP round. Final push through maximum accumulated fatigue.",
+      "setup": "Exercise circuit ready. Final round after significant accumulated fatigue.",
+      "movement": "Maximum effort for final round. Mental toughness required.",
+      "cues": "Final round, maximum effort, mental toughness, finish strong"
+    }
+  },
+  "Dumbbell Squat to Press": {
+    "description": {
+      "overview": "Combination movement flowing from squat to overhead press. Full-body exercise building strength and coordination.",
+      "setup": "Dumbbells at shoulders, feet shoulder-width. Ready for fluid squat-to-press movement.",
+      "movement": "Squat down with control, drive up explosively pressing dumbbells overhead. Smooth transition.",
+      "cues": "Smooth transition, use leg drive for press, control down and explode up"
+    }
+  },
+  "Plank with Dumbbell Pull-throughs": {
+    "description": {
+      "overview": "Plank position while pulling dumbbell side to side underneath body. Challenges core stability and anti-rotation.",
+      "setup": "High plank position with dumbbell to one side. Maintain rigid plank throughout.",
+      "movement": "Pull dumbbell under body from side to side while maintaining perfect plank position.",
+      "cues": "Perfect plank position, resist rotation, pull weight under body, core stays tight"
+    }
+  },
+  "Farmer's Walk": {
+    "description": {
+      "overview": "Loaded carry exercise holding weights at sides while walking. Builds grip strength, core stability, and total-body strength.",
+      "setup": "Heavy weights at sides (dumbbells, kettlebells, or farmer's handles). Clear walking path.",
+      "movement": "Walk with weights maintaining upright posture. Fight to stay tall against load.",
+      "cues": "Stay tall, tight core, don't let weights pull you down, strong grip"
+    }
+  },
+  "CrossFit-style METCON": {
+    "description": {
+      "overview": "Metabolic conditioning workout in CrossFit style. High-intensity multi-modal exercise combining strength and cardio.",
+      "setup": "Multiple exercise stations ready. Timer set for workout protocol (AMRAP, For Time, etc).",
+      "movement": "High-intensity effort combining different movement patterns. Push through fatigue.",
+      "cues": "High intensity, multi-modal, push through fatigue, embrace the challenge"
+    }
+  },
+  "Full Body Circuit 1": {
+    "description": {
+      "overview": "First full-body circuit targeting all major muscle groups. Builds total-body strength and endurance.",
+      "setup": "Full-body exercise stations ready. Include upper, lower, and core exercises.",
+      "movement": "Rotate through exercises targeting all major muscle groups. Feel total-body challenge.",
+      "cues": "Total-body work, feel everything working, maintain form, circuit 1 intensity"
+    }
+  },
+  "HIIT Circuit 2": {
+    "description": {
+      "overview": "Second high-intensity interval circuit. Continuation of HIIT training with varied exercises.",
+      "setup": "HIIT exercise stations ready. This is the second circuit in sequence.",
+      "movement": "High-intensity intervals with varied exercises. Maintain intensity despite fatigue.",
+      "cues": "Circuit 2 intensity, push through fatigue, high intensity intervals, varied exercises"
+    }
+  },
+  "Light Mobility (Optional)": {
+    "description": {
+      "overview": "Optional gentle mobility work for recovery and maintenance. Light movement to promote flexibility.",
+      "setup": "Comfortable space for gentle stretching and mobility. Optional based on needs.",
+      "movement": "Gentle stretching and mobility exercises. Listen to body's needs for movement.",
+      "cues": "Optional gentle work, listen to body, promote flexibility, light and easy"
+    }
+  }
+}

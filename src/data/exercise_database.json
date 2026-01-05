@@ -2,7 +2,7 @@
   "exercise_database": {
     "version": "2.0.0",
     "last_updated": "2025-08-02",
-    "total_exercises": 326,
+    "total_exercises": 323,
     "categories": {
       "strength": {
         "description": "Primary resistance training exercises with external load",
@@ -6303,67 +6303,6 @@
             "difficulty": "Beginner",
             "variations": [
               "Nutrition Planning"
-            ],
-            "isometric": false,
-            "external_load": "never"
-          }
-        }
-      },
-      "rest_day": {
-        "description": "Complete rest and recovery activities",
-        "exercises": {
-          "Complete Rest": {
-            "category": "rest_day",
-            "typical_sets": 1,
-            "typical_reps": "All day",
-            "equipment": [
-              "None"
-            ],
-            "muscle_groups": [
-              "None"
-            ],
-            "difficulty": "Beginner",
-            "variations": [
-              "Full Rest"
-            ],
-            "isometric": false,
-            "external_load": "never"
-          },
-          "Light Mobility (Optional)": {
-            "category": "rest_day",
-            "typical_sets": 1,
-            "typical_reps": "15-20 minutes",
-            "equipment": [
-              "None"
-            ],
-            "muscle_groups": [
-              "Full Body"
-            ],
-            "difficulty": "Beginner",
-            "variations": [
-              "Optional Mobility"
-            ],
-            "isometric": false,
-            "external_load": "never"
-          }
-        }
-      },
-      "rest_exercise": {
-        "description": "Active recovery between intense exercise periods",
-        "exercises": {
-          "Walking Recovery": {
-            "category": "rest_exercise",
-            "typical_sets": 1,
-            "typical_reps": "2 minutes",
-            "equipment": [
-              "None"
-            ],
-            "muscle_groups": [
-              "None"
-            ],
-            "difficulty": "Beginner",
-            "variations": [
-              "Active Recovery"
             ],
             "isometric": false,
             "external_load": "never"

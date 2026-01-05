@@ -1,0 +1,33 @@
+{
+  "name": "shredly2",
+  "version": "2.0.0",
+  "description": "Personalized workout generation engine",
+  "type": "module",
+  "scripts": {
+    "cli": "node --loader ts-node/esm cli/test-runner.ts",
+    "cli:watch": "nodemon --exec node --loader ts-node/esm cli/test-runner.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.js",
+    "test": "echo \"Tests not yet implemented\" && exit 0"
+  },
+  "keywords": [
+    "fitness",
+    "workout",
+    "training",
+    "exercise"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "eslint": "^8.55.0",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

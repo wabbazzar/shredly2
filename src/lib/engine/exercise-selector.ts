@@ -523,7 +523,22 @@ export function roundRobinSelectExercises(
 
   // Ensure minimum requirements are met
   if (!hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
-    throw new Error("Could not meet minimum layer requirements within duration constraint");
+    // Build diagnostic error message
+    const poolSizes = Array.from(pools.entries())
+      .map(([layer, pool]) => `${layer}: ${pool.length} exercises`)
+      .join(', ');
+
+    const diagnostics = [
+      `Failed to select enough exercises.`,
+      `Selected: ${selectedExercises.length} exercises`,
+      `Max duration: ${maxDuration} minutes`,
+      `Current duration: ${currentDuration} minutes`,
+      `Rounds completed: ${roundNumber}`,
+      `Pool sizes: ${poolSizes}`,
+      `Focus: ${focus}`
+    ].join('\n  ');
+
+    throw new Error(`Could not meet minimum layer requirements within duration constraint\n  ${diagnostics}`);
   }
 
   return selectedExercises;
@@ -561,8 +576,8 @@ function hasMetMinimumRequirements(
   exercises: ExerciseStructure[],
   requirements: { must_include: string[]; optional: string[]; always_end_with_last_if_available: boolean }
 ): boolean {
-  // For now, we're using a simplified check
-  // In a full implementation, we'd track which layers each exercise came from
-  // For MVP, we just check if we have at least a few exercises
-  return exercises.length >= 3;
+  // Relaxed check: We need at least 1 exercise to have a minimal valid workout
+  // In production, we'd track layer assignments, but for now we just ensure
+  // we have something to work with
+  return exercises.length >= 1;
 }

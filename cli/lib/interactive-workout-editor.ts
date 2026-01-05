@@ -78,7 +78,10 @@ export class InteractiveWorkoutEditor {
     this.running = true;
 
     // Setup readline for keyboard input
+    // Note: emitKeypressEvents can be called multiple times safely
+    // It's idempotent and won't cause issues if already called
     readline.emitKeypressEvents(process.stdin);
+
     if (process.stdin.isTTY) {
       process.stdin.setRawMode(true);
     }
@@ -86,10 +89,15 @@ export class InteractiveWorkoutEditor {
     // Resume stdin to receive keypress events
     process.stdin.resume();
 
+    console.error('[DEBUG] Editor started, stdin setup complete');
+
     this.render();
 
     return new Promise((resolve) => {
       this.keypressHandler = async (str: string, key: any) => {
+        // Debug: log keypresses
+        console.error(`[DEBUG] Keypress received - str: ${JSON.stringify(str)}, key: ${JSON.stringify(key)}`);
+
         if (!key || !this.running) return;
 
         await this.handleKeypress(str, key);
@@ -104,6 +112,10 @@ export class InteractiveWorkoutEditor {
       };
 
       process.stdin.on('keypress', this.keypressHandler);
+
+      // Debug: check listener count
+      const listenerCount = process.stdin.listenerCount('keypress');
+      console.error(`[DEBUG] Keypress listeners registered: ${listenerCount}`);
     });
   }
 
@@ -111,23 +123,32 @@ export class InteractiveWorkoutEditor {
    * Handle keyboard input based on current mode
    */
   private async handleKeypress(str: string, key: any): Promise<void> {
+    console.error(`[DEBUG handleKeypress] mode=${this.state.mode}, str=${JSON.stringify(str)}, key.name=${key?.name}, key.ctrl=${key?.ctrl}`);
+
     // Global: Ctrl+C
     if (key.ctrl && key.name === 'c') {
+      console.error('[DEBUG] Ctrl+C detected, exiting');
       this.running = false;
       return;
     }
 
     if (this.state.mode === 'view') {
+      console.error('[DEBUG] Calling handleViewModeKey');
       await this.handleViewModeKey(str, key);
     } else if (this.state.mode === 'edit') {
+      console.error('[DEBUG] Calling handleEditModeKey');
       this.handleEditModeKey(str, key);
     } else if (this.state.mode === 'command') {
+      console.error('[DEBUG] Calling handleCommandModeKey');
       await this.handleCommandModeKey(str, key);
     } else if (this.state.mode === 'help') {
+      console.error('[DEBUG] Calling handleHelpModeKey');
       this.handleHelpModeKey(str, key);
     }
 
+    console.error('[DEBUG] About to render');
     this.render();
+    console.error('[DEBUG] Render complete');
   }
 
   /**

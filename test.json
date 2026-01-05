@@ -26,15 +26,28 @@
       "focus": "Push",
       "exercises": [
         {
-          "name": "Dead Bugs",
+          "name": "Front Raise",
+          "category": "strength",
           "week1": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
           },
           "week3": {
-            "work_time_minutes": 2
+            "work_time_minutes": 2,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
           }
         },
         {

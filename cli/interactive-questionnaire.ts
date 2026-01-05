@@ -175,13 +175,17 @@ async function main() {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Clean up stdin from inquirer before launching editor
-      // Remove all listeners and pause stdin to prevent conflicts
+      // Remove all listeners to prevent conflicts
       process.stdin.removeAllListeners('keypress');
       process.stdin.removeAllListeners('data');
-      process.stdin.pause();
+
+      // Reset raw mode if TTY
+      if (process.stdin.isTTY && process.stdin.setRawMode) {
+        process.stdin.setRawMode(false);
+      }
 
       // Small delay to let stdin fully clean up
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 150));
 
       const editResult = await editWorkoutInteractive(workout, {
         experienceLevel: answers.experience_level || 'intermediate'

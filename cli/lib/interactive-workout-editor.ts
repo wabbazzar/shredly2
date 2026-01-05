@@ -77,6 +77,11 @@ export class InteractiveWorkoutEditor {
   async start(): Promise<{ saved: boolean; workout: ParameterizedWorkout }> {
     this.running = true;
 
+    console.error('[DEBUG] Starting editor setup...');
+    console.error('[DEBUG] stdin.isTTY:', process.stdin.isTTY);
+    console.error('[DEBUG] stdin.isPaused:', process.stdin.isPaused());
+    console.error('[DEBUG] stdin.readableFlowing:', process.stdin.readableFlowing);
+
     // Setup readline for keyboard input
     // Note: emitKeypressEvents can be called multiple times safely
     // It's idempotent and won't cause issues if already called
@@ -84,21 +89,33 @@ export class InteractiveWorkoutEditor {
 
     if (process.stdin.isTTY) {
       process.stdin.setRawMode(true);
+      console.error('[DEBUG] Set raw mode to true');
     }
 
-    // Resume stdin to receive keypress events
-    process.stdin.resume();
+    // Ensure stdin is not paused
+    if (process.stdin.isPaused()) {
+      process.stdin.resume();
+      console.error('[DEBUG] Resumed stdin (was paused)');
+    }
 
-    console.error('[DEBUG] Editor started, stdin setup complete');
+    console.error('[DEBUG] Editor setup complete');
 
     this.render();
 
     return new Promise((resolve) => {
       this.keypressHandler = async (str: string, key: any) => {
-        // Debug: log keypresses
-        console.error(`[DEBUG] Keypress received - str: ${JSON.stringify(str)}, key: ${JSON.stringify(key)}`);
+        // Debug: log keypresses BEFORE any checks
+        console.error(`[DEBUG] Keypress handler called - str: ${JSON.stringify(str)}, key: ${JSON.stringify(key)}, running: ${this.running}`);
 
-        if (!key || !this.running) return;
+        if (!key) {
+          console.error('[DEBUG] No key object, returning early');
+          return;
+        }
+
+        if (!this.running) {
+          console.error('[DEBUG] Editor not running, returning early');
+          return;
+        }
 
         await this.handleKeypress(str, key);
 

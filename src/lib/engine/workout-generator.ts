@@ -101,7 +101,9 @@ export function generateWorkout(answers: QuestionnaireAnswers): ParameterizedWor
       pools,
       rules,
       answers,
-      maxDuration
+      maxDuration,
+      allExercises,
+      focus
     );
 
     // Determine day type
@@ -131,16 +133,23 @@ export function generateWorkout(answers: QuestionnaireAnswers): ParameterizedWor
     const day = days[dayKey];
 
     const parameterizedExercises = day.exercises.map((exercise: ExerciseStructure) => {
-      // Get exercise category from database
-      const exerciseData = allExercises.find(([name, _]) => name === exercise.name);
-      if (!exerciseData) {
-        throw new Error(`Exercise not found in database: ${exercise.name}`);
+      // Get exercise category
+      let category: string;
+
+      if (exercise.category) {
+        // Compound exercise - category is already set
+        category = exercise.category;
+      } else {
+        // Individual exercise - look up in database
+        const exerciseData = allExercises.find(([name, _]) => name === exercise.name);
+        if (!exerciseData) {
+          throw new Error(`Exercise not found in database: ${exercise.name}`);
+        }
+        const [_, exerciseInfo] = exerciseData;
+        category = exerciseInfo.category;
       }
 
-      const [_, exerciseInfo] = exerciseData;
-      const category = exerciseInfo.category;
-
-      return parameterizeExercise(exercise, category, totalWeeks, rules, answers);
+      return parameterizeExercise(exercise, category, totalWeeks, rules, answers, allExercises);
     });
 
     parameterizedDays[dayKey] = {

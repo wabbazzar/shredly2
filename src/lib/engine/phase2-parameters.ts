@@ -310,6 +310,7 @@ function applyVolumeProgression(
  * @param totalWeeks - Total program duration
  * @param rules - Generation rules
  * @param answers - User answers
+ * @param allExercises - Flattened exercise database (for sub-exercise lookup)
  * @returns Parameterized exercise with week1, week2, ..., weekN
  */
 export function parameterizeExercise(
@@ -317,7 +318,8 @@ export function parameterizeExercise(
   exerciseCategory: string,
   totalWeeks: number,
   rules: GenerationRules,
-  answers: QuestionnaireAnswers
+  answers: QuestionnaireAnswers,
+  allExercises?: Array<[string, any]>
 ): ParameterizedExercise {
   // Get Week 1 baseline
   const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers);
@@ -354,8 +356,36 @@ export function parameterizeExercise(
     parameterized.category = exercise.category;
   }
 
-  // TODO: Handle sub_exercises for compound exercises (EMOM, Circuit, etc.)
-  // For MVP, we'll skip compound exercise support
+  // Handle sub_exercises for compound exercises (EMOM, Circuit, AMRAP, Interval)
+  if (exercise.sub_exercises && exercise.sub_exercises.length > 0 && allExercises) {
+    parameterized.sub_exercises = exercise.sub_exercises.map(subEx => {
+      // Look up sub-exercise in database to get its category
+      const subExData = allExercises.find(([name, _]) => name === subEx.name);
+      if (!subExData) {
+        throw new Error(`Sub-exercise not found in database: ${subEx.name}`);
+      }
+
+      const [_, subExInfo] = subExData;
+      const subCategory = subExInfo.category;
+
+      // Create a temporary ExerciseStructure for the sub-exercise
+      const subExerciseStructure: ExerciseStructure = {
+        name: subEx.name,
+        progressionScheme: subEx.progressionScheme,
+        intensityProfile: exercise.intensityProfile // Inherit from parent
+      };
+
+      // Recursively parameterize the sub-exercise
+      return parameterizeExercise(
+        subExerciseStructure,
+        subCategory,
+        totalWeeks,
+        rules,
+        answers,
+        allExercises
+      );
+    });
+  }
 
   return parameterized;
 }

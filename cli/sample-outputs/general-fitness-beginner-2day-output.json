@@ -1,5 +1,5 @@
 {
-  "id": "workout_gene_com_1767579365459",
+  "id": "workout_gene_com_1767580664867",
   "name": "General Fitness Beginner Program",
   "description": "2 days per week workout program focused on general fitness. Each session is 20-30 minutes.",
   "version": "2.0.0",
@@ -43,61 +43,22 @@
           }
         },
         {
-          "name": "Plank Hold",
-          "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 1.9500000000000002,
-            "weight": "heavy"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.7000000000000002,
-            "weight": "heavy"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.4500000000000002,
-            "weight": "heavy"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.2000000000000002,
-            "weight": "heavy"
-          }
-        },
-        {
-          "name": "Wall Sits",
-          "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 1.9500000000000002,
-            "weight": "heavy"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.7000000000000002,
-            "weight": "heavy"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.4500000000000002,
-            "weight": "heavy"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.2000000000000002,
-            "weight": "heavy"
-          }
-        },
-        {
           "name": "Standing Hip Flexor Stretch",
+          "week1": {
+            "work_time_minutes": 5
+          },
+          "week2": {
+            "work_time_minutes": 5
+          },
+          "week3": {
+            "work_time_minutes": 5
+          },
+          "week4": {
+            "work_time_minutes": 5
+          }
+        },
+        {
+          "name": "Dead Bugs",
           "week1": {
             "work_time_minutes": 5
           },
@@ -134,61 +95,22 @@
           }
         },
         {
-          "name": "Plank Hold",
-          "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 1.9500000000000002,
-            "weight": "heavy"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.7000000000000002,
-            "weight": "heavy"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.4500000000000002,
-            "weight": "heavy"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.2000000000000002,
-            "weight": "heavy"
-          }
-        },
-        {
-          "name": "Wall Sits",
-          "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 1.9500000000000002,
-            "weight": "heavy"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.7000000000000002,
-            "weight": "heavy"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.4500000000000002,
-            "weight": "heavy"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 1.2000000000000002,
-            "weight": "heavy"
-          }
-        },
-        {
           "name": "Standing Hip Flexor Stretch",
+          "week1": {
+            "work_time_minutes": 5
+          },
+          "week2": {
+            "work_time_minutes": 5
+          },
+          "week3": {
+            "work_time_minutes": 5
+          },
+          "week4": {
+            "work_time_minutes": 5
+          }
+        },
+        {
+          "name": "Dead Bugs",
           "week1": {
             "work_time_minutes": 5
           },

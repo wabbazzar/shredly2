@@ -200,10 +200,21 @@ export function createExercisePoolsForDay(
       continue;
     }
 
+    // Check if any categories are compound types
+    const hasCompoundCategory = categoriesForLayer.some(cat =>
+      ['circuit', 'emom', 'amrap', 'interval'].includes(cat)
+    );
+
+    // If compound categories requested, filter for individual exercises instead
+    // (compound exercises will be constructed from individual exercises)
+    const categoriesToFilter = hasCompoundCategory
+      ? ['strength', 'mobility', 'flexibility', 'cardio']
+      : categoriesForLayer;
+
     const filteredExercises = filterExercisesForLayer(
       allExercises,
       focus,
-      categoriesForLayer,
+      categoriesToFilter,
       answers.equipment_access,
       experienceModifier.complexity_filter,
       experienceModifier.external_load_filter,
@@ -217,19 +228,129 @@ export function createExercisePoolsForDay(
 }
 
 /**
+ * Checks if a category is a compound type that needs to be constructed
+ */
+function isCompoundCategory(category: string): boolean {
+  return ['circuit', 'emom', 'amrap', 'interval'].includes(category);
+}
+
+/**
+ * Constructs a compound exercise by selecting multiple constituent exercises
+ *
+ * @param compoundCategory - Type of compound exercise (circuit, emom, amrap, interval)
+ * @param allExercises - All available individual exercises
+ * @param focus - Day focus for muscle group filtering
+ * @param rules - Generation rules
+ * @param answers - User answers
+ * @param usedExerciseNames - Set of already used exercise names
+ * @param intensityProfile - Intensity profile for the compound exercise
+ * @returns Compound exercise structure with sub-exercises
+ */
+function constructCompoundExercise(
+  compoundCategory: 'circuit' | 'emom' | 'amrap' | 'interval',
+  allExercises: Array<[string, Exercise]>,
+  focus: string,
+  rules: GenerationRules,
+  answers: QuestionnaireAnswers,
+  usedExerciseNames: Set<string>,
+  intensityProfile: string
+): ExerciseStructure {
+  // Determine how many constituent exercises to include
+  const numExercises: { [key: string]: number } = {
+    circuit: 4,    // 4 exercises in a circuit
+    emom: 2,       // 2 exercises alternating each minute
+    amrap: 3,      // 3 exercises in AMRAP
+    interval: 2    // 2 exercises for interval training
+  };
+
+  const count = numExercises[compoundCategory] || 3;
+
+  // Filter for individual exercises only (not compound categories)
+  const individualCategories = ['strength', 'mobility', 'flexibility', 'cardio'];
+
+  // Get muscle group mapping
+  const muscleMapping = rules.split_muscle_group_mapping[focus];
+  const experienceModifier = rules.experience_modifiers[answers.experience_level];
+
+  // Filter available exercises
+  const availableExercises = allExercises.filter(([name, exercise]) => {
+    // Must be individual exercise category
+    if (!individualCategories.includes(exercise.category)) return false;
+
+    // Not already used
+    if (usedExerciseNames.has(name)) return false;
+
+    // Meets difficulty and load requirements
+    if (!experienceModifier.complexity_filter.includes(exercise.difficulty)) return false;
+    if (!experienceModifier.external_load_filter.includes(exercise.external_load)) return false;
+
+    // Check equipment
+    if (exercise.equipment.length > 0 && !exercise.equipment.includes("None")) {
+      if (!checkEquipmentAvailability(exercise.equipment, answers.equipment_access)) {
+        return false;
+      }
+    }
+
+    // Check muscle groups
+    if (!muscleMapping.include_muscle_groups.includes("all")) {
+      const targetsIncluded = exercise.muscle_groups.some(mg =>
+        muscleMapping.include_muscle_groups.includes(mg)
+      );
+      if (!targetsIncluded) return false;
+
+      if (muscleMapping.exclude_muscle_groups) {
+        const targetsExcluded = exercise.muscle_groups.some(mg =>
+          muscleMapping.exclude_muscle_groups!.includes(mg)
+        );
+        if (targetsExcluded) return false;
+      }
+    }
+
+    return true;
+  });
+
+  // Select constituent exercises
+  const selectedCount = Math.min(count, availableExercises.length);
+  const constituentExercises = availableExercises.slice(0, selectedCount);
+
+  // Mark as used
+  constituentExercises.forEach(([name, _]) => usedExerciseNames.add(name));
+
+  // Build compound exercise name
+  const exerciseNames = constituentExercises.map(([name, _]) => name);
+  const compoundName = `${compoundCategory.toUpperCase()}: ${exerciseNames.join(' + ')}`;
+
+  // Create compound exercise structure
+  return {
+    name: compoundName,
+    category: compoundCategory,
+    sub_exercises: constituentExercises.map(([name, _]) => ({
+      name,
+      progressionScheme: 'density' // Compound exercises typically use density progression
+    })),
+    progressionScheme: 'density',
+    intensityProfile: intensityProfile as any
+  };
+}
+
+/**
  * Selects exercises using round-robin algorithm to maintain layer ratios
  *
  * @param pools - Exercise pools for each layer
  * @param rules - Generation rules configuration
  * @param answers - User's questionnaire answers
  * @param maxDuration - Maximum duration constraint in minutes
+ * @param allExercises - All exercises from database (for compound construction)
+ * @param focus - Day focus (for compound construction)
  * @returns Array of selected exercise structures
  */
 export function roundRobinSelectExercises(
   pools: Map<string, Array<[string, Exercise]>>,
   rules: GenerationRules,
   answers: QuestionnaireAnswers,
-  maxDuration: number
+  maxDuration: number,
+  allExercises: Array<[string, Exercise]>,
+  focus: string
 ): ExerciseStructure[] {
   const selectedExercises: ExerciseStructure[] = [];
   const usedExerciseNames = new Set<string>();
@@ -244,6 +365,19 @@ export function roundRobinSelectExercises(
 
   // Determine layer order for round-robin (order matches ratio definition)
   const layerOrder = ["first", "primary", "secondary", "tertiary", "finisher", "last"];
+
+  // Determine which layers should use compound exercises
+  const categoryPriorities = rules.category_workout_structure.category_priority_by_goal[answers.primary_goal];
+  const compoundLayersMap = new Map<string, string>();
+  for (const layer of layerOrder) {
+    const categories = categoryPriorities[layer as keyof typeof categoryPriorities] as string[] | undefined;
+    if (categories) {
+      const compoundCat = categories.find(cat => isCompoundCategory(cat));
+      if (compoundCat) {
+        compoundLayersMap.set(layer, compoundCat);
+      }
+    }
+  }
 
   let currentDuration = 0;
   let roundNumber = 0;
@@ -263,27 +397,16 @@ export function roundRobinSelectExercises(
       const pool = pools.get(layer)!;
       const currentIndex = layerIndices.get(layer)!;
 
-      // Add 'ratio' exercises from this layer in this round
-      for (let i = 0; i < ratio; i++) {
-        if (currentIndex + i >= pool.length) {
-          // No more exercises in this pool
-          continue;
-        }
+      // Check if this layer needs a compound exercise
+      const compoundType = compoundLayersMap.get(layer);
 
-        const [exerciseName, exerciseData] = pool[currentIndex + i];
-
-        // Check for duplicates
-        if (usedExerciseNames.has(exerciseName)) {
-          // Skip duplicate and try next
-          continue;
-        }
-
-        // Estimate duration
-        const category = exerciseData.category;
-        // Assign a default intensity profile (will be refined later)
+      if (compoundType) {
+        // This layer needs a compound exercise - construct it
         const intensityProfile = getDefaultIntensityForLayer(layer);
+
+        // Estimate duration for compound exercise
         const exerciseDuration = estimateExerciseDuration(
-          category,
+          compoundType,
           intensityProfile,
           rules.intensity_profiles,
           rules.time_estimates
@@ -291,29 +414,83 @@ export function roundRobinSelectExercises(
 
         // Check if adding this exercise would exceed duration
         if (currentDuration + exerciseDuration > maxDuration) {
-          // Check if we've met minimum requirements
           if (hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
-            // We're done - hit duration limit
             return selectedExercises;
           }
-          // Otherwise, skip this exercise and try to add from other layers
           continue;
         }
 
-        // Add the exercise
-        selectedExercises.push({
-          name: exerciseName,
-          progressionScheme: "linear", // Default, will be refined later
-          intensityProfile: intensityProfile
-        });
+        // Construct the compound exercise
+        const compoundExercise = constructCompoundExercise(
+          compoundType as 'circuit' | 'emom' | 'amrap' | 'interval',
+          allExercises,
+          focus,
+          rules,
+          answers,
+          usedExerciseNames,
+          intensityProfile
+        );
 
-        usedExerciseNames.add(exerciseName);
+        selectedExercises.push(compoundExercise);
         currentDuration += exerciseDuration;
         addedAnyExercise = true;
-      }
 
-      // Update index for this layer
-      layerIndices.set(layer, currentIndex + ratio);
+        // Move to next round for compound layers (only add one per round)
+        layerIndices.set(layer, currentIndex + 1);
+      } else {
+        // Normal individual exercise selection
+        // Add 'ratio' exercises from this layer in this round
+        for (let i = 0; i < ratio; i++) {
+          if (currentIndex + i >= pool.length) {
+            // No more exercises in this pool
+            continue;
+          }
+
+          const [exerciseName, exerciseData] = pool[currentIndex + i];
+
+          // Check for duplicates
+          if (usedExerciseNames.has(exerciseName)) {
+            // Skip duplicate and try next
+            continue;
+          }
+
+          // Estimate duration
+          const category = exerciseData.category;
+          // Assign a default intensity profile (will be refined later)
+          const intensityProfile = getDefaultIntensityForLayer(layer);
+          const exerciseDuration = estimateExerciseDuration(
+            category,
+            intensityProfile,
+            rules.intensity_profiles,
+            rules.time_estimates
+          );
+
+          // Check if adding this exercise would exceed duration
+          if (currentDuration + exerciseDuration > maxDuration) {
+            // Check if we've met minimum requirements
+            if (hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
+              // We're done - hit duration limit
+              return selectedExercises;
+            }
+            // Otherwise, skip this exercise and try to add from other layers
+            continue;
+          }
+
+          // Add the exercise
+          selectedExercises.push({
+            name: exerciseName,
+            progressionScheme: "linear", // Default, will be refined later
+            intensityProfile: intensityProfile
+          });
+
+          usedExerciseNames.add(exerciseName);
+          currentDuration += exerciseDuration;
+          addedAnyExercise = true;
+        }
+
+        // Update index for this layer
+        layerIndices.set(layer, currentIndex + ratio);
+      }
     }
 
     // If we couldn't add any exercises this round, we're done

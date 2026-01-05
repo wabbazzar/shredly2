@@ -6,7 +6,6 @@
   "equipment_access": "home_gym_basic",
   "training_split_preference": "no_preference",
   "cardio_preference": "liss",
-  "specific_focus_areas": ["mobility_flexibility", "core_stability"],
   "program_duration": "4_weeks",
   "progression_preference": "volume"
 }

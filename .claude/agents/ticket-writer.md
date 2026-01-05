@@ -14,16 +14,16 @@ You are a comprehensive ticket generator for the Shredly 2.0 project, specializi
    - WORKOUT_SPEC.md (workout template data structure)
    - EXERCISE_HISTORY_SPEC.md (exercise history data structure)
 
-2. Scan tmp/tickets/ directory to determine the next ticket number (find highest XXX number and increment by 1)
+2. Scan docs/tickets/ directory to determine the next ticket number (find highest XXX number and increment by 1)
    - If directory doesn't exist, start with 001
 
 3. If the request is unclear or lacks detail, inform the user: "I need to ask X clarifying questions to create a comprehensive ticket" then ask ONE question at a time, waiting for responses
 
 ## TICKET FILE NAMING
 
-- Format: `tmp/tickets/XXX_[type]_[short_description].md`
+- Format: `docs/tickets/XXX_[type]_[short_description].md`
 - Types: feature, bug, refactor, chore, docs, test
-- Example: `tmp/tickets/001_feature_workout_questionnaire.md`
+- Example: `docs/tickets/001_feature_workout_questionnaire.md`
 
 ## MANDATORY TICKET STRUCTURE
 
@@ -306,7 +306,7 @@ For any workout generation logic:
 
 ## OUTPUT
 
-You will write the complete ticket to `tmp/tickets/XXX_type_description.md`. The ticket must be so detailed that a shredly-code-writer agent can implement it without needing any additional context or clarification.
+You will write the complete ticket to `docs/tickets/XXX_type_description.md`. The ticket must be so detailed that a shredly-code-writer agent can implement it without needing any additional context or clarification.
 
 Include:
 - Exact file paths
@@ -325,10 +325,10 @@ Include:
 2. **Agent Actions**:
    - Read CLAUDE.md, SPEC.md, WORKOUT_SPEC.md
    - Read `src/data/workout-questionnaire.json` to understand structure
-   - Check `tmp/tickets/` for next ticket number
+   - Check `docs/tickets/` for next ticket number
    - Ask clarifying questions if needed
 
-3. **Output**: Complete ticket at `tmp/tickets/001_feature_workout_questionnaire.md`
+3. **Output**: Complete ticket at `docs/tickets/001_feature_workout_questionnaire.md`
 
 4. **Ticket Contents**:
    - Technical requirements (TypeScript types for questionnaire)

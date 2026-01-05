@@ -181,11 +181,6 @@
           "description": "Adjustable or fixed weight dumbbells"
         },
         {
-          "value": "resistance_bands",
-          "label": "Resistance Bands",
-          "description": "Various resistance bands and/or suspension trainer"
-        },
-        {
           "value": "bodyweight_only",
           "label": "Bodyweight Only",
           "description": "No equipment, using body weight and creativity"
@@ -270,51 +265,6 @@
         }
       ],
       "required": false
-    },
-    {
-      "id": "specific_focus_areas",
-      "type": "multiple_choice_multiple",
-      "question": "Are there any specific areas you'd like to prioritize? (Select all that apply)",
-      "description": "Choose any areas that are particularly important to you",
-      "options": [
-        {
-          "value": "core_stability",
-          "label": "Core Strength & Stability",
-          "description": "Functional core training for daily activities"
-        },
-        {
-          "value": "posture",
-          "label": "Posture & Alignment",
-          "description": "Counter desk job effects, improve posture"
-        },
-        {
-          "value": "mobility_flexibility",
-          "label": "Mobility & Flexibility",
-          "description": "Improve range of motion and movement quality"
-        },
-        {
-          "value": "functional_strength",
-          "label": "Functional Strength",
-          "description": "Strength for daily activities and real-world movement"
-        },
-        {
-          "value": "power_explosiveness",
-          "label": "Power & Explosiveness",
-          "description": "Athletic power for sports or dynamic movement"
-        },
-        {
-          "value": "muscle_imbalances",
-          "label": "Correct Muscle Imbalances",
-          "description": "Address strength imbalances between sides/muscles"
-        },
-        {
-          "value": "specific_sport",
-          "label": "Sport-Specific Training",
-          "description": "Training for a particular sport or activity"
-        }
-      ],
-      "required": false,
-      "max_selections": 5
     },
     {
       "id": "program_duration",

@@ -142,6 +142,15 @@ chore(deps): update SvelteKit to latest stable
 - **Only use emojis if explicitly requested**
 - **AVOID UNICODE**: Stick to ASCII in all code and markdown files
 
+### Ticket Management
+
+- **Location**: All tickets are stored in `docs/tickets/`
+- **Naming**: Format is `XXX_[type]_[short_description].md` (e.g., `001_feature_workout_questionnaire.md`)
+- **Types**: feature, bug, refactor, chore, docs, test
+- **Creation**: Use the ticket-writer agent to create comprehensive, implementation-ready tickets
+- **Numbering**: Sequential, starting from 001
+- **Standards**: Follow strict ticket template with phases (max 5 points each), testing strategy, success criteria
+
 ### Testing Requirements
 
 - **Test incrementally**: Don't wait until all code is written
@@ -251,6 +260,11 @@ shredly2/
 +-- cli/                          # Terminal prototype (Phase 1)
 |   +-- test-runner.ts            # CLI test harness
 |   +-- sample-output.json        # Example generated programs
++-- docs/                         # Documentation
+|   +-- tickets/                  # Implementation tickets
+|   +-- SPEC.md                   # Technical specifications
+|   +-- WORKOUT_SPEC.md           # Workout data structure spec
+|   +-- EXERCISE_HISTORY_SPEC.md  # Exercise history spec
 +-- src/
 |   +-- routes/                   # SvelteKit pages
 |   |   +-- +page.svelte          # Questionnaire

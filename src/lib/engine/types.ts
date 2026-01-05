@@ -18,10 +18,9 @@ export interface QuestionnaireAnswers {
   experience_level: "complete_beginner" | "beginner" | "intermediate" | "advanced" | "expert";
   training_frequency: "2" | "3" | "4" | "5" | "6" | "7";
   session_duration: "20-30" | "30-45" | "45-60" | "60-90" | "90+" | "flexible";
-  equipment_access: "commercial_gym" | "home_gym_full" | "home_gym_basic" | "dumbbells_only" | "resistance_bands" | "bodyweight_only" | "minimal_equipment";
+  equipment_access: "commercial_gym" | "home_gym_full" | "home_gym_basic" | "dumbbells_only" | "bodyweight_only" | "minimal_equipment";
   training_split_preference?: "no_preference" | "full_body" | "upper_lower" | "push_pull_legs" | "ulppl";
   cardio_preference?: "none" | "integrated" | "separate_sessions" | "hiit" | "liss" | "sport_specific";
-  specific_focus_areas?: ("core_stability" | "posture" | "mobility_flexibility" | "functional_strength" | "power_explosiveness" | "muscle_imbalances" | "specific_sport")[];
   program_duration?: "3_weeks" | "4_weeks" | "6_weeks" | "8_weeks" | "12_weeks" | "16_weeks" | "ongoing";
   progression_preference?: "linear" | "volume" | "density" | "wave_loading" | "no_preference";
 }
@@ -200,18 +199,26 @@ export interface CompoundExerciseConstruction {
   circuit: {
     base_constituent_exercises: number;
     description: string;
+    exclude_equipment?: string[];
+    exclusion_reason?: string;
   };
   emom: {
     base_constituent_exercises: number;
     description: string;
+    exclude_equipment?: string[];
+    exclusion_reason?: string;
   };
   amrap: {
     base_constituent_exercises: number;
     description: string;
+    exclude_equipment?: string[];
+    exclusion_reason?: string;
   };
   interval: {
     base_constituent_exercises: number;
     description: string;
+    exclude_equipment?: string[];
+    exclusion_reason?: string;
   };
 }
 

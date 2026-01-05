@@ -6,7 +6,6 @@
   "equipment_access": "bodyweight_only",
   "training_split_preference": "full_body",
   "cardio_preference": "integrated",
-  "specific_focus_areas": [],
   "program_duration": "6_weeks",
   "progression_preference": "density"
 }

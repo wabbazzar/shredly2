@@ -6,7 +6,6 @@
   "equipment_access": "commercial_gym",
   "training_split_preference": "upper_lower",
   "cardio_preference": "none",
-  "specific_focus_areas": [],
   "program_duration": "8_weeks",
   "progression_preference": "linear"
 }

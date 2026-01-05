@@ -89,15 +89,15 @@
 
     "emom": {
       "light": {
-        "base_work_time_minutes": 2,
+        "base_work_time_minutes": 4,
         "base_target_reps_per_minute": 8
       },
       "moderate": {
-        "base_work_time_minutes": 3,
+        "base_work_time_minutes": 6,
         "base_target_reps_per_minute": 10
       },
       "heavy": {
-        "base_work_time_minutes": 4,
+        "base_work_time_minutes": 6,
         "base_target_reps_per_minute": 12
       }
     },
@@ -558,19 +558,27 @@
     "description": "Configuration for dynamically constructing compound exercises from individual exercises",
     "circuit": {
       "base_constituent_exercises": 4,
-      "description": "Number of individual exercises to combine into a circuit"
+      "description": "Number of individual exercises to combine into a circuit",
+      "exclude_equipment": ["Barbell"],
+      "exclusion_reason": "Barbell exercises require too much setup time for circuit training"
     },
     "emom": {
       "base_constituent_exercises": 2,
-      "description": "Number of exercises to alternate in EMOM (Every Minute On the Minute)"
+      "description": "Number of exercises to alternate in EMOM (Every Minute On the Minute)",
+      "exclude_equipment": ["Barbell"],
+      "exclusion_reason": "Barbell exercises require too much setup time for EMOM training"
     },
     "amrap": {
       "base_constituent_exercises": 3,
-      "description": "Number of exercises in AMRAP circuit (As Many Rounds As Possible)"
+      "description": "Number of exercises in AMRAP circuit (As Many Rounds As Possible)",
+      "exclude_equipment": ["Barbell"],
+      "exclusion_reason": "Barbell exercises require too much setup time for AMRAP training"
     },
     "interval": {
       "base_constituent_exercises": 2,
-      "description": "Number of exercises to alternate in interval training"
+      "description": "Number of exercises to alternate in interval training",
+      "exclude_equipment": ["Barbell"],
+      "exclusion_reason": "Barbell exercises require too much setup time for interval training"
     }
   },
 

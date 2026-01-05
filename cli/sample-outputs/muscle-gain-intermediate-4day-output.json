@@ -1,5 +1,5 @@
 {
-  "id": "workout_musc_int_1767618292566",
+  "id": "workout_musc_int_1767620624634",
   "name": "Muscle Building Intermediate Program",
   "description": "4 days per week workout program focused on muscle gain. Each session is 45-60 minutes.",
   "version": "2.0.0",
@@ -140,28 +140,28 @@
         {
           "name": "EMOM: Side Plank + Single-Leg Stands",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -278,28 +278,28 @@
         {
           "name": "EMOM: Push-ups + Pull-ups",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -478,30 +478,30 @@
           }
         },
         {
-          "name": "EMOM: Tricep Dips + Bench Press",
+          "name": "EMOM: Tricep Dips + Dumbbell Chest Press",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -565,7 +565,7 @@
               }
             },
             {
-              "name": "Bench Press",
+              "name": "Dumbbell Chest Press",
               "week1": {
                 "reps": 8,
                 "weight": {
@@ -680,35 +680,110 @@
           }
         },
         {
-          "name": "EMOM: Overhead Press + Bent-Over Row",
+          "name": "Bench Press",
           "week1": {
-            "work_time_minutes": 3
+            "sets": 4,
+            "reps": 5,
+            "rest_time_minutes": 0.33,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 3
+            "sets": 4,
+            "reps": 4,
+            "rest_time_minutes": 0.28,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 3
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.23,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           },
           "week4": {
-            "work_time_minutes": 3
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.18,
+            "weight": {
+              "type": "percent_tm",
+              "value": 95
+            }
           },
           "week5": {
-            "work_time_minutes": 3
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 100
+            }
           },
           "week6": {
-            "work_time_minutes": 4
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 105
+            }
           },
           "week7": {
-            "work_time_minutes": 4
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 110
+            }
           },
           "week8": {
-            "work_time_minutes": 4
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 115
+            }
+          }
+        },
+        {
+          "name": "EMOM: Dumbbell Shoulder Press + Dumbbell Bicep Curls",
+          "week1": {
+            "work_time_minutes": 6
+          },
+          "week2": {
+            "work_time_minutes": 6
+          },
+          "week3": {
+            "work_time_minutes": 6
+          },
+          "week4": {
+            "work_time_minutes": 7
+          },
+          "week5": {
+            "work_time_minutes": 7
+          },
+          "week6": {
+            "work_time_minutes": 7
+          },
+          "week7": {
+            "work_time_minutes": 7
+          },
+          "week8": {
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
             {
-              "name": "Overhead Press",
+              "name": "Dumbbell Shoulder Press",
               "week1": {
                 "reps": 8,
                 "weight": {
@@ -767,7 +842,7 @@
               }
             },
             {
-              "name": "Bent-Over Row",
+              "name": "Dumbbell Bicep Curls",
               "week1": {
                 "reps": 8,
                 "weight": {
@@ -855,798 +930,154 @@
           }
         },
         {
-          "name": "EMOM: Z Press + Push Press",
+          "name": "Overhead Press",
           "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Z Press",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Push Press",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
+            "sets": 4,
+            "reps": 5,
+            "rest_time_minutes": 0.33,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
             }
-          ]
-        },
-        {
-          "name": "Shoulder Rolls",
-          "week1": {
-            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 4,
+            "rest_time_minutes": 0.28,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.23,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           },
           "week4": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.18,
+            "weight": {
+              "type": "percent_tm",
+              "value": 95
+            }
           },
           "week5": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 100
+            }
           },
           "week6": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 105
+            }
           },
           "week7": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 110
+            }
           },
           "week8": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 115
+            }
           }
         },
         {
-          "name": "EMOM: Dumbbell Chest Press + Dumbbell Shoulder Press",
+          "name": "Bent-Over Row",
           "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Dumbbell Chest Press",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Dumbbell Shoulder Press",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
+            "sets": 4,
+            "reps": 5,
+            "rest_time_minutes": 0.33,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
             }
-          ]
-        },
-        {
-          "name": "Dead Bug",
-          "week1": {
-            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 4,
+            "rest_time_minutes": 0.28,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.23,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           },
           "week4": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.18,
+            "weight": {
+              "type": "percent_tm",
+              "value": 95
+            }
           },
           "week5": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 100
+            }
           },
           "week6": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 105
+            }
           },
           "week7": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 110
+            }
           },
           "week8": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 115
+            }
           }
-        },
-        {
-          "name": "EMOM: Dumbbell Bicep Curls + Single-arm Dumbbell Rows",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Dumbbell Bicep Curls",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Single-arm Dumbbell Rows",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "EMOM: Dumbbell Thrusters + Russian Twists",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Dumbbell Thrusters",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Russian Twists",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "EMOM: Renegade Rows + Dumbbell Weighted Crunches",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Renegade Rows",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Dumbbell Weighted Crunches",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
         }
       ]
     },
@@ -1803,28 +1234,28 @@
         {
           "name": "EMOM: Side Plank + Wall Sits",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -1941,28 +1372,28 @@
         {
           "name": "EMOM: Single-Leg Stands + strength Squats",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -2109,30 +1540,30 @@
           }
         },
         {
-          "name": "EMOM: Glute Bridges + Back Squat",
+          "name": "EMOM: Glute Bridges + Goblet Squats",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -2164,7 +1595,7 @@
               }
             },
             {
-              "name": "Back Squat",
+              "name": "Goblet Squats",
               "week1": {
                 "reps": 8,
                 "weight": {
@@ -2279,641 +1710,110 @@
           }
         },
         {
-          "name": "EMOM: Romanian Deadlift + Goblet Squats",
+          "name": "Back Squat",
           "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Romanian Deadlift",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Goblet Squats",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
+            "sets": 4,
+            "reps": 5,
+            "rest_time_minutes": 0.33,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
             }
-          ]
-        },
-        {
-          "name": "Figure-4 Hip Stretch",
-          "week1": {
-            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 4,
+            "rest_time_minutes": 0.28,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.23,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           },
           "week4": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.18,
+            "weight": {
+              "type": "percent_tm",
+              "value": 95
+            }
           },
           "week5": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 100
+            }
           },
           "week6": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 105
+            }
           },
           "week7": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 110
+            }
           },
           "week8": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 115
+            }
           }
         },
         {
-          "name": "Knee Extensions (Seated)",
+          "name": "EMOM: Bulgarian Split Squats + Russian Twists",
           "week1": {
-            "work_time_minutes": 1
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 1
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 1
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 1
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 1
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 1
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 1
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "EMOM: Hip Thrusts + Bulgarian Split Squats",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
-            {
-              "name": "Hip Thrusts",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
             {
               "name": "Bulgarian Split Squats",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Seated Forward Fold",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Glute Squeezes",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "EMOM: Sumo Deadlifts + Low Bar Squat",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Sumo Deadlifts",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Low Bar Squat",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "IT Band Stretch",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Straight Leg Raises",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "EMOM: Paused Squat + Russian Twists",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Paused Squat",
               "week1": {
                 "reps": 8,
                 "weight": {
@@ -3033,7 +1933,7 @@
           ]
         },
         {
-          "name": "Hamstring Stretch",
+          "name": "Figure-4 Hip Stretch",
           "week1": {
             "work_time_minutes": 1
           },
@@ -3060,7 +1960,7 @@
           }
         },
         {
-          "name": "Lateral Bounds",
+          "name": "Knee Extensions (Seated)",
           "week1": {
             "work_time_minutes": 1
           },
@@ -3084,6 +1984,81 @@
           },
           "week8": {
             "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Romanian Deadlift",
+          "week1": {
+            "sets": 4,
+            "reps": 5,
+            "rest_time_minutes": 0.33,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 4,
+            "reps": 4,
+            "rest_time_minutes": 0.28,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.23,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          },
+          "week4": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.18,
+            "weight": {
+              "type": "percent_tm",
+              "value": 95
+            }
+          },
+          "week5": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 100
+            }
+          },
+          "week6": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 105
+            }
+          },
+          "week7": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 110
+            }
+          },
+          "week8": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 115
+            }
           }
         }
       ]
@@ -3209,28 +2184,28 @@
         {
           "name": "EMOM: Jump Squats + Box Jumps",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -3379,28 +2354,28 @@
         {
           "name": "EMOM: Plank Hold + Side Plank",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -3517,28 +2492,28 @@
         {
           "name": "EMOM: Wall Sits + Single-Leg Stands",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -3655,28 +2630,28 @@
         {
           "name": "EMOM: Push-ups + Pull-ups",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -3857,28 +2832,28 @@
         {
           "name": "EMOM: strength Squats + Tricep Dips",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -4004,405 +2979,6 @@
         },
         {
           "name": "Figure-4 Hip Stretch",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Knee Extensions (Seated)",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "EMOM: Glute Bridges + Bench Press",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Glute Bridges",
-              "week1": {
-                "reps": 8
-              },
-              "week2": {
-                "reps": 8
-              },
-              "week3": {
-                "reps": 9
-              },
-              "week4": {
-                "reps": 9
-              },
-              "week5": {
-                "reps": 9
-              },
-              "week6": {
-                "reps": 10
-              },
-              "week7": {
-                "reps": 10
-              },
-              "week8": {
-                "reps": 10
-              }
-            },
-            {
-              "name": "Bench Press",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Seated Forward Fold",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Glute Squeezes",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "EMOM: Deadlift + Back Squat",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Deadlift",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Back Squat",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Child's Pose Stretch",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Straight Leg Raises",
           "week1": {
             "work_time_minutes": 1
           },
@@ -4583,28 +3159,28 @@
         {
           "name": "EMOM: Side Plank + Wall Sits",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -4721,28 +3297,28 @@
         {
           "name": "EMOM: Single-Leg Stands + strength Squats",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -4889,30 +3465,30 @@
           }
         },
         {
-          "name": "EMOM: Glute Bridges + Back Squat",
+          "name": "EMOM: Glute Bridges + Goblet Squats",
           "week1": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 3
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 3
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 4
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
@@ -4944,7 +3520,7 @@
               }
             },
             {
-              "name": "Back Squat",
+              "name": "Goblet Squats",
               "week1": {
                 "reps": 8,
                 "weight": {
@@ -5059,641 +3635,110 @@
           }
         },
         {
-          "name": "EMOM: Romanian Deadlift + Goblet Squats",
+          "name": "Back Squat",
           "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Romanian Deadlift",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Goblet Squats",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
+            "sets": 4,
+            "reps": 5,
+            "rest_time_minutes": 0.33,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
             }
-          ]
-        },
-        {
-          "name": "Figure-4 Hip Stretch",
-          "week1": {
-            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 4,
+            "rest_time_minutes": 0.28,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.23,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           },
           "week4": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.18,
+            "weight": {
+              "type": "percent_tm",
+              "value": 95
+            }
           },
           "week5": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 100
+            }
           },
           "week6": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 105
+            }
           },
           "week7": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 110
+            }
           },
           "week8": {
-            "work_time_minutes": 1
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 115
+            }
           }
         },
         {
-          "name": "Knee Extensions (Seated)",
+          "name": "EMOM: Bulgarian Split Squats + Russian Twists",
           "week1": {
-            "work_time_minutes": 1
+            "work_time_minutes": 6
           },
           "week2": {
-            "work_time_minutes": 1
+            "work_time_minutes": 6
           },
           "week3": {
-            "work_time_minutes": 1
+            "work_time_minutes": 6
           },
           "week4": {
-            "work_time_minutes": 1
+            "work_time_minutes": 7
           },
           "week5": {
-            "work_time_minutes": 1
+            "work_time_minutes": 7
           },
           "week6": {
-            "work_time_minutes": 1
+            "work_time_minutes": 7
           },
           "week7": {
-            "work_time_minutes": 1
+            "work_time_minutes": 7
           },
           "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "EMOM: Hip Thrusts + Bulgarian Split Squats",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
+            "work_time_minutes": 8
           },
           "category": "emom",
           "sub_exercises": [
-            {
-              "name": "Hip Thrusts",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
             {
               "name": "Bulgarian Split Squats",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Seated Forward Fold",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Glute Squeezes",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "EMOM: Sumo Deadlifts + Low Bar Squat",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Sumo Deadlifts",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            },
-            {
-              "name": "Low Bar Squat",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week4": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week5": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week6": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week7": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week8": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "IT Band Stretch",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Straight Leg Raises",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          },
-          "week7": {
-            "work_time_minutes": 1
-          },
-          "week8": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "EMOM: Paused Squat + Russian Twists",
-          "week1": {
-            "work_time_minutes": 3
-          },
-          "week2": {
-            "work_time_minutes": 3
-          },
-          "week3": {
-            "work_time_minutes": 3
-          },
-          "week4": {
-            "work_time_minutes": 3
-          },
-          "week5": {
-            "work_time_minutes": 3
-          },
-          "week6": {
-            "work_time_minutes": 4
-          },
-          "week7": {
-            "work_time_minutes": 4
-          },
-          "week8": {
-            "work_time_minutes": 4
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Paused Squat",
               "week1": {
                 "reps": 8,
                 "weight": {
@@ -5813,7 +3858,7 @@
           ]
         },
         {
-          "name": "Hamstring Stretch",
+          "name": "Figure-4 Hip Stretch",
           "week1": {
             "work_time_minutes": 1
           },
@@ -5840,7 +3885,7 @@
           }
         },
         {
-          "name": "Lateral Bounds",
+          "name": "Knee Extensions (Seated)",
           "week1": {
             "work_time_minutes": 1
           },
@@ -5864,6 +3909,81 @@
           },
           "week8": {
             "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Romanian Deadlift",
+          "week1": {
+            "sets": 4,
+            "reps": 5,
+            "rest_time_minutes": 0.33,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 4,
+            "reps": 4,
+            "rest_time_minutes": 0.28,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.23,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          },
+          "week4": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.18,
+            "weight": {
+              "type": "percent_tm",
+              "value": 95
+            }
+          },
+          "week5": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 100
+            }
+          },
+          "week6": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 105
+            }
+          },
+          "week7": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 110
+            }
+          },
+          "week8": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 115
+            }
           }
         }
       ]

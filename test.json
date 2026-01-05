@@ -1,0 +1,481 @@
+{
+  "id": "workout_musc_adv_1767626460271",
+  "name": "Muscle Building Advanced Program",
+  "description": "2 days per week workout program focused on muscle gain. Each session is 20-30 minutes.",
+  "version": "2.0.0",
+  "weeks": 3,
+  "daysPerWeek": 2,
+  "metadata": {
+    "difficulty": "Advanced",
+    "equipment": [
+      "commercial_gym"
+    ],
+    "estimatedDuration": "20-30",
+    "tags": [
+      "muscle_gain",
+      "advanced",
+      "2_days_week",
+      "commercial_gym"
+    ]
+  },
+  "days": {
+    "1": {
+      "dayNumber": 1,
+      "type": "gym",
+      "focus": "Full Body",
+      "exercises": [
+        {
+          "name": "Alternating Jump Lunges",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Jump Squats",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Pull-ups",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Bench Press",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Deadlift",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Back Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Overhead Press",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Bent-Over Row",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        }
+      ]
+    },
+    "2": {
+      "dayNumber": 2,
+      "type": "gym",
+      "focus": "Full Body",
+      "exercises": [
+        {
+          "name": "Alternating Jump Lunges",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "Jump Squats",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Pull-ups",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Bench Press",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Deadlift",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Back Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Overhead Press",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Bent-Over Row",
+          "week1": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 4,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        }
+      ]
+    }
+  }
+}

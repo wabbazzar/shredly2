@@ -278,9 +278,5 @@ function generateTags(answers: QuestionnaireAnswers): string[] {
     tags.push(answers.cardio_preference);
   }
 
-  if (answers.specific_focus_areas) {
-    tags.push(...answers.specific_focus_areas);
-  }
-
   return tags;
 }

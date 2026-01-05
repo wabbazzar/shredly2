@@ -139,7 +139,6 @@ function checkEquipmentAvailability(
     home_gym_basic: ["Dumbbell", "Dumbbells", "Bench", "Resistance Bands", "Kettlebell",
                       "Pull-up Bar", "Chair", "Wall", "Mat", "Foam Roller", "None"],
     dumbbells_only: ["Dumbbell", "Dumbbells", "Bench", "Chair", "Wall", "Mat", "None"],
-    resistance_bands: ["Resistance Bands", "TRX", "Chair", "Wall", "Mat", "Foam Roller", "None"],
     bodyweight_only: ["None", "Pull-up Bar", "Chair", "Wall", "Mat", "Box", "Platform"],
     minimal_equipment: ["None", "Resistance Bands", "Chair", "Wall", "Mat", "Dumbbell"]
   };
@@ -284,6 +283,15 @@ function constructCompoundExercise(
     // Check equipment
     if (exercise.equipment.length > 0 && !exercise.equipment.includes("None")) {
       if (!checkEquipmentAvailability(exercise.equipment, answers.equipment_access)) {
+        return false;
+      }
+    }
+
+    // Exclude equipment based on compound exercise type config
+    const excludedEquipment = rules.compound_exercise_construction[compoundCategory].exclude_equipment;
+    if (excludedEquipment && excludedEquipment.length > 0) {
+      const hasExcludedEquipment = exercise.equipment.some(eq => excludedEquipment.includes(eq));
+      if (hasExcludedEquipment) {
         return false;
       }
     }

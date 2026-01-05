@@ -1,0 +1,288 @@
+{
+  "id": "workout_fat__beg_1767579365458",
+  "name": "Fat Loss Beginner Program",
+  "description": "3 days per week workout program focused on fat loss. Each session is 30-45 minutes.",
+  "version": "2.0.0",
+  "weeks": 6,
+  "daysPerWeek": 3,
+  "metadata": {
+    "difficulty": "Beginner",
+    "equipment": [
+      "bodyweight_only"
+    ],
+    "estimatedDuration": "30-45",
+    "tags": [
+      "fat_loss",
+      "beginner",
+      "3_days_week",
+      "bodyweight_only",
+      "integrated"
+    ]
+  },
+  "days": {
+    "1": {
+      "dayNumber": 1,
+      "type": "outdoor",
+      "focus": "Full Body",
+      "exercises": [
+        {
+          "name": "Fire Hydrants",
+          "week1": {
+            "work_time_minutes": 5
+          },
+          "week2": {
+            "work_time_minutes": 5
+          },
+          "week3": {
+            "work_time_minutes": 5
+          },
+          "week4": {
+            "work_time_minutes": 5
+          },
+          "week5": {
+            "work_time_minutes": 5
+          },
+          "week6": {
+            "work_time_minutes": 5
+          }
+        },
+        {
+          "name": "Bodyweight Circuit",
+          "week1": {
+            "sets": 4
+          },
+          "week2": {
+            "sets": 4
+          },
+          "week3": {
+            "sets": 4
+          },
+          "week4": {
+            "sets": 4
+          },
+          "week5": {
+            "sets": 4
+          },
+          "week6": {
+            "sets": 4
+          }
+        },
+        {
+          "name": "Mountain Climbers",
+          "week1": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 1.4375,
+            "weight": "moderate"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 6,
+            "rest_time_minutes": 1.1875,
+            "weight": "moderate"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 5,
+            "rest_time_minutes": 0.9375,
+            "weight": "moderate"
+          },
+          "week4": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          },
+          "week5": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          },
+          "week6": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          }
+        }
+      ]
+    },
+    "2": {
+      "dayNumber": 2,
+      "type": "outdoor",
+      "focus": "Full Body",
+      "exercises": [
+        {
+          "name": "Fire Hydrants",
+          "week1": {
+            "work_time_minutes": 5
+          },
+          "week2": {
+            "work_time_minutes": 5
+          },
+          "week3": {
+            "work_time_minutes": 5
+          },
+          "week4": {
+            "work_time_minutes": 5
+          },
+          "week5": {
+            "work_time_minutes": 5
+          },
+          "week6": {
+            "work_time_minutes": 5
+          }
+        },
+        {
+          "name": "Bodyweight Circuit",
+          "week1": {
+            "sets": 4
+          },
+          "week2": {
+            "sets": 4
+          },
+          "week3": {
+            "sets": 4
+          },
+          "week4": {
+            "sets": 4
+          },
+          "week5": {
+            "sets": 4
+          },
+          "week6": {
+            "sets": 4
+          }
+        },
+        {
+          "name": "Mountain Climbers",
+          "week1": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 1.4375,
+            "weight": "moderate"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 6,
+            "rest_time_minutes": 1.1875,
+            "weight": "moderate"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 5,
+            "rest_time_minutes": 0.9375,
+            "weight": "moderate"
+          },
+          "week4": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          },
+          "week5": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          },
+          "week6": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          }
+        }
+      ]
+    },
+    "3": {
+      "dayNumber": 3,
+      "type": "outdoor",
+      "focus": "Full Body",
+      "exercises": [
+        {
+          "name": "Fire Hydrants",
+          "week1": {
+            "work_time_minutes": 5
+          },
+          "week2": {
+            "work_time_minutes": 5
+          },
+          "week3": {
+            "work_time_minutes": 5
+          },
+          "week4": {
+            "work_time_minutes": 5
+          },
+          "week5": {
+            "work_time_minutes": 5
+          },
+          "week6": {
+            "work_time_minutes": 5
+          }
+        },
+        {
+          "name": "Bodyweight Circuit",
+          "week1": {
+            "sets": 4
+          },
+          "week2": {
+            "sets": 4
+          },
+          "week3": {
+            "sets": 4
+          },
+          "week4": {
+            "sets": 4
+          },
+          "week5": {
+            "sets": 4
+          },
+          "week6": {
+            "sets": 4
+          }
+        },
+        {
+          "name": "Mountain Climbers",
+          "week1": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 1.4375,
+            "weight": "moderate"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 6,
+            "rest_time_minutes": 1.1875,
+            "weight": "moderate"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 5,
+            "rest_time_minutes": 0.9375,
+            "weight": "moderate"
+          },
+          "week4": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          },
+          "week5": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          },
+          "week6": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 0.75,
+            "weight": "moderate"
+          }
+        }
+      ]
+    }
+  }
+}

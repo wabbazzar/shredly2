@@ -1,0 +1,12 @@
+{
+  "primary_goal": "athletic_performance",
+  "experience_level": "advanced",
+  "training_frequency": "6",
+  "session_duration": "60-90",
+  "equipment_access": "commercial_gym",
+  "training_split_preference": "push_pull_legs",
+  "cardio_preference": "sport_specific",
+  "specific_focus_areas": ["power_explosiveness", "functional_strength"],
+  "program_duration": "12_weeks",
+  "progression_preference": "wave_loading"
+}

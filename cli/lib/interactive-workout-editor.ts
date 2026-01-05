@@ -1,0 +1,560 @@
+/**
+ * Interactive Workout Editor - Main CLI Interface
+ *
+ * Vim-like modal interface for editing workout programs
+ * Modes: View, Edit, Command
+ * Features: Navigation, field editing, exercise replacement, undo, save
+ */
+
+import * as readline from 'readline';
+import * as fs from 'fs';
+import chalk from 'chalk';
+import type { ParameterizedWorkout } from '../../src/lib/engine/types.js';
+import { WorkoutEditor, type EditableField } from '../../src/lib/engine/workout-editor.js';
+import { validateWorkout, formatValidationResult } from '../../src/lib/engine/workout-validator.js';
+import {
+  formatWorkoutInteractive,
+  formatSingleDayView,
+  type HighlightOptions
+} from './workout-formatter.js';
+import { browseExerciseDatabase } from './exercise-db-browser.js';
+import hotkeysConfig from '../cli_hotkeys.json' with { type: 'json' };
+
+type EditorMode = 'view' | 'edit' | 'command' | 'help';
+type ViewMode = 'week' | 'day'; // week = all days, day = one day at a time
+
+interface EditorState {
+  mode: EditorMode;
+  viewMode: ViewMode;
+  currentDayIndex: number; // for day view navigation
+  selectedFieldIndex: number; // index in editableFields array
+  editBuffer: string; // current value being edited
+  commandBuffer: string; // for command mode input
+  statusMessage: string;
+  statusType: 'info' | 'success' | 'error';
+}
+
+export interface EditorOptions {
+  filePath?: string; // original file path for saving
+  experienceLevel?: string; // for smart defaults when replacing exercises
+}
+
+export class InteractiveWorkoutEditor {
+  private editor: WorkoutEditor;
+  private state: EditorState;
+  private editableFields: EditableField[];
+  private dayKeys: string[];
+  private options: EditorOptions;
+  private running: boolean = false;
+
+  constructor(workout: ParameterizedWorkout, options: EditorOptions = {}) {
+    this.editor = new WorkoutEditor(workout);
+    this.options = options;
+
+    const workout_ = this.editor.getWorkout();
+    this.dayKeys = Object.keys(workout_.days).sort();
+
+    this.editableFields = this.editor.getAllEditableFields();
+
+    this.state = {
+      mode: 'view',
+      viewMode: 'week',
+      currentDayIndex: 0,
+      selectedFieldIndex: 0,
+      editBuffer: '',
+      commandBuffer: '',
+      statusMessage: `Loaded workout: ${workout_.name}`,
+      statusType: 'info'
+    };
+  }
+
+  /**
+   * Start the interactive editor session
+   */
+  async start(): Promise<{ saved: boolean; workout: ParameterizedWorkout }> {
+    this.running = true;
+
+    // Setup readline for keyboard input
+    readline.emitKeypressEvents(process.stdin);
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true);
+    }
+
+    this.render();
+
+    return new Promise((resolve) => {
+      const onKeypress = async (str: string, key: any) => {
+        if (!key || !this.running) return;
+
+        await this.handleKeypress(str, key);
+
+        if (!this.running) {
+          this.cleanup();
+          resolve({
+            saved: false,
+            workout: this.editor.getWorkout()
+          });
+        }
+      };
+
+      process.stdin.on('keypress', onKeypress);
+    });
+  }
+
+  /**
+   * Handle keyboard input based on current mode
+   */
+  private async handleKeypress(str: string, key: any): Promise<void> {
+    // Global: Ctrl+C
+    if (key.ctrl && key.name === 'c') {
+      this.running = false;
+      return;
+    }
+
+    if (this.state.mode === 'view') {
+      await this.handleViewModeKey(str, key);
+    } else if (this.state.mode === 'edit') {
+      this.handleEditModeKey(str, key);
+    } else if (this.state.mode === 'command') {
+      await this.handleCommandModeKey(str, key);
+    } else if (this.state.mode === 'help') {
+      this.handleHelpModeKey(str, key);
+    }
+
+    this.render();
+  }
+
+  /**
+   * View mode keyboard handler
+   */
+  private async handleViewModeKey(str: string, key: any): Promise<void> {
+    const hotkeys = hotkeysConfig.view_mode;
+
+    // Navigation
+    if (key.name === hotkeys.navigation.next_editable_field) {
+      this.state.selectedFieldIndex = Math.min(this.editableFields.length - 1, this.state.selectedFieldIndex + 1);
+    } else if (str === hotkeys.navigation.previous_editable_field) {
+      this.state.selectedFieldIndex = Math.max(0, this.state.selectedFieldIndex - 1);
+    } else if (key.name === hotkeys.navigation.previous_day) {
+      if (this.state.viewMode === 'day') {
+        this.state.currentDayIndex = Math.max(0, this.state.currentDayIndex - 1);
+      }
+    } else if (key.name === hotkeys.navigation.next_day) {
+      if (this.state.viewMode === 'day') {
+        this.state.currentDayIndex = Math.min(this.dayKeys.length - 1, this.state.currentDayIndex + 1);
+      }
+    }
+
+    // View mode toggle
+    else if (str === 'd' || str === 'D') {
+      this.state.viewMode = 'day';
+      this.setStatus('Switched to Day view', 'info');
+    } else if (str === 'w' || str === 'W') {
+      this.state.viewMode = 'week';
+      this.setStatus('Switched to Week view', 'info');
+    }
+
+    // Jump to exercise number
+    else if (str && /^[1-9]$/.test(str)) {
+      const exerciseNum = parseInt(str);
+      const targetField = this.findFieldByExerciseNumber(exerciseNum - 1);
+      if (targetField !== -1) {
+        this.state.selectedFieldIndex = targetField;
+      }
+    }
+
+    // Actions
+    else if (str === hotkeys.actions.replace_current_field) {
+      await this.enterEditMode();
+    } else if (str === hotkeys.actions.open_exercise_database) {
+      await this.openExerciseDatabase();
+    } else if (str === hotkeys.actions.undo_last_change) {
+      this.undoLastChange();
+    } else if (str === hotkeys.actions.show_help || str === hotkeys.actions.show_help_alt) {
+      this.state.mode = 'help';
+    } else if (str === hotkeys.actions.enter_command_mode) {
+      this.state.mode = 'command';
+      this.state.commandBuffer = '';
+    } else if (str === hotkeys.actions.quit) {
+      await this.quit();
+    }
+  }
+
+  /**
+   * Edit mode keyboard handler
+   */
+  private handleEditModeKey(str: string, key: any): void {
+    const hotkeys = hotkeysConfig.edit_mode;
+
+    if (key.name === 'escape') {
+      // Cancel edit
+      this.state.mode = 'view';
+      this.state.editBuffer = '';
+      this.setStatus('Edit cancelled', 'info');
+    } else if (key.name === 'return') {
+      // Confirm edit
+      this.confirmEdit();
+      this.state.mode = 'view';
+    } else if (key.name === 'tab') {
+      // Confirm and jump to next field
+      this.confirmEdit();
+      this.state.selectedFieldIndex = Math.min(this.editableFields.length - 1, this.state.selectedFieldIndex + 1);
+      this.state.mode = 'view';
+    } else if (key.name === 'backspace') {
+      this.state.editBuffer = this.state.editBuffer.slice(0, -1);
+    } else if (str && str.length === 1 && !key.ctrl) {
+      this.state.editBuffer += str;
+    }
+  }
+
+  /**
+   * Command mode keyboard handler
+   */
+  private async handleCommandModeKey(str: string, key: any): Promise<void> {
+    if (key.name === 'escape') {
+      this.state.mode = 'view';
+      this.state.commandBuffer = '';
+    } else if (key.name === 'return') {
+      await this.executeCommand(this.state.commandBuffer);
+      this.state.mode = 'view';
+      this.state.commandBuffer = '';
+    } else if (key.name === 'backspace') {
+      this.state.commandBuffer = this.state.commandBuffer.slice(0, -1);
+    } else if (str && str.length === 1 && !key.ctrl) {
+      this.state.commandBuffer += str;
+    }
+  }
+
+  /**
+   * Help mode keyboard handler
+   */
+  private handleHelpModeKey(str: string, key: any): void {
+    if (key.name === 'escape' || str === 'q') {
+      this.state.mode = 'view';
+    }
+  }
+
+  /**
+   * Enter edit mode for current field
+   */
+  private async enterEditMode(): Promise<void> {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    this.state.mode = 'edit';
+    this.state.editBuffer = String(field.currentValue || '');
+    this.setStatus(`Editing ${field.fieldName} - Press Enter to confirm, Esc to cancel`, 'info');
+  }
+
+  /**
+   * Confirm edit and apply changes
+   */
+  private confirmEdit(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    const newValue = this.state.editBuffer.trim();
+
+    // Type conversion
+    let typedValue: any = newValue;
+    if (field.type === 'number') {
+      typedValue = parseFloat(newValue);
+      if (isNaN(typedValue)) {
+        this.setStatus('Invalid number', 'error');
+        return;
+      }
+    }
+
+    const success = this.editor.editField(field, typedValue);
+    if (success) {
+      this.setStatus(`Updated ${field.fieldName}`, 'success');
+      // Refresh editable fields
+      this.editableFields = this.editor.getAllEditableFields();
+    } else {
+      this.setStatus('Edit failed', 'error');
+    }
+
+    this.state.editBuffer = '';
+  }
+
+  /**
+   * Open exercise database browser
+   */
+  private async openExerciseDatabase(): Promise<void> {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field || field.fieldName !== 'name') {
+      this.setStatus('Select an exercise name field first', 'error');
+      return;
+    }
+
+    // Pause current interface
+    this.cleanup();
+
+    const result = await browseExerciseDatabase();
+
+    // Resume interface
+    readline.emitKeypressEvents(process.stdin);
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true);
+    }
+
+    if (result.selected && result.exerciseName) {
+      // Replace exercise
+      const replaceResult = this.editor.replaceExercise(
+        field.dayKey,
+        field.exerciseIndex,
+        result.exerciseName,
+        this.options.experienceLevel || 'intermediate'
+      );
+
+      if (replaceResult.success) {
+        this.setStatus(replaceResult.message, 'success');
+        this.editableFields = this.editor.getAllEditableFields();
+      } else {
+        this.setStatus(replaceResult.message, 'error');
+      }
+    }
+  }
+
+  /**
+   * Undo last change
+   */
+  private undoLastChange(): void {
+    const undoEntry = this.editor.undo();
+    if (undoEntry) {
+      this.setStatus(`Undone: ${undoEntry.action}`, 'success');
+      this.editableFields = this.editor.getAllEditableFields();
+
+      // Jump to the location that was undone
+      const fieldIndex = this.editableFields.findIndex(f => f.location === undoEntry.location);
+      if (fieldIndex !== -1) {
+        this.state.selectedFieldIndex = fieldIndex;
+      }
+    } else {
+      this.setStatus('Nothing to undo', 'info');
+    }
+  }
+
+  /**
+   * Execute command (e.g., :w, :q, :validate)
+   */
+  private async executeCommand(cmd: string): Promise<void> {
+    const parts = cmd.trim().split(/\s+/);
+    const command = parts[0];
+    const args = parts.slice(1);
+
+    const commands = hotkeysConfig.command_mode.commands;
+
+    if (commands.save.includes(command)) {
+      this.saveWorkout(args[0]);
+    } else if (commands.quit.includes(command)) {
+      await this.quit();
+    } else if (commands.save_and_quit.includes(command)) {
+      this.saveWorkout(args[0]);
+      this.running = false;
+    } else if (commands.force_quit.includes(command)) {
+      this.running = false;
+    } else if (commands.validate.includes(command)) {
+      this.validateWorkout();
+    } else if (commands.help.includes(command)) {
+      this.state.mode = 'help';
+    } else {
+      this.setStatus(`Unknown command: ${command}`, 'error');
+    }
+  }
+
+  /**
+   * Save workout to file
+   */
+  private saveWorkout(filePath?: string): void {
+    const targetPath = filePath || this.options.filePath;
+
+    if (!targetPath) {
+      this.setStatus('No file path specified. Use :w <filename>', 'error');
+      return;
+    }
+
+    try {
+      const workout = this.editor.getWorkout();
+      fs.writeFileSync(targetPath, JSON.stringify(workout, null, 2), 'utf-8');
+      this.editor.markSaved();
+      this.setStatus(`Saved to ${targetPath}`, 'success');
+    } catch (error) {
+      this.setStatus(`Save failed: ${error}`, 'error');
+    }
+  }
+
+  /**
+   * Validate workout
+   */
+  private validateWorkout(): void {
+    const workout = this.editor.getWorkout();
+    const result = validateWorkout(workout);
+    const formatted = formatValidationResult(result);
+
+    // Show validation in a temporary overlay
+    console.clear();
+    console.log(formatted);
+    console.log('');
+    console.log(chalk.gray('Press any key to continue...'));
+
+    // Wait for keypress
+    const handler = () => {
+      process.stdin.removeListener('keypress', handler);
+      this.render();
+    };
+    process.stdin.once('keypress', handler);
+  }
+
+  /**
+   * Quit with unsaved changes check
+   */
+  private async quit(): Promise<void> {
+    if (this.editor.isModified()) {
+      this.setStatus('Unsaved changes! Use :wq to save and quit, or :q! to force quit', 'error');
+    } else {
+      this.running = false;
+    }
+  }
+
+  /**
+   * Render the current view
+   */
+  private render(): void {
+    console.clear();
+
+    const workout = this.editor.getWorkout();
+    const selectedField = this.editableFields[this.state.selectedFieldIndex];
+
+    const highlightOptions: HighlightOptions = {
+      selectedFieldLocation: selectedField?.location,
+      showAllEditable: false
+    };
+
+    if (this.state.mode === 'help') {
+      this.renderHelp();
+      return;
+    }
+
+    if (this.state.viewMode === 'week') {
+      console.log(formatWorkoutInteractive(workout, highlightOptions));
+    } else {
+      const dayKey = this.dayKeys[this.state.currentDayIndex];
+      const day = workout.days[dayKey];
+      console.log(formatSingleDayView(day, dayKey, workout.weeks, highlightOptions));
+    }
+
+    console.log('');
+    this.renderStatusLine();
+  }
+
+  /**
+   * Render status line at bottom
+   */
+  private renderStatusLine(): void {
+    const workout = this.editor.getWorkout();
+    const modifiedIndicator = this.editor.isModified() ? chalk.red('[+]') : '';
+    const modeIndicator = this.getModeIndicator();
+    const viewIndicator = this.state.viewMode === 'week' ? '[WEEK]' : `[DAY ${this.state.currentDayIndex + 1}/${this.dayKeys.length}]`;
+    const undoIndicator = this.editor.getUndoStackSize() > 0 ? `[Undo: ${this.editor.getUndoStackSize()}]` : '';
+
+    console.log(chalk.gray('-'.repeat(60)));
+
+    if (this.state.mode === 'edit') {
+      console.log(chalk.cyan(`EDIT: ${this.state.editBuffer}_`));
+    } else if (this.state.mode === 'command') {
+      console.log(chalk.cyan(`:${this.state.commandBuffer}_`));
+    }
+
+    const statusColor = this.state.statusType === 'error' ? chalk.red : this.state.statusType === 'success' ? chalk.green : chalk.gray;
+    console.log(statusColor(this.state.statusMessage));
+
+    console.log(chalk.gray(`${modeIndicator} ${viewIndicator} ${modifiedIndicator} ${undoIndicator} | Press ? for help`));
+  }
+
+  /**
+   * Render help screen
+   */
+  private renderHelp(): void {
+    console.log(chalk.cyan('=== INTERACTIVE WORKOUT EDITOR HELP ==='));
+    console.log('');
+    console.log(chalk.yellow('VIEW MODE:'));
+    console.log('  d/w         - Toggle Day/Week view');
+    console.log('  ← →         - Navigate between days (Day view)');
+    console.log('  t/T         - Jump to next/previous editable field');
+    console.log('  1-9         - Jump to exercise number');
+    console.log('  r           - Replace/edit current field');
+    console.log('  e           - Open exercise database browser');
+    console.log('  u           - Undo last change');
+    console.log('  :           - Enter command mode');
+    console.log('  q           - Quit (checks for unsaved changes)');
+    console.log('');
+    console.log(chalk.yellow('EDIT MODE:'));
+    console.log('  Type        - Enter new value');
+    console.log('  Enter       - Confirm edit');
+    console.log('  Tab         - Confirm and jump to next field');
+    console.log('  Esc         - Cancel edit');
+    console.log('');
+    console.log(chalk.yellow('COMMAND MODE:'));
+    console.log('  :w          - Save workout');
+    console.log('  :w <file>   - Save as (specify path)');
+    console.log('  :q          - Quit');
+    console.log('  :wq         - Save and quit');
+    console.log('  :q!         - Force quit (discard changes)');
+    console.log('  :validate   - Validate workout structure');
+    console.log('');
+    console.log(chalk.gray('Press Esc or Q to close help'));
+  }
+
+  /**
+   * Get mode indicator string
+   */
+  private getModeIndicator(): string {
+    if (this.state.mode === 'view') return chalk.green('[VIEW]');
+    if (this.state.mode === 'edit') return chalk.yellow('[EDIT]');
+    if (this.state.mode === 'command') return chalk.cyan('[COMMAND]');
+    if (this.state.mode === 'help') return chalk.blue('[HELP]');
+    return '';
+  }
+
+  /**
+   * Set status message
+   */
+  private setStatus(message: string, type: 'info' | 'success' | 'error'): void {
+    this.state.statusMessage = message;
+    this.state.statusType = type;
+  }
+
+  /**
+   * Find field index by exercise number
+   */
+  private findFieldByExerciseNumber(exerciseIndex: number): number {
+    for (let i = 0; i < this.editableFields.length; i++) {
+      if (this.editableFields[i].exerciseIndex === exerciseIndex) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  /**
+   * Cleanup readline
+   */
+  private cleanup(): void {
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(false);
+    }
+    process.stdin.removeAllListeners('keypress');
+  }
+}
+
+/**
+ * Entry point for interactive workout editing
+ */
+export async function editWorkoutInteractive(
+  workout: ParameterizedWorkout,
+  options: EditorOptions = {}
+): Promise<{ saved: boolean; workout: ParameterizedWorkout }> {
+  const editor = new InteractiveWorkoutEditor(workout, options);
+  return await editor.start();
+}

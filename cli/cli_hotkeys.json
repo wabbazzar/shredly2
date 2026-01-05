@@ -1,0 +1,97 @@
+{
+  "version": "1.0.0",
+  "description": "Configurable hotkey bindings for CLI interactive workout editor - vim-like modal interface",
+
+  "view_mode": {
+    "description": "Default navigation and inspection mode",
+    "navigation": {
+      "toggle_day_week_view": "d",
+      "toggle_week_day_view": "w",
+      "previous_day": "left",
+      "next_day": "right",
+      "previous_exercise": "up",
+      "next_exercise": "down",
+      "jump_to_exercise_1": "1",
+      "jump_to_exercise_2": "2",
+      "jump_to_exercise_3": "3",
+      "jump_to_exercise_4": "4",
+      "jump_to_exercise_5": "5",
+      "jump_to_exercise_6": "6",
+      "jump_to_exercise_7": "7",
+      "jump_to_exercise_8": "8",
+      "jump_to_exercise_9": "9",
+      "next_editable_field": "t",
+      "previous_editable_field": "T"
+    },
+    "actions": {
+      "replace_current_field": "r",
+      "open_exercise_database": "e",
+      "undo_last_change": "u",
+      "show_help": "?",
+      "show_help_alt": "h",
+      "enter_command_mode": ":",
+      "quit": "q"
+    }
+  },
+
+  "edit_mode": {
+    "description": "Active editing of a field value",
+    "actions": {
+      "confirm_edit": "enter",
+      "confirm_and_next_field": "tab",
+      "cancel_edit": "escape"
+    }
+  },
+
+  "command_mode": {
+    "description": "Execute slash commands (vim-style)",
+    "commands": {
+      "save": ["w", "save"],
+      "quit": ["q", "quit"],
+      "save_and_quit": ["wq", "x"],
+      "force_quit": ["q!", "quit!"],
+      "help": ["help", "h"],
+      "validate": ["validate", "check"]
+    }
+  },
+
+  "exercise_db_browser_mode": {
+    "description": "Exercise database filtering and selection interface",
+    "navigation": {
+      "move_up": "up",
+      "move_down": "down",
+      "page_up": "pageup",
+      "page_down": "pagedown",
+      "toggle_filter": "space",
+      "select_exercise": "enter",
+      "cancel_browser": "escape",
+      "cancel_browser_alt": "q"
+    },
+    "filtering": {
+      "focus_search": "/",
+      "clear_search": "escape",
+      "toggle_category_filters": "c",
+      "toggle_muscle_group_filters": "m",
+      "toggle_equipment_filters": "e",
+      "reset_all_filters": "R"
+    }
+  },
+
+  "help_overlay_mode": {
+    "description": "Help screen display",
+    "actions": {
+      "close_help": "escape",
+      "close_help_alt": "q",
+      "scroll_up": "up",
+      "scroll_down": "down"
+    }
+  },
+
+  "customization_notes": [
+    "To customize: edit this file and restart the interactive editor",
+    "Key values should be lowercase strings matching readline key names",
+    "Special keys: 'enter', 'escape', 'tab', 'space', 'up', 'down', 'left', 'right', 'pageup', 'pagedown'",
+    "Multi-character sequences (like 'db') are supported in view_mode.actions only",
+    "Command mode commands support aliases (arrays of strings)"
+  ]
+}

@@ -174,6 +174,15 @@ async function main() {
       // Give user a moment to read the tip
       await new Promise(resolve => setTimeout(resolve, 1500));
 
+      // Clean up stdin from inquirer before launching editor
+      // Remove all listeners and pause stdin to prevent conflicts
+      process.stdin.removeAllListeners('keypress');
+      process.stdin.removeAllListeners('data');
+      process.stdin.pause();
+
+      // Small delay to let stdin fully clean up
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       const editResult = await editWorkoutInteractive(workout, {
         experienceLevel: answers.experience_level || 'intermediate'
       });

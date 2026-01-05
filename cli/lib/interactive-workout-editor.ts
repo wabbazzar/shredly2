@@ -83,6 +83,9 @@ export class InteractiveWorkoutEditor {
       process.stdin.setRawMode(true);
     }
 
+    // Resume stdin to receive keypress events
+    process.stdin.resume();
+
     this.render();
 
     return new Promise((resolve) => {

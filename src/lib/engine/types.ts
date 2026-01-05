@@ -192,7 +192,27 @@ export interface GenerationRules {
   duration_constraints: DurationConstraints;
   split_patterns: SplitPatterns;
   split_muscle_group_mapping: SplitMuscleGroupMapping;
+  compound_exercise_construction: CompoundExerciseConstruction;
   exercise_selection_strategy: ExerciseSelectionStrategy;
+}
+
+export interface CompoundExerciseConstruction {
+  circuit: {
+    base_constituent_exercises: number;
+    description: string;
+  };
+  emom: {
+    base_constituent_exercises: number;
+    description: string;
+  };
+  amrap: {
+    base_constituent_exercises: number;
+    description: string;
+  };
+  interval: {
+    base_constituent_exercises: number;
+    description: string;
+  };
 }
 
 export interface IntensityProfiles {
@@ -296,6 +316,7 @@ export interface ExerciseSelectionStrategy {
   };
   diversity_rules: {
     no_duplicate_exercises: boolean;
+    no_duplicate_exercises_within_week: boolean;
     muscle_diversity_within_day: boolean;
     description: string;
   };

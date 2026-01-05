@@ -255,15 +255,8 @@ function constructCompoundExercise(
   usedExerciseNames: Set<string>,
   intensityProfile: string
 ): ExerciseStructure {
-  // Determine how many constituent exercises to include
-  const numExercises: { [key: string]: number } = {
-    circuit: 4,    // 4 exercises in a circuit
-    emom: 2,       // 2 exercises alternating each minute
-    amrap: 3,      // 3 exercises in AMRAP
-    interval: 2    // 2 exercises for interval training
-  };
-
-  const count = numExercises[compoundCategory] || 3;
+  // Get constituent exercise count from config
+  const count = rules.compound_exercise_construction[compoundCategory].base_constituent_exercises;
 
   // Filter for individual exercises only (not compound categories)
   const individualCategories = ['strength', 'mobility', 'flexibility', 'cardio'];
@@ -431,11 +424,14 @@ export function roundRobinSelectExercises(
           intensityProfile
         );
 
-        selectedExercises.push(compoundExercise);
-        currentDuration += exerciseDuration;
-        addedAnyExercise = true;
+        // Only add if we got at least 2 constituent exercises (minimum for any compound)
+        if (compoundExercise.sub_exercises && compoundExercise.sub_exercises.length >= 2) {
+          selectedExercises.push(compoundExercise);
+          currentDuration += exerciseDuration;
+          addedAnyExercise = true;
+        }
 
-        // Move to next round for compound layers (only add one per round)
+        // Always increment index for compound layers (avoid infinite loops)
         layerIndices.set(layer, currentIndex + 1);
       } else {
         // Normal individual exercise selection

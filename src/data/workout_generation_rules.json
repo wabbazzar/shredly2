@@ -554,6 +554,26 @@
     }
   },
 
+  "compound_exercise_construction": {
+    "description": "Configuration for dynamically constructing compound exercises from individual exercises",
+    "circuit": {
+      "base_constituent_exercises": 4,
+      "description": "Number of individual exercises to combine into a circuit"
+    },
+    "emom": {
+      "base_constituent_exercises": 2,
+      "description": "Number of exercises to alternate in EMOM (Every Minute On the Minute)"
+    },
+    "amrap": {
+      "base_constituent_exercises": 3,
+      "description": "Number of exercises in AMRAP circuit (As Many Rounds As Possible)"
+    },
+    "interval": {
+      "base_constituent_exercises": 2,
+      "description": "Number of exercises to alternate in interval training"
+    }
+  },
+
   "exercise_selection_strategy": {
     "description": "Hybrid approach: fixed ratios that fill to duration using round-robin algorithm",
     "strategy": "ratio_based_fill_to_duration",

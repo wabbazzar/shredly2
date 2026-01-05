@@ -236,6 +236,16 @@ export class WorkoutEditor {
       } else {
         // Top-level field (e.g., name)
         (target as any)[field.fieldName] = newValue;
+
+        // If editing a sub-exercise name, update parent compound exercise title
+        if (field.subExerciseIndex !== undefined && field.fieldName === 'name' && exercise.sub_exercises) {
+          const oldParentName = exercise.name;
+          const newParentName = this.generateCompoundExerciseName(exercise);
+          if (newParentName && newParentName !== oldParentName) {
+            exercise.name = newParentName;
+            // Note: we don't add this to undo stack separately - it will be reverted when the sub-exercise name is reverted
+          }
+        }
       }
 
       // Add to undo stack
@@ -250,6 +260,14 @@ export class WorkoutEditor {
             (target as any)[field.weekKey][field.fieldName] = previousValue;
           } else {
             (target as any)[field.fieldName] = previousValue;
+
+            // If reverting a sub-exercise name edit, also revert parent title
+            if (field.subExerciseIndex !== undefined && field.fieldName === 'name' && exercise.sub_exercises) {
+              const revertedParentName = this.generateCompoundExerciseName(exercise);
+              if (revertedParentName) {
+                exercise.name = revertedParentName;
+              }
+            }
           }
         }
       });
@@ -365,6 +383,52 @@ export class WorkoutEditor {
   }
 
   /**
+   * Replace a sub-exercise within a compound exercise
+   */
+  replaceSubExercise(
+    dayKey: string,
+    exerciseIndex: number,
+    subExerciseIndex: number,
+    newExerciseName: string
+  ): { success: boolean; message: string } {
+    const exercise = this.getExercise(dayKey, exerciseIndex);
+    if (!exercise || !exercise.sub_exercises || !exercise.sub_exercises[subExerciseIndex]) {
+      return { success: false, message: 'Sub-exercise not found' };
+    }
+
+    const oldSubEx = exercise.sub_exercises[subExerciseIndex];
+    const oldSubExCopy = JSON.parse(JSON.stringify(oldSubEx));
+
+    // Simply replace the name - keep all week parameters the same
+    oldSubEx.name = newExerciseName;
+
+    // Update parent exercise title to reflect new sub-exercise name
+    const newParentName = this.generateCompoundExerciseName(exercise);
+    const oldParentName = exercise.name;
+    if (newParentName) {
+      exercise.name = newParentName;
+    }
+
+    // Add to undo stack
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Replace sub-exercise "${oldSubExCopy.name}" with "${newExerciseName}"`,
+      location: `${dayKey}.exercises[${exerciseIndex}].sub_exercises[${subExerciseIndex}]`,
+      previousValue: oldSubExCopy,
+      newValue: { ...oldSubEx },
+      reverseOperation: () => {
+        exercise.sub_exercises![subExerciseIndex] = oldSubExCopy;
+        // Restore parent title
+        exercise.name = oldParentName;
+      }
+    });
+
+    this.modified = true;
+
+    return { success: true, message: `Replaced ${oldSubExCopy.name} with ${newExerciseName}` };
+  }
+
+  /**
    * Delete an exercise from a day
    */
   deleteExercise(
@@ -441,6 +505,19 @@ export class WorkoutEditor {
     const day = this.workout.days[dayKey];
     if (!day || !day.exercises[exerciseIndex]) return null;
     return day.exercises[exerciseIndex];
+  }
+
+  /**
+   * Generate compound exercise name from sub-exercises
+   * Format: "CATEGORY: Exercise1 + Exercise2 + Exercise3"
+   */
+  private generateCompoundExerciseName(exercise: ParameterizedExercise): string | null {
+    if (!exercise.sub_exercises || exercise.sub_exercises.length === 0) return null;
+
+    const category = exercise.category ? exercise.category.toUpperCase() : 'COMPOUND';
+    const subNames = exercise.sub_exercises.map(sub => sub.name).join(' + ');
+
+    return `${category}: ${subNames}`;
   }
 
   /**

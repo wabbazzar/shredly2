@@ -259,10 +259,14 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
   const terminalHeight = process.stdout.rows || 24;
 
   // Setup readline for keyboard input
+  // Note: emitKeypressEvents can be called multiple times safely
   readline.emitKeypressEvents(process.stdin);
   if (process.stdin.isTTY) {
     process.stdin.setRawMode(true);
   }
+
+  // Small delay to let any buffered keypresses clear
+  await new Promise(res => setTimeout(res, 50));
 
   return new Promise((resolve) => {
     const render = () => {

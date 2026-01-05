@@ -275,10 +275,46 @@ export function formatExerciseInteractive(
   }
 
   if (exercise.sub_exercises && exercise.sub_exercises.length > 0) {
+    // Show parent sets for compound exercises (how many times to do the circuit/EMOM)
+    const parentSetsLine = formatCompoundParentSets(exercise as any, weekCount, baseLocation, options);
+    if (parentSetsLine) {
+      lines.push(parentSetsLine);
+    }
     lines.push(formatSubExercisesInteractive(exercise.sub_exercises, weekCount, baseLocation, options));
   }
 
   return lines.join('\n');
+}
+
+/**
+ * Format parent exercise sets for compound exercises (CIRCUIT, EMOM, etc.)
+ */
+function formatCompoundParentSets(
+  exercise: { [key: string]: any },
+  weekCount: number,
+  baseLocation: string,
+  options: HighlightOptions = {}
+): string | null {
+  const progression = [];
+
+  for (let w = 1; w <= weekCount; w++) {
+    const weekKey = `week${w}`;
+    const params = exercise[weekKey];
+    if (params && params.sets !== undefined) {
+      const setsLocation = `${baseLocation}.${weekKey}.sets`;
+      const setsIsSelected = options.selectedFieldLocation === setsLocation;
+      const setsValue = (options.showAllEditable || setsIsSelected)
+        ? highlightEditableValue(String(params.sets), setsIsSelected)
+        : params.sets;
+      progression.push(`Week ${w}: ${setsValue}`);
+    }
+  }
+
+  if (progression.length > 0) {
+    return `   ${chalk.gray('Sets:')} ${progression.join(' | ')}`;
+  }
+
+  return null;
 }
 
 /**

@@ -306,13 +306,26 @@ export class InteractiveWorkoutEditor {
     }
 
     if (result.selected && result.exerciseName) {
-      // Replace exercise
-      const replaceResult = this.editor.replaceExercise(
-        field.dayKey,
-        field.exerciseIndex,
-        result.exerciseName,
-        this.options.experienceLevel || 'intermediate'
-      );
+      // Replace exercise or sub-exercise
+      let replaceResult;
+
+      if (field.subExerciseIndex !== undefined) {
+        // Replacing a sub-exercise within a compound exercise
+        replaceResult = this.editor.replaceSubExercise(
+          field.dayKey,
+          field.exerciseIndex,
+          field.subExerciseIndex,
+          result.exerciseName
+        );
+      } else {
+        // Replacing a standalone exercise
+        replaceResult = this.editor.replaceExercise(
+          field.dayKey,
+          field.exerciseIndex,
+          result.exerciseName,
+          this.options.experienceLevel || 'intermediate'
+        );
+      }
 
       if (replaceResult.success) {
         this.setStatus(replaceResult.message, 'success');

@@ -32,6 +32,7 @@ interface EditorState {
   commandBuffer: string; // for command mode input
   statusMessage: string;
   statusType: 'info' | 'success' | 'error';
+  savedThisSession: boolean; // track if save was successful this session
 }
 
 export interface EditorOptions {
@@ -64,7 +65,8 @@ export class InteractiveWorkoutEditor {
       editBuffer: '',
       commandBuffer: '',
       statusMessage: `Loaded workout: ${workout_.name}`,
-      statusType: 'info'
+      statusType: 'info',
+      savedThisSession: false
     };
   }
 
@@ -91,7 +93,7 @@ export class InteractiveWorkoutEditor {
         if (!this.running) {
           this.cleanup();
           resolve({
-            saved: false,
+            saved: this.state.savedThisSession,
             workout: this.editor.getWorkout()
           });
         }
@@ -131,10 +133,12 @@ export class InteractiveWorkoutEditor {
     const hotkeys = hotkeysConfig.view_mode;
 
     // Navigation
-    if (key.name === hotkeys.navigation.next_editable_field) {
+    if (str === hotkeys.navigation.next_editable_field) {
       this.state.selectedFieldIndex = Math.min(this.editableFields.length - 1, this.state.selectedFieldIndex + 1);
+      this.syncDayViewToSelectedField();
     } else if (str === hotkeys.navigation.previous_editable_field) {
       this.state.selectedFieldIndex = Math.max(0, this.state.selectedFieldIndex - 1);
+      this.syncDayViewToSelectedField();
     } else if (key.name === hotkeys.navigation.previous_day) {
       if (this.state.viewMode === 'day') {
         this.state.currentDayIndex = Math.max(0, this.state.currentDayIndex - 1);
@@ -160,6 +164,7 @@ export class InteractiveWorkoutEditor {
       const targetField = this.findFieldByExerciseNumber(exerciseNum - 1);
       if (targetField !== -1) {
         this.state.selectedFieldIndex = targetField;
+        this.syncDayViewToSelectedField();
       }
     }
 
@@ -168,6 +173,8 @@ export class InteractiveWorkoutEditor {
       await this.enterEditMode();
     } else if (str === hotkeys.actions.open_exercise_database) {
       await this.openExerciseDatabase();
+    } else if (key.name === hotkeys.actions.delete_exercise) {
+      this.deleteCurrentExercise();
     } else if (str === hotkeys.actions.undo_last_change) {
       this.undoLastChange();
     } else if (str === hotkeys.actions.show_help || str === hotkeys.actions.show_help_alt) {
@@ -317,6 +324,28 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
+   * Delete current exercise
+   */
+  private deleteCurrentExercise(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    const result = this.editor.deleteExercise(field.dayKey, field.exerciseIndex);
+
+    if (result.success) {
+      this.setStatus(result.message, 'success');
+      this.editableFields = this.editor.getAllEditableFields();
+
+      // Move selection to previous field if we're at the end
+      if (this.state.selectedFieldIndex >= this.editableFields.length) {
+        this.state.selectedFieldIndex = Math.max(0, this.editableFields.length - 1);
+      }
+    } else {
+      this.setStatus(result.message, 'error');
+    }
+  }
+
+  /**
    * Undo last change
    */
   private undoLastChange(): void {
@@ -366,21 +395,24 @@ export class InteractiveWorkoutEditor {
   /**
    * Save workout to file
    */
-  private saveWorkout(filePath?: string): void {
+  private saveWorkout(filePath?: string): boolean {
     const targetPath = filePath || this.options.filePath;
 
     if (!targetPath) {
       this.setStatus('No file path specified. Use :w <filename>', 'error');
-      return;
+      return false;
     }
 
     try {
       const workout = this.editor.getWorkout();
       fs.writeFileSync(targetPath, JSON.stringify(workout, null, 2), 'utf-8');
       this.editor.markSaved();
+      this.state.savedThisSession = true;
       this.setStatus(`Saved to ${targetPath}`, 'success');
+      return true;
     } catch (error) {
       this.setStatus(`Save failed: ${error}`, 'error');
+      return false;
     }
   }
 
@@ -485,6 +517,7 @@ export class InteractiveWorkoutEditor {
     console.log('  1-9         - Jump to exercise number');
     console.log('  r           - Replace/edit current field');
     console.log('  e           - Open exercise database browser');
+    console.log('  Del         - Delete current exercise');
     console.log('  u           - Undo last change');
     console.log('  :           - Enter command mode');
     console.log('  q           - Quit (checks for unsaved changes)');
@@ -538,6 +571,21 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
+   * Sync day view to show the day containing the currently selected field
+   */
+  private syncDayViewToSelectedField(): void {
+    if (this.state.viewMode !== 'day') return;
+
+    const selectedField = this.editableFields[this.state.selectedFieldIndex];
+    if (!selectedField) return;
+
+    const dayIndex = this.dayKeys.indexOf(selectedField.dayKey);
+    if (dayIndex !== -1 && dayIndex !== this.state.currentDayIndex) {
+      this.state.currentDayIndex = dayIndex;
+    }
+  }
+
+  /**
    * Cleanup readline
    */
   private cleanup(): void {
@@ -545,6 +593,7 @@ export class InteractiveWorkoutEditor {
       process.stdin.setRawMode(false);
     }
     process.stdin.removeAllListeners('keypress');
+    process.stdin.pause();
   }
 }
 

@@ -4,9 +4,10 @@
   "description": "Personalized workout generation engine",
   "type": "module",
   "scripts": {
-    "cli": "node --loader ts-node/esm cli/test-runner.ts",
-    "cli:interactive": "node --loader ts-node/esm cli/interactive-questionnaire.ts",
-    "cli:watch": "nodemon --exec node --loader ts-node/esm cli/test-runner.ts",
+    "cli": "tsx cli/test-runner.ts",
+    "cli:interactive": "tsx cli/interactive-questionnaire.ts",
+    "cli:edit": "tsx cli/edit-workout.ts",
+    "cli:watch": "nodemon --exec tsx cli/test-runner.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.js",
     "test": "echo \"Tests not yet implemented\" && exit 0"
@@ -27,9 +28,13 @@
     "inquirer": "^13.1.0",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2"
   }
 }

@@ -12,6 +12,8 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { generateWorkout } from '../src/lib/engine/workout-generator.js';
 import type { QuestionnaireAnswers, ParameterizedWorkout } from '../src/lib/engine/types.js';
+import { formatWorkoutForTerminal } from './lib/workout-formatter.js';
+import { editWorkoutInteractive } from './lib/interactive-workout-editor.js';
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -34,13 +36,12 @@ function createPrompt(question: any) {
   const basePrompt = {
     name: question.id,
     message: question.question,
-    description: question.description,
   };
 
   if (question.type === 'multiple_choice') {
     return {
       ...basePrompt,
-      type: 'select',
+      type: 'list',
       choices: question.options.map((opt: any) => ({
         name: `${opt.label} - ${opt.description}`,
         value: opt.value,
@@ -150,6 +151,38 @@ async function main() {
     // Display summary
     displayWorkoutSummary(workout);
 
+    // Display full formatted workout for terminal
+    console.log('\nFull workout details:\n');
+    console.log(formatWorkoutForTerminal(workout));
+
+    // Ask if user wants to edit interactively
+    const { editChoice } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'editChoice',
+        message: 'Would you like to edit this workout interactively? (vim-like interface)',
+        default: false,
+      },
+    ]);
+
+    let finalWorkout = workout;
+
+    if (editChoice) {
+      console.log('\nLaunching interactive editor...');
+      console.log('Tip: Press ? for help once inside the editor\n');
+
+      // Give user a moment to read the tip
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const editResult = await editWorkoutInteractive(workout, {
+        experienceLevel: answers.experience_level || 'intermediate'
+      });
+
+      finalWorkout = editResult.workout;
+      console.clear();
+      console.log('\nReturned from interactive editor');
+    }
+
     // Ask to save
     const { saveChoice } = await inquirer.prompt([
       {
@@ -171,7 +204,7 @@ async function main() {
       ]);
 
       const filepath = join(process.cwd(), `${filename}.json`);
-      writeFileSync(filepath, JSON.stringify(workout, null, 2), 'utf-8');
+      writeFileSync(filepath, JSON.stringify(finalWorkout, null, 2), 'utf-8');
       console.log(`✓ Workout saved to: ${filepath}`);
     }
 

@@ -1,5 +1,5 @@
 {
-  "id": "workout_gene_com_1767617236665",
+  "id": "workout_gene_com_1767638095584",
   "name": "General Fitness Beginner Program",
   "description": "2 days per week workout program focused on general fitness. Each session is 20-30 minutes.",
   "version": "2.0.0",
@@ -16,9 +16,7 @@
       "complete_beginner",
       "2_days_week",
       "home_gym_basic",
-      "liss",
-      "mobility_flexibility",
-      "core_stability"
+      "liss"
     ]
   },
   "days": {
@@ -30,47 +28,103 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           }
         },
         {
-          "name": "Standing Hip Flexor Stretch",
+          "name": "CIRCUIT: Plank Hold + Wall Sits + Push-ups + strength Squats",
           "week1": {
-            "work_time_minutes": 5
+            "sets": 4
           },
           "week2": {
-            "work_time_minutes": 5
+            "sets": 4
           },
           "week3": {
-            "work_time_minutes": 5
+            "sets": 4
           },
           "week4": {
-            "work_time_minutes": 5
-          }
-        },
-        {
-          "name": "Dead Bugs",
-          "week1": {
-            "work_time_minutes": 5
+            "sets": 4
           },
-          "week2": {
-            "work_time_minutes": 5
-          },
-          "week3": {
-            "work_time_minutes": 5
-          },
-          "week4": {
-            "work_time_minutes": 5
-          }
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Plank Hold",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Wall Sits",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Push-ups",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week4": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            },
+            {
+              "name": "strength Squats",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week4": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            }
+          ]
         }
       ]
     },
@@ -82,47 +136,103 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week2": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week3": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           },
           "week4": {
-            "work_time_minutes": 5
+            "work_time_minutes": 1
           }
         },
         {
-          "name": "Standing Hip Flexor Stretch",
+          "name": "CIRCUIT: Plank Hold + Wall Sits + Push-ups + strength Squats",
           "week1": {
-            "work_time_minutes": 5
+            "sets": 4
           },
           "week2": {
-            "work_time_minutes": 5
+            "sets": 4
           },
           "week3": {
-            "work_time_minutes": 5
+            "sets": 4
           },
           "week4": {
-            "work_time_minutes": 5
-          }
-        },
-        {
-          "name": "Dead Bugs",
-          "week1": {
-            "work_time_minutes": 5
+            "sets": 4
           },
-          "week2": {
-            "work_time_minutes": 5
-          },
-          "week3": {
-            "work_time_minutes": 5
-          },
-          "week4": {
-            "work_time_minutes": 5
-          }
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Plank Hold",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Wall Sits",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Push-ups",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week4": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            },
+            {
+              "name": "strength Squats",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week4": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            }
+          ]
         }
       ]
     }

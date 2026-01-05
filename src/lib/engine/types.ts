@@ -215,6 +215,7 @@ export interface GenerationRules {
   split_muscle_group_mapping: SplitMuscleGroupMapping;
   compound_exercise_construction: CompoundExerciseConstruction;
   exercise_count_constraints: ExerciseCountConstraints;
+  equipment_quotas: EquipmentQuotas;
   exercise_selection_strategy: ExerciseSelectionStrategy;
 }
 
@@ -254,6 +255,14 @@ export interface ExerciseCountConstraints {
   require_compound_exercises: boolean;
   compound_categories: string[];
   compound_min_count: number;
+}
+
+export interface EquipmentQuotas {
+  description?: string;
+  barbell_max_per_day: number;
+  sequential_filtering_enabled: boolean;
+  fallback_order: string[];
+  description_detail?: string;
 }
 
 export interface IntensityProfiles {

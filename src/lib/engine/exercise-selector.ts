@@ -382,6 +382,10 @@ export function roundRobinSelectExercises(
   let strengthExerciseCount = 0;
   let compoundExerciseCount = 0;
 
+  // Equipment quota tracking
+  const equipmentQuotas = rules.equipment_quotas;
+  let barbellExerciseCount = 0;
+
   // Track current index for each layer
   const layerIndices = new Map<string, number>();
   for (const layer of pools.keys()) {
@@ -506,6 +510,13 @@ export function roundRobinSelectExercises(
             continue;
           }
 
+          // Check barbell equipment quota
+          const usesBarbell = exerciseData.equipment.includes("Barbell");
+          if (usesBarbell && barbellExerciseCount >= equipmentQuotas.barbell_max_per_day) {
+            // Skip this barbell exercise - already hit limit
+            continue;
+          }
+
           // Estimate duration
           // Assign a default intensity profile (will be refined later)
           const intensityProfile = getDefaultIntensityForLayer(layer);
@@ -540,6 +551,9 @@ export function roundRobinSelectExercises(
           // Track exercise counts
           if (category === 'strength') {
             strengthExerciseCount++;
+          }
+          if (usesBarbell) {
+            barbellExerciseCount++;
           }
 
           addedAnyExercise = true;

@@ -632,6 +632,14 @@
     "compound_min_count": 1
   },
 
+  "equipment_quotas": {
+    "description": "Limits on specific equipment types to ensure exercise diversity",
+    "barbell_max_per_day": 3,
+    "sequential_filtering_enabled": true,
+    "fallback_order": ["Barbell", "Dumbbell", "Cable", "Machine", "Bodyweight"],
+    "description_detail": "After barbell quota met, filter to next equipment type in fallback order"
+  },
+
   "exercise_selection_strategy": {
     "description": "Hybrid approach: fixed ratios that fill to duration using round-robin algorithm",
     "strategy": "ratio_based_fill_to_duration",

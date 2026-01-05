@@ -1,0 +1,1130 @@
+{
+  "id": "workout_fat__adv_1767647469660",
+  "name": "Fat Loss Advanced Program",
+  "description": "5 days per week workout program focused on fat loss. Each session is 45-60 minutes.",
+  "version": "2.0.0",
+  "weeks": 3,
+  "daysPerWeek": 5,
+  "metadata": {
+    "difficulty": "Advanced",
+    "equipment": [
+      "commercial_gym"
+    ],
+    "estimatedDuration": "45-60",
+    "tags": [
+      "fat_loss",
+      "advanced",
+      "5_days_week",
+      "commercial_gym",
+      "integrated"
+    ]
+  },
+  "days": {
+    "1": {
+      "dayNumber": 1,
+      "type": "gym",
+      "focus": "Push",
+      "exercises": [
+        {
+          "name": "CIRCUIT: Dumbbell Thrusters + DB Bench + DB OHP + 1 Arm DB Press",
+          "week1": {
+            "sets": 6
+          },
+          "week2": {
+            "sets": 6
+          },
+          "week3": {
+            "sets": 6
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Dumbbell Thrusters",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "DB Bench",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "DB OHP",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "1 Arm DB Press",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bench Press",
+          "week1": {
+            "sets": 3,
+            "reps": 9,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 8,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 75
+            }
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          }
+        },
+        {
+          "name": "Overhead Press",
+          "week1": {
+            "sets": 3,
+            "reps": 9,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 8,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 75
+            }
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          }
+        },
+        {
+          "name": "EMOM: Cable Press + Overhead Extension",
+          "week1": {
+            "work_time_minutes": 6
+          },
+          "week2": {
+            "work_time_minutes": 7
+          },
+          "week3": {
+            "work_time_minutes": 8
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Cable Press",
+              "week1": {
+                "reps": 9,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Overhead Extension",
+              "week1": {
+                "reps": 9,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "2": {
+      "dayNumber": 2,
+      "type": "gym",
+      "focus": "Pull",
+      "exercises": [
+        {
+          "name": "CIRCUIT: Pull-ups + Cable High Row + Kettlebell Figure 8 + Kettlebell Gorilla Row",
+          "week1": {
+            "sets": 6
+          },
+          "week2": {
+            "sets": 6
+          },
+          "week3": {
+            "sets": 6
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Pull-ups",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Cable High Row",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Kettlebell Figure 8",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Kettlebell Gorilla Row",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bent-Over Row",
+          "week1": {
+            "sets": 3,
+            "reps": 9,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 8,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 75
+            }
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          }
+        },
+        {
+          "name": "Rack Pull",
+          "week1": {
+            "sets": 3,
+            "reps": 9,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 8,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 75
+            }
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          }
+        },
+        {
+          "name": "Strict Barbell Row",
+          "week1": {
+            "sets": 3,
+            "reps": 9,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 8,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 75
+            }
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          }
+        }
+      ]
+    },
+    "3": {
+      "dayNumber": 3,
+      "type": "gym",
+      "focus": "Legs",
+      "exercises": [
+        {
+          "name": "Alternating Jump Lunges",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "CIRCUIT: Jump Squats + Bulgarian Split Squats + Cable Goblet Squats + Single Leg Glute Bridge",
+          "week1": {
+            "sets": 6
+          },
+          "week2": {
+            "sets": 6
+          },
+          "week3": {
+            "sets": 6
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Jump Squats",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Bulgarian Split Squats",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Cable Goblet Squats",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Single Leg Glute Bridge",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Back Squat",
+          "week1": {
+            "sets": 3,
+            "reps": 9,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 8,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 75
+            }
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          }
+        },
+        {
+          "name": "EMOM: Single-leg Glute Bridges + Single-leg Deadlifts",
+          "week1": {
+            "work_time_minutes": 6
+          },
+          "week2": {
+            "work_time_minutes": 7
+          },
+          "week3": {
+            "work_time_minutes": 8
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Single-leg Glute Bridges",
+              "week1": {
+                "reps": 9,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Single-leg Deadlifts",
+              "week1": {
+                "reps": 9,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "4": {
+      "dayNumber": 4,
+      "type": "gym",
+      "focus": "Mobility",
+      "exercises": [
+        {
+          "name": "Alternating Jump Lunges",
+          "week1": {
+            "work_time_minutes": 1
+          },
+          "week2": {
+            "work_time_minutes": 1
+          },
+          "week3": {
+            "work_time_minutes": 1
+          }
+        },
+        {
+          "name": "CIRCUIT: Jump Squats + Pull-ups + Bulgarian Split Squats + Dumbbell Thrusters",
+          "week1": {
+            "sets": 6
+          },
+          "week2": {
+            "sets": 6
+          },
+          "week3": {
+            "sets": 6
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Jump Squats",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Pull-ups",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Bulgarian Split Squats",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "Dumbbell Thrusters",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "EMOM: Dumbbell Swings + Renegade Rows",
+          "week1": {
+            "work_time_minutes": 6
+          },
+          "week2": {
+            "work_time_minutes": 7
+          },
+          "week3": {
+            "work_time_minutes": 8
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Dumbbell Swings",
+              "week1": {
+                "reps": 9,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Renegade Rows",
+              "week1": {
+                "reps": 9,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "5": {
+      "dayNumber": 5,
+      "type": "gym",
+      "focus": "Push",
+      "exercises": [
+        {
+          "name": "CIRCUIT: Dumbbell Thrusters + DB Bench + DB OHP + 1 Arm DB Press",
+          "week1": {
+            "sets": 6
+          },
+          "week2": {
+            "sets": 6
+          },
+          "week3": {
+            "sets": 6
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Dumbbell Thrusters",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "DB Bench",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "DB OHP",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            },
+            {
+              "name": "1 Arm DB Press",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week2": {
+                "reps": 7,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 80
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bench Press",
+          "week1": {
+            "sets": 3,
+            "reps": 9,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 8,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 75
+            }
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          }
+        },
+        {
+          "name": "Overhead Press",
+          "week1": {
+            "sets": 3,
+            "reps": 9,
+            "rest_time_minutes": 0.29700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 70
+            }
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 8,
+            "rest_time_minutes": 0.24700000000000005,
+            "weight": {
+              "type": "percent_tm",
+              "value": 75
+            }
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 7,
+            "rest_time_minutes": 0.19700000000000004,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          }
+        },
+        {
+          "name": "EMOM: Cable Press + Overhead Extension",
+          "week1": {
+            "work_time_minutes": 6
+          },
+          "week2": {
+            "work_time_minutes": 7
+          },
+          "week3": {
+            "work_time_minutes": 8
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Cable Press",
+              "week1": {
+                "reps": 9,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Overhead Extension",
+              "week1": {
+                "reps": 9,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

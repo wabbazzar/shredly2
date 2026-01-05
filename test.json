@@ -1,186 +1,421 @@
 {
-  "id": "workout_musc_com_1767645576525",
-  "name": "Muscle Building Beginner Program",
-  "description": "2 days per week workout program focused on muscle gain. Each session is 20-30 minutes.",
+  "id": "workout_musc_exp_1767646868855",
+  "name": "Muscle Building Expert Program",
+  "description": "5 days per week workout program focused on muscle gain. Each session is 45-60 minutes.",
   "version": "2.0.0",
   "weeks": 3,
-  "daysPerWeek": 2,
+  "daysPerWeek": 5,
   "metadata": {
-    "difficulty": "Beginner",
+    "difficulty": "Expert",
     "equipment": [
       "commercial_gym"
     ],
-    "estimatedDuration": "20-30",
+    "estimatedDuration": "45-60",
     "tags": [
       "muscle_gain",
-      "complete_beginner",
-      "2_days_week",
-      "commercial_gym"
+      "expert",
+      "5_days_week",
+      "commercial_gym",
+      "integrated"
     ]
   },
   "days": {
     "1": {
       "dayNumber": 1,
       "type": "gym",
-      "focus": "Full Body",
+      "focus": "Upper",
       "exercises": [
         {
-          "name": "Fire Hydrants",
+          "name": "Z Press",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Plank Hold",
+          "name": "Paused Bench",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Wall Sits",
+          "name": "EMOM: Turkish Get-Up + Kettlebell Snatch",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005
+            "work_time_minutes": 6
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006
+            "work_time_minutes": 7
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007
+            "work_time_minutes": 8
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Turkish Get-Up",
+              "week1": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 13,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Kettlebell Snatch",
+              "week1": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 13,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Spoto Bench",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Standing Hip Flexor Stretch",
+          "name": "JM Press",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Dead Bugs",
+          "name": "Barbell Cheat Row",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Push-ups",
+          "name": "Kettlebell Bottoms-Up Press",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "strength Squats",
+          "name": "Bradford Press",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Gentle Quad Stretch",
+          "name": "Barbell Rollout",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Bird Dogs",
+          "name": "Barbell High Pull",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Tricep Dips",
+          "name": "Power Clean",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Power Snatch",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         }
       ]
@@ -188,165 +423,1170 @@
     "2": {
       "dayNumber": 2,
       "type": "gym",
-      "focus": "Full Body",
+      "focus": "Lower",
       "exercises": [
         {
-          "name": "Fire Hydrants",
+          "name": "Back Squat",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Plank Hold",
+          "name": "Low Bar Squat",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Wall Sits",
+          "name": "Paused Squat",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Standing Hip Flexor Stretch",
+          "name": "High Bar Squat",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Dead Bugs",
+          "name": "Front Squat",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Push-ups",
+          "name": "Low Box Squat",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "strength Squats",
+          "name": "High Box Squat",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Gentle Quad Stretch",
+          "name": "Wide Stance Squat",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Bird Dogs",
+          "name": "Narrow Stance Squat",
           "week1": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "work_time_minutes": 1
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
-          "name": "Tricep Dips",
+          "name": "Hatfield Squat",
           "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 0.42900000000000005,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
           },
           "week2": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.37900000000000006,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
           },
           "week3": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 0.32900000000000007,
-            "weight": "heavy"
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Sumo Deadlift",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Deficit Deadlift",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Sumo Deficit DL",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Paused Deadlift",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        }
+      ]
+    },
+    "3": {
+      "dayNumber": 3,
+      "type": "gym",
+      "focus": "Push",
+      "exercises": [
+        {
+          "name": "Z Press",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Paused Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "EMOM: Turkish Get-Up + Kettlebell Snatch",
+          "week1": {
+            "work_time_minutes": 6
+          },
+          "week2": {
+            "work_time_minutes": 7
+          },
+          "week3": {
+            "work_time_minutes": 8
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Turkish Get-Up",
+              "week1": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 13,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Kettlebell Snatch",
+              "week1": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 13,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Front Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Paused Bench",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Spoto Bench",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "JM Press",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        }
+      ]
+    },
+    "4": {
+      "dayNumber": 4,
+      "type": "gym",
+      "focus": "Pull",
+      "exercises": [
+        {
+          "name": "Barbell Cheat Row",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Power Clean",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        }
+      ]
+    },
+    "5": {
+      "dayNumber": 5,
+      "type": "gym",
+      "focus": "Legs",
+      "exercises": [
+        {
+          "name": "Back Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Low Bar Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Paused Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "High Bar Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Front Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Low Box Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "High Box Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Wide Stance Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Narrow Stance Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Hatfield Squat",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Sumo Deadlift",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Deficit Deadlift",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Sumo Deficit DL",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
+          }
+        },
+        {
+          "name": "Paused Deadlift",
+          "week1": {
+            "sets": 5,
+            "reps": 7,
+            "rest_time_minutes": 0.264,
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 5,
+            "reps": 6,
+            "rest_time_minutes": 0.21400000000000002,
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 5,
+            "reps": 5,
+            "rest_time_minutes": 0.17,
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         }
       ]

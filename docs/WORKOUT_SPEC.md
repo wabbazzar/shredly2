@@ -90,13 +90,16 @@
   "name": "EMOM 10 minutes",
   "category": "emom",
   "week1": {
-    "work_time": "10 minutes"
+    "work_time_minutes": 10,
+    "work_time_unit": "minutes"
   },
   "week2": {
-    "work_time": "12 minutes"
+    "work_time_minutes": 12,
+    "work_time_unit": "minutes"
   },
   "week3": {
-    "work_time": "15 minutes"
+    "work_time_minutes": 15,
+    "work_time_unit": "minutes"
   },
   "sub_exercises": [
     {
@@ -133,10 +136,16 @@ Each `weekN` object contains only the fields relevant to that exercise type. **N
 |-------|------|-------------|----------|
 | `sets` | number | Number of sets | Strength, bodyweight |
 | `reps` | number \| string | Reps per set (e.g., `5`, `"8-12"`, `"AMRAP"`) | Strength, bodyweight |
-| `work_time` | string | Duration (e.g., `"10 minutes"`, `"45 seconds"`) | Mobility, cardio, intervals, EMOM |
-| `rest_time` | string | Rest interval for timed work (e.g., `"15 seconds"`) | Intervals, Tabata |
+| `work_time_minutes` | number | Duration value (interpreted based on unit) | Mobility, cardio, intervals, EMOM |
+| `work_time_unit` | "seconds" \| "minutes" | Explicit time unit for work_time | Mobility, cardio, intervals, EMOM |
+| `rest_time_minutes` | number | Rest interval value (interpreted based on unit) | Strength, intervals, Tabata |
+| `rest_time_unit` | "seconds" \| "minutes" | Explicit time unit for rest_time | Strength, intervals, Tabata |
 | `weight` | mixed | Weight specification (see Weight Spec below) | Strength |
 | `tempo` | string | Lifting tempo (e.g., `"3-1-2"`) | Strength (optional) |
+
+**Note on Time Fields**: Time values are stored with explicit units to avoid floating point precision errors and ambiguity. The field name includes `_minutes` for backwards compatibility, but the actual unit is determined by the `_unit` field. For example:
+- `work_time_minutes: 30, work_time_unit: "seconds"` = 30 seconds
+- `rest_time_minutes: 2, rest_time_unit: "minutes"` = 2 minutes
 
 ### Examples by Exercise Type:
 
@@ -146,7 +155,8 @@ Each `weekN` object contains only the fields relevant to that exercise type. **N
   "week1": {
     "sets": 4,
     "reps": 5,
-    "rest_time": 90,
+    "rest_time_minutes": 3,
+    "rest_time_unit": "minutes",
     "weight": "moderate"
   }
 }
@@ -156,7 +166,8 @@ Each `weekN` object contains only the fields relevant to that exercise type. **N
 ```json
 {
   "week1": {
-    "work_time": "8 minutes"
+    "work_time_minutes": 8,
+    "work_time_unit": "minutes"
   }
 }
 ```
@@ -166,8 +177,10 @@ Each `weekN` object contains only the fields relevant to that exercise type. **N
 {
   "week1": {
     "sets": 3,
-    "work_time": "45 seconds",
-    "rest_time": "15 seconds"
+    "work_time_minutes": 45,
+    "work_time_unit": "seconds",
+    "rest_time_minutes": 15,
+    "rest_time_unit": "seconds"
   }
 }
 ```
@@ -176,7 +189,8 @@ Each `weekN` object contains only the fields relevant to that exercise type. **N
 ```json
 {
   "week1": {
-    "work_time": "10 minutes"
+    "work_time_minutes": 10,
+    "work_time_unit": "minutes"
   }
 }
 ```

@@ -26,6 +26,25 @@ export interface QuestionnaireAnswers {
 }
 
 // ============================================================================
+// TIME UNIT TYPES
+// ============================================================================
+
+/**
+ * Time unit for explicit time value specification
+ * Prevents floating point precision errors by using appropriate units
+ */
+export type TimeUnit = "seconds" | "minutes";
+
+/**
+ * Time value with explicit unit
+ * Used for rest times and work times to avoid ambiguity
+ */
+export interface TimeValue {
+  value: number;
+  unit: TimeUnit;
+}
+
+// ============================================================================
 // PHASE 1: STRUCTURAL GENERATION TYPES
 // ============================================================================
 
@@ -125,7 +144,9 @@ export interface WeekParameters {
   sets?: number;
   reps?: number | string; // number or "8-12" or "AMRAP"
   work_time_minutes?: number;
+  work_time_unit?: TimeUnit; // Explicit unit for work time
   rest_time_minutes?: number;
+  rest_time_unit?: TimeUnit; // Explicit unit for rest time
   weight?: WeightSpecification;
   tempo?: string; // "3-1-2" format
   set_blocks?: SetBlock[]; // Advanced - mutually exclusive with flat sets/reps
@@ -141,6 +162,7 @@ export interface SetBlock {
   sets: number;
   reps: number | string;
   rest_time_minutes?: number;
+  rest_time_unit?: TimeUnit; // Explicit unit for rest time
   weight?: WeightSpecification;
   tempo?: string;
 }
@@ -228,13 +250,16 @@ export interface IntensityProfiles {
       base_sets?: number;
       base_reps?: number | string;
       base_rest_time_minutes?: number;
+      base_rest_time_unit?: TimeUnit; // Explicit unit for rest time
       base_weight_percent_tm?: number;
       base_weight_descriptor?: string;
       base_work_time_minutes?: number;
+      base_work_time_unit?: TimeUnit; // Explicit unit for work time
       base_target_reps_per_minute?: number;
       base_target_rounds?: number;
       base_exercises_per_circuit?: number;
       base_rest_between_circuits_minutes?: number;
+      base_rest_between_circuits_unit?: TimeUnit; // Explicit unit for circuit rest time
       intensity_description?: string;
     };
   };

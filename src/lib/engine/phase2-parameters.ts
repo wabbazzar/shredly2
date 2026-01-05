@@ -77,11 +77,19 @@ export function applyIntensityProfile(
   // Apply work time
   if (profile.base_work_time_minutes !== undefined) {
     week1.work_time_minutes = profile.base_work_time_minutes;
+    // Add explicit time unit if available
+    if (profile.base_work_time_unit) {
+      week1.work_time_unit = profile.base_work_time_unit;
+    }
   }
 
   // Apply rest time (with rest time multiplier) - SKIP for sub-exercises
   if (!isSubExercise && profile.base_rest_time_minutes !== undefined) {
     week1.rest_time_minutes = profile.base_rest_time_minutes * experienceModifier.rest_time_multiplier;
+    // Add explicit time unit if available
+    if (profile.base_rest_time_unit) {
+      week1.rest_time_unit = profile.base_rest_time_unit;
+    }
   }
 
   // Apply weight specification
@@ -196,6 +204,10 @@ function applyLinearProgression(
       week1.rest_time_minutes! + (restDelta * weeksDelta),
       rules.rest_time_minimum_minutes || 0.75
     );
+    // Preserve time unit from week1
+    if (week1.rest_time_unit) {
+      weekN.rest_time_unit = week1.rest_time_unit;
+    }
   }
 
   return weekN;
@@ -220,6 +232,10 @@ function applyDensityProgression(
     const calculatedTime = week1.work_time_minutes! * (1 + increasePerWeek * weeksDelta);
     // Round to whole minutes for clarity (especially important for EMOM)
     weekN.work_time_minutes = Math.round(calculatedTime);
+    // Preserve time unit from week1
+    if (week1.work_time_unit) {
+      weekN.work_time_unit = week1.work_time_unit;
+    }
   }
 
   // Increase reps (for sub-exercises in EMOM, etc.)
@@ -236,6 +252,10 @@ function applyDensityProgression(
       week1.rest_time_minutes! + (restDelta * weeksDelta),
       rules.rest_time_minimum_minutes || 0.167
     );
+    // Preserve time unit from week1
+    if (week1.rest_time_unit) {
+      weekN.rest_time_unit = week1.rest_time_unit;
+    }
   }
 
   return weekN;

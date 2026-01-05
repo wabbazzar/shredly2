@@ -1,5 +1,5 @@
 {
-  "id": "workout_fat__beg_1767638095583",
+  "id": "workout_fat__beg_1767650080455",
   "name": "Fat Loss Beginner Program",
   "description": "3 days per week workout program focused on fat loss. Each session is 30-45 minutes.",
   "version": "2.0.0",
@@ -28,178 +28,28 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week4": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week5": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week6": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "CIRCUIT: Mountain Climbers + Burpees + Jump Squats + Box Jumps",
-          "week1": {
-            "sets": 4
-          },
-          "week2": {
-            "sets": 4
-          },
-          "week3": {
-            "sets": 4
-          },
-          "week4": {
-            "sets": 4
-          },
-          "week5": {
-            "sets": 4
-          },
-          "week6": {
-            "sets": 4
-          },
-          "category": "circuit",
-          "sub_exercises": [
-            {
-              "name": "Mountain Climbers",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Burpees",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Jump Squats",
-              "week1": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week2": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week3": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week4": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week5": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week6": {
-                "reps": 5,
-                "weight": "heavy"
-              }
-            },
-            {
-              "name": "Box Jumps",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            }
-          ]
-        },
-        {
-          "name": "90/90 Hip Stretch",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Dead Bugs",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           }
         }
       ]
@@ -212,178 +62,28 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week4": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week5": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week6": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "CIRCUIT: Mountain Climbers + Burpees + Jump Squats + Box Jumps",
-          "week1": {
-            "sets": 4
-          },
-          "week2": {
-            "sets": 4
-          },
-          "week3": {
-            "sets": 4
-          },
-          "week4": {
-            "sets": 4
-          },
-          "week5": {
-            "sets": 4
-          },
-          "week6": {
-            "sets": 4
-          },
-          "category": "circuit",
-          "sub_exercises": [
-            {
-              "name": "Mountain Climbers",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Burpees",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Jump Squats",
-              "week1": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week2": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week3": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week4": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week5": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week6": {
-                "reps": 5,
-                "weight": "heavy"
-              }
-            },
-            {
-              "name": "Box Jumps",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            }
-          ]
-        },
-        {
-          "name": "90/90 Hip Stretch",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Dead Bugs",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           }
         }
       ]
@@ -396,178 +96,28 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week4": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week5": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week6": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "CIRCUIT: Mountain Climbers + Burpees + Jump Squats + Box Jumps",
-          "week1": {
-            "sets": 4
-          },
-          "week2": {
-            "sets": 4
-          },
-          "week3": {
-            "sets": 4
-          },
-          "week4": {
-            "sets": 4
-          },
-          "week5": {
-            "sets": 4
-          },
-          "week6": {
-            "sets": 4
-          },
-          "category": "circuit",
-          "sub_exercises": [
-            {
-              "name": "Mountain Climbers",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Burpees",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Jump Squats",
-              "week1": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week2": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week3": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week4": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week5": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week6": {
-                "reps": 5,
-                "weight": "heavy"
-              }
-            },
-            {
-              "name": "Box Jumps",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            }
-          ]
-        },
-        {
-          "name": "90/90 Hip Stretch",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
-          }
-        },
-        {
-          "name": "Dead Bugs",
-          "week1": {
-            "work_time_minutes": 1
-          },
-          "week2": {
-            "work_time_minutes": 1
-          },
-          "week3": {
-            "work_time_minutes": 1
-          },
-          "week4": {
-            "work_time_minutes": 1
-          },
-          "week5": {
-            "work_time_minutes": 1
-          },
-          "week6": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           }
         }
       ]

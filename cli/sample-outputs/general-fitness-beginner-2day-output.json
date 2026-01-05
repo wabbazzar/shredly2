@@ -1,5 +1,5 @@
 {
-  "id": "workout_gene_com_1767638095584",
+  "id": "workout_gene_com_1767650080456",
   "name": "General Fitness Beginner Program",
   "description": "2 days per week workout program focused on general fitness. Each session is 20-30 minutes.",
   "version": "2.0.0",
@@ -28,103 +28,21 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week4": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           }
-        },
-        {
-          "name": "CIRCUIT: Plank Hold + Wall Sits + Push-ups + strength Squats",
-          "week1": {
-            "sets": 4
-          },
-          "week2": {
-            "sets": 4
-          },
-          "week3": {
-            "sets": 4
-          },
-          "week4": {
-            "sets": 4
-          },
-          "category": "circuit",
-          "sub_exercises": [
-            {
-              "name": "Plank Hold",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 5
-              },
-              "week4": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Wall Sits",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 5
-              },
-              "week4": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Push-ups",
-              "week1": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week2": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week3": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week4": {
-                "reps": 5,
-                "weight": "heavy"
-              }
-            },
-            {
-              "name": "strength Squats",
-              "week1": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week2": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week3": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week4": {
-                "reps": 5,
-                "weight": "heavy"
-              }
-            }
-          ]
         }
       ]
     },
@@ -136,103 +54,21 @@
         {
           "name": "Fire Hydrants",
           "week1": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           },
           "week4": {
-            "work_time_minutes": 1
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           }
-        },
-        {
-          "name": "CIRCUIT: Plank Hold + Wall Sits + Push-ups + strength Squats",
-          "week1": {
-            "sets": 4
-          },
-          "week2": {
-            "sets": 4
-          },
-          "week3": {
-            "sets": 4
-          },
-          "week4": {
-            "sets": 4
-          },
-          "category": "circuit",
-          "sub_exercises": [
-            {
-              "name": "Plank Hold",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 5
-              },
-              "week4": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Wall Sits",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 5
-              },
-              "week4": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Push-ups",
-              "week1": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week2": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week3": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week4": {
-                "reps": 5,
-                "weight": "heavy"
-              }
-            },
-            {
-              "name": "strength Squats",
-              "week1": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week2": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week3": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week4": {
-                "reps": 5,
-                "weight": "heavy"
-              }
-            }
-          ]
         }
       ]
     }

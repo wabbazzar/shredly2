@@ -870,14 +870,14 @@ function prioritizeByMuscleGroupCoverage(
     if (primaryMinCoverage === Infinity) primaryMinCoverage = 0;
     if (secondaryMinCoverage === Infinity) secondaryMinCoverage = 0;
 
-    // FIVE-TIER SCORING SYSTEM:
+    // FIVE-TIER SCORING SYSTEM (TUNED FOR ≤5.0 RATIO):
     // Tier 1 (Highest): Primary muscles with 0 coverage
-    //   - Score = 1000 * primaryUncoveredCount - primaryTotalCoverage
+    //   - Score = 2000 * primaryUncoveredCount - primaryTotalCoverage
     //   - Ensures uncovered primary muscles get selected first
     //
     // Tier 2 (High): Primary muscles with low coverage (≤2 hits)
-    //   - Score = 500 - primaryTotalCoverage
-    //   - Balances primary muscle distribution
+    //   - Score = 1000 - primaryTotalCoverage
+    //   - Balances primary muscle distribution aggressively
     //
     // Tier 3 (Medium): Secondary muscles with 0 coverage
     //   - Score = 100 * secondaryUncoveredCount - secondaryTotalCoverage
@@ -888,19 +888,19 @@ function prioritizeByMuscleGroupCoverage(
     //   - Fills remaining slots with variety
     //
     // Tier 5 (Lowest): Heavily covered primary muscles (>2 hits)
-    //   - Score = -1000 * primaryMinCoverage - primaryTotalCoverage
-    //   - Prevents muscle group dominance
+    //   - Score = -2000 * primaryMinCoverage - primaryTotalCoverage
+    //   - Strongly prevents muscle group dominance
 
     let score: number;
     let tier: number;
 
     if (primaryUncoveredCount > 0) {
       // Tier 1: Uncovered primary muscles - HIGHEST PRIORITY
-      score = 1000 * primaryUncoveredCount - primaryTotalCoverage;
+      score = 2000 * primaryUncoveredCount - primaryTotalCoverage;
       tier = 1;
     } else if (primaryCoveredCount > 0 && primaryMinCoverage <= 2) {
       // Tier 2: Primary muscles with low coverage - HIGH PRIORITY
-      score = 500 - primaryTotalCoverage;
+      score = 1000 - primaryTotalCoverage;
       tier = 2;
     } else if (secondaryUncoveredCount > 0) {
       // Tier 3: Uncovered secondary muscles - MEDIUM PRIORITY
@@ -912,7 +912,7 @@ function prioritizeByMuscleGroupCoverage(
       tier = 4;
     } else {
       // Tier 5: Heavily covered muscles - LOWEST PRIORITY
-      score = -1000 * primaryMinCoverage - primaryTotalCoverage;
+      score = -2000 * primaryMinCoverage - primaryTotalCoverage;
       tier = 5;
     }
 

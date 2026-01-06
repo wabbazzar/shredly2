@@ -206,6 +206,31 @@ shredly2/
 
 ---
 
+## Workout Generation Algorithm
+
+### Smart Muscle Group Balancing
+
+**Purpose**: Ensure balanced primary muscle coverage (target ratio ≤5.0) across all split types.
+
+**5-Tier Scoring System**:
+1. **Tier 1** (Highest): Uncovered primary muscles → Score 2000+
+2. **Tier 2** (High): Low-coverage primary muscles (≤2 hits) → Score 1000+
+3. **Tier 3** (Medium): Uncovered secondary muscles → Score 100+
+4. **Tier 4** (Low): Any muscle with coverage → Score 0-100
+5. **Tier 5** (Lowest): Heavily covered muscles → Negative score
+
+**Primary vs Secondary Muscles** (defined per split in `workout_generation_rules.json`):
+- **Primary**: Must be balanced (e.g., Push = Chest/Shoulders/Triceps)
+- **Secondary**: Can appear but won't dominate (e.g., Push = Traps/Core/Forearms)
+
+**Determinism**:
+- Production: No seed → random variety each generation
+- Tests: Seed parameter → 100% reproducible (e.g., `generateWorkout(answers, 12345)`)
+
+**Results**: Typical ratios 4-5 (down from 7-9), with rare edge cases at 7-8.
+
+---
+
 ## Questions to Answer (Before UI Layer)
 
 1. **Workout Generation Algorithm**: How to map questionnaire → training split?

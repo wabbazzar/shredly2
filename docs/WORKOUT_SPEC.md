@@ -14,6 +14,20 @@
 4. **Exercise DB as source of truth** - Reference exercises by name, metadata lives in DB
 5. **Categories, not sections** - UI handles grouping, data stays flat
 6. **Concrete outputs** - Generated workouts have explicit week-by-week values, no template variables
+7. **Smart muscle balancing** - Tier-based prioritization ensures balanced primary muscle coverage (≤5.0 ratio)
+
+---
+
+## Exercise Selection Algorithm
+
+**Tier-Based Muscle Group Balancing**: Exercises prioritized by 5-tier scoring system to ensure balanced primary muscle coverage across splits (Push/Pull/Legs/Upper/Lower/Full Body).
+
+- **Primary muscles** (e.g., Chest/Shoulders/Triceps for Push): Must be balanced
+- **Secondary muscles** (e.g., Traps/Forearms for Push): Can appear but deprioritized
+- **Target ratio**: ≤5.0 (max muscle group hits / min muscle group hits)
+- **Typical results**: 4-5 ratio (down from 7-9 before optimization)
+
+**Determinism**: Optional seed parameter for reproducible workouts in tests. Production omits seed for variety.
 
 ---
 

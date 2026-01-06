@@ -664,6 +664,7 @@
     "description": "Hybrid approach: fixed ratios that fill to duration using round-robin algorithm",
     "strategy": "ratio_based_fill_to_duration",
     "algorithm": "Start from top, add one exercise from each layer in order (first → primary → secondary → tertiary → finisher → last), repeat cycle until duration constraint is met",
+    "shuffle_pools": true,
 
     "layer_ratios": {
       "description": "Ideal ratio of exercises per layer - engine adds exercises round-robin to maintain these ratios",

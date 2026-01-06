@@ -174,7 +174,7 @@
               "Pike push-ups"
             ],
             "isometric": false,
-            "external_load": "sometimes"
+            "external_load": "never"
           },
           "Pull-ups": {
             "category": "strength",
@@ -194,7 +194,7 @@
               "Weighted Chin/Pull-Ups"
             ],
             "isometric": false,
-            "external_load": "sometimes"
+            "external_load": "never"
           },
           "strength Squats": {
             "category": "strength",

@@ -16,6 +16,18 @@ import type {
 import { estimateExerciseDuration } from './duration-estimator.js';
 
 /**
+ * Shuffles an array in place using Fisher-Yates algorithm
+ *
+ * @param array - Array to shuffle
+ */
+function shuffleArray<T>(array: T[]): void {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+/**
  * Flattens the exercise database into a simple array with exercise names
  *
  * @param exerciseDB - Exercise database
@@ -224,6 +236,11 @@ export function createExercisePoolsForDay(
       muscleMapping
     );
 
+    // Shuffle the pool if configured to introduce randomness
+    if (rules.exercise_selection_strategy.shuffle_pools) {
+      shuffleArray(filteredExercises);
+    }
+
     pools.set(layer, filteredExercises);
   }
 
@@ -270,7 +287,7 @@ function constructCompoundExercise(
   const experienceModifier = rules.experience_modifiers[answers.experience_level];
 
   // Filter available exercises
-  const availableExercises = allExercises.filter(([name, exercise]) => {
+  let availableExercises = allExercises.filter(([name, exercise]) => {
     // CRITICAL: Must be individual exercise category - NEVER compound categories
     if (!individualCategories.includes(exercise.category)) return false;
 
@@ -317,6 +334,11 @@ function constructCompoundExercise(
 
     return true;
   });
+
+  // Shuffle for randomness if enabled
+  if (rules.exercise_selection_strategy.shuffle_pools) {
+    shuffleArray(availableExercises);
+  }
 
   // VALIDATION: We need at least 2 individual exercises to create any compound exercise
   // If we can't find enough, return a placeholder that will be filtered out later

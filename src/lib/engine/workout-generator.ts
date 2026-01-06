@@ -274,9 +274,5 @@ function generateTags(answers: QuestionnaireAnswers): string[] {
   tags.push(`${answers.training_frequency}_days_week`);
   tags.push(answers.equipment_access);
 
-  if (answers.cardio_preference && answers.cardio_preference !== 'none') {
-    tags.push(answers.cardio_preference);
-  }
-
   return tags;
 }

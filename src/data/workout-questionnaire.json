@@ -228,45 +228,6 @@
       "required": false
     },
     {
-      "id": "cardio_preference",
-      "type": "multiple_choice",
-      "question": "How do you prefer to incorporate cardiovascular training?",
-      "description": "Cardio can be integrated or separate based on your preference",
-      "options": [
-        {
-          "value": "none",
-          "label": "Minimal/None",
-          "description": "Focus purely on strength training"
-        },
-        {
-          "value": "integrated",
-          "label": "Integrated (Circuit Style)",
-          "description": "Short rest periods, metabolic conditioning"
-        },
-        {
-          "value": "separate_sessions",
-          "label": "Separate Cardio Sessions",
-          "description": "Dedicated cardio days or post-workout"
-        },
-        {
-          "value": "hiit",
-          "label": "HIIT/Sprint Intervals",
-          "description": "High intensity interval training"
-        },
-        {
-          "value": "liss",
-          "label": "LISS (Steady State)",
-          "description": "Longer, moderate intensity cardio"
-        },
-        {
-          "value": "sport_specific",
-          "label": "Sport-Specific",
-          "description": "Cardio that mimics my sport/activity"
-        }
-      ],
-      "required": false
-    },
-    {
       "id": "program_duration",
       "type": "multiple_choice",
       "question": "How long would you like this program to last?",

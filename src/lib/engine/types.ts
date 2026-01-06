@@ -20,7 +20,6 @@ export interface QuestionnaireAnswers {
   session_duration: "20-30" | "30-45" | "45-60" | "60-90" | "90+" | "flexible";
   equipment_access: "commercial_gym" | "home_gym_full" | "home_gym_basic" | "dumbbells_only" | "bodyweight_only" | "minimal_equipment";
   training_split_preference?: "no_preference" | "full_body" | "upper_lower" | "push_pull_legs" | "ulppl";
-  cardio_preference?: "none" | "integrated" | "separate_sessions" | "hiit" | "liss" | "sport_specific";
   program_duration?: "3_weeks" | "4_weeks" | "6_weeks" | "8_weeks" | "12_weeks" | "16_weeks" | "ongoing";
   progression_preference?: "linear" | "volume" | "density" | "wave_loading" | "no_preference";
 }

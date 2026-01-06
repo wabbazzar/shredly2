@@ -43,9 +43,18 @@ npm run test:coverage
 Diagnostic tools are standalone scripts in `tests/diagnostics/` that are NOT run as part of the test suite. They're used for debugging and analysis:
 
 ```bash
-# Run exercise filtering diagnostics
+# Run exercise filtering diagnostics (using npm script)
+npm run test:diagnostics
+
+# Or run directly with tsx
 tsx tests/diagnostics/exercise-filtering-diagnostics.ts
 ```
+
+**What the diagnostics tool does:**
+- Tests problematic equipment + experience combinations
+- Breaks down filtering steps to identify bottlenecks
+- Shows which exercises almost match (fail on one criterion)
+- Provides suggestions for fixing filtering issues
 
 ## Writing Tests
 

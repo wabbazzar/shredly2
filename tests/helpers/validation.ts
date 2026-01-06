@@ -6,7 +6,7 @@
  */
 
 import type {
-  WorkoutProgram,
+  ParameterizedWorkout,
   ParameterizedDay,
   ParameterizedExercise,
   ExerciseDatabase,
@@ -21,22 +21,18 @@ import type {
  * Validates workout structure against WORKOUT_SPEC.md requirements
  * Throws descriptive errors if validation fails
  */
-export function validateWorkoutStructure(workout: WorkoutProgram): void {
+export function validateWorkoutStructure(workout: ParameterizedWorkout): void {
   // Validate metadata
   if (!workout.metadata) {
     throw new Error('Workout missing metadata');
   }
 
-  if (!workout.metadata.programId) {
-    throw new Error('Workout metadata missing programId');
+  if (!workout.weeks || workout.weeks < 1) {
+    throw new Error('Workout must specify weeks >= 1');
   }
 
-  if (!workout.metadata.weeks || workout.metadata.weeks < 1) {
-    throw new Error('Workout metadata must specify weeks >= 1');
-  }
-
-  if (!workout.metadata.daysPerWeek || workout.metadata.daysPerWeek < 2 || workout.metadata.daysPerWeek > 7) {
-    throw new Error('Workout metadata daysPerWeek must be 2-7');
+  if (!workout.daysPerWeek || workout.daysPerWeek < 2 || workout.daysPerWeek > 7) {
+    throw new Error('Workout daysPerWeek must be 2-7');
   }
 
   // Validate days structure
@@ -133,29 +129,34 @@ function validateExercise(exercise: ParameterizedExercise, dayKey: string, index
  * Checks muscle groups, equipment, and difficulty are valid
  */
 export function validateExerciseReferences(
-  workout: WorkoutProgram,
+  workout: ParameterizedWorkout,
   exerciseDB: ExerciseDatabase
 ): void {
   const allExercises = getAllExercisesFromDB(exerciseDB);
 
   for (const [dayKey, day] of Object.entries(workout.days)) {
     for (const exercise of day.exercises) {
-      // Check main exercise
-      if (!allExercises[exercise.name]) {
-        throw new Error(`Day ${dayKey} exercise "${exercise.name}" not found in exercise database`);
-      }
-
-      // Validate exercise metadata
-      const dbExercise = allExercises[exercise.name];
-      validateExerciseMetadata(dbExercise, exercise.name);
-
-      // Check sub-exercises
-      if (exercise.sub_exercises) {
+      // Check if this is a compound exercise (has sub_exercises)
+      if (exercise.sub_exercises && exercise.sub_exercises.length > 0) {
+        // For compound exercises, only validate sub-exercises
         for (const subEx of exercise.sub_exercises) {
           if (!allExercises[subEx.name]) {
             throw new Error(`Day ${dayKey} sub-exercise "${subEx.name}" not found in exercise database`);
           }
+
+          // Validate sub-exercise metadata
+          const dbExercise = allExercises[subEx.name];
+          validateExerciseMetadata(dbExercise, subEx.name);
         }
+      } else {
+        // For individual exercises, validate the main exercise
+        if (!allExercises[exercise.name]) {
+          throw new Error(`Day ${dayKey} exercise "${exercise.name}" not found in exercise database`);
+        }
+
+        // Validate exercise metadata
+        const dbExercise = allExercises[exercise.name];
+        validateExerciseMetadata(dbExercise, exercise.name);
       }
     }
   }

@@ -81,7 +81,18 @@ export function filterExercisesForLayer(
     }
 
     // Filter by external load (must be in experience level's allowed external loads)
-    if (!externalLoadFilter.includes(exercise.external_load)) {
+    // CRITICAL: Make external load filter equipment-aware
+    // For limited equipment (bodyweight_only, minimal_equipment, dumbbells_only), relax the filter
+    // to allow "never" external load exercises, otherwise advanced/expert users
+    // with limited equipment would have ZERO exercises
+    const hasLimitedEquipment = equipmentAccess === 'bodyweight_only' ||
+                                equipmentAccess === 'minimal_equipment' ||
+                                equipmentAccess === 'dumbbells_only';
+    const relaxedExternalLoadFilter = hasLimitedEquipment
+      ? [...externalLoadFilter, 'never'] // Allow bodyweight exercises
+      : externalLoadFilter;
+
+    if (!relaxedExternalLoadFilter.includes(exercise.external_load)) {
       return false;
     }
 
@@ -299,7 +310,16 @@ function constructCompoundExercise(
 
     // Meets difficulty and load requirements
     if (!experienceModifier.complexity_filter.includes(exercise.difficulty)) return false;
-    if (!experienceModifier.external_load_filter.includes(exercise.external_load)) return false;
+
+    // CRITICAL: Make external load filter equipment-aware (same as filterExercisesForLayer)
+    const hasLimitedEquipment = answers.equipment_access === 'bodyweight_only' ||
+                                answers.equipment_access === 'minimal_equipment' ||
+                                answers.equipment_access === 'dumbbells_only';
+    const relaxedExternalLoadFilter = hasLimitedEquipment
+      ? [...experienceModifier.external_load_filter, 'never']
+      : experienceModifier.external_load_filter;
+
+    if (!relaxedExternalLoadFilter.includes(exercise.external_load)) return false;
 
     // Check equipment
     if (exercise.equipment.length > 0 && !exercise.equipment.includes("None")) {

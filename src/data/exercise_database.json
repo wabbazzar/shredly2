@@ -7,6 +7,24 @@
       "strength": {
         "description": "Primary resistance training exercises with external load",
         "exercises": {
+          "Hanging Leg Raises": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "12",
+            "equipment": [
+              "Pull-up Bar"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Hip Flexors"
+            ],
+            "difficulty": "Advanced",
+            "variations": [
+              "Straight Leg Raises"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
           "Mountain Climbers": {
             "category": "strength",
             "typical_sets": 4,

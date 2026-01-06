@@ -60,9 +60,7 @@ describe('End-to-End Workout Generation', () => {
       expect(Object.keys(workout.days).length).toBe(3);
     });
 
-    it.skip('should generate workout for INTERMEDIATE_PPL (KNOWN BUG: cardio intensity profiles)', () => {
-      // TODO: Fix missing cardio "light" profile in duration-estimator.ts
-      // Error: No profile "light" found for category: cardio
+    it('should generate workout for INTERMEDIATE_PPL', () => {
       const workout = generateWorkout(INTERMEDIATE_PPL);
 
       expect(workout).toBeDefined();
@@ -131,9 +129,7 @@ describe('End-to-End Workout Generation', () => {
       expect(Object.keys(workout.days).length).toBe(6);
     });
 
-    it.skip('should generate workout for MINIMAL_EQUIPMENT_BEGINNER (KNOWN BUG: mobility intensity profiles)', () => {
-      // TODO: Fix missing mobility "heavy" profile in phase2-parameters.ts
-      // Error: No "heavy" profile for category: mobility
+    it('should generate workout for MINIMAL_EQUIPMENT_BEGINNER (edge case)', () => {
       const workout = generateWorkout(MINIMAL_EQUIPMENT_BEGINNER);
 
       expect(workout).toBeDefined();
@@ -154,13 +150,15 @@ describe('End-to-End Workout Generation', () => {
 
   describe('All Fixtures Batch Test', () => {
 
-    it('should generate valid workouts for working fixtures', () => {
-      // Test only fixtures that don't have known bugs
+    it('should generate valid workouts for all fixtures', () => {
+      // Test all fixtures - intensity profile bugs have been fixed
       const workingFixtures = [
         { fixture: BEGINNER_FULL_BODY, name: 'BEGINNER_FULL_BODY' },
+        { fixture: INTERMEDIATE_PPL, name: 'INTERMEDIATE_PPL' },
         { fixture: ADVANCED_UPPER_LOWER, name: 'ADVANCED_UPPER_LOWER' },
         { fixture: EXPERT_ULPPL_GYM, name: 'EXPERT_ULPPL_GYM' },
-        { fixture: BODYWEIGHT_ONLY_EXPERT, name: 'BODYWEIGHT_ONLY_EXPERT' }
+        { fixture: BODYWEIGHT_ONLY_EXPERT, name: 'BODYWEIGHT_ONLY_EXPERT' },
+        { fixture: MINIMAL_EQUIPMENT_BEGINNER, name: 'MINIMAL_EQUIPMENT_BEGINNER' }
       ];
 
       workingFixtures.forEach(({ fixture, name }) => {
@@ -198,9 +196,11 @@ describe('End-to-End Workout Generation', () => {
     it('should assign exercises to all days', () => {
       const workingFixtures = [
         { fixture: BEGINNER_FULL_BODY, name: 'BEGINNER_FULL_BODY' },
+        { fixture: INTERMEDIATE_PPL, name: 'INTERMEDIATE_PPL' },
         { fixture: ADVANCED_UPPER_LOWER, name: 'ADVANCED_UPPER_LOWER' },
         { fixture: EXPERT_ULPPL_GYM, name: 'EXPERT_ULPPL_GYM' },
-        { fixture: BODYWEIGHT_ONLY_EXPERT, name: 'BODYWEIGHT_ONLY_EXPERT' }
+        { fixture: BODYWEIGHT_ONLY_EXPERT, name: 'BODYWEIGHT_ONLY_EXPERT' },
+        { fixture: MINIMAL_EQUIPMENT_BEGINNER, name: 'MINIMAL_EQUIPMENT_BEGINNER' }
       ];
 
       workingFixtures.forEach(({ fixture, name }) => {

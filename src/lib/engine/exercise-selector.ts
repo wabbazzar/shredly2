@@ -76,7 +76,15 @@ export function filterExercisesForLayer(
     }
 
     // Filter by difficulty (must be in experience level's allowed difficulties)
-    if (!difficultyFilter.includes(exercise.difficulty)) {
+    // CRITICAL: For limited equipment (bodyweight/minimal), relax difficulty filter
+    // Otherwise expert users with bodyweight only would have ZERO exercises
+    const hasLimitedEquipmentForDifficulty = equipmentAccess === 'bodyweight_only' ||
+                                equipmentAccess === 'minimal_equipment';
+    const relaxedDifficultyFilter = hasLimitedEquipmentForDifficulty
+      ? [...difficultyFilter, 'Beginner', 'Intermediate'] // Allow all difficulties for limited equipment
+      : difficultyFilter;
+
+    if (!relaxedDifficultyFilter.includes(exercise.difficulty)) {
       return false;
     }
 
@@ -309,7 +317,14 @@ function constructCompoundExercise(
     if (usedExerciseNames.has(name)) return false;
 
     // Meets difficulty and load requirements
-    if (!experienceModifier.complexity_filter.includes(exercise.difficulty)) return false;
+    // CRITICAL: Relax difficulty filter for limited equipment (same as filterExercisesForLayer)
+    const hasLimitedEquipmentForDifficulty = answers.equipment_access === 'bodyweight_only' ||
+                                answers.equipment_access === 'minimal_equipment';
+    const relaxedDifficultyFilter = hasLimitedEquipmentForDifficulty
+      ? [...experienceModifier.complexity_filter, 'Beginner', 'Intermediate']
+      : experienceModifier.complexity_filter;
+
+    if (!relaxedDifficultyFilter.includes(exercise.difficulty)) return false;
 
     // CRITICAL: Make external load filter equipment-aware (same as filterExercisesForLayer)
     const hasLimitedEquipment = answers.equipment_access === 'bodyweight_only' ||

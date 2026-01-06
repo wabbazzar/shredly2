@@ -170,6 +170,10 @@
         "base_work_time_minutes": 2,
         "base_work_time_unit": "minutes"
       },
+      "heavy": {
+        "base_work_time_minutes": 3,
+        "base_work_time_unit": "minutes"
+      },
       "extended": {
         "base_work_time_minutes": 3,
         "base_work_time_unit": "minutes"
@@ -185,6 +189,10 @@
         "base_work_time_minutes": 2,
         "base_work_time_unit": "minutes"
       },
+      "heavy": {
+        "base_work_time_minutes": 4,
+        "base_work_time_unit": "minutes"
+      },
       "extended": {
         "base_work_time_minutes": 4,
         "base_work_time_unit": "minutes"
@@ -192,6 +200,11 @@
     },
 
     "cardio": {
+      "light": {
+        "base_work_time_minutes": 5,
+        "base_work_time_unit": "minutes",
+        "intensity_description": "60-70% max HR, conversational pace (LISS)"
+      },
       "liss": {
         "base_work_time_minutes": 5,
         "base_work_time_unit": "minutes",
@@ -201,6 +214,11 @@
         "base_work_time_minutes": 3,
         "base_work_time_unit": "minutes",
         "intensity_description": "70-80% max HR, steady state"
+      },
+      "heavy": {
+        "base_work_time_minutes": 2,
+        "base_work_time_unit": "minutes",
+        "intensity_description": "85-95% max HR with intervals (HIIT)"
       },
       "hiit": {
         "base_work_time_minutes": 2,
@@ -589,14 +607,14 @@
       "description": "Lower body muscle groups only"
     },
     "Push": {
-      "include_muscle_groups": ["Chest", "Shoulders", "Triceps", "Core"],
-      "exclude_muscle_groups": ["Back", "Biceps", "Lats", "Rhomboids", "Traps", "Forearms", "Quadriceps", "Hamstrings", "Glutes", "Calves", "Adductors"],
-      "description": "Pushing muscles - chest, shoulders, triceps"
+      "include_muscle_groups": ["Chest", "Shoulders", "Triceps", "Front Delts", "Side Delts", "Arms", "Upper Chest"],
+      "exclude_muscle_groups": ["Back", "Biceps", "Lats", "Rhomboids", "Traps", "Rear Delts"],
+      "description": "Pushing muscles - chest, shoulders, triceps, arms (Core removed, legs allowed as secondary)"
     },
     "Pull": {
-      "include_muscle_groups": ["Back", "Biceps", "Lats", "Rhomboids", "Traps", "Forearms", "Core"],
-      "exclude_muscle_groups": ["Chest", "Shoulders", "Triceps", "Quadriceps", "Hamstrings", "Glutes", "Calves", "Adductors"],
-      "description": "Pulling muscles - back, biceps, rear delts"
+      "include_muscle_groups": ["Back", "Biceps", "Lats", "Rhomboids", "Traps", "Rear Delts", "Forearms", "Upper Back", "Lower Back"],
+      "exclude_muscle_groups": ["Chest", "Shoulders", "Front Delts", "Side Delts", "Triceps"],
+      "description": "Pulling muscles - back, biceps, rear delts (Core removed, legs allowed as secondary)"
     },
     "Legs": {
       "include_muscle_groups": ["Quadriceps", "Hamstrings", "Glutes", "Calves", "Adductors", "Core"],

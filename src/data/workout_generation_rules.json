@@ -627,6 +627,40 @@
     }
   },
 
+  "muscle_group_priority_mapping": {
+    "description": "Defines primary (must be balanced) vs secondary (can appear but lower priority) muscle groups for smart exercise selection. Primary muscles get tier-based prioritization to ensure balanced coverage (target ratio ≤3.0). Secondary muscles can still be selected but won't dominate workouts.",
+    "Push": {
+      "primary": ["Chest", "Shoulders", "Front Delts", "Side Delts", "Lateral Delts", "Triceps"],
+      "secondary": ["Traps", "Core", "Forearms", "Upper Chest", "Arms"],
+      "description": "Primary push muscles must be balanced; secondary muscles (traps, core) can appear but won't dominate"
+    },
+    "Pull": {
+      "primary": ["Back", "Lats", "Biceps", "Rhomboids", "Upper Back", "Lower Back"],
+      "secondary": ["Traps", "Forearms", "Rear Delts", "Core"],
+      "description": "Primary pull muscles must be balanced; secondary muscles (traps, forearms) can appear"
+    },
+    "Legs": {
+      "primary": ["Quadriceps", "Quads", "Hamstrings", "Glutes"],
+      "secondary": ["Calves", "Adductors", "Core", "Lower Back"],
+      "description": "Primary leg muscles must be balanced; secondary muscles (calves, adductors) can appear"
+    },
+    "Upper": {
+      "primary": ["Chest", "Back", "Shoulders", "Lats"],
+      "secondary": ["Biceps", "Triceps", "Traps", "Core", "Forearms", "Rhomboids"],
+      "description": "Primary upper body muscles must be balanced; arms/traps are secondary"
+    },
+    "Lower": {
+      "primary": ["Quadriceps", "Quads", "Hamstrings", "Glutes"],
+      "secondary": ["Calves", "Adductors", "Core", "Lower Back"],
+      "description": "Primary lower body muscles must be balanced; calves/core are secondary"
+    },
+    "Full Body": {
+      "primary": ["Chest", "Back", "Legs", "Quadriceps", "Quads", "Shoulders"],
+      "secondary": ["Core", "Arms", "Biceps", "Triceps", "Traps", "Calves", "Hamstrings", "Glutes"],
+      "description": "Major muscle groups are primary; smaller muscles are secondary"
+    }
+  },
+
   "compound_exercise_construction": {
     "description": "Configuration for dynamically constructing compound exercises from individual exercises",
     "circuit": {

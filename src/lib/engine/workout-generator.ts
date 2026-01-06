@@ -54,9 +54,13 @@ function loadExerciseDatabase(): ExerciseDatabase {
  * Main entry point: Generates complete workout program from questionnaire
  *
  * @param answers - User's questionnaire answers
+ * @param seed - Optional seed for deterministic testing. If provided, same seed = same workout. If omitted, randomness varies each generation.
  * @returns Complete parameterized workout program
  */
-export function generateWorkout(answers: QuestionnaireAnswers): ParameterizedWorkout {
+export function generateWorkout(
+  answers: QuestionnaireAnswers,
+  seed?: number
+): ParameterizedWorkout {
   // Load configuration and data
   const rules = loadGenerationRules();
   const exerciseDB = loadExerciseDatabase();
@@ -93,7 +97,8 @@ export function generateWorkout(answers: QuestionnaireAnswers): ParameterizedWor
       focus,
       answers,
       rules,
-      includedLayers
+      includedLayers,
+      seed
     );
 
     // Select exercises using round-robin
@@ -103,7 +108,8 @@ export function generateWorkout(answers: QuestionnaireAnswers): ParameterizedWor
       answers,
       maxDuration,
       allExercises,
-      focus
+      focus,
+      seed
     );
 
     // Determine day type

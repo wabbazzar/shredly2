@@ -212,6 +212,7 @@ export interface GenerationRules {
   duration_constraints: DurationConstraints;
   split_patterns: SplitPatterns;
   split_muscle_group_mapping: SplitMuscleGroupMapping;
+  muscle_group_priority_mapping: MuscleGroupPriorityMapping;
   compound_exercise_construction: CompoundExerciseConstruction;
   exercise_count_constraints: ExerciseCountConstraints;
   equipment_quotas: EquipmentQuotas;
@@ -330,6 +331,14 @@ export interface SplitMuscleGroupMapping {
   [focus: string]: {
     include_muscle_groups: string[];
     exclude_muscle_groups?: string[];
+    description: string;
+  };
+}
+
+export interface MuscleGroupPriorityMapping {
+  [focus: string]: {
+    primary: string[];
+    secondary: string[];
     description: string;
   };
 }

@@ -123,10 +123,10 @@ describe("workout-generator", () => {
       }
     });
 
-    it("should produce same workout for same input when shuffle disabled", () => {
-      // Generate twice with same input
-      const workout1 = generateWorkout(BEGINNER_FULL_BODY);
-      const workout2 = generateWorkout(BEGINNER_FULL_BODY);
+    it("should produce same workout for same input when seed provided", () => {
+      // Generate twice with same input and seed
+      const workout1 = generateWorkout(BEGINNER_FULL_BODY, 12345);
+      const workout2 = generateWorkout(BEGINNER_FULL_BODY, 12345);
 
       // Basic structure should match
       expect(workout1.id).toBeDefined();

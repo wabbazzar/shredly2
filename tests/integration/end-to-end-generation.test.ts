@@ -44,7 +44,7 @@ describe('End-to-End Workout Generation', () => {
   describe('Individual Fixture Tests', () => {
 
     it('should generate workout for BEGINNER_FULL_BODY', () => {
-      const workout = generateWorkout(BEGINNER_FULL_BODY);
+      const workout = generateWorkout(BEGINNER_FULL_BODY, 12345);
 
       expect(workout).toBeDefined();
       expect(workout.days).toBeDefined();
@@ -61,7 +61,7 @@ describe('End-to-End Workout Generation', () => {
     });
 
     it('should generate workout for INTERMEDIATE_PPL', () => {
-      const workout = generateWorkout(INTERMEDIATE_PPL);
+      const workout = generateWorkout(INTERMEDIATE_PPL, 12345);
 
       expect(workout).toBeDefined();
       expect(workout.days).toBeDefined();
@@ -78,7 +78,7 @@ describe('End-to-End Workout Generation', () => {
     });
 
     it('should generate workout for ADVANCED_UPPER_LOWER', () => {
-      const workout = generateWorkout(ADVANCED_UPPER_LOWER);
+      const workout = generateWorkout(ADVANCED_UPPER_LOWER, 12345);
 
       expect(workout).toBeDefined();
       expect(workout.days).toBeDefined();
@@ -95,7 +95,7 @@ describe('End-to-End Workout Generation', () => {
     });
 
     it('should generate workout for EXPERT_ULPPL_GYM', () => {
-      const workout = generateWorkout(EXPERT_ULPPL_GYM);
+      const workout = generateWorkout(EXPERT_ULPPL_GYM, 12345);
 
       expect(workout).toBeDefined();
       expect(workout.days).toBeDefined();
@@ -112,7 +112,7 @@ describe('End-to-End Workout Generation', () => {
     });
 
     it('should generate workout for BODYWEIGHT_ONLY_EXPERT (edge case)', () => {
-      const workout = generateWorkout(BODYWEIGHT_ONLY_EXPERT);
+      const workout = generateWorkout(BODYWEIGHT_ONLY_EXPERT, 12345);
 
       expect(workout).toBeDefined();
       expect(workout.days).toBeDefined();
@@ -130,7 +130,7 @@ describe('End-to-End Workout Generation', () => {
     });
 
     it('should generate workout for MINIMAL_EQUIPMENT_BEGINNER (edge case)', () => {
-      const workout = generateWorkout(MINIMAL_EQUIPMENT_BEGINNER);
+      const workout = generateWorkout(MINIMAL_EQUIPMENT_BEGINNER, 12345);
 
       expect(workout).toBeDefined();
       expect(workout.days).toBeDefined();
@@ -162,8 +162,8 @@ describe('End-to-End Workout Generation', () => {
       ];
 
       workingFixtures.forEach(({ fixture, name }) => {
-        // Generate workout
-        const workout = generateWorkout(fixture);
+        // Generate workout (with seed for determinism)
+        const workout = generateWorkout(fixture, 12345);
 
         // Basic assertions
         expect(workout, `${name}: workout should be defined`).toBeDefined();
@@ -204,7 +204,7 @@ describe('End-to-End Workout Generation', () => {
       ];
 
       workingFixtures.forEach(({ fixture, name }) => {
-        const workout = generateWorkout(fixture);
+        const workout = generateWorkout(fixture, 12345);
 
         // Check each day has exercises
         Object.entries(workout.days).forEach(([dayKey, day]) => {
@@ -225,7 +225,7 @@ describe('End-to-End Workout Generation', () => {
       ];
 
       workingFixtures.forEach(({ fixture, name }) => {
-        const workout = generateWorkout(fixture);
+        const workout = generateWorkout(fixture, 12345);
 
         Object.entries(workout.days).forEach(([dayKey, day]) => {
           day.exercises.forEach((exercise, exerciseIndex) => {
@@ -257,7 +257,7 @@ describe('End-to-End Workout Generation', () => {
       ];
 
       workingFixtures.forEach(({ fixture, name }) => {
-        const workout = generateWorkout(fixture);
+        const workout = generateWorkout(fixture, 12345);
 
         Object.entries(workout.days).forEach(([dayKey, day]) => {
           day.exercises.forEach((exercise) => {
@@ -291,9 +291,9 @@ describe('End-to-End Workout Generation', () => {
 
     it('should respect session duration constraints', () => {
       // Test a subset with known duration constraints
-      const workout30to45 = generateWorkout(BEGINNER_FULL_BODY); // 30-45 minutes
-      const workout45to60 = generateWorkout(INTERMEDIATE_PPL); // 45-60 minutes
-      const workout60to90 = generateWorkout(ADVANCED_UPPER_LOWER); // 60-90 minutes
+      const workout30to45 = generateWorkout(BEGINNER_FULL_BODY, 12345); // 30-45 minutes
+      const workout45to60 = generateWorkout(INTERMEDIATE_PPL, 12345); // 45-60 minutes
+      const workout60to90 = generateWorkout(ADVANCED_UPPER_LOWER, 12345); // 60-90 minutes
 
       // Validate duration for each day (week 1)
       Object.values(workout30to45.days).forEach((day) => {
@@ -321,11 +321,10 @@ describe('End-to-End Workout Generation', () => {
 
   describe('Determinism', () => {
 
-    it.skip('should generate identical workouts for identical inputs (KNOWN ISSUE: shuffle randomization)', () => {
-      // TODO: Investigate if shuffle is being applied even when disabled
-      // The workout generation should be deterministic for the same inputs
-      const workout1 = generateWorkout(BEGINNER_FULL_BODY);
-      const workout2 = generateWorkout(BEGINNER_FULL_BODY);
+    it('should generate identical workouts for identical inputs when seed is provided', () => {
+      // With seed parameter, generation should be fully deterministic
+      const workout1 = generateWorkout(BEGINNER_FULL_BODY, 12345);
+      const workout2 = generateWorkout(BEGINNER_FULL_BODY, 12345);
 
       // Compare structure
       expect(workout1.daysPerWeek).toBe(workout2.daysPerWeek);

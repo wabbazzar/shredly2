@@ -14,18 +14,7 @@ import type {
   ExercisePool
 } from './types.js';
 import { estimateExerciseDuration } from './duration-estimator.js';
-
-/**
- * Shuffles an array in place using Fisher-Yates algorithm
- *
- * @param array - Array to shuffle
- */
-function shuffleArray<T>(array: T[]): void {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
+import { createRandom, shuffleArray, type RandomGenerator } from './seeded-random.js';
 
 /**
  * Flattens the exercise database into a simple array with exercise names
@@ -188,6 +177,7 @@ function checkEquipmentAvailability(
  * @param answers - User's questionnaire answers
  * @param rules - Generation rules configuration
  * @param includedLayers - Layers to include based on session duration
+ * @param seed - Optional seed for deterministic testing
  * @returns Map of layer name to filtered exercise pool
  */
 export function createExercisePoolsForDay(
@@ -195,9 +185,13 @@ export function createExercisePoolsForDay(
   focus: string,
   answers: QuestionnaireAnswers,
   rules: GenerationRules,
-  includedLayers: string[]
+  includedLayers: string[],
+  seed?: number
 ): Map<string, Array<[string, Exercise]>> {
   const pools = new Map<string, Array<[string, Exercise]>>();
+
+  // Create random number generator (seeded if seed provided, unseeded otherwise)
+  const random = createRandom(seed);
 
   // Check for split-specific category overrides first (e.g., high-tempo Upper/Lower in ULPPL)
   const splitOverrides = (rules.category_workout_structure as any).split_category_overrides?.[focus];
@@ -257,7 +251,7 @@ export function createExercisePoolsForDay(
 
     // Shuffle the pool if configured to introduce randomness
     if (rules.exercise_selection_strategy.shuffle_pools) {
-      shuffleArray(filteredExercises);
+      shuffleArray(filteredExercises, random);
     }
 
     pools.set(layer, filteredExercises);
@@ -283,6 +277,7 @@ function isCompoundCategory(category: string): boolean {
  * @param answers - User answers
  * @param usedExerciseNames - Set of already used exercise names
  * @param intensityProfile - Intensity profile for the compound exercise
+ * @param random - Random number generator (seeded or unseeded)
  * @returns Compound exercise structure with sub-exercises
  */
 function constructCompoundExercise(
@@ -292,7 +287,8 @@ function constructCompoundExercise(
   rules: GenerationRules,
   answers: QuestionnaireAnswers,
   usedExerciseNames: Set<string>,
-  intensityProfile: string
+  intensityProfile: string,
+  random: RandomGenerator
 ): ExerciseStructure {
   // Get constituent exercise count from config
   const count = rules.compound_exercise_construction[compoundCategory].base_constituent_exercises;
@@ -372,7 +368,7 @@ function constructCompoundExercise(
 
   // Shuffle for randomness if enabled
   if (rules.exercise_selection_strategy.shuffle_pools) {
-    shuffleArray(availableExercises);
+    shuffleArray(availableExercises, random);
   }
 
   // VALIDATION: We need at least 2 individual exercises to create any compound exercise
@@ -456,6 +452,7 @@ function constructCompoundExercise(
  * @param maxDuration - Maximum duration constraint in minutes
  * @param allExercises - All exercises from database (for compound construction)
  * @param focus - Day focus (for compound construction)
+ * @param seed - Optional seed for deterministic testing
  * @returns Array of selected exercise structures
  */
 export function roundRobinSelectExercises(
@@ -464,12 +461,16 @@ export function roundRobinSelectExercises(
   answers: QuestionnaireAnswers,
   maxDuration: number,
   allExercises: Array<[string, Exercise]>,
-  focus: string
+  focus: string,
+  seed?: number
 ): ExerciseStructure[] {
   const selectedExercises: ExerciseStructure[] = [];
   const usedExerciseNames = new Set<string>();
   const layerRatios = rules.exercise_selection_strategy.layer_ratios;
   const layerRequirements = rules.exercise_selection_strategy.layer_requirements;
+
+  // Create random number generator (seeded if seed provided, unseeded otherwise)
+  const random = createRandom(seed);
 
   // Exercise count constraints
   const constraints = rules.exercise_count_constraints;
@@ -481,10 +482,9 @@ export function roundRobinSelectExercises(
   const equipmentQuotas = rules.equipment_quotas;
   let barbellExerciseCount = 0;
 
-  // Muscle group coverage tracking for Full Body workouts
-  // Track muscle group frequency to ensure diverse coverage
+  // Muscle group coverage tracking for ALL workouts
+  // Track muscle group frequency to ensure balanced primary muscle coverage
   const muscleGroupCoverage = new Map<string, number>();
-  const isFullBodyWorkout = focus === "Full Body";
 
   // Track current index for each layer
   const layerIndices = new Map<string, number>();
@@ -589,7 +589,8 @@ export function roundRobinSelectExercises(
           rules,
           answers,
           usedExerciseNames,
-          intensityProfile
+          intensityProfile,
+          random
         );
 
         // Only add if we got at least 2 constituent exercises (minimum for any compound)
@@ -603,14 +604,12 @@ export function roundRobinSelectExercises(
           const layerDuration = layerDurations.get(layer) || 0;
           layerDurations.set(layer, layerDuration + exerciseDuration);
 
-          // Track muscle group coverage for Full Body workouts (compound exercises)
-          if (isFullBodyWorkout) {
-            // Track all muscle groups from constituent exercises
-            for (const subEx of compoundExercise.sub_exercises) {
-              const subExerciseData = allExercises.find(([name]) => name === subEx.name)?.[1];
-              if (subExerciseData) {
-                trackMuscleGroupCoverage(subExerciseData, muscleGroupCoverage);
-              }
+          // Track muscle group coverage for compound exercises
+          // Track all muscle groups from constituent exercises
+          for (const subEx of compoundExercise.sub_exercises) {
+            const subExerciseData = allExercises.find(([name]) => name === subEx.name)?.[1];
+            if (subExerciseData) {
+              trackMuscleGroupCoverage(subExerciseData, muscleGroupCoverage);
             }
           }
         }
@@ -619,20 +618,20 @@ export function roundRobinSelectExercises(
         layerIndices.set(layer, currentIndex + 1);
       } else {
         // Normal individual exercise selection
-        // For Full Body workouts, prioritize exercises by muscle group coverage
+        // Prioritize exercises by muscle group coverage for ALL split types
         let workingPool = pool;
-        if (isFullBodyWorkout) {
-          // Re-prioritize the pool based on current muscle group coverage
-          // This ensures we select exercises targeting uncovered muscle groups
-          const remainingPool = pool.slice(currentIndex);
-          const prioritized = prioritizeByMuscleGroupCoverage(
-            remainingPool,
-            muscleGroupCoverage,
-            allExercises
-          );
-          // Reconstruct pool with prioritized remaining exercises
-          workingPool = [...pool.slice(0, currentIndex), ...prioritized];
-        }
+
+        // Re-prioritize the pool based on current muscle group coverage
+        // This ensures balanced primary muscle group distribution
+        const remainingPool = pool.slice(currentIndex);
+        const prioritized = prioritizeByMuscleGroupCoverage(
+          remainingPool,
+          muscleGroupCoverage,
+          focus,
+          rules
+        );
+        // Reconstruct pool with prioritized remaining exercises
+        workingPool = [...pool.slice(0, currentIndex), ...prioritized];
 
         // Add 'ratio' exercises from this layer in this round
         for (let i = 0; i < ratio; i++) {
@@ -714,10 +713,8 @@ export function roundRobinSelectExercises(
             barbellExerciseCount++;
           }
 
-          // Track muscle group coverage for Full Body workouts
-          if (isFullBodyWorkout) {
-            trackMuscleGroupCoverage(exerciseData, muscleGroupCoverage);
-          }
+          // Track muscle group coverage for all workouts
+          trackMuscleGroupCoverage(exerciseData, muscleGroupCoverage);
 
           addedAnyExercise = true;
         }
@@ -805,79 +802,138 @@ function hasMetMinimumRequirements(
 }
 
 /**
- * Prioritizes exercises for Full Body workouts based on muscle group coverage
+ * Prioritizes exercises based on muscle group coverage using tier-based scoring
  *
- * Exercises targeting uncovered muscle groups are prioritized heavily.
- * The weighting is aggressive to ensure full body coverage given limited exercise pool.
+ * Works for ALL split types (Full Body, Push/Pull/Legs, Upper/Lower).
+ * Uses primary/secondary muscle group config to ensure balanced coverage.
  *
  * @param pool - Exercise pool to prioritize
  * @param muscleGroupCoverage - Map tracking how many times each muscle group has been selected
- * @param allExercises - All exercises (to look up exercise data)
- * @returns Prioritized pool with uncovered muscle groups first
+ * @param focus - Split focus (e.g., "Push", "Pull", "Full Body")
+ * @param rules - Generation rules (for muscle group priority mapping)
+ * @returns Prioritized pool with underrepresented primary muscles first
  */
 function prioritizeByMuscleGroupCoverage(
   pool: Array<[string, Exercise]>,
   muscleGroupCoverage: Map<string, number>,
-  allExercises: Array<[string, Exercise]>
+  focus: string,
+  rules: GenerationRules
 ): Array<[string, Exercise]> {
+  // Get primary and secondary muscles for this focus
+  const priorityMapping = rules.muscle_group_priority_mapping[focus];
+
+  // If no priority mapping exists for this focus, return pool as-is
+  if (!priorityMapping) {
+    return pool;
+  }
+
+  const primaryMuscles = new Set(priorityMapping.primary);
+  const secondaryMuscles = new Set(priorityMapping.secondary);
+
   // Score each exercise based on muscle group coverage
   const scored = pool.map(([name, exercise]) => {
-    // Calculate metrics for prioritization
-    let minCoverage = Infinity;
-    let totalCoverage = 0;
-    let uncoveredCount = 0;
+    // Separate primary and secondary muscle coverage
+    let primaryMinCoverage = Infinity;
+    let primaryTotalCoverage = 0;
+    let primaryUncoveredCount = 0;
+    let primaryCoveredCount = 0;
+
+    let secondaryMinCoverage = Infinity;
+    let secondaryTotalCoverage = 0;
+    let secondaryUncoveredCount = 0;
 
     if (exercise.muscle_groups.length > 0) {
       for (const mg of exercise.muscle_groups) {
         const coverage = muscleGroupCoverage.get(mg) || 0;
-        minCoverage = Math.min(minCoverage, coverage);
-        totalCoverage += coverage;
-        if (coverage === 0) {
-          uncoveredCount++;
+
+        if (primaryMuscles.has(mg)) {
+          // Primary muscle
+          primaryMinCoverage = Math.min(primaryMinCoverage, coverage);
+          primaryTotalCoverage += coverage;
+          if (coverage === 0) {
+            primaryUncoveredCount++;
+          } else {
+            primaryCoveredCount++;
+          }
+        } else if (secondaryMuscles.has(mg)) {
+          // Secondary muscle
+          secondaryMinCoverage = Math.min(secondaryMinCoverage, coverage);
+          secondaryTotalCoverage += coverage;
+          if (coverage === 0) {
+            secondaryUncoveredCount++;
+          }
         }
       }
-    } else {
-      minCoverage = 0;
     }
 
-    // AGGRESSIVE THREE-TIER SCORING:
-    // Tier 1 (highest priority): Exercises with at least one uncovered muscle group
-    //   - Score = 1000 * uncoveredCount - totalCoverage
-    //   - Prefer exercises that work MORE uncovered muscle groups
-    //   - Break ties by total coverage (less is better)
+    // Reset infinity to 0 if no muscles found
+    if (primaryMinCoverage === Infinity) primaryMinCoverage = 0;
+    if (secondaryMinCoverage === Infinity) secondaryMinCoverage = 0;
+
+    // FIVE-TIER SCORING SYSTEM:
+    // Tier 1 (Highest): Primary muscles with 0 coverage
+    //   - Score = 1000 * primaryUncoveredCount - primaryTotalCoverage
+    //   - Ensures uncovered primary muscles get selected first
     //
-    // Tier 2 (medium priority): Exercises with all muscle groups covered, but minimally
-    //   - Score = -totalCoverage
-    //   - Prefer exercises with less total coverage
+    // Tier 2 (High): Primary muscles with low coverage (≤2 hits)
+    //   - Score = 500 - primaryTotalCoverage
+    //   - Balances primary muscle distribution
     //
-    // Tier 3 (lowest priority): Exercises with heavily-covered muscle groups
-    //   - Score = -1000 * minCoverage - totalCoverage
-    //   - Strongly penalize high minimum coverage
+    // Tier 3 (Medium): Secondary muscles with 0 coverage
+    //   - Score = 100 * secondaryUncoveredCount - secondaryTotalCoverage
+    //   - Allows secondary muscles (traps, forearms) to appear
+    //
+    // Tier 4 (Low): Any muscle with some coverage
+    //   - Score = -primaryTotalCoverage - secondaryTotalCoverage
+    //   - Fills remaining slots with variety
+    //
+    // Tier 5 (Lowest): Heavily covered primary muscles (>2 hits)
+    //   - Score = -1000 * primaryMinCoverage - primaryTotalCoverage
+    //   - Prevents muscle group dominance
 
     let score: number;
-    if (uncoveredCount > 0) {
-      // Tier 1: Has uncovered muscle groups - TOP PRIORITY
-      score = 1000 * uncoveredCount - totalCoverage;
-    } else if (minCoverage <= 2) {
-      // Tier 2: All muscle groups covered but not heavily
-      score = -totalCoverage;
+    let tier: number;
+
+    if (primaryUncoveredCount > 0) {
+      // Tier 1: Uncovered primary muscles - HIGHEST PRIORITY
+      score = 1000 * primaryUncoveredCount - primaryTotalCoverage;
+      tier = 1;
+    } else if (primaryCoveredCount > 0 && primaryMinCoverage <= 2) {
+      // Tier 2: Primary muscles with low coverage - HIGH PRIORITY
+      score = 500 - primaryTotalCoverage;
+      tier = 2;
+    } else if (secondaryUncoveredCount > 0) {
+      // Tier 3: Uncovered secondary muscles - MEDIUM PRIORITY
+      score = 100 * secondaryUncoveredCount - secondaryTotalCoverage;
+      tier = 3;
+    } else if (primaryMinCoverage <= 2 || secondaryMinCoverage <= 2) {
+      // Tier 4: Any muscle with some coverage - LOW PRIORITY
+      score = -(primaryTotalCoverage + secondaryTotalCoverage);
+      tier = 4;
     } else {
-      // Tier 3: Heavily covered muscle groups - BOTTOM PRIORITY
-      score = -1000 * minCoverage - totalCoverage;
+      // Tier 5: Heavily covered muscles - LOWEST PRIORITY
+      score = -1000 * primaryMinCoverage - primaryTotalCoverage;
+      tier = 5;
     }
 
-    return { name, exercise, score, uncoveredCount, minCoverage, totalCoverage };
+    return {
+      name,
+      exercise,
+      score,
+      tier,
+      primaryUncoveredCount,
+      primaryMinCoverage,
+      primaryTotalCoverage
+    };
   });
 
-  // Sort by score (descending - higher score = higher priority)
-  // Then by uncovered count (more uncovered = higher priority)
-  // Then by name for deterministic ordering
+  // Sort by tier first, then score (descending), then name (alphabetical)
   scored.sort((a, b) => {
-    if (a.score !== b.score) {
-      return b.score - a.score; // Higher score first
+    if (a.tier !== b.tier) {
+      return a.tier - b.tier; // Lower tier number = higher priority
     }
-    if (a.uncoveredCount !== b.uncoveredCount) {
-      return b.uncoveredCount - a.uncoveredCount; // More uncovered first
+    if (a.score !== b.score) {
+      return b.score - a.score; // Higher score first within same tier
     }
     return a.name.localeCompare(b.name); // Alphabetical tiebreaker
   });

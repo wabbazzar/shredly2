@@ -153,10 +153,13 @@ chore(deps): update SvelteKit to latest stable
 
 ### Testing Requirements
 
-- **Test incrementally**: Don't wait until all code is written
-- **Run linting**: Always run lint checks before committing
+- **Vitest**: All tests use Vitest (SvelteKit's official test framework)
+- **Run tests before committing**: `npm test` (all tests) or `npm run test:unit` (unit only)
+- **Test incrementally**: Don't wait until all code is written - add tests as you develop
+- **Run linting**: Always run `npm run lint` and `npm run typecheck` before committing
 - **Mobile + Desktop**: Test on both platforms when applicable
 - **CLI first**: Validate generation logic in CLI before porting to UI
+- **Critical path coverage**: Focus on critical paths, not comprehensive coverage (see tests/README.md)
 
 ---
 
@@ -286,6 +289,13 @@ shredly2/
 |   |   +-- exercise-database.json      # 326 exercises
 |   |   +-- workout-questionnaire.json  # 13 questions
 |   |   +-- exercise_descriptions.json  # Exercise descriptions
++-- tests/                        # Vitest test infrastructure
+|   +-- unit/                     # Unit tests for engine modules
+|   +-- integration/              # End-to-end generation tests
+|   +-- diagnostics/              # Debug/analysis tools (not run in CI)
+|   +-- fixtures/                 # Test data (questionnaire answers)
+|   +-- helpers/                  # Shared test utilities
+|   +-- README.md                # Testing conventions and patterns
 +-- static/                       # Assets
 +-- tmp/                          # Temporary files (debugging, testing)
 +-- capacitor.config.json         # Mobile config
@@ -324,6 +334,31 @@ npm run build
 npm run preview
 ```
 
+### Testing
+
+```bash
+# Run all tests (unit + integration)
+npm test
+
+# Run only unit tests
+npm run test:unit
+
+# Run only integration tests
+npm run test:integration
+
+# Watch mode (re-runs on file changes)
+npm run test:watch
+
+# UI mode (browser-based test viewer)
+npm run test:ui
+
+# Coverage report
+npm run test:coverage
+
+# Run diagnostic tools
+npm run test:diagnostics
+```
+
 ### Mobile Development (Phase 4)
 
 ```bash
@@ -359,41 +394,45 @@ These should be answered in the CLI prototype phase.
 
 ## Current Development Status
 
-### ✅ COMPLETED: Exercise History Specification (2026-01-03)
+### ✅ COMPLETED: CLI Prototype + Test Infrastructure (2026-01-06)
 
-**Status**: Data structure specifications complete - Ready to build CLI prototype
+**Status**: Workout generation engine complete and tested - Ready for UI development
 
-**Completed**:
-- ✅ Framework stack decision (SvelteKit + Capacitor + Tailwind)
-- ✅ Core architecture design (see SPEC.md)
-- ✅ Workout template specification v2.0 (see WORKOUT_SPEC.md)
-- ✅ Exercise database structure (exercise_database.json)
-- ✅ Questionnaire structure (workout-questionnaire.json)
-- ✅ **Exercise history specification v2.0 (see EXERCISE_HISTORY_SPEC.md)**
+**Phase 1 Complete (CLI Prototype)**:
+- ✅ Framework stack (SvelteKit + Capacitor + Tailwind)
+- ✅ Core architecture (SPEC.md, WORKOUT_SPEC.md, EXERCISE_HISTORY_SPEC.md)
+- ✅ Exercise database (326 exercises with metadata)
+- ✅ Questionnaire structure (13 questions)
+- ✅ CLI interactive questionnaire with formatted workout display
+- ✅ **Complete workout generation engine** (src/lib/engine/)
+- ✅ **Comprehensive test infrastructure** (Vitest + 66 passing tests)
 
-**Exercise History Highlights**:
-- **Tidy data CSV format**: 20 columns, append-only, localStorage-based
-- **Compound exercise support**: Parent rows + sub-exercise rows for EMOM/Circuit/AMRAP
-- **Performance tracking**: reps, weight, work_time, rest_time, RPE, RIR
-- **Intelligent features**: PRs calculated on-demand, progressive overload logic included
-- **Query examples**: 6 TypeScript examples for common data access patterns
-- **Cross-referenced with WORKOUT_SPEC.md**: All variable fields aligned
+**Test Infrastructure Highlights**:
+- **Vitest**: SvelteKit's official test framework
+- **66 tests passing**: 53 unit tests + 13 integration tests
+- **Critical path coverage**: Workout generation, exercise selection, parameter calculation
+- **Test fixtures**: 6 questionnaire scenarios (beginner → expert, bodyweight → gym)
+- **Validation helpers**: Workout structure, exercise references, duration constraints
+- **Integration tests**: End-to-end generation, muscle group coverage
+- **Diagnostic tools**: Exercise filtering analysis (npm run test:diagnostics)
 
-**Current Focus**: CLI Prototype Development
+**Workout Generation Engine (Complete)**:
+- **Phase 1 (Structure)**: Training split assignment, day structure, exercise selection
+- **Phase 2 (Parameters)**: Week-by-week sets/reps/weight/rest calculations
+- **Advanced features**: Compound exercises (EMOM/Circuit/AMRAP), sub-exercise insertion
+- **Smart filtering**: Equipment-aware, experience-based, muscle group targeting
+- **Progressive overload**: Linear, volume, density, wave loading progressions
 
-**Completed**:
-- ✅ CLI Interactive Questionnaire with formatted workout display
-- ✅ Workout formatter module for terminal display
-- ✅ Integration of display into CLI workflow
+**Current Focus**: Phase 2 (Core UI Development)
 
 **Next Steps**:
-1. Build CLI workout generation prototype (cli/test-runner.ts)
-2. Implement core generation engine (src/lib/engine/workout-generator.ts)
-3. Test generation algorithm with various questionnaire inputs
-4. Validate exercise selection and progression logic
-5. Generate sample workout JSON outputs
+1. Port CLI logic to SvelteKit UI routes
+2. Build questionnaire flow (multi-step form)
+3. Implement three-tab layout (Profile, Schedule, Live)
+4. Add localStorage persistence for workout programs
+5. Create workout display components
 
-**Next Developer**: All data structure specifications are complete! Read SPEC.md, WORKOUT_SPEC.md, and EXERCISE_HISTORY_SPEC.md before building the CLI prototype. Focus on validating workout generation logic in terminal before touching UI.
+**Next Developer**: CLI prototype and engine are complete! All generation logic is tested and working. Read tests/README.md for test infrastructure patterns. Focus on building the SvelteKit UI while reusing the validated engine from src/lib/engine/.
 
 ---
 

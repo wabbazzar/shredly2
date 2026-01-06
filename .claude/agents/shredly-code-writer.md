@@ -234,7 +234,7 @@ npm run preview
 # Type checking
 npm run typecheck
 
-# Run tests (when available)
+# Run all tests (unit + integration)
 npm test
 
 # Build check

@@ -131,16 +131,18 @@ type(scope): brief description under 50 chars
 
 ## Testing Strategy
 
-### Unit Tests
+### Unit Tests (Vitest)
 
-- [ ] Test [specific function/module]
+- [ ] Test [specific function/module] in tests/unit/
 - [ ] Test edge cases: [list specific cases]
 - [ ] Test error handling: [list error scenarios]
+- [ ] Run: `npm run test:unit`
 
-### Integration Tests
+### Integration Tests (Vitest)
 
-- [ ] Test [data flow/interaction]
+- [ ] Test [data flow/interaction] in tests/integration/
 - [ ] Test [end-to-end scenario]
+- [ ] Run: `npm run test:integration`
 
 ### Manual Testing
 
@@ -162,8 +164,9 @@ npm run cli
 
 ### Test Acceptance Criteria
 
-- [ ] All unit tests pass
-- [ ] All integration tests pass
+- [ ] All unit tests pass (`npm run test:unit`)
+- [ ] All integration tests pass (`npm run test:integration`)
+- [ ] All tests pass together (`npm test`)
 - [ ] TypeScript compilation succeeds (`npm run typecheck`)
 - [ ] Build succeeds (`npm run build`)
 - [ ] Manual testing checklist complete

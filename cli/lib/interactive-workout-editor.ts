@@ -189,6 +189,8 @@ export class InteractiveWorkoutEditor {
       await this.openExerciseDatabase();
     } else if (str === hotkeys.actions.swap_with_random) {
       this.swapWithRandomExercise();
+    } else if (str === hotkeys.actions.toggle_work_definition) {
+      this.toggleWorkDefinition();
     } else if (key.name === hotkeys.actions.delete_exercise) {
       this.deleteCurrentExercise();
     } else if (str === hotkeys.actions.undo_last_change) {
@@ -470,7 +472,17 @@ export class InteractiveWorkoutEditor {
       currentCategory = subExData.category;
     } else {
       currentExerciseName = currentExercise.name;
-      currentCategory = currentExercise.category || 'strength'; // Default to strength if not set
+      // CRITICAL: Always look up category from database if not set in workout
+      if (currentExercise.category) {
+        currentCategory = currentExercise.category;
+      } else {
+        const exData = this.findExerciseInDatabase(currentExerciseName);
+        if (!exData) {
+          this.setStatus('Current exercise not found in database', 'error');
+          return;
+        }
+        currentCategory = exData.category;
+      }
     }
 
     // Find current exercise in database to get muscle groups
@@ -661,6 +673,23 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
+   * Toggle work definition between reps and work_time for current exercise
+   */
+  private toggleWorkDefinition(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    const result = this.editor.toggleWorkDefinition(field.dayKey, field.exerciseIndex);
+
+    if (result.success) {
+      this.setStatus(result.message, 'success');
+      this.editableFields = this.editor.getAllEditableFields();
+    } else {
+      this.setStatus(result.message, 'error');
+    }
+  }
+
+  /**
    * Undo last change
    */
   private undoLastChange(): void {
@@ -833,6 +862,7 @@ export class InteractiveWorkoutEditor {
     console.log('  r           - Replace/edit field (or add exercise by name)');
     console.log('  e           - Open exercise database browser');
     console.log('  s           - Swap/add random matching exercise');
+    console.log('  W           - Toggle work definition (reps <-> work_time)');
     console.log('  Del         - Delete current exercise');
     console.log('  u           - Undo last change');
     console.log('  :           - Enter command mode');

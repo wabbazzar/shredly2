@@ -338,20 +338,42 @@ export class WorkoutEditor {
       // Get smart defaults from workout_generation_rules.json
       const defaults = this.getSmartDefaults(newCategory, experienceLevel);
 
-      // Copy compatible fields from old exercise
+      // Start with defaults, then selectively override with old params where compatible
       if (oldWeekParams) {
+        // Apply all defaults first
+        Object.assign(newWeekParams, defaults);
+
+        // Override with old params where they exist and are compatible with new category
         if (oldWeekParams.sets !== undefined) newWeekParams.sets = oldWeekParams.sets;
-        if (oldWeekParams.reps !== undefined) newWeekParams.reps = oldWeekParams.reps;
-        if (oldWeekParams.rest_time_minutes !== undefined) newWeekParams.rest_time_minutes = oldWeekParams.rest_time_minutes;
-        if (oldWeekParams.work_time_minutes !== undefined) newWeekParams.work_time_minutes = oldWeekParams.work_time_minutes;
+
+        // Only copy reps if new exercise uses reps (has reps in defaults)
+        if (oldWeekParams.reps !== undefined && defaults.reps !== undefined) {
+          newWeekParams.reps = oldWeekParams.reps;
+        }
+
+        // For time fields, only copy if the new exercise uses that field
+        if (oldWeekParams.rest_time_minutes !== undefined) {
+          newWeekParams.rest_time_minutes = oldWeekParams.rest_time_minutes;
+          // Copy unit if it exists, otherwise keep default unit
+          if ((oldWeekParams as any).rest_time_unit) {
+            (newWeekParams as any).rest_time_unit = (oldWeekParams as any).rest_time_unit;
+          }
+        }
+
+        // Only copy work_time if new exercise uses work_time (has work_time in defaults)
+        if (oldWeekParams.work_time_minutes !== undefined && defaults.work_time_minutes !== undefined) {
+          newWeekParams.work_time_minutes = oldWeekParams.work_time_minutes;
+          // Copy unit if it exists, otherwise keep default unit
+          if ((oldWeekParams as any).work_time_unit) {
+            (newWeekParams as any).work_time_unit = (oldWeekParams as any).work_time_unit;
+          }
+        }
 
         // Handle weight field
-        if (hasWeight && !oldWeekParams.weight) {
-          // Add weight field with smart default
-          newWeekParams.weight = defaults.weight;
-          addedFields.push('weight');
-        } else if (oldWeekParams.weight) {
+        if (oldWeekParams.weight) {
           newWeekParams.weight = oldWeekParams.weight;
+        } else if (hasWeight && !newWeekParams.weight) {
+          addedFields.push('weight');
         }
       } else {
         // No old params, use all defaults
@@ -555,6 +577,87 @@ export class WorkoutEditor {
   }
 
   /**
+   * Toggle between rep-based and work_time-based definitions for an exercise
+   * Swaps reps <-> work_time_minutes for all weeks
+   */
+  toggleWorkDefinition(
+    dayKey: string,
+    exerciseIndex: number
+  ): { success: boolean; message: string; newMode: 'reps' | 'work_time' | null } {
+    const exercise = this.getExercise(dayKey, exerciseIndex);
+    if (!exercise) {
+      return { success: false, message: 'Exercise not found', newMode: null };
+    }
+
+    // Determine current mode by checking week1
+    const week1 = (exercise as any).week1;
+    if (!week1) {
+      return { success: false, message: 'No week parameters found', newMode: null };
+    }
+
+    const hasReps = week1.reps !== undefined;
+    const hasWorkTime = week1.work_time_minutes !== undefined;
+
+    if (hasReps === hasWorkTime) {
+      return {
+        success: false,
+        message: 'Exercise has both reps and work_time, or neither. Cannot toggle.',
+        newMode: null
+      };
+    }
+
+    const oldExercise = JSON.parse(JSON.stringify(exercise));
+    const targetMode: 'reps' | 'work_time' = hasReps ? 'work_time' : 'reps';
+
+    // Toggle for all weeks
+    const weekCount = Object.keys(exercise).filter(k => k.startsWith('week')).length;
+    for (let w = 1; w <= weekCount; w++) {
+      const weekKey = `week${w}`;
+      const weekParams = (exercise as any)[weekKey];
+      if (!weekParams) continue;
+
+      if (hasReps) {
+        // Convert reps -> work_time
+        const reps = weekParams.reps;
+        delete weekParams.reps;
+        weekParams.work_time_minutes = reps; // Simple 1:1 mapping (user can adjust)
+        if (!weekParams.work_time_unit) {
+          weekParams.work_time_unit = 'seconds'; // Default to seconds for work time
+        }
+      } else {
+        // Convert work_time -> reps
+        const workTime = weekParams.work_time_minutes;
+        delete weekParams.work_time_minutes;
+        delete weekParams.work_time_unit;
+        weekParams.reps = workTime; // Simple 1:1 mapping (user can adjust)
+      }
+    }
+
+    // Add to undo stack
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Toggle work definition to ${targetMode}`,
+      location: `${dayKey}.exercises[${exerciseIndex}]`,
+      previousValue: oldExercise,
+      newValue: JSON.parse(JSON.stringify(exercise)),
+      reverseOperation: () => {
+        const day = this.workout.days[dayKey];
+        if (day) {
+          day.exercises[exerciseIndex] = oldExercise;
+        }
+      }
+    });
+
+    this.modified = true;
+
+    return {
+      success: true,
+      message: `Toggled to ${targetMode}-based definition`,
+      newMode: targetMode
+    };
+  }
+
+  /**
    * Undo last change
    */
   undo(): UndoEntry | null {
@@ -639,8 +742,21 @@ export class WorkoutEditor {
 
       if (profile.base_sets) defaults.sets = profile.base_sets;
       if (profile.base_reps) defaults.reps = profile.base_reps;
-      if (profile.base_rest_time_minutes) defaults.rest_time_minutes = profile.base_rest_time_minutes;
-      if (profile.base_work_time_minutes) defaults.work_time_minutes = profile.base_work_time_minutes;
+
+      // CRITICAL: Copy both value AND unit for time fields
+      if (profile.base_rest_time_minutes !== undefined) {
+        defaults.rest_time_minutes = profile.base_rest_time_minutes;
+      }
+      if (profile.base_rest_time_unit) {
+        defaults.rest_time_unit = profile.base_rest_time_unit;
+      }
+
+      if (profile.base_work_time_minutes !== undefined) {
+        defaults.work_time_minutes = profile.base_work_time_minutes;
+      }
+      if (profile.base_work_time_unit) {
+        defaults.work_time_unit = profile.base_work_time_unit;
+      }
 
       // Weight defaults
       if (profile.base_weight_percent_tm) {

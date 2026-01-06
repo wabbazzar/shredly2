@@ -683,6 +683,8 @@
       "always_end_with_last_if_available": true
     },
 
+    "warmup_target_duration_minutes": 3,
+
     "diversity_rules": {
       "no_duplicate_exercises": true,
       "muscle_diversity_within_day": true,

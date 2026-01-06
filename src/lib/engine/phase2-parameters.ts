@@ -17,6 +17,18 @@ import type {
 } from './types.js';
 
 /**
+ * Round time values to nearest 0.5 minutes for better UX
+ * Only applies to values > 1 minute (e.g., 5.2 -> 5.0, 4.7 -> 4.5, 3.3 -> 3.5)
+ * Values <= 1 minute are left as-is (e.g., 0.5, 0.75, 0.083 stay exact)
+ */
+function roundToHalfMinute(minutes: number): number {
+  if (minutes > 1) {
+    return Math.round(minutes * 2) / 2;
+  }
+  return minutes;
+}
+
+/**
  * Applies intensity profile to get Week 1 baseline parameters
  *
  * @param exercise - Exercise structure with name, progression, intensity
@@ -85,7 +97,8 @@ export function applyIntensityProfile(
 
   // Apply rest time (with rest time multiplier) - SKIP for sub-exercises
   if (!isSubExercise && profile.base_rest_time_minutes !== undefined) {
-    week1.rest_time_minutes = profile.base_rest_time_minutes * experienceModifier.rest_time_multiplier;
+    const calculatedRest = profile.base_rest_time_minutes * experienceModifier.rest_time_multiplier;
+    week1.rest_time_minutes = roundToHalfMinute(calculatedRest);
     // Add explicit time unit if available
     if (profile.base_rest_time_unit) {
       week1.rest_time_unit = profile.base_rest_time_unit;
@@ -200,10 +213,11 @@ function applyLinearProgression(
   // Decrease rest time
   if (weekN.rest_time_minutes !== undefined) {
     const restDelta = rules.rest_time_delta_per_week_minutes || -0.25;
-    weekN.rest_time_minutes = Math.max(
+    const calculatedRest = Math.max(
       week1.rest_time_minutes! + (restDelta * weeksDelta),
       rules.rest_time_minimum_minutes || 0.75
     );
+    weekN.rest_time_minutes = roundToHalfMinute(calculatedRest);
     // Preserve time unit from week1
     if (week1.rest_time_unit) {
       weekN.rest_time_unit = week1.rest_time_unit;
@@ -230,8 +244,8 @@ function applyDensityProgression(
     const totalIncrease = rules.work_time_increase_percent_total || 25;
     const increasePerWeek = (totalIncrease / 100) / (totalWeeks - 1);
     const calculatedTime = week1.work_time_minutes! * (1 + increasePerWeek * weeksDelta);
-    // Round to whole minutes for clarity (especially important for EMOM)
-    weekN.work_time_minutes = Math.round(calculatedTime);
+    // Round to half-minute increments for better UX
+    weekN.work_time_minutes = roundToHalfMinute(calculatedTime);
     // Preserve time unit from week1
     if (week1.work_time_unit) {
       weekN.work_time_unit = week1.work_time_unit;
@@ -248,10 +262,11 @@ function applyDensityProgression(
   // Decrease rest time
   if (weekN.rest_time_minutes !== undefined) {
     const restDelta = rules.rest_time_delta_per_week_minutes || -0.083;
-    weekN.rest_time_minutes = Math.max(
+    const calculatedRest = Math.max(
       week1.rest_time_minutes! + (restDelta * weeksDelta),
       rules.rest_time_minimum_minutes || 0.167
     );
+    weekN.rest_time_minutes = roundToHalfMinute(calculatedRest);
     // Preserve time unit from week1
     if (week1.rest_time_unit) {
       weekN.rest_time_unit = week1.rest_time_unit;

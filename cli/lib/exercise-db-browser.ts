@@ -464,10 +464,18 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
     const handleSearchMode = (str: string, key: any) => {
       const filteredExercises = filterExercises(allExercises, state.filters, state.inputBuffer);
 
-      // Exit search mode
-      if (key.name === 'escape' || key.name === 'return') {
+      // Exit search mode (Escape) or select exercise (Enter)
+      if (key.name === 'escape') {
         state.mode = 'normal';
         render();
+      } else if (key.name === 'return') {
+        // Select the currently highlighted exercise
+        cleanup();
+        if (filteredExercises.length > 0) {
+          resolve({ selected: true, exerciseName: filteredExercises[state.selectedIndex].name });
+        } else {
+          resolve({ selected: false });
+        }
       }
 
       // Backspace

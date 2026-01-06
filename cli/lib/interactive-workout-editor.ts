@@ -19,6 +19,7 @@ import {
 } from './workout-formatter.js';
 import { browseExerciseDatabase } from './exercise-db-browser.js';
 import hotkeysConfig from '../cli_hotkeys.json' with { type: 'json' };
+import exerciseDatabase from '../../src/data/exercise_database.json' with { type: 'json' };
 
 type EditorMode = 'view' | 'edit' | 'command' | 'help';
 type ViewMode = 'week' | 'day'; // week = all days, day = one day at a time
@@ -186,6 +187,8 @@ export class InteractiveWorkoutEditor {
       await this.enterEditMode();
     } else if (str === hotkeys.actions.open_exercise_database) {
       await this.openExerciseDatabase();
+    } else if (str === hotkeys.actions.swap_with_random) {
+      this.swapWithRandomExercise();
     } else if (key.name === hotkeys.actions.delete_exercise) {
       this.deleteCurrentExercise();
     } else if (str === hotkeys.actions.undo_last_change) {
@@ -261,6 +264,14 @@ export class InteractiveWorkoutEditor {
     const field = this.editableFields[this.state.selectedFieldIndex];
     if (!field) return;
 
+    // Special handling for insertion points
+    if (field.type === 'insertion_point') {
+      this.state.mode = 'edit';
+      this.state.editBuffer = '';
+      this.setStatus('Enter exercise name - must match database exactly (or press Esc)', 'info');
+      return;
+    }
+
     this.state.mode = 'edit';
     this.state.editBuffer = String(field.currentValue || '');
     this.setStatus(`Editing ${field.fieldName} - Press Enter to confirm, Esc to cancel`, 'info');
@@ -275,7 +286,49 @@ export class InteractiveWorkoutEditor {
 
     const newValue = this.state.editBuffer.trim();
 
-    // Type conversion
+    // Special handling for insertion points
+    if (field.type === 'insertion_point') {
+      if (!newValue) {
+        this.setStatus('Exercise name cannot be empty', 'error');
+        return;
+      }
+
+      // Validate that exercise exists in database
+      const exerciseData = this.findExerciseInDatabase(newValue);
+      if (!exerciseData) {
+        this.setStatus(`Exercise "${newValue}" not found in database`, 'error');
+        return;
+      }
+
+      // Insert the exercise
+      const result = this.editor.insertExercise(
+        field.dayKey,
+        field.exerciseIndex,
+        newValue,
+        this.options.experienceLevel || 'intermediate'
+      );
+
+      if (result.success) {
+        this.setStatus(result.message, 'success');
+        this.editableFields = this.editor.getAllEditableFields();
+
+        // Jump to the newly inserted exercise
+        if (result.newExerciseIndex !== undefined) {
+          const newExerciseLocation = `${field.dayKey}.exercises[${result.newExerciseIndex}].name`;
+          const newFieldIndex = this.editableFields.findIndex(f => f.location === newExerciseLocation);
+          if (newFieldIndex !== -1) {
+            this.state.selectedFieldIndex = newFieldIndex;
+          }
+        }
+      } else {
+        this.setStatus(result.message, 'error');
+      }
+
+      this.state.editBuffer = '';
+      return;
+    }
+
+    // Type conversion for normal fields
     let typedValue: any = newValue;
     if (field.type === 'number') {
       typedValue = parseFloat(newValue);
@@ -302,8 +355,8 @@ export class InteractiveWorkoutEditor {
    */
   private async openExerciseDatabase(): Promise<void> {
     const field = this.editableFields[this.state.selectedFieldIndex];
-    if (!field || field.fieldName !== 'name') {
-      this.setStatus('Select an exercise name field first', 'error');
+    if (!field || (field.fieldName !== 'name' && field.type !== 'insertion_point')) {
+      this.setStatus('Select an exercise name field or <add exercise> first', 'error');
       return;
     }
 
@@ -324,34 +377,265 @@ export class InteractiveWorkoutEditor {
     }
 
     if (result.selected && result.exerciseName) {
-      // Replace exercise or sub-exercise
-      let replaceResult;
-
-      if (field.subExerciseIndex !== undefined) {
-        // Replacing a sub-exercise within a compound exercise
-        replaceResult = this.editor.replaceSubExercise(
-          field.dayKey,
-          field.exerciseIndex,
-          field.subExerciseIndex,
-          result.exerciseName
-        );
-      } else {
-        // Replacing a standalone exercise
-        replaceResult = this.editor.replaceExercise(
+      // Special handling for insertion points
+      if (field.type === 'insertion_point') {
+        const insertResult = this.editor.insertExercise(
           field.dayKey,
           field.exerciseIndex,
           result.exerciseName,
           this.options.experienceLevel || 'intermediate'
         );
-      }
 
-      if (replaceResult.success) {
-        this.setStatus(replaceResult.message, 'success');
-        this.editableFields = this.editor.getAllEditableFields();
+        if (insertResult.success) {
+          this.setStatus(insertResult.message, 'success');
+          this.editableFields = this.editor.getAllEditableFields();
+
+          // Jump to the newly inserted exercise
+          if (insertResult.newExerciseIndex !== undefined) {
+            const newExerciseLocation = `${field.dayKey}.exercises[${insertResult.newExerciseIndex}].name`;
+            const newFieldIndex = this.editableFields.findIndex(f => f.location === newExerciseLocation);
+            if (newFieldIndex !== -1) {
+              this.state.selectedFieldIndex = newFieldIndex;
+            }
+          }
+        } else {
+          this.setStatus(insertResult.message, 'error');
+        }
       } else {
-        this.setStatus(replaceResult.message, 'error');
+        // Replace exercise or sub-exercise
+        let replaceResult;
+
+        if (field.subExerciseIndex !== undefined) {
+          // Replacing a sub-exercise within a compound exercise
+          replaceResult = this.editor.replaceSubExercise(
+            field.dayKey,
+            field.exerciseIndex,
+            field.subExerciseIndex,
+            result.exerciseName
+          );
+        } else {
+          // Replacing a standalone exercise
+          replaceResult = this.editor.replaceExercise(
+            field.dayKey,
+            field.exerciseIndex,
+            result.exerciseName,
+            this.options.experienceLevel || 'intermediate'
+          );
+        }
+
+        if (replaceResult.success) {
+          this.setStatus(replaceResult.message, 'success');
+          this.editableFields = this.editor.getAllEditableFields();
+        } else {
+          this.setStatus(replaceResult.message, 'error');
+        }
       }
     }
+  }
+
+  /**
+   * Swap current exercise with a random matching exercise from database
+   * Matches by category and muscle group (for strength exercises)
+   * For insertion points, adds a random exercise matching the profile of the exercise above
+   */
+  private swapWithRandomExercise(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    // Special handling for insertion points
+    if (field.type === 'insertion_point') {
+      this.addRandomExercise();
+      return;
+    }
+
+    // Get current exercise to determine category and muscle groups
+    const workout = this.editor.getWorkout();
+    const day = workout.days[field.dayKey];
+    if (!day || !day.exercises[field.exerciseIndex]) return;
+
+    const currentExercise = day.exercises[field.exerciseIndex];
+
+    // For sub-exercises, get the sub-exercise name
+    let currentExerciseName: string;
+    let currentCategory: string;
+
+    if (field.subExerciseIndex !== undefined && currentExercise.sub_exercises) {
+      currentExerciseName = currentExercise.sub_exercises[field.subExerciseIndex].name;
+      // Find this sub-exercise in DB to get its category
+      const subExData = this.findExerciseInDatabase(currentExerciseName);
+      if (!subExData) {
+        this.setStatus('Current exercise not found in database', 'error');
+        return;
+      }
+      currentCategory = subExData.category;
+    } else {
+      currentExerciseName = currentExercise.name;
+      currentCategory = currentExercise.category || 'strength'; // Default to strength if not set
+    }
+
+    // Find current exercise in database to get muscle groups
+    const currentExData = this.findExerciseInDatabase(currentExerciseName);
+    if (!currentExData) {
+      this.setStatus('Current exercise not found in database', 'error');
+      return;
+    }
+
+    // Filter exercises by category and muscle group
+    const matchingExercises = this.filterExercisesByCategory(
+      currentCategory,
+      currentExData.muscle_groups
+    );
+
+    // Remove current exercise from the list
+    const filteredExercises = matchingExercises.filter(name => name !== currentExerciseName);
+
+    if (filteredExercises.length === 0) {
+      this.setStatus('No matching exercises found', 'info');
+      return;
+    }
+
+    // Pick random exercise
+    const randomExercise = filteredExercises[Math.floor(Math.random() * filteredExercises.length)];
+
+    // Replace exercise
+    let replaceResult;
+
+    if (field.subExerciseIndex !== undefined) {
+      replaceResult = this.editor.replaceSubExercise(
+        field.dayKey,
+        field.exerciseIndex,
+        field.subExerciseIndex,
+        randomExercise
+      );
+    } else {
+      replaceResult = this.editor.replaceExercise(
+        field.dayKey,
+        field.exerciseIndex,
+        randomExercise,
+        this.options.experienceLevel || 'intermediate'
+      );
+    }
+
+    if (replaceResult.success) {
+      this.setStatus(`Swapped to: ${randomExercise}`, 'success');
+      this.editableFields = this.editor.getAllEditableFields();
+    } else {
+      this.setStatus(replaceResult.message, 'error');
+    }
+  }
+
+  /**
+   * Add a random exercise at insertion point
+   * Matches the categorical profile of the exercise above it
+   */
+  private addRandomExercise(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field || field.type !== 'insertion_point') return;
+
+    // Get the exercise above this insertion point
+    const workout = this.editor.getWorkout();
+    const day = workout.days[field.dayKey];
+    if (!day || !day.exercises[field.exerciseIndex]) return;
+
+    const referenceExercise = day.exercises[field.exerciseIndex];
+
+    // Get category and muscle groups from reference exercise
+    const referenceData = this.findExerciseInDatabase(referenceExercise.name);
+    if (!referenceData) {
+      this.setStatus('Reference exercise not found in database', 'error');
+      return;
+    }
+
+    // Filter exercises by category and muscle group
+    const matchingExercises = this.filterExercisesByCategory(
+      referenceData.category,
+      referenceData.muscle_groups
+    );
+
+    if (matchingExercises.length === 0) {
+      this.setStatus('No matching exercises found', 'info');
+      return;
+    }
+
+    // Pick random exercise
+    const randomExercise = matchingExercises[Math.floor(Math.random() * matchingExercises.length)];
+
+    // Insert the exercise
+    const result = this.editor.insertExercise(
+      field.dayKey,
+      field.exerciseIndex,
+      randomExercise,
+      this.options.experienceLevel || 'intermediate'
+    );
+
+    if (result.success) {
+      this.setStatus(`Added: ${randomExercise}`, 'success');
+      this.editableFields = this.editor.getAllEditableFields();
+
+      // Jump to the newly inserted exercise
+      if (result.newExerciseIndex !== undefined) {
+        const newExerciseLocation = `${field.dayKey}.exercises[${result.newExerciseIndex}].name`;
+        const newFieldIndex = this.editableFields.findIndex(f => f.location === newExerciseLocation);
+        if (newFieldIndex !== -1) {
+          this.state.selectedFieldIndex = newFieldIndex;
+        }
+      }
+    } else {
+      this.setStatus(result.message, 'error');
+    }
+  }
+
+  /**
+   * Helper: Find exercise in database
+   */
+  private findExerciseInDatabase(exerciseName: string): any {
+    const categories = exerciseDatabase.exercise_database.categories as Record<string, { exercises: Record<string, any> }>;
+
+    for (const categoryKey in categories) {
+      const exercisesInCategory = categories[categoryKey].exercises;
+      if (exercisesInCategory[exerciseName]) {
+        return {
+          ...exercisesInCategory[exerciseName],
+          category: categoryKey
+        };
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Helper: Filter exercises by category and muscle group
+   * For strength exercises, matches muscle groups
+   * For other categories, matches category only
+   */
+  private filterExercisesByCategory(category: string, muscleGroups?: string[]): string[] {
+    const categories = exerciseDatabase.exercise_database.categories as Record<string, { exercises: Record<string, any> }>;
+    const matchingExercises: string[] = [];
+
+    // If category exists in DB
+    if (categories[category]) {
+      const exercisesInCategory = categories[category].exercises;
+
+      for (const exerciseName in exercisesInCategory) {
+        const exerciseData = exercisesInCategory[exerciseName];
+
+        // For strength exercises, also match muscle groups
+        if (category === 'strength' && muscleGroups && muscleGroups.length > 0) {
+          const exerciseMuscles = exerciseData.muscle_groups || [];
+          // Check if there's at least one overlapping muscle group
+          const hasOverlap = muscleGroups.some(mg => exerciseMuscles.includes(mg));
+          if (hasOverlap) {
+            matchingExercises.push(exerciseName);
+          }
+        } else {
+          // For non-strength exercises, just match category
+          matchingExercises.push(exerciseName);
+        }
+      }
+    }
+
+    return matchingExercises;
   }
 
   /**
@@ -546,12 +830,15 @@ export class InteractiveWorkoutEditor {
     console.log('  ← →         - Navigate between days (Day view)');
     console.log('  t/T         - Jump to next/previous editable field');
     console.log('  1-9         - Jump to exercise number');
-    console.log('  r           - Replace/edit current field');
+    console.log('  r           - Replace/edit field (or add exercise by name)');
     console.log('  e           - Open exercise database browser');
+    console.log('  s           - Swap/add random matching exercise');
     console.log('  Del         - Delete current exercise');
     console.log('  u           - Undo last change');
     console.log('  :           - Enter command mode');
     console.log('  q           - Quit (checks for unsaved changes)');
+    console.log('');
+    console.log(chalk.gray('Note: On <add exercise> markers, r/e/s will add exercises'));
     console.log('');
     console.log(chalk.yellow('EDIT MODE:'));
     console.log('  Type        - Enter new value');

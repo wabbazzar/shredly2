@@ -382,6 +382,16 @@ export function formatDayInteractive(
   for (let i = 0; i < day.exercises.length; i++) {
     const isFeatured = featuredExercises.has(i);
     lines.push(formatExerciseInteractive(day.exercises[i], dayKey, i, weekCount, isFeatured, options));
+
+    // Add <add exercise> marker after each exercise
+    const insertLocation = `${dayKey}.exercises[${i}]._insert_after`;
+    const isSelected = options.selectedFieldLocation === insertLocation;
+    if (options.showAllEditable || isSelected) {
+      const marker = isSelected
+        ? chalk.cyan.bold('<add exercise>')
+        : chalk.yellow('<add exercise>');
+      lines.push(`   ${marker}`);
+    }
   }
   return lines.join('\n');
 }
@@ -714,6 +724,17 @@ export function formatSingleDayView(
 
   for (let i = 0; i < day.exercises.length; i++) {
     lines.push(formatExerciseInteractive(day.exercises[i], dayKey, i, weekCount, true, options));
+
+    // Add <add exercise> marker after each exercise
+    const insertLocation = `${dayKey}.exercises[${i}]._insert_after`;
+    const isSelected = options.selectedFieldLocation === insertLocation;
+    if (options.showAllEditable || isSelected) {
+      const marker = isSelected
+        ? chalk.cyan.bold('<add exercise>')
+        : chalk.yellow('<add exercise>');
+      lines.push(`   ${marker}`);
+    }
+
     lines.push('');
   }
 

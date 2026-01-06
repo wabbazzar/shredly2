@@ -26,6 +26,7 @@
     "actions": {
       "replace_current_field": "r",
       "open_exercise_database": "e",
+      "swap_with_random": "s",
       "delete_exercise": "delete",
       "undo_last_change": "u",
       "show_help": "?",

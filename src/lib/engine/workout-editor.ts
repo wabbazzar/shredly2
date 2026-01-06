@@ -21,9 +21,9 @@ export interface EditableField {
   exerciseIndex: number;
   subExerciseIndex?: number; // for compound exercises
   weekKey?: string; // e.g., "week1", "week2" (for week-specific params)
-  fieldName: string; // e.g., "name", "sets", "reps", "weight"
+  fieldName: string; // e.g., "name", "sets", "reps", "weight", "_insert_after"
   currentValue: any;
-  type: 'string' | 'number' | 'weight' | 'array';
+  type: 'string' | 'number' | 'weight' | 'array' | 'insertion_point';
 }
 
 export interface UndoEntry {
@@ -206,6 +206,16 @@ export class WorkoutEditor {
             }
           });
         }
+
+        // Add insertion point after each exercise (for "add exercise" functionality)
+        fields.push({
+          location: `${baseLocation}._insert_after`,
+          dayKey,
+          exerciseIndex: exIndex,
+          fieldName: '_insert_after',
+          currentValue: '<add exercise>',
+          type: 'insertion_point'
+        });
       });
     }
 
@@ -465,6 +475,83 @@ export class WorkoutEditor {
     this.modified = true;
 
     return { success: true, message: `Deleted ${deletedExercise.name}` };
+  }
+
+  /**
+   * Insert a new exercise after a given exercise index
+   * Used for "add exercise" functionality
+   */
+  insertExercise(
+    dayKey: string,
+    insertAfterIndex: number,
+    newExerciseName: string,
+    experienceLevel: string = 'intermediate'
+  ): { success: boolean; message: string; newExerciseIndex?: number } {
+    const day = this.workout.days[dayKey];
+    if (!day) {
+      return { success: false, message: 'Day not found' };
+    }
+
+    // Find new exercise in database
+    const newExerciseData = this.findExerciseInDatabase(newExerciseName);
+    if (!newExerciseData) {
+      return { success: false, message: `Exercise "${newExerciseName}" not found in database` };
+    }
+
+    const newCategory = newExerciseData.category;
+
+    // Create new exercise structure
+    const newExercise: any = {
+      name: newExerciseName,
+      category: newCategory
+    };
+
+    // Populate week parameters with smart defaults
+    const hasWeight = newExerciseData.external_load !== 'never';
+
+    for (let w = 1; w <= this.workout.weeks; w++) {
+      const weekKey = `week${w}`;
+      const newWeekParams: any = {};
+
+      // Get smart defaults from workout_generation_rules.json
+      const defaults = this.getSmartDefaults(newCategory, experienceLevel);
+
+      // Apply defaults
+      Object.assign(newWeekParams, defaults);
+
+      newExercise[weekKey] = newWeekParams;
+    }
+
+    // For compound exercises, add empty sub_exercises array
+    const isCompound = ['emom', 'circuit', 'amrap', 'interval'].includes(newCategory);
+    if (isCompound) {
+      newExercise.sub_exercises = [];
+    }
+
+    // Insert into exercises array at insertAfterIndex + 1
+    const insertIndex = insertAfterIndex + 1;
+    const oldExercises = [...day.exercises];
+    day.exercises.splice(insertIndex, 0, newExercise as ParameterizedExercise);
+
+    // Add to undo stack
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Insert exercise: ${newExerciseName}`,
+      location: `${dayKey}.exercises[${insertIndex}]`,
+      previousValue: null,
+      newValue: newExercise,
+      reverseOperation: () => {
+        day.exercises = oldExercises;
+      }
+    });
+
+    this.modified = true;
+
+    return {
+      success: true,
+      message: `Inserted ${newExerciseName} at position ${insertIndex + 1}`,
+      newExerciseIndex: insertIndex
+    };
   }
 
   /**

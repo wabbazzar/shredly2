@@ -60,7 +60,7 @@
               "Squat Jumps"
             ],
             "isometric": false,
-            "external_load": "sometimes"
+            "external_load": "never"
           },
           "Box Jumps": {
             "category": "strength",

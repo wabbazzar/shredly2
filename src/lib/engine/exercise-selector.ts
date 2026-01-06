@@ -433,8 +433,13 @@ export function roundRobinSelectExercises(
   // Determine layer order for round-robin (order matches ratio definition)
   const layerOrder = ["first", "primary", "secondary", "tertiary", "finisher", "last"];
 
+  // CRITICAL: Use split overrides if available, otherwise use goal-based priorities
+  // This MUST match the logic in createExercisePoolsForDay to avoid mismatch
+  const splitOverrides = (rules.category_workout_structure as any).split_category_overrides?.[focus];
+  const categoryPriorities = splitOverrides ||
+    rules.category_workout_structure.category_priority_by_goal[answers.primary_goal];
+
   // Determine which layers should use compound exercises
-  const categoryPriorities = rules.category_workout_structure.category_priority_by_goal[answers.primary_goal];
   const compoundLayersMap = new Map<string, string>();
   for (const layer of layerOrder) {
     const categories = categoryPriorities[layer as keyof typeof categoryPriorities] as string[] | undefined;

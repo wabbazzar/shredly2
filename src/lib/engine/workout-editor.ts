@@ -577,6 +577,92 @@ export class WorkoutEditor {
   }
 
   /**
+   * Insert a new sub-exercise into a compound exercise (EMOM, Circuit, etc.)
+   */
+  insertSubExercise(
+    dayKey: string,
+    exerciseIndex: number,
+    newExerciseName: string,
+    experienceLevel: string = 'intermediate'
+  ): { success: boolean; message: string; newSubExerciseIndex?: number } {
+    const exercise = this.getExercise(dayKey, exerciseIndex);
+    if (!exercise) {
+      return { success: false, message: 'Exercise not found' };
+    }
+
+    // Verify this is a compound exercise
+    if (!exercise.sub_exercises) {
+      return { success: false, message: 'Cannot add sub-exercise to non-compound exercise' };
+    }
+
+    // Find new exercise in database
+    const newExerciseData = this.findExerciseInDatabase(newExerciseName);
+    if (!newExerciseData) {
+      return { success: false, message: `Exercise "${newExerciseName}" not found in database` };
+    }
+
+    // Create new sub-exercise structure
+    const newSubExercise: any = {
+      name: newExerciseName
+    };
+
+    // Populate week parameters - sub-exercises typically have reps and weight
+    for (let w = 1; w <= this.workout.weeks; w++) {
+      const weekKey = `week${w}`;
+      const newWeekParams: any = {};
+
+      // Get defaults for the sub-exercise category
+      const defaults = this.getSmartDefaults(newExerciseData.category, experienceLevel);
+
+      // Sub-exercises in compound exercises typically use reps and weight (not work_time)
+      if (defaults.reps !== undefined) {
+        newWeekParams.reps = defaults.reps;
+      } else {
+        newWeekParams.reps = 8; // Sensible default
+      }
+
+      if (newExerciseData.external_load !== 'never') {
+        newWeekParams.weight = defaults.weight || { type: 'percent_tm', value: 70 };
+      }
+
+      newSubExercise[weekKey] = newWeekParams;
+    }
+
+    // Add to sub_exercises array
+    const oldSubExercises = [...exercise.sub_exercises];
+    exercise.sub_exercises.push(newSubExercise as any);
+    const newSubIndex = exercise.sub_exercises.length - 1;
+
+    // Update parent exercise title
+    const oldParentName = exercise.name;
+    const newParentName = this.generateCompoundExerciseName(exercise);
+    if (newParentName) {
+      exercise.name = newParentName;
+    }
+
+    // Add to undo stack
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Insert sub-exercise: ${newExerciseName}`,
+      location: `${dayKey}.exercises[${exerciseIndex}].sub_exercises[${newSubIndex}]`,
+      previousValue: null,
+      newValue: newSubExercise,
+      reverseOperation: () => {
+        exercise.sub_exercises = oldSubExercises;
+        exercise.name = oldParentName;
+      }
+    });
+
+    this.modified = true;
+
+    return {
+      success: true,
+      message: `Inserted ${newExerciseName} as sub-exercise`,
+      newSubExerciseIndex: newSubIndex
+    };
+  }
+
+  /**
    * Toggle between rep-based and work_time-based definitions for an exercise
    * Swaps reps <-> work_time_minutes for all weeks
    */

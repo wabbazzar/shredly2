@@ -302,20 +302,44 @@ export class InteractiveWorkoutEditor {
         return;
       }
 
-      // Insert the exercise
-      const result = this.editor.insertExercise(
-        field.dayKey,
-        field.exerciseIndex,
-        newValue,
-        this.options.experienceLevel || 'intermediate'
-      );
+      // Check if we're inserting into a compound exercise
+      const workout = this.editor.getWorkout();
+      const day = workout.days[field.dayKey];
+      const referenceExercise = day?.exercises[field.exerciseIndex];
+      const isCompoundExercise = referenceExercise?.sub_exercises && referenceExercise.sub_exercises.length > 0;
+
+      let result: any;
+
+      if (isCompoundExercise) {
+        // Insert as sub-exercise
+        result = this.editor.insertSubExercise(
+          field.dayKey,
+          field.exerciseIndex,
+          newValue,
+          this.options.experienceLevel || 'intermediate'
+        );
+      } else {
+        // Insert as standalone exercise
+        result = this.editor.insertExercise(
+          field.dayKey,
+          field.exerciseIndex,
+          newValue,
+          this.options.experienceLevel || 'intermediate'
+        );
+      }
 
       if (result.success) {
         this.setStatus(result.message, 'success');
         this.editableFields = this.editor.getAllEditableFields();
 
-        // Jump to the newly inserted exercise
-        if (result.newExerciseIndex !== undefined) {
+        // Jump to the newly inserted exercise/sub-exercise
+        if (isCompoundExercise && result.newSubExerciseIndex !== undefined) {
+          const newSubExLocation = `${field.dayKey}.exercises[${field.exerciseIndex}].sub_exercises[${result.newSubExerciseIndex}].name`;
+          const newFieldIndex = this.editableFields.findIndex(f => f.location === newSubExLocation);
+          if (newFieldIndex !== -1) {
+            this.state.selectedFieldIndex = newFieldIndex;
+          }
+        } else if (result.newExerciseIndex !== undefined) {
           const newExerciseLocation = `${field.dayKey}.exercises[${result.newExerciseIndex}].name`;
           const newFieldIndex = this.editableFields.findIndex(f => f.location === newExerciseLocation);
           if (newFieldIndex !== -1) {
@@ -381,19 +405,44 @@ export class InteractiveWorkoutEditor {
     if (result.selected && result.exerciseName) {
       // Special handling for insertion points
       if (field.type === 'insertion_point') {
-        const insertResult = this.editor.insertExercise(
-          field.dayKey,
-          field.exerciseIndex,
-          result.exerciseName,
-          this.options.experienceLevel || 'intermediate'
-        );
+        // Check if we're inserting into a compound exercise
+        const workout = this.editor.getWorkout();
+        const day = workout.days[field.dayKey];
+        const referenceExercise = day?.exercises[field.exerciseIndex];
+        const isCompoundExercise = referenceExercise?.sub_exercises && referenceExercise.sub_exercises.length > 0;
+
+        let insertResult: any;
+
+        if (isCompoundExercise) {
+          // Insert as sub-exercise
+          insertResult = this.editor.insertSubExercise(
+            field.dayKey,
+            field.exerciseIndex,
+            result.exerciseName,
+            this.options.experienceLevel || 'intermediate'
+          );
+        } else {
+          // Insert as standalone exercise
+          insertResult = this.editor.insertExercise(
+            field.dayKey,
+            field.exerciseIndex,
+            result.exerciseName,
+            this.options.experienceLevel || 'intermediate'
+          );
+        }
 
         if (insertResult.success) {
           this.setStatus(insertResult.message, 'success');
           this.editableFields = this.editor.getAllEditableFields();
 
-          // Jump to the newly inserted exercise
-          if (insertResult.newExerciseIndex !== undefined) {
+          // Jump to the newly inserted exercise/sub-exercise
+          if (isCompoundExercise && insertResult.newSubExerciseIndex !== undefined) {
+            const newSubExLocation = `${field.dayKey}.exercises[${field.exerciseIndex}].sub_exercises[${insertResult.newSubExerciseIndex}].name`;
+            const newFieldIndex = this.editableFields.findIndex(f => f.location === newSubExLocation);
+            if (newFieldIndex !== -1) {
+              this.state.selectedFieldIndex = newFieldIndex;
+            }
+          } else if (insertResult.newExerciseIndex !== undefined) {
             const newExerciseLocation = `${field.dayKey}.exercises[${insertResult.newExerciseIndex}].name`;
             const newFieldIndex = this.editableFields.findIndex(f => f.location === newExerciseLocation);
             if (newFieldIndex !== -1) {
@@ -539,6 +588,7 @@ export class InteractiveWorkoutEditor {
   /**
    * Add a random exercise at insertion point
    * Matches the categorical profile of the exercise above it
+   * For compound exercises, adds as a sub-exercise
    */
   private addRandomExercise(): void {
     const field = this.editableFields[this.state.selectedFieldIndex];
@@ -551,11 +601,26 @@ export class InteractiveWorkoutEditor {
 
     const referenceExercise = day.exercises[field.exerciseIndex];
 
-    // Get category and muscle groups from reference exercise
-    const referenceData = this.findExerciseInDatabase(referenceExercise.name);
-    if (!referenceData) {
-      this.setStatus('Reference exercise not found in database', 'error');
-      return;
+    // Check if this is a compound exercise
+    const isCompoundExercise = referenceExercise.sub_exercises && referenceExercise.sub_exercises.length > 0;
+
+    let referenceData: any;
+
+    if (isCompoundExercise) {
+      // Use the last sub-exercise as reference
+      const lastSubEx = referenceExercise.sub_exercises![referenceExercise.sub_exercises!.length - 1];
+      referenceData = this.findExerciseInDatabase(lastSubEx.name);
+      if (!referenceData) {
+        this.setStatus('Reference sub-exercise not found in database', 'error');
+        return;
+      }
+    } else {
+      // Use the exercise itself as reference
+      referenceData = this.findExerciseInDatabase(referenceExercise.name);
+      if (!referenceData) {
+        this.setStatus('Reference exercise not found in database', 'error');
+        return;
+      }
     }
 
     // Filter exercises by category and muscle group
@@ -572,20 +637,37 @@ export class InteractiveWorkoutEditor {
     // Pick random exercise
     const randomExercise = matchingExercises[Math.floor(Math.random() * matchingExercises.length)];
 
-    // Insert the exercise
-    const result = this.editor.insertExercise(
-      field.dayKey,
-      field.exerciseIndex,
-      randomExercise,
-      this.options.experienceLevel || 'intermediate'
-    );
+    // Insert as sub-exercise or standalone based on reference type
+    let result: any;
+
+    if (isCompoundExercise) {
+      result = this.editor.insertSubExercise(
+        field.dayKey,
+        field.exerciseIndex,
+        randomExercise,
+        this.options.experienceLevel || 'intermediate'
+      );
+    } else {
+      result = this.editor.insertExercise(
+        field.dayKey,
+        field.exerciseIndex,
+        randomExercise,
+        this.options.experienceLevel || 'intermediate'
+      );
+    }
 
     if (result.success) {
       this.setStatus(`Added: ${randomExercise}`, 'success');
       this.editableFields = this.editor.getAllEditableFields();
 
-      // Jump to the newly inserted exercise
-      if (result.newExerciseIndex !== undefined) {
+      // Jump to the newly inserted exercise/sub-exercise
+      if (isCompoundExercise && result.newSubExerciseIndex !== undefined) {
+        const newSubExLocation = `${field.dayKey}.exercises[${field.exerciseIndex}].sub_exercises[${result.newSubExerciseIndex}].name`;
+        const newFieldIndex = this.editableFields.findIndex(f => f.location === newSubExLocation);
+        if (newFieldIndex !== -1) {
+          this.state.selectedFieldIndex = newFieldIndex;
+        }
+      } else if (result.newExerciseIndex !== undefined) {
         const newExerciseLocation = `${field.dayKey}.exercises[${result.newExerciseIndex}].name`;
         const newFieldIndex = this.editableFields.findIndex(f => f.location === newExerciseLocation);
         if (newFieldIndex !== -1) {

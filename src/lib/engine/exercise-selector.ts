@@ -446,6 +446,11 @@ export function roundRobinSelectExercises(
   const equipmentQuotas = rules.equipment_quotas;
   let barbellExerciseCount = 0;
 
+  // Muscle group coverage tracking for Full Body workouts
+  // Track muscle group frequency to ensure diverse coverage
+  const muscleGroupCoverage = new Map<string, number>();
+  const isFullBodyWorkout = focus === "Full Body";
+
   // Track current index for each layer
   const layerIndices = new Map<string, number>();
   for (const layer of pools.keys()) {
@@ -477,6 +482,15 @@ export function roundRobinSelectExercises(
   let roundNumber = 0;
   let maxRounds = 50; // Safety limit
 
+  // Track duration per layer (for time-based warm-up selection)
+  const layerDurations = new Map<string, number>();
+  for (const layer of layerOrder) {
+    layerDurations.set(layer, 0);
+  }
+
+  // Warm-up target: config-driven (default 3 minutes)
+  const warmupTargetMinutes = rules.exercise_selection_strategy.warmup_target_duration_minutes || 3;
+
   while (currentDuration < maxDuration && roundNumber < maxRounds) {
     roundNumber++;
     let addedAnyExercise = false;
@@ -490,6 +504,16 @@ export function roundRobinSelectExercises(
       const ratio = layerRatios[layer] || 1;
       const pool = pools.get(layer)!;
       const currentIndex = layerIndices.get(layer)!;
+
+      // SPECIAL: Time-based selection for warm-up phase (first layer)
+      // For warm-up, select exercises until we have 3-5 minutes total
+      if (layer === 'first') {
+        const warmupDuration = layerDurations.get(layer) || 0;
+        if (warmupDuration >= warmupTargetMinutes) {
+          // Already have enough warm-up time, skip this layer
+          continue;
+        }
+      }
 
       // Check if this layer needs a compound exercise
       const compoundType = compoundLayersMap.get(layer);
@@ -539,20 +563,50 @@ export function roundRobinSelectExercises(
           currentDuration += exerciseDuration;
           compoundExerciseCount++;
           addedAnyExercise = true;
+
+          // Track layer duration for time-based selection
+          const layerDuration = layerDurations.get(layer) || 0;
+          layerDurations.set(layer, layerDuration + exerciseDuration);
+
+          // Track muscle group coverage for Full Body workouts (compound exercises)
+          if (isFullBodyWorkout) {
+            // Track all muscle groups from constituent exercises
+            for (const subEx of compoundExercise.sub_exercises) {
+              const subExerciseData = allExercises.find(([name]) => name === subEx.name)?.[1];
+              if (subExerciseData) {
+                trackMuscleGroupCoverage(subExerciseData, muscleGroupCoverage);
+              }
+            }
+          }
         }
 
         // Always increment index for compound layers (avoid infinite loops)
         layerIndices.set(layer, currentIndex + 1);
       } else {
         // Normal individual exercise selection
+        // For Full Body workouts, prioritize exercises by muscle group coverage
+        let workingPool = pool;
+        if (isFullBodyWorkout) {
+          // Re-prioritize the pool based on current muscle group coverage
+          // This ensures we select exercises targeting uncovered muscle groups
+          const remainingPool = pool.slice(currentIndex);
+          const prioritized = prioritizeByMuscleGroupCoverage(
+            remainingPool,
+            muscleGroupCoverage,
+            allExercises
+          );
+          // Reconstruct pool with prioritized remaining exercises
+          workingPool = [...pool.slice(0, currentIndex), ...prioritized];
+        }
+
         // Add 'ratio' exercises from this layer in this round
         for (let i = 0; i < ratio; i++) {
-          if (currentIndex + i >= pool.length) {
+          if (currentIndex + i >= workingPool.length) {
             // No more exercises in this pool
             continue;
           }
 
-          const [exerciseName, exerciseData] = pool[currentIndex + i];
+          const [exerciseName, exerciseData] = workingPool[currentIndex + i];
 
           // Check for duplicates
           if (usedExerciseNames.has(exerciseName)) {
@@ -613,12 +667,21 @@ export function roundRobinSelectExercises(
           usedExerciseNames.add(exerciseName);
           currentDuration += exerciseDuration;
 
+          // Track layer duration for time-based selection
+          const layerDuration = layerDurations.get(layer) || 0;
+          layerDurations.set(layer, layerDuration + exerciseDuration);
+
           // Track exercise counts
           if (category === 'strength') {
             strengthExerciseCount++;
           }
           if (usesBarbell) {
             barbellExerciseCount++;
+          }
+
+          // Track muscle group coverage for Full Body workouts
+          if (isFullBodyWorkout) {
+            trackMuscleGroupCoverage(exerciseData, muscleGroupCoverage);
           }
 
           addedAnyExercise = true;
@@ -704,4 +767,101 @@ function hasMetMinimumRequirements(
   // In production, we'd track layer assignments, but for now we just ensure
   // we have something to work with
   return exercises.length >= 1;
+}
+
+/**
+ * Prioritizes exercises for Full Body workouts based on muscle group coverage
+ *
+ * Exercises targeting uncovered muscle groups are prioritized heavily.
+ * The weighting is aggressive to ensure full body coverage given limited exercise pool.
+ *
+ * @param pool - Exercise pool to prioritize
+ * @param muscleGroupCoverage - Map tracking how many times each muscle group has been selected
+ * @param allExercises - All exercises (to look up exercise data)
+ * @returns Prioritized pool with uncovered muscle groups first
+ */
+function prioritizeByMuscleGroupCoverage(
+  pool: Array<[string, Exercise]>,
+  muscleGroupCoverage: Map<string, number>,
+  allExercises: Array<[string, Exercise]>
+): Array<[string, Exercise]> {
+  // Score each exercise based on muscle group coverage
+  const scored = pool.map(([name, exercise]) => {
+    // Calculate metrics for prioritization
+    let minCoverage = Infinity;
+    let totalCoverage = 0;
+    let uncoveredCount = 0;
+
+    if (exercise.muscle_groups.length > 0) {
+      for (const mg of exercise.muscle_groups) {
+        const coverage = muscleGroupCoverage.get(mg) || 0;
+        minCoverage = Math.min(minCoverage, coverage);
+        totalCoverage += coverage;
+        if (coverage === 0) {
+          uncoveredCount++;
+        }
+      }
+    } else {
+      minCoverage = 0;
+    }
+
+    // AGGRESSIVE THREE-TIER SCORING:
+    // Tier 1 (highest priority): Exercises with at least one uncovered muscle group
+    //   - Score = 1000 * uncoveredCount - totalCoverage
+    //   - Prefer exercises that work MORE uncovered muscle groups
+    //   - Break ties by total coverage (less is better)
+    //
+    // Tier 2 (medium priority): Exercises with all muscle groups covered, but minimally
+    //   - Score = -totalCoverage
+    //   - Prefer exercises with less total coverage
+    //
+    // Tier 3 (lowest priority): Exercises with heavily-covered muscle groups
+    //   - Score = -1000 * minCoverage - totalCoverage
+    //   - Strongly penalize high minimum coverage
+
+    let score: number;
+    if (uncoveredCount > 0) {
+      // Tier 1: Has uncovered muscle groups - TOP PRIORITY
+      score = 1000 * uncoveredCount - totalCoverage;
+    } else if (minCoverage <= 2) {
+      // Tier 2: All muscle groups covered but not heavily
+      score = -totalCoverage;
+    } else {
+      // Tier 3: Heavily covered muscle groups - BOTTOM PRIORITY
+      score = -1000 * minCoverage - totalCoverage;
+    }
+
+    return { name, exercise, score, uncoveredCount, minCoverage, totalCoverage };
+  });
+
+  // Sort by score (descending - higher score = higher priority)
+  // Then by uncovered count (more uncovered = higher priority)
+  // Then by name for deterministic ordering
+  scored.sort((a, b) => {
+    if (a.score !== b.score) {
+      return b.score - a.score; // Higher score first
+    }
+    if (a.uncoveredCount !== b.uncoveredCount) {
+      return b.uncoveredCount - a.uncoveredCount; // More uncovered first
+    }
+    return a.name.localeCompare(b.name); // Alphabetical tiebreaker
+  });
+
+  return scored.map(({ name, exercise }) => [name, exercise]);
+}
+
+/**
+ * Updates muscle group coverage tracking after selecting an exercise
+ *
+ * @param exercise - Selected exercise
+ * @param muscleGroupCoverage - Coverage map to update
+ */
+function trackMuscleGroupCoverage(
+  exercise: Exercise,
+  muscleGroupCoverage: Map<string, number>
+): void {
+  for (const muscleGroup of exercise.muscle_groups) {
+    const current = muscleGroupCoverage.get(muscleGroup) || 0;
+    muscleGroupCoverage.set(muscleGroup, current + 1);
+  }
 }

@@ -155,6 +155,25 @@
             "isometric": true,
             "external_load": "never"
           },
+          "Dead Bug": {
+            "category": "strength",
+            "typical_sets": 3,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Core",
+              "Hip Flexors"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Dead Bugs",
+              "Modified Dead Bug"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
           "Push-ups": {
             "category": "strength",
             "typical_sets": 3,
@@ -3702,24 +3721,6 @@
             "isometric": false,
             "external_load": "never"
           },
-          "Dead Bugs": {
-            "category": "mobility",
-            "typical_sets": 2,
-            "typical_reps": "10",
-            "equipment": [
-              "None"
-            ],
-            "muscle_groups": [
-              "Core",
-              "Hip Flexors"
-            ],
-            "difficulty": "Beginner",
-            "variations": [
-              "Dead Bug"
-            ],
-            "isometric": false,
-            "external_load": "never"
-          },
           "Bird Dogs": {
             "category": "mobility",
             "typical_sets": 3,
@@ -4588,25 +4589,6 @@
             ],
             "isometric": false,
             "external_load": "sometimes"
-          },
-          "Dead Bug": {
-            "category": "mobility",
-            "typical_sets": 3,
-            "typical_reps": "10",
-            "equipment": [
-              "None"
-            ],
-            "muscle_groups": [
-              "Core",
-              "Hip Flexors"
-            ],
-            "difficulty": "Beginner",
-            "variations": [
-              "Dead Bugs",
-              "Modified Dead Bug"
-            ],
-            "isometric": false,
-            "external_load": "never"
           },
           "Mobility Flow": {
             "category": "mobility",

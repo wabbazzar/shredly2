@@ -10,7 +10,12 @@
     "cli:watch": "nodemon --exec tsx cli/test-runner.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.js",
-    "test": "echo \"Tests not yet implemented\" && exit 0"
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [
     "fitness",
@@ -24,12 +29,15 @@
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
+    "@vitest/ui": "^4.0.16",
     "eslint": "^8.55.0",
+    "happy-dom": "^20.0.11",
     "inquirer": "^13.1.0",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   },
   "engines": {
     "node": ">=20.0.0"

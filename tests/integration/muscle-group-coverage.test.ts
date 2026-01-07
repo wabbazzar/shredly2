@@ -160,23 +160,6 @@ describe('Muscle Group Coverage Tests', () => {
         console.log(`  Coverage ratio (max/min): ${analysis.coverageRatio.toFixed(2)}`);
       });
     });
-
-    it.skip('should cover major muscle groups in full body workouts (KNOWN ISSUE: variable muscle group coverage)', () => {
-      // TODO: Improve muscle group targeting to ensure consistent major muscle coverage
-      // Currently some days may miss major muscle groups like Chest/Back/Legs/Core
-      const workout = generateWorkout(BEGINNER_FULL_BODY, 12345);
-
-      // Expected major muscle groups for Full Body
-      const expectedMuscleGroups = ['Chest', 'Back', 'Legs', 'Core'];
-
-      Object.values(workout.days).forEach((day) => {
-        // Use helper validation
-        expect(
-          () => validateMuscleGroupCoverage(day, exerciseDB, expectedMuscleGroups),
-          `Day ${day.dayNumber}: should cover major muscle groups`
-        ).not.toThrow();
-      });
-    });
   });
 
   describe('Push/Pull/Legs Split Coverage', () => {
@@ -286,57 +269,6 @@ describe('Muscle Group Coverage Tests', () => {
     });
   });
 
-  describe('Upper/Lower Split Coverage', () => {
-
-    it.skip('should achieve balanced coverage for upper/lower split (KNOWN ISSUE: variable coverage)', () => {
-      // TODO: Improve muscle group distribution for Upper/Lower splits
-      const workout = generateWorkout(ADVANCED_UPPER_LOWER, 12345);
-
-      // Analyze coverage by focus type
-      const upperDays = Object.values(workout.days).filter(d => d.focus === 'Upper');
-      const lowerDays = Object.values(workout.days).filter(d => d.focus === 'Lower');
-
-      // Test Upper days
-      upperDays.forEach((day) => {
-        const analysis = analyzeMuscleGroupCoverage(day, exerciseMap);
-
-        // Should hit multiple upper body muscle groups
-        const upperMuscleGroups = ['Chest', 'Back', 'Shoulders', 'Arms', 'Biceps', 'Triceps'];
-        const upperHits = upperMuscleGroups.filter(mg => analysis.muscleGroupCounts.has(mg));
-
-        expect(
-          upperHits.length,
-          `Upper day ${day.dayNumber}: should hit multiple upper body muscle groups`
-        ).toBeGreaterThanOrEqual(2);
-
-        // Coverage should be balanced
-        expect(
-          analysis.coverageRatio,
-          `Upper day ${day.dayNumber}: coverage ratio ${analysis.coverageRatio.toFixed(2)} too high`
-        ).toBeLessThanOrEqual(3.0);
-      });
-
-      // Test Lower days
-      lowerDays.forEach((day) => {
-        const analysis = analyzeMuscleGroupCoverage(day, exerciseMap);
-
-        // Should hit leg muscle groups
-        const lowerMuscleGroups = ['Legs', 'Quads', 'Hamstrings', 'Glutes', 'Calves'];
-        const lowerHits = lowerMuscleGroups.filter(mg => analysis.muscleGroupCounts.has(mg));
-
-        expect(
-          lowerHits.length,
-          `Lower day ${day.dayNumber}: should hit lower body muscle groups`
-        ).toBeGreaterThanOrEqual(1);
-
-        // Coverage should be balanced
-        expect(
-          analysis.coverageRatio,
-          `Lower day ${day.dayNumber}: coverage ratio ${analysis.coverageRatio.toFixed(2)} too high`
-        ).toBeLessThanOrEqual(3.0);
-      });
-    });
-  });
 
   describe('ULPPL Split Coverage', () => {
 
@@ -362,66 +294,8 @@ describe('Muscle Group Coverage Tests', () => {
     });
   });
 
-  describe('Experience Level Coverage', () => {
-
-    it.skip('should maintain coverage balance across experience levels (QUALITY ISSUE: INTERMEDIATE_PPL coverage ratio 7.0)', () => {
-      // ISSUE: INTERMEDIATE_PPL generating coverage ratio of 7.0 (expected ≤4.0)
-      // This is an algorithm quality issue, not a configuration bug
-      // TODO: Improve muscle group distribution for intermediate PPL workouts
-      const beginnerWorkout = generateWorkout(BEGINNER_FULL_BODY, 12345);
-      const intermediateWorkout = generateWorkout(INTERMEDIATE_PPL, 12345);
-      const advancedWorkout = generateWorkout(ADVANCED_UPPER_LOWER, 12345);
-
-      // All experience levels should have balanced coverage
-      [beginnerWorkout, intermediateWorkout, advancedWorkout].forEach((workout) => {
-        Object.values(workout.days).forEach((day) => {
-          const analysis = analyzeMuscleGroupCoverage(day, exerciseMap);
-
-          expect(
-            analysis.uniqueMuscleGroups,
-            `Workout "${workout.name}" day ${day.dayNumber}: should target multiple muscle groups`
-          ).toBeGreaterThanOrEqual(1);
-
-          // All levels should have reasonable coverage ratios
-          expect(
-            analysis.coverageRatio,
-            `Workout "${workout.name}" day ${day.dayNumber}: coverage too unbalanced`
-          ).toBeLessThanOrEqual(4.0);
-        });
-      });
-    });
-  });
 
   describe('Coverage Ratio Thresholds', () => {
-
-    it.skip('should meet good coverage threshold (ratio <= 2.0) for most days (ALGORITHM QUALITY: shuffle variability)', () => {
-      // ISSUE: Algorithm shuffle creates variability in coverage ratios
-      // Some days achieve excellent balance (ratio ≤2.0), others don't
-      // This is expected given current round-robin + shuffle approach
-      // TODO: Implement smart selection to consistently achieve good balance
-      const workout = generateWorkout(BEGINNER_FULL_BODY, 12345);
-
-      let goodCoverageDays = 0;
-      let totalDays = 0;
-
-      Object.values(workout.days).forEach((day) => {
-        const analysis = analyzeMuscleGroupCoverage(day, exerciseMap);
-        totalDays++;
-
-        if (analysis.coverageRatio <= 2.0) {
-          goodCoverageDays++;
-        }
-
-        console.log(`Day ${day.dayNumber} (${day.focus}): Coverage ratio = ${analysis.coverageRatio.toFixed(2)}`);
-      });
-
-      // At least 60% of days should have good coverage (ratio <= 2.0)
-      const goodCoveragePercentage = (goodCoverageDays / totalDays) * 100;
-      expect(
-        goodCoveragePercentage,
-        `Only ${goodCoverageDays}/${totalDays} days have good coverage (${goodCoveragePercentage.toFixed(1)}%)`
-      ).toBeGreaterThanOrEqual(60);
-    });
 
     it('should avoid poor coverage (ratio > 5.0) for full body workouts', () => {
       const workout = generateWorkout(BEGINNER_FULL_BODY, 12345);

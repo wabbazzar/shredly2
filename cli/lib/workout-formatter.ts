@@ -203,6 +203,11 @@ export function formatSubExercises(
   weekCount: number,
   parentCategory: string
 ): string {
+  // Handle empty compound blocks with placeholder
+  if (subExercises.length === 0) {
+    return chalk.dim(`  (empty block - press 'e' to add sub-exercises)`);
+  }
+
   const lines = [];
   for (const sub of subExercises) {
     // Collect all parameter fields that exist across all weeks for this sub-exercise
@@ -315,7 +320,13 @@ export function formatCategoryBadge(category: string): string {
     return chalk.yellow(`[${upperCategory}]`);
   } else if (category === 'strength') {
     return chalk.green(`[${upperCategory}]`);
-  } else if (['emom', 'amrap', 'circuit', 'interval'].includes(category)) {
+  } else if (category === 'emom') {
+    return chalk.blue(`[${upperCategory}]`);
+  } else if (category === 'amrap') {
+    return chalk.green(`[${upperCategory}]`);
+  } else if (category === 'circuit') {
+    return chalk.yellow(`[${upperCategory}]`);
+  } else if (category === 'interval') {
     return chalk.magenta(`[${upperCategory}]`);
   } else {
     return chalk.blue(`[${upperCategory}]`);

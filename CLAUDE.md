@@ -432,6 +432,14 @@ These should be answered in the CLI prototype phase.
 - **Test coverage**: 96 passing unit tests (29 for compound blocks)
 
 **Recent Completions**:
+- ✅ Ticket #009 Phase 1 (2026-01-07): Fix density progression for compound exercises
+  * Added isCompoundParent() helper to detect EMOM/Circuit/AMRAP/Interval exercises
+  * Density progression now keeps work_time STATIC for compound parents (6->6->6)
+  * Density comes from sub-exercise reps increasing, not time extension
+  * Pass exerciseCategory through applyProgressionScheme() to enable detection
+  * Updated workout_generation_rules.json with compound_parent_work_time_static flag
+  * Regular (non-compound) exercises unaffected by changes
+  * All 224 tests passing, verified with generated workouts
 - ✅ Ticket #008 (2026-01-07): Fix editor weighted time-based exercise field visibility
   * Created shared exercise-metadata.ts module as single source of truth
   * Migrated editor to use metadata-driven weight field visibility (not workMode)

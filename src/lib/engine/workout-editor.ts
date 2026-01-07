@@ -14,6 +14,7 @@
 import type { ParameterizedWorkout, ParameterizedDay, ParameterizedExercise, WeekParameters, WeightSpecification } from './types.js';
 import workoutGenerationRules from '../../data/workout_generation_rules.json' with { type: 'json' };
 import exerciseDatabase from '../../data/exercise_database.json' with { type: 'json' };
+import { shouldShowWeightField } from './exercise-metadata.js';
 
 export interface EditableField {
   location: string; // e.g., "day1.exercises[0].name", "day1.exercises[2].week1.sets"
@@ -133,7 +134,7 @@ export class WorkoutEditor {
               });
             }
 
-            if (workMode === 'reps' && weekParams.weight !== undefined) {
+            if (shouldShowWeightField(exercise.name, weekParams.weight)) {
               fields.push({
                 location: `${baseLocation}.${weekKey}.weight`,
                 dayKey,
@@ -207,7 +208,7 @@ export class WorkoutEditor {
                   });
                 }
 
-                if (subWorkMode === 'reps' && weekParams.weight !== undefined) {
+                if (shouldShowWeightField(subEx.name, weekParams.weight)) {
                   fields.push({
                     location: `${subLocation}.${weekKey}.weight`,
                     dayKey,
@@ -891,9 +892,8 @@ export class WorkoutEditor {
         const reps = weekParams.reps;
         delete weekParams.reps;
         weekParams.work_time_minutes = reps; // Simple 1:1 mapping (user can adjust)
-        if (!weekParams.work_time_unit) {
-          weekParams.work_time_unit = 'seconds'; // Default to seconds for work time
-        }
+        // ALWAYS set fresh time unit based on exercise metadata (don't preserve old values)
+        weekParams.work_time_unit = this.determineTimeUnit(exercise);
       } else {
         // Convert work_time -> reps
         const workTime = weekParams.work_time_minutes;
@@ -925,6 +925,148 @@ export class WorkoutEditor {
       message: `Toggled to ${targetMode}-based definition`,
       newMode: targetMode
     };
+  }
+
+  /**
+   * Toggle work definition for a sub-exercise within a compound block
+   */
+  toggleSubExerciseWorkDefinition(
+    dayKey: string,
+    exerciseIndex: number,
+    subExerciseIndex: number
+  ): { success: boolean; message: string; newMode: 'reps' | 'work_time' | null } {
+    const exercise = this.getExercise(dayKey, exerciseIndex);
+    if (!exercise || !exercise.sub_exercises) {
+      return { success: false, message: 'Compound exercise not found', newMode: null };
+    }
+
+    const subExercise = exercise.sub_exercises[subExerciseIndex];
+    if (!subExercise) {
+      return { success: false, message: 'Sub-exercise not found', newMode: null };
+    }
+
+    // Determine current mode by checking week1
+    const week1 = (subExercise as any).week1;
+    if (!week1) {
+      return { success: false, message: 'No week parameters found', newMode: null };
+    }
+
+    const hasReps = week1.reps !== undefined;
+    const hasWorkTime = week1.work_time_minutes !== undefined;
+
+    if (hasReps === hasWorkTime) {
+      return {
+        success: false,
+        message: 'Sub-exercise has both reps and work_time, or neither. Cannot toggle.',
+        newMode: null
+      };
+    }
+
+    const oldSubExercise = JSON.parse(JSON.stringify(subExercise));
+    const targetMode: 'reps' | 'work_time' = hasReps ? 'work_time' : 'reps';
+
+    // Toggle for all weeks
+    const weekCount = Object.keys(subExercise).filter(k => k.startsWith('week')).length;
+    for (let w = 1; w <= weekCount; w++) {
+      const weekKey = `week${w}`;
+      const weekParams = (subExercise as any)[weekKey];
+      if (!weekParams) continue;
+
+      if (hasReps) {
+        // Convert reps -> work_time
+        const reps = weekParams.reps;
+        delete weekParams.reps;
+        weekParams.work_time_minutes = reps;
+        // Use smart time unit based on sub-exercise metadata
+        weekParams.work_time_unit = this.determineTimeUnitByName(subExercise.name);
+      } else {
+        // Convert work_time -> reps
+        const workTime = weekParams.work_time_minutes;
+        delete weekParams.work_time_minutes;
+        delete weekParams.work_time_unit;
+        weekParams.reps = workTime;
+      }
+    }
+
+    // Add to undo stack
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Toggle sub-exercise work definition to ${targetMode}`,
+      location: `${dayKey}.exercises[${exerciseIndex}].sub_exercises[${subExerciseIndex}]`,
+      previousValue: oldSubExercise,
+      newValue: JSON.parse(JSON.stringify(subExercise)),
+      reverseOperation: () => {
+        const day = this.workout.days[dayKey];
+        if (day && day.exercises[exerciseIndex]?.sub_exercises) {
+          day.exercises[exerciseIndex].sub_exercises![subExerciseIndex] = oldSubExercise;
+        }
+      }
+    });
+
+    this.modified = true;
+
+    return {
+      success: true,
+      message: `Toggled sub-exercise to ${targetMode}-based definition`,
+      newMode: targetMode
+    };
+  }
+
+  /**
+   * Determine appropriate time unit for an exercise based on metadata
+   * Uses exercise object (already has category if compound)
+   */
+  private determineTimeUnit(exercise: ParameterizedExercise): 'seconds' | 'minutes' {
+    // For compound exercises, category is already set
+    if (exercise.category) {
+      return this.determineTimeUnitByCategory(exercise.category, exercise.name);
+    }
+
+    // For standalone exercises, look up in database
+    return this.determineTimeUnitByName(exercise.name);
+  }
+
+  /**
+   * Determine time unit by exercise name (looks up in database)
+   */
+  private determineTimeUnitByName(exerciseName: string): 'seconds' | 'minutes' {
+    const exerciseData = this.findExerciseInDatabase(exerciseName);
+    if (!exerciseData) {
+      return 'seconds'; // Safe default
+    }
+
+    return this.determineTimeUnitByCategory(exerciseData.category, exerciseName, exerciseData);
+  }
+
+  /**
+   * Determine time unit based on category and optional exercise data
+   */
+  private determineTimeUnitByCategory(
+    category: string,
+    exerciseName: string,
+    exerciseData?: any
+  ): 'seconds' | 'minutes' {
+    // Cardio exercises are typically measured in minutes (running, cycling, swimming)
+    if (category === 'cardio') {
+      return 'minutes';
+    }
+
+    // Flexibility exercises: check typical_reps pattern if available
+    if (category === 'flexibility') {
+      if (exerciseData?.typical_reps) {
+        const typical = exerciseData.typical_reps;
+        // If typical_reps mentions "minute", use minutes (e.g., "30-45 minutes")
+        if (typeof typical === 'string' && typical.toLowerCase().includes('minute')) {
+          return 'minutes';
+        }
+      }
+      // Default to seconds for flexibility (most stretches are 30-120 seconds)
+      return 'seconds';
+    }
+
+    // All other categories default to seconds
+    // (strength, mobility, isometric holds, etc.)
+    return 'seconds';
   }
 
   /**

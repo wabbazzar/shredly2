@@ -360,7 +360,8 @@ describe("WorkoutEditor - Work Mode Filtering", () => {
       expect(result.success).toBe(true);
       expect(result.newMode).toBe("work_time");
 
-      // Get fields after toggle (should have work_time, no reps/weight)
+      // Get fields after toggle (should have work_time, no reps)
+      // Weight should STILL be visible because Bench Press has external_load: "always"
       const newFields = editor.getAllEditableFields();
 
       const newRepsFields = newFields.filter(
@@ -377,7 +378,8 @@ describe("WorkoutEditor - Work Mode Filtering", () => {
           f.exerciseIndex === 0 &&
           f.fieldName === "weight",
       );
-      expect(newWeightFields).toHaveLength(0);
+      // Weight field remains visible for external_load: "always" exercises (Bench Press)
+      expect(newWeightFields).toHaveLength(3); // 3 weeks
 
       const newWorkTimeFields = newFields.filter(
         (f) =>

@@ -30,11 +30,21 @@
       "toggle_work_definition": "m",
       "delete_exercise": "delete",
       "undo_last_change": "u",
+      "create_compound_block": "b",
+      "set_block_type_emom": "e",
+      "set_block_type_amrap": "a",
+      "set_block_type_circuit": "c",
+      "set_block_type_interval": "i",
       "show_help": "?",
       "show_help_alt": "h",
       "enter_command_mode": ":",
       "quit": "q"
-    }
+    },
+    "compound_block_notes": [
+      "'b' - Create compound block (EMOM/AMRAP/Circuit/Interval) at current insertion point",
+      "'e', 'a', 'c', 'i' - Change block type (EMOM/AMRAP/Circuit/Interval) when on compound block name",
+      "Note: 'e' is context-sensitive - opens exercise database normally, changes to EMOM when on compound block"
+    ]
   },
 
   "edit_mode": {

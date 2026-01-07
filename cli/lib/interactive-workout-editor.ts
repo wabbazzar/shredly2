@@ -182,11 +182,41 @@ export class InteractiveWorkoutEditor {
       }
     }
 
+    // Compound block creation (new feature)
+    else if (str === 'b' || str === 'B') {
+      this.createCompoundBlock();
+    }
+
+    // Compound block type change (context-sensitive)
+    // If on a compound exercise parent, change block type
+    // Otherwise, fallback to existing behavior (e.g., 'e' opens exercise database)
+    else if (str === 'e' || str === 'a' || str === 'c' || str === 'i') {
+      const field = this.editableFields[this.state.selectedFieldIndex];
+
+      // Check if current field is a compound exercise parent name
+      const isCompoundParent = field &&
+        field.fieldName === 'name' &&
+        field.subExerciseIndex === undefined &&
+        this.isCurrentExerciseCompound();
+
+      if (isCompoundParent) {
+        // Change compound block type
+        const typeMap: Record<string, 'emom' | 'amrap' | 'circuit' | 'interval'> = {
+          'e': 'emom',
+          'a': 'amrap',
+          'c': 'circuit',
+          'i': 'interval'
+        };
+        this.setCompoundBlockType(typeMap[str]);
+      } else if (str === 'e') {
+        // Fallback: 'e' opens exercise database when not on compound parent
+        await this.openExerciseDatabase();
+      }
+    }
+
     // Actions
     else if (str === hotkeys.actions.replace_current_field) {
       await this.enterEditMode();
-    } else if (str === hotkeys.actions.open_exercise_database) {
-      await this.openExerciseDatabase();
     } else if (str === hotkeys.actions.swap_with_random) {
       this.swapWithRandomExercise();
     } else if (str === hotkeys.actions.toggle_work_definition) {
@@ -788,6 +818,80 @@ export class InteractiveWorkoutEditor {
     } else {
       this.setStatus('Nothing to undo', 'info');
     }
+  }
+
+  /**
+   * Create a compound exercise block (EMOM/AMRAP/Circuit/Interval)
+   */
+  private createCompoundBlock(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field || field.type !== 'insertion_point') {
+      this.setStatus('Navigate to an <add exercise> insertion point first', 'error');
+      return;
+    }
+
+    const result = this.editor.createCompoundBlock(
+      field.dayKey,
+      field.exerciseIndex,
+      'emom', // Default to EMOM
+      this.options.experienceLevel || 'intermediate'
+    );
+
+    if (result.success) {
+      this.setStatus(`${result.message}. Press 'a'/'c'/'i' to change type.`, 'success');
+      this.editableFields = this.editor.getAllEditableFields();
+
+      // Jump to the newly created compound block name field
+      if (result.newExerciseIndex !== undefined) {
+        const newExerciseLocation = `${field.dayKey}.exercises[${result.newExerciseIndex}].name`;
+        const newFieldIndex = this.editableFields.findIndex(f => f.location === newExerciseLocation);
+        if (newFieldIndex !== -1) {
+          this.state.selectedFieldIndex = newFieldIndex;
+        }
+      }
+    } else {
+      this.setStatus(result.message, 'error');
+    }
+  }
+
+  /**
+   * Set the type of the current compound block
+   */
+  private setCompoundBlockType(newCategory: 'emom' | 'amrap' | 'circuit' | 'interval'): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    const result = this.editor.setCompoundBlockType(
+      field.dayKey,
+      field.exerciseIndex,
+      newCategory,
+      this.options.experienceLevel || 'intermediate'
+    );
+
+    if (result.success) {
+      this.setStatus(result.message, 'success');
+      this.editableFields = this.editor.getAllEditableFields();
+      // Stay on the same field (name will have been updated)
+    } else {
+      this.setStatus(result.message, 'error');
+    }
+  }
+
+  /**
+   * Check if the current exercise is a compound exercise
+   */
+  private isCurrentExerciseCompound(): boolean {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return false;
+
+    const workout = this.editor.getWorkout();
+    const day = workout.days[field.dayKey];
+    if (!day) return false;
+
+    const exercise = day.exercises[field.exerciseIndex];
+    if (!exercise) return false;
+
+    return exercise.sub_exercises !== undefined;
   }
 
   /**

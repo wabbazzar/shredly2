@@ -129,18 +129,6 @@ export class WorkoutEditor {
               });
             }
 
-            if (weekParams.rest_time_minutes !== undefined) {
-              fields.push({
-                location: `${baseLocation}.${weekKey}.rest_time_minutes`,
-                dayKey,
-                exerciseIndex: exIndex,
-                weekKey,
-                fieldName: 'rest_time_minutes',
-                currentValue: weekParams.rest_time_minutes,
-                type: 'number'
-              });
-            }
-
             if (weekParams.work_time_minutes !== undefined) {
               fields.push({
                 location: `${baseLocation}.${weekKey}.work_time_minutes`,
@@ -149,6 +137,18 @@ export class WorkoutEditor {
                 weekKey,
                 fieldName: 'work_time_minutes',
                 currentValue: weekParams.work_time_minutes,
+                type: 'number'
+              });
+            }
+
+            if (weekParams.rest_time_minutes !== undefined) {
+              fields.push({
+                location: `${baseLocation}.${weekKey}.rest_time_minutes`,
+                dayKey,
+                exerciseIndex: exIndex,
+                weekKey,
+                fieldName: 'rest_time_minutes',
+                currentValue: weekParams.rest_time_minutes,
                 type: 'number'
               });
             }

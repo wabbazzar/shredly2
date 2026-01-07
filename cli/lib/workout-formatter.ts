@@ -493,8 +493,8 @@ function formatCompoundParentSets(
         fieldsToShow.add(field);
       }
     } else if (workMode === 'work_time') {
-      // Show work_time, rest (NOT sets, reps, weight)
-      if (field !== 'sets' && field !== 'reps' && field !== 'weight') {
+      // Show sets, work_time, rest (NOT reps, weight)
+      if (field !== 'reps' && field !== 'weight') {
         fieldsToShow.add(field);
       }
     } else {
@@ -636,7 +636,11 @@ export function formatWeekProgressionInteractive(
       if (rest) parts.push(rest);
 
     } else if (workMode === 'work_time') {
-      // Work-time based mode: show work_time, rest (NO reps/sets/weight)
+      // Work-time based mode: show sets, work_time, rest (NOT reps, weight)
+      const sets = params.sets !== undefined
+        ? (options.showAllEditable || setsIsSelected ? highlightEditableValue(String(params.sets), setsIsSelected) : params.sets)
+        : null;
+
       const workUnit = params.work_time_unit || 'minutes';
       const work = params.work_time_minutes !== undefined
         ? (options.showAllEditable || workIsSelected
@@ -644,7 +648,11 @@ export function formatWeekProgressionInteractive(
           : `${params.work_time_minutes} ${workUnit} work`)
         : null;
 
-      if (work) parts.push(work);
+      if (sets && work) {
+        parts.push(`${sets} sets x ${work}`);
+      } else if (work) {
+        parts.push(work);
+      }
 
       const restUnit = params.rest_time_unit || 'seconds';
       const rest = params.rest_time_minutes !== undefined
@@ -714,8 +722,8 @@ export function formatSubExercisesInteractive(
           fieldsToShow.add(field);
         }
       } else if (workMode === 'work_time') {
-        // Show work_time, rest (NOT sets, reps, weight, tempo)
-        if (field !== 'sets' && field !== 'reps' && field !== 'weight' && field !== 'tempo') {
+        // Show sets, work_time, rest (NOT reps, weight, tempo)
+        if (field !== 'reps' && field !== 'weight' && field !== 'tempo') {
           fieldsToShow.add(field);
         }
       } else {

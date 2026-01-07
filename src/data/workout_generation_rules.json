@@ -15,7 +15,7 @@
       "moderate": {
         "base_sets": 3,
         "base_reps": 8,
-        "base_rest_time_minutes": 2.0,
+        "base_rest_time_minutes": 1.0,
         "base_rest_time_unit": "minutes",
         "base_weight_percent_tm": 70,
         "base_weight_descriptor": "moderate"
@@ -23,7 +23,7 @@
       "moderate_heavy": {
         "base_sets": 4,
         "base_reps": 6,
-        "base_rest_time_minutes": 3.0,
+        "base_rest_time_minutes": 2.0,
         "base_rest_time_unit": "minutes",
         "base_weight_percent_tm": 75,
         "base_weight_descriptor": "moderate_heavy"
@@ -31,7 +31,7 @@
       "heavy": {
         "base_sets": 4,
         "base_reps": 5,
-        "base_rest_time_minutes": 4.0,
+        "base_rest_time_minutes": 2.0,
         "base_rest_time_unit": "minutes",
         "base_weight_percent_tm": 80,
         "base_weight_descriptor": "heavy"
@@ -39,7 +39,7 @@
       "max": {
         "base_sets": 5,
         "base_reps": 3,
-        "base_rest_time_minutes": 5.0,
+        "base_rest_time_minutes": 3.0,
         "base_rest_time_unit": "minutes",
         "base_weight_percent_tm": 85,
         "base_weight_descriptor": "max"
@@ -256,17 +256,19 @@
         "work_time_increase_percent_total": 25,
         "reps_increase_percent_total": 30,
         "rest_time_delta_per_week_minutes": -0.02,
-        "rest_time_minimum_minutes": 0.1
+        "rest_time_minimum_minutes": 0.1,
+        "compound_parent_work_time_static": true
       },
+      "compound_behavior": "For compound exercises (EMOM/Circuit/AMRAP/Interval), work_time stays STATIC across all weeks. Density comes from sub-exercise reps increasing, not time extension. Regular exercises can still increase work_time.",
       "example_3_weeks": {
         "emom_parent": {
-          "note": "Starting from intensity_profiles.emom.moderate (10 minutes base)",
+          "note": "Starting from intensity_profiles.emom.moderate (10 minutes base) - STATIC work_time for density",
           "week1": {"work_time_minutes": 10},
-          "week2": {"work_time_minutes": 12},
-          "week3": {"work_time_minutes": 15}
+          "week2": {"work_time_minutes": 10},
+          "week3": {"work_time_minutes": 10}
         },
         "emom_sub_exercise": {
-          "note": "Starting from 10 base reps",
+          "note": "Starting from 10 base reps - sub-exercises INCREASE reps for density",
           "week1": {"reps": 10},
           "week2": {"reps": 11},
           "week3": {"reps": 12}

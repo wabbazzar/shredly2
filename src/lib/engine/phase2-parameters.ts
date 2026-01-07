@@ -138,6 +138,7 @@ export function applyIntensityProfile(
  * @param weekNumber - Current week number (2, 3, 4, etc.)
  * @param totalWeeks - Total program weeks
  * @param rules - Generation rules configuration
+ * @param exerciseCategory - Optional category for compound exercise detection
  * @returns Parameters for the specified week
  */
 export function applyProgressionScheme(
@@ -145,7 +146,8 @@ export function applyProgressionScheme(
   progressionScheme: "linear" | "density" | "wave_loading" | "volume" | "static",
   weekNumber: number,
   totalWeeks: number,
-  rules: GenerationRules
+  rules: GenerationRules,
+  exerciseCategory?: string
 ): WeekParameters {
   // Get progression rules
   const scheme = rules.progression_schemes[progressionScheme];
@@ -164,7 +166,7 @@ export function applyProgressionScheme(
       return applyLinearProgression(weekN, week1, weekNumber, progressionRules);
 
     case 'density':
-      return applyDensityProgression(weekN, week1, weekNumber, totalWeeks, progressionRules);
+      return applyDensityProgression(weekN, week1, weekNumber, totalWeeks, progressionRules, exerciseCategory);
 
     case 'wave_loading':
       return applyWaveLoading(weekN, week1, weekNumber, totalWeeks, progressionRules);
@@ -228,6 +230,18 @@ function applyLinearProgression(
 }
 
 /**
+ * Helper function to detect if exercise is a compound parent
+ * Compound parents have a category field (emom, circuit, amrap, interval)
+ *
+ * @param exerciseCategory - Optional category from ExerciseStructure
+ * @returns true if this is a compound exercise parent
+ */
+function isCompoundParent(exerciseCategory?: string): boolean {
+  if (!exerciseCategory) return false;
+  return ['emom', 'circuit', 'amrap', 'interval'].includes(exerciseCategory);
+}
+
+/**
  * Applies density progression (increase work time, increase reps, decrease rest)
  */
 function applyDensityProgression(
@@ -235,20 +249,36 @@ function applyDensityProgression(
   week1: WeekParameters,
   weekNumber: number,
   totalWeeks: number,
-  rules: any
+  rules: any,
+  exerciseCategory?: string
 ): WeekParameters {
   const weeksDelta = weekNumber - 1;
 
   // Increase work time (for EMOM, AMRAP, etc.)
+  // CRITICAL: Compound parents should keep work_time STATIC for density progression
+  // Density means "more work in same time", so time stays constant and reps increase
   if (weekN.work_time_minutes !== undefined) {
-    const totalIncrease = rules.work_time_increase_percent_total || 25;
-    const increasePerWeek = (totalIncrease / 100) / (totalWeeks - 1);
-    const calculatedTime = week1.work_time_minutes! * (1 + increasePerWeek * weeksDelta);
-    // Round to half-minute increments for better UX
-    weekN.work_time_minutes = roundToHalfMinute(calculatedTime);
-    // Preserve time unit from week1
-    if (week1.work_time_unit) {
-      weekN.work_time_unit = week1.work_time_unit;
+    const isCompound = isCompoundParent(exerciseCategory);
+
+    if (isCompound) {
+      // Compound parent: work_time stays STATIC (keep week1 value)
+      // Density comes from sub-exercise reps increasing, not time extension
+      weekN.work_time_minutes = week1.work_time_minutes;
+      // Preserve time unit from week1
+      if (week1.work_time_unit) {
+        weekN.work_time_unit = week1.work_time_unit;
+      }
+    } else {
+      // Regular exercise: work_time CAN increase (existing behavior)
+      const totalIncrease = rules.work_time_increase_percent_total || 25;
+      const increasePerWeek = (totalIncrease / 100) / (totalWeeks - 1);
+      const calculatedTime = week1.work_time_minutes! * (1 + increasePerWeek * weeksDelta);
+      // Round to half-minute increments for better UX
+      weekN.work_time_minutes = roundToHalfMinute(calculatedTime);
+      // Preserve time unit from week1
+      if (week1.work_time_unit) {
+        weekN.work_time_unit = week1.work_time_unit;
+      }
     }
   }
 
@@ -385,8 +415,9 @@ export function parameterizeExercise(
   const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers, isSubExercise, exerciseExternalLoad);
 
   // Calculate Week 2 and Week 3 (always required)
-  const week2 = applyProgressionScheme(week1, exercise.progressionScheme, 2, totalWeeks, rules);
-  const week3 = applyProgressionScheme(week1, exercise.progressionScheme, 3, totalWeeks, rules);
+  // Pass exercise.category to enable compound parent detection for density progression
+  const week2 = applyProgressionScheme(week1, exercise.progressionScheme, 2, totalWeeks, rules, exercise.category);
+  const week3 = applyProgressionScheme(week1, exercise.progressionScheme, 3, totalWeeks, rules, exercise.category);
 
   // Build parameterized exercise with required weeks
   const parameterized: ParameterizedExercise = {
@@ -404,7 +435,8 @@ export function parameterizeExercise(
       exercise.progressionScheme,
       weekNum,
       totalWeeks,
-      rules
+      rules,
+      exercise.category
     );
 
     // TypeScript requires explicit assignment due to dynamic keys

@@ -1,5 +1,5 @@
 {
-  "id": "workout_gene_com_1767814024868",
+  "id": "workout_gene_com_1767828330274",
   "name": "General Fitness Beginner Program",
   "description": "2 days per week workout program focused on general fitness. Each session is 20-30 minutes.",
   "version": "2.0.0",
@@ -48,26 +48,95 @@
           "week1": {
             "sets": 3,
             "reps": 4,
-            "rest_time_minutes": 5,
+            "rest_time_minutes": 2.5,
             "rest_time_unit": "minutes"
           },
           "week2": {
             "sets": 3,
             "reps": 3,
-            "rest_time_minutes": 4.5,
+            "rest_time_minutes": 2,
             "rest_time_unit": "minutes"
           },
           "week3": {
             "sets": 3,
             "reps": 3,
-            "rest_time_minutes": 4,
+            "rest_time_minutes": 2,
             "rest_time_unit": "minutes"
           },
           "week4": {
             "sets": 3,
             "reps": 3,
-            "rest_time_minutes": 3.5,
+            "rest_time_minutes": 2,
             "rest_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "Squat Pulses",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week4": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          }
+        },
+        {
+          "name": "Child's Pose Stretch",
+          "week1": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week4": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "Bird Dogs",
+          "week1": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week4": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           }
         }
       ]
@@ -101,26 +170,95 @@
           "week1": {
             "sets": 3,
             "reps": 4,
-            "rest_time_minutes": 5,
+            "rest_time_minutes": 2.5,
             "rest_time_unit": "minutes"
           },
           "week2": {
             "sets": 3,
             "reps": 3,
-            "rest_time_minutes": 4.5,
+            "rest_time_minutes": 2,
             "rest_time_unit": "minutes"
           },
           "week3": {
             "sets": 3,
             "reps": 3,
-            "rest_time_minutes": 4,
+            "rest_time_minutes": 2,
             "rest_time_unit": "minutes"
           },
           "week4": {
             "sets": 3,
             "reps": 3,
-            "rest_time_minutes": 3.5,
+            "rest_time_minutes": 2,
             "rest_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "Squat Pulses",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week4": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          }
+        },
+        {
+          "name": "Child's Pose Stretch",
+          "week1": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week4": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "Bird Dogs",
+          "week1": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
+          },
+          "week4": {
+            "work_time_minutes": 1,
+            "work_time_unit": "minutes"
           }
         }
       ]

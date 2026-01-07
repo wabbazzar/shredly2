@@ -12,14 +12,17 @@ organize repo. organize tests.
 
 # CLI Improvements
 
-- introduce swap keys. tap 'a' twice? is there a swa
+- introduce swap keys. tap 'a' twice? show highlights around blocks to indicate you are in swap mode. ask user if sure before executing the swap
 
-- tap i to pull up information from exercise description database about a selected exercise in the schedule or exercise database
+- tap i to pull up information from exercise description database about a selected exercise in the schedule or exercise database. should work in both edit view and exercise db view.
 
-- emom progressions must round to whole minutes. delta each week should be a whole, even number
+- allow typing double digits to jump to exercise greater than 9 in edit mode
 
+- stop putting flexibility/mobility exercises in the middle - update to data rules
 
 # Under Review
+
+- toggling mode on 'dumbbell weighted crunches' removes weight component when transitioning to time based work - but both modes still should have weight. check logic on this. take a look at standard strength workouts they correctly transition reps to work time while maintaining intregity of the other fields. avoid code bloat. look for patterns
 
 - tapping 'm' for compound blocks changes from sets to time based but the time unit chagnes from seconds to minutes. it should not change time units when tapping m. in addition, this affects the block level work definition e.g. 4. [EMOM] EMOM: Turkish Get-Up + Dumbbell Chest Press + Kettlebell Swings
    Work Time: Week 1: 6 seconds | Week 2: 7 seconds | Week 3: 8 seconds

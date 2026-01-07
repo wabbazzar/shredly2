@@ -75,40 +75,37 @@
           }
         },
         {
-          "name": "Incline Bench Press",
+          "name": "Dumbbell Pullover",
           "category": "strength",
           "week1": {
             "sets": 4,
+            "reps": 8,
             "rest_time_minutes": 4,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
               "value": 80
-            },
-            "work_time_minutes": 60,
-            "work_time_unit": "seconds"
+            }
           },
           "week2": {
             "sets": 4,
+            "reps": 8,
             "rest_time_minutes": 3.5,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
               "value": 85
-            },
-            "work_time_minutes": 4,
-            "work_time_unit": "seconds"
+            }
           },
           "week3": {
             "sets": 4,
+            "reps": 8,
             "rest_time_minutes": 3,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
               "value": 90
-            },
-            "work_time_minutes": 3,
-            "work_time_unit": "seconds"
+            }
           }
         },
         {

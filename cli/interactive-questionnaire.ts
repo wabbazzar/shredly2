@@ -236,7 +236,7 @@ async function main() {
       console.log(`✓ Workout saved to: ${filepath}`);
     }
 
-    console.log('\nThank you for using Shredly! Your workout program is ready.');
+    console.log('\nThank you for using Shredly!');
 
   } catch (error) {
     console.error('An error occurred:', error);

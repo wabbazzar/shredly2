@@ -312,19 +312,39 @@
 
     "volume": {
       "name": "Volume Progression",
-      "description": "Increase sets/reps, weight stays constant",
-      "applies_to": ["strength", "bodyweight"],
+      "description": "Increase sets/reps, weight stays constant. For compound exercises, increases work_time with whole-minute rounding",
+      "applies_to": ["strength", "bodyweight", "emom", "amrap", "circuit", "interval"],
       "rules": {
         "sets_increase_every_n_weeks": 2,
         "sets_maximum": 6,
         "reps_increase_percent_total": 20,
-        "weight_percent_delta_per_week": 0
+        "weight_percent_delta_per_week": 0,
+        "compound_emom_time_increase_per_sub_per_week": 1,
+        "compound_emom_default_sub_count": 2,
+        "compound_amrap_time_increase_per_week": 1,
+        "compound_circuit_increase_time": true,
+        "compound_circuit_time_increase_per_week": 1,
+        "compound_reps_increase_enabled": false,
+        "round_work_time_to_whole_minutes": true
       },
+      "compound_behavior": "For compound exercises (EMOM/AMRAP/Circuit/Interval), work_time increases by whole minutes each week. EMOM increases by (1 min * sub_exercise_count) per week. AMRAP increases by 1 min per week. Circuit/Interval can increase time OR sets (configurable).",
       "example_3_weeks": {
         "note": "Starting from custom base: 3 sets, 8 reps, 65% TM",
         "week1": {"sets": 3, "reps": 8, "weight_percent_tm": 65},
         "week2": {"sets": 4, "reps": 10, "weight_percent_tm": 65},
         "week3": {"sets": 4, "reps": 12, "weight_percent_tm": 65}
+      },
+      "example_3_weeks_emom_3_subs": {
+        "note": "EMOM with 3 sub-exercises - work_time increases by 3 minutes per week",
+        "week1": {"work_time_minutes": 6},
+        "week2": {"work_time_minutes": 9},
+        "week3": {"work_time_minutes": 12}
+      },
+      "example_3_weeks_amrap": {
+        "note": "AMRAP - work_time increases by 1 minute per week",
+        "week1": {"work_time_minutes": 6},
+        "week2": {"work_time_minutes": 7},
+        "week3": {"work_time_minutes": 8}
       }
     },
 

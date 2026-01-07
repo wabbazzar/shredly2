@@ -29,6 +29,15 @@ function roundToHalfMinute(minutes: number): number {
 }
 
 /**
+ * Round time values to whole minutes for compound exercise volume progression
+ * Uses Math.round for unbiased rounding (8.4 -> 8, 8.5 -> 9, 8.6 -> 9)
+ * This ensures EMOM/AMRAP progressions have whole, even minute deltas
+ */
+function roundToWholeMinutes(minutes: number): number {
+  return Math.round(minutes);
+}
+
+/**
  * Applies intensity profile to get Week 1 baseline parameters
  *
  * @param exercise - Exercise structure with name, progression, intensity
@@ -139,6 +148,7 @@ export function applyIntensityProfile(
  * @param totalWeeks - Total program weeks
  * @param rules - Generation rules configuration
  * @param exerciseCategory - Optional category for compound exercise detection
+ * @param subExerciseCount - Optional count of sub-exercises (for compound volume progression)
  * @returns Parameters for the specified week
  */
 export function applyProgressionScheme(
@@ -147,7 +157,8 @@ export function applyProgressionScheme(
   weekNumber: number,
   totalWeeks: number,
   rules: GenerationRules,
-  exerciseCategory?: string
+  exerciseCategory?: string,
+  subExerciseCount?: number
 ): WeekParameters {
   // Get progression rules
   const scheme = rules.progression_schemes[progressionScheme];
@@ -172,7 +183,7 @@ export function applyProgressionScheme(
       return applyWaveLoading(weekN, week1, weekNumber, totalWeeks, progressionRules);
 
     case 'volume':
-      return applyVolumeProgression(weekN, week1, weekNumber, totalWeeks, progressionRules);
+      return applyVolumeProgression(weekN, week1, weekNumber, totalWeeks, progressionRules, exerciseCategory, subExerciseCount);
 
     case 'static':
       // No changes - return week1 as-is
@@ -348,15 +359,65 @@ function applyWaveLoading(
 
 /**
  * Applies volume progression (increase sets and reps, weight stays constant)
+ * For compound exercises, increases work_time with whole-minute rounding
  */
 function applyVolumeProgression(
   weekN: WeekParameters,
   week1: WeekParameters,
   weekNumber: number,
   totalWeeks: number,
-  rules: any
+  rules: any,
+  exerciseCategory?: string,
+  subExerciseCount?: number
 ): WeekParameters {
   const weeksDelta = weekNumber - 1;
+
+  // Handle compound block volume progression FIRST
+  if (isCompoundParent(exerciseCategory)) {
+    if (weekN.work_time_minutes !== undefined) {
+      const baseWorkTime = week1.work_time_minutes!;
+
+      // Determine time increase per week based on compound type
+      let timeIncreasePerWeek = 0;
+
+      if (exerciseCategory === 'emom') {
+        // EMOM: increase by (1 minute * sub_exercise_count) per week
+        const subCount = subExerciseCount || rules.compound_emom_default_sub_count || 2;
+        timeIncreasePerWeek = (rules.compound_emom_time_increase_per_sub_per_week || 1) * subCount;
+      } else if (exerciseCategory === 'amrap') {
+        // AMRAP: increase by 1 minute per week
+        timeIncreasePerWeek = rules.compound_amrap_time_increase_per_week || 1;
+      } else if (exerciseCategory === 'circuit' || exerciseCategory === 'interval') {
+        // Circuit/Interval: optionally increase time OR increase sets (based on config)
+        const shouldIncreaseTime = rules.compound_circuit_increase_time !== false;
+        if (shouldIncreaseTime) {
+          timeIncreasePerWeek = rules.compound_circuit_time_increase_per_week || 1;
+        }
+        // If not increasing time, sets will increase via existing logic below
+      }
+
+      // Calculate new work_time with whole-minute rounding
+      const calculatedTime = baseWorkTime + (timeIncreasePerWeek * weeksDelta);
+      weekN.work_time_minutes = roundToWholeMinutes(calculatedTime);
+
+      // Preserve time unit from week1
+      if (week1.work_time_unit) {
+        weekN.work_time_unit = week1.work_time_unit;
+      }
+    }
+
+    // For compound blocks, reps can also increase if configured
+    if (weekN.reps !== undefined && typeof weekN.reps === 'number' && rules.compound_reps_increase_enabled) {
+      const totalIncrease = rules.reps_increase_percent_total || 20;
+      const increasePerWeek = (totalIncrease / 100) / (totalWeeks - 1);
+      weekN.reps = Math.round(week1.reps as number * (1 + increasePerWeek * weeksDelta));
+    }
+
+    // Return early for compound blocks (don't apply regular set increases)
+    return weekN;
+  }
+
+  // Regular (non-compound) exercise volume progression
 
   // Increase sets every N weeks
   if (weekN.sets !== undefined) {
@@ -414,10 +475,14 @@ export function parameterizeExercise(
   // Get Week 1 baseline
   const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers, isSubExercise, exerciseExternalLoad);
 
+  // Calculate sub-exercise count for compound volume progression
+  const subExerciseCount = exercise.sub_exercises ? exercise.sub_exercises.length : undefined;
+
   // Calculate Week 2 and Week 3 (always required)
-  // Pass exercise.category to enable compound parent detection for density progression
-  const week2 = applyProgressionScheme(week1, exercise.progressionScheme, 2, totalWeeks, rules, exercise.category);
-  const week3 = applyProgressionScheme(week1, exercise.progressionScheme, 3, totalWeeks, rules, exercise.category);
+  // Pass exercise.category to enable compound parent detection for density/volume progression
+  // Pass subExerciseCount for EMOM volume progression calculations
+  const week2 = applyProgressionScheme(week1, exercise.progressionScheme, 2, totalWeeks, rules, exercise.category, subExerciseCount);
+  const week3 = applyProgressionScheme(week1, exercise.progressionScheme, 3, totalWeeks, rules, exercise.category, subExerciseCount);
 
   // Build parameterized exercise with required weeks
   const parameterized: ParameterizedExercise = {
@@ -436,7 +501,8 @@ export function parameterizeExercise(
       weekNum,
       totalWeeks,
       rules,
-      exercise.category
+      exercise.category,
+      subExerciseCount
     );
 
     // TypeScript requires explicit assignment due to dynamic keys

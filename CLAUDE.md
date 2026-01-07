@@ -409,7 +409,7 @@ These should be answered in the CLI prototype phase.
 
 **Test Infrastructure Highlights**:
 - **Vitest**: SvelteKit's official test framework
-- **216 tests passing**: 200 unit tests + 16 integration tests
+- **224 tests passing**: 208 unit tests + 16 integration tests
 - **Critical path coverage**: Workout generation, exercise selection, parameter calculation, metadata-driven field visibility
 - **Test fixtures**: 6 questionnaire scenarios (beginner → expert, bodyweight → gym)
 - **Validation helpers**: Workout structure, exercise references, duration constraints
@@ -435,9 +435,10 @@ These should be answered in the CLI prototype phase.
 - ✅ Ticket #008 (2026-01-07): Fix editor weighted time-based exercise field visibility
   * Created shared exercise-metadata.ts module as single source of truth
   * Migrated editor to use metadata-driven weight field visibility (not workMode)
+  * Migrated CLI formatter to use metadata-driven weight display (not workMode)
   * Fixed bug: weighted time-based exercises now show weight in both modes
-  * 91 new tests (67 for metadata module + 24 for editor integration)
-  * Generator and editor now follow consistent external_load rules
+  * 99 new tests (67 metadata + 24 editor + 8 formatter)
+  * Generator, editor, and formatter now follow consistent external_load rules
 - ✅ Ticket #007 (2026-01-06): Manual compound exercise block creation feature
   * Added createCompoundBlock(), setCompoundBlockType(), updateCompoundBlockName() methods
   * Keyboard shortcuts: 'b' (create), 'e'/'a'/'c'/'i' (change type)

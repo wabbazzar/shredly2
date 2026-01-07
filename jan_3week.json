@@ -79,33 +79,33 @@
           "category": "strength",
           "week1": {
             "sets": 4,
-            "reps": 8,
             "rest_time_minutes": 4,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
               "value": 80
-            }
+            },
+            "reps": 8
           },
           "week2": {
             "sets": 4,
-            "reps": 8,
             "rest_time_minutes": 3.5,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
               "value": 85
-            }
+            },
+            "reps": 8
           },
           "week3": {
             "sets": 4,
-            "reps": 8,
             "rest_time_minutes": 3,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
               "value": 90
-            }
+            },
+            "reps": 8
           }
         },
         {
@@ -127,25 +127,25 @@
             {
               "name": "Turkish Get-Up",
               "week1": {
-                "reps": 8,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
-                }
+                },
+                "reps": 8
               },
               "week2": {
-                "reps": 9,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
-                }
+                },
+                "reps": 9
               },
               "week3": {
-                "reps": 10,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
-                }
+                },
+                "reps": 10
               }
             },
             {
@@ -807,17 +807,18 @@
       "focus": "Mobility",
       "exercises": [
         {
-          "name": "Knee to Chest",
+          "name": "Dynamic Movement",
+          "category": "mobility",
           "week1": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
           }
         },

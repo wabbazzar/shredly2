@@ -66,6 +66,21 @@ export class WorkoutEditor {
   }
 
   /**
+   * Determine if exercise uses reps or work_time (matches formatter logic)
+   */
+  private determineWorkMode(exercise: ParameterizedExercise): 'reps' | 'work_time' | null {
+    const week1 = (exercise as any).week1;
+    if (!week1) return null;
+
+    const hasReps = week1.reps !== undefined;
+    const hasWorkTime = week1.work_time_minutes !== undefined;
+
+    if (hasReps) return 'reps';
+    if (hasWorkTime) return 'work_time';
+    return null;
+  }
+
+  /**
    * Get all editable fields from the workout (for 't' navigation)
    */
   getAllEditableFields(): EditableField[] {
@@ -88,6 +103,7 @@ export class WorkoutEditor {
         });
 
         // Week parameters (sets, reps, weight, etc.)
+        const workMode = this.determineWorkMode(exercise);
         for (let w = 1; w <= this.workout.weeks; w++) {
           const weekKey = `week${w}`;
           const weekParams = (exercise as any)[weekKey] as WeekParameters | undefined;
@@ -105,7 +121,7 @@ export class WorkoutEditor {
               });
             }
 
-            if (weekParams.reps !== undefined) {
+            if (workMode === 'reps' && weekParams.reps !== undefined) {
               fields.push({
                 location: `${baseLocation}.${weekKey}.reps`,
                 dayKey,
@@ -117,7 +133,7 @@ export class WorkoutEditor {
               });
             }
 
-            if (weekParams.weight !== undefined) {
+            if (workMode === 'reps' && weekParams.weight !== undefined) {
               fields.push({
                 location: `${baseLocation}.${weekKey}.weight`,
                 dayKey,
@@ -172,12 +188,13 @@ export class WorkoutEditor {
             });
 
             // Sub-exercise week parameters
+            const subWorkMode = this.determineWorkMode(subEx as ParameterizedExercise);
             for (let w = 1; w <= this.workout.weeks; w++) {
               const weekKey = `week${w}`;
               const weekParams = (subEx as any)[weekKey] as WeekParameters | undefined;
 
               if (weekParams) {
-                if (weekParams.reps !== undefined) {
+                if (subWorkMode === 'reps' && weekParams.reps !== undefined) {
                   fields.push({
                     location: `${subLocation}.${weekKey}.reps`,
                     dayKey,
@@ -190,7 +207,7 @@ export class WorkoutEditor {
                   });
                 }
 
-                if (weekParams.weight !== undefined) {
+                if (subWorkMode === 'reps' && weekParams.weight !== undefined) {
                   fields.push({
                     location: `${subLocation}.${weekKey}.weight`,
                     dayKey,

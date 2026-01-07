@@ -152,6 +152,42 @@ export class WorkoutEditor {
                 type: 'number'
               });
             }
+
+            if ((weekParams as any).tempo !== undefined) {
+              fields.push({
+                location: `${baseLocation}.${weekKey}.tempo`,
+                dayKey,
+                exerciseIndex: exIndex,
+                weekKey,
+                fieldName: 'tempo',
+                currentValue: (weekParams as any).tempo,
+                type: 'string'
+              });
+            }
+
+            if ((weekParams as any).rest_time_unit !== undefined) {
+              fields.push({
+                location: `${baseLocation}.${weekKey}.rest_time_unit`,
+                dayKey,
+                exerciseIndex: exIndex,
+                weekKey,
+                fieldName: 'rest_time_unit',
+                currentValue: (weekParams as any).rest_time_unit,
+                type: 'string'
+              });
+            }
+
+            if ((weekParams as any).work_time_unit !== undefined) {
+              fields.push({
+                location: `${baseLocation}.${weekKey}.work_time_unit`,
+                dayKey,
+                exerciseIndex: exIndex,
+                weekKey,
+                fieldName: 'work_time_unit',
+                currentValue: (weekParams as any).work_time_unit,
+                type: 'string'
+              });
+            }
           }
         }
 
@@ -200,6 +236,45 @@ export class WorkoutEditor {
                     fieldName: 'weight',
                     currentValue: weekParams.weight,
                     type: 'weight'
+                  });
+                }
+
+                if ((weekParams as any).tempo !== undefined) {
+                  fields.push({
+                    location: `${subLocation}.${weekKey}.tempo`,
+                    dayKey,
+                    exerciseIndex: exIndex,
+                    subExerciseIndex: subIndex,
+                    weekKey,
+                    fieldName: 'tempo',
+                    currentValue: (weekParams as any).tempo,
+                    type: 'string'
+                  });
+                }
+
+                if ((weekParams as any).rest_time_unit !== undefined) {
+                  fields.push({
+                    location: `${subLocation}.${weekKey}.rest_time_unit`,
+                    dayKey,
+                    exerciseIndex: exIndex,
+                    subExerciseIndex: subIndex,
+                    weekKey,
+                    fieldName: 'rest_time_unit',
+                    currentValue: (weekParams as any).rest_time_unit,
+                    type: 'string'
+                  });
+                }
+
+                if ((weekParams as any).work_time_unit !== undefined) {
+                  fields.push({
+                    location: `${subLocation}.${weekKey}.work_time_unit`,
+                    dayKey,
+                    exerciseIndex: exIndex,
+                    subExerciseIndex: subIndex,
+                    weekKey,
+                    fieldName: 'work_time_unit',
+                    currentValue: (weekParams as any).work_time_unit,
+                    type: 'string'
                   });
                 }
               }

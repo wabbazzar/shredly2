@@ -20,6 +20,7 @@ import {
 import { browseExerciseDatabase } from './exercise-db-browser.js';
 import hotkeysConfig from '../cli_hotkeys.json' with { type: 'json' };
 import exerciseDatabase from '../../src/data/exercise_database.json' with { type: 'json' };
+import exerciseDescriptions from '../../src/data/exercise_descriptions.json' with { type: 'json' };
 
 type EditorMode = 'view' | 'edit' | 'command' | 'help';
 type ViewMode = 'week' | 'day'; // week = all days, day = one day at a time
@@ -34,6 +35,15 @@ interface EditorState {
   statusMessage: string;
   statusType: 'info' | 'success' | 'error';
   savedThisSession: boolean; // track if save was successful this session
+  numberInputBuffer: string; // buffer for multi-digit exercise numbers
+  numberInputTimeout: NodeJS.Timeout | null; // timeout for multi-digit input
+  lastEnterPressTime: number; // timestamp of last enter press (for double-enter detection)
+  swapModeState: {
+    active: boolean;
+    firstExerciseIndex?: number;
+    firstDayKey?: string;
+    lastATapTime: number;
+  };
 }
 
 export interface EditorOptions {
@@ -68,7 +78,14 @@ export class InteractiveWorkoutEditor {
       commandBuffer: '',
       statusMessage: `Loaded workout: ${workout_.name}`,
       statusType: 'info',
-      savedThisSession: false
+      savedThisSession: false,
+      numberInputBuffer: '',
+      numberInputTimeout: null,
+      lastEnterPressTime: 0,
+      swapModeState: {
+        active: false,
+        lastATapTime: 0
+      }
     };
   }
 
@@ -144,6 +161,17 @@ export class InteractiveWorkoutEditor {
   private async handleViewModeKey(str: string, key: any): Promise<void> {
     const hotkeys = hotkeysConfig.view_mode;
 
+    // Clear number input buffer on Escape
+    if (key.name === 'escape' && this.state.numberInputBuffer) {
+      if (this.state.numberInputTimeout) {
+        clearTimeout(this.state.numberInputTimeout);
+      }
+      this.state.numberInputBuffer = '';
+      this.state.numberInputTimeout = null;
+      this.setStatus('Jump cancelled', 'info');
+      return;
+    }
+
     // Navigation
     if (str === hotkeys.navigation.next_editable_field) {
       this.navigateToNextField();
@@ -168,18 +196,46 @@ export class InteractiveWorkoutEditor {
       this.setStatus('Switched to Week view', 'info');
     }
 
-    // Jump to exercise number
-    else if (str && /^[1-9]$/.test(str)) {
-      const exerciseNum = parseInt(str);
+    // Show exercise information
+    else if (str === 'i' || str === 'I') {
+      this.showExerciseInfo();
+    }
 
-      // In day view, only search within current day
-      const dayKey = this.state.viewMode === 'day' ? this.dayKeys[this.state.currentDayIndex] : undefined;
-      const targetField = this.findFieldByExerciseNumber(exerciseNum - 1, dayKey);
-
-      if (targetField !== -1) {
-        this.state.selectedFieldIndex = targetField;
-        this.syncDayViewToSelectedField();
+    // Jump to exercise number (supports multi-digit: 10, 11, 12, etc.)
+    else if (str && /^[0-9]$/.test(str)) {
+      // Clear any existing timeout
+      if (this.state.numberInputTimeout) {
+        clearTimeout(this.state.numberInputTimeout);
       }
+
+      // Append digit to buffer
+      this.state.numberInputBuffer += str;
+      this.setStatus(`Jumping to exercise: ${this.state.numberInputBuffer}...`, 'info');
+
+      // Set timeout to execute jump after 500ms of no input
+      this.state.numberInputTimeout = setTimeout(() => {
+        const exerciseNum = parseInt(this.state.numberInputBuffer);
+
+        if (exerciseNum > 0) {
+          // In day view, only search within current day
+          const dayKey = this.state.viewMode === 'day' ? this.dayKeys[this.state.currentDayIndex] : undefined;
+          const targetField = this.findFieldByExerciseNumber(exerciseNum - 1, dayKey);
+
+          if (targetField !== -1) {
+            this.state.selectedFieldIndex = targetField;
+            this.syncDayViewToSelectedField();
+            this.setStatus(`Jumped to exercise ${exerciseNum}`, 'success');
+          } else {
+            this.setStatus(`Exercise ${exerciseNum} not found`, 'error');
+          }
+        } else {
+          this.setStatus('Invalid exercise number', 'error');
+        }
+
+        // Clear buffer
+        this.state.numberInputBuffer = '';
+        this.state.numberInputTimeout = null;
+      }, 500);
     }
 
     // Compound block creation (new feature)
@@ -189,7 +245,9 @@ export class InteractiveWorkoutEditor {
 
     // Compound block type change (context-sensitive)
     // If on a compound exercise parent, change block type
-    // Otherwise, fallback to existing behavior (e.g., 'e' opens exercise database)
+    // Otherwise:
+    //   - 'e' opens exercise database
+    //   - 'a' activates swap mode (double-tap)
     else if (str === 'e' || str === 'a' || str === 'c' || str === 'i') {
       const field = this.editableFields[this.state.selectedFieldIndex];
 
@@ -211,12 +269,15 @@ export class InteractiveWorkoutEditor {
       } else if (str === 'e') {
         // Fallback: 'e' opens exercise database when not on compound parent
         await this.openExerciseDatabase();
+      } else if (str === 'a') {
+        // Fallback: 'a' activates swap mode when not on compound parent
+        this.handleSwapMode();
       }
     }
 
     // Actions
     else if (str === hotkeys.actions.replace_current_field) {
-      await this.enterEditMode();
+      await this.enterEditMode(true); // Vim-like: auto-clear buffer on 'r'
     } else if (str === hotkeys.actions.swap_with_random) {
       this.swapWithRandomExercise();
     } else if (str === hotkeys.actions.toggle_work_definition) {
@@ -247,8 +308,19 @@ export class InteractiveWorkoutEditor {
       this.state.editBuffer = '';
       this.setStatus('Edit cancelled', 'info');
     } else if (key.name === 'return') {
-      // Confirm edit
-      this.confirmEdit();
+      // Detect double-enter for broadcast-to-all-weeks
+      const now = Date.now();
+      const timeSinceLastEnter = now - this.state.lastEnterPressTime;
+
+      if (timeSinceLastEnter < 500 && timeSinceLastEnter > 0) {
+        // Double-enter detected - broadcast to all weeks
+        this.confirmEditAndBroadcast();
+      } else {
+        // Single enter - normal behavior
+        this.confirmEdit();
+      }
+
+      this.state.lastEnterPressTime = now;
       this.state.mode = 'view';
     } else if (key.name === 'tab') {
       // Confirm and jump to next field
@@ -291,8 +363,9 @@ export class InteractiveWorkoutEditor {
 
   /**
    * Enter edit mode for current field
+   * @param autoClear - If true, start with empty buffer (vim-like replace)
    */
-  private async enterEditMode(): Promise<void> {
+  private async enterEditMode(autoClear: boolean = false): Promise<void> {
     const field = this.editableFields[this.state.selectedFieldIndex];
     if (!field) return;
 
@@ -305,7 +378,8 @@ export class InteractiveWorkoutEditor {
     }
 
     this.state.mode = 'edit';
-    this.state.editBuffer = String(field.currentValue || '');
+    // Auto-clear for vim-like replace behavior
+    this.state.editBuffer = autoClear ? '' : String(field.currentValue || '');
     this.setStatus(`Editing ${field.fieldName} - Press Enter to confirm, Esc to cancel`, 'info');
   }
 
@@ -401,6 +475,69 @@ export class InteractiveWorkoutEditor {
       this.editableFields = this.editor.getAllEditableFields();
     } else {
       this.setStatus('Edit failed', 'error');
+    }
+
+    this.state.editBuffer = '';
+  }
+
+  /**
+   * Confirm edit and broadcast value to all weeks
+   * Only works for week-specific fields (sets, reps, weight, rest_time, work_time, tempo, rpe, rir)
+   */
+  private confirmEditAndBroadcast(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    // Special handling for insertion points - not supported for broadcast
+    if (field.type === 'insertion_point') {
+      this.setStatus('Cannot broadcast insertion points', 'error');
+      return;
+    }
+
+    // Check if this is a week-specific field
+    const weekSpecificFields = ['sets', 'reps', 'weight', 'rest_time', 'work_time', 'tempo', 'rpe', 'rir'];
+    if (!weekSpecificFields.includes(field.fieldName)) {
+      this.setStatus(`Cannot broadcast ${field.fieldName} - not a week-specific field`, 'error');
+      return;
+    }
+
+    const newValue = this.state.editBuffer.trim();
+
+    // Type conversion
+    let typedValue: any = newValue;
+    if (field.type === 'number') {
+      typedValue = parseFloat(newValue);
+      if (isNaN(typedValue)) {
+        this.setStatus('Invalid number', 'error');
+        return;
+      }
+    }
+
+    // Broadcast to all weeks
+    const workout = this.editor.getWorkout();
+    const numWeeks = workout.weeks;
+    let successCount = 0;
+
+    for (let weekIndex = 0; weekIndex < numWeeks; weekIndex++) {
+      // Create a field location for this week
+      const broadcastField = {
+        ...field,
+        weekIndex,
+        location: field.location.replace(/\[week:\d+\]/, `[week:${weekIndex}]`)
+      };
+
+      const success = this.editor.editField(broadcastField, typedValue);
+      if (success) {
+        successCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      this.setStatus(`Broadcasted ${field.fieldName}=${typedValue} to all ${numWeeks} weeks`, 'success');
+      // Refresh editable fields
+      this.editableFields = this.editor.getAllEditableFields();
+    } else {
+      this.setStatus('Broadcast failed', 'error');
     }
 
     this.state.editBuffer = '';
@@ -914,6 +1051,114 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
+   * Handle swap mode activation (double-tap 'a')
+   * First tap: mark first exercise
+   * Second tap (within 1 second): mark second exercise and prompt for confirmation
+   */
+  private handleSwapMode(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    // Only allow swapping on exercise name fields (not insertion points)
+    if (field.fieldName !== 'name' || field.type === 'insertion_point') {
+      this.setStatus('Navigate to an exercise name field to swap', 'error');
+      return;
+    }
+
+    const now = Date.now();
+    const timeSinceLastATap = now - this.state.swapModeState.lastATapTime;
+
+    // Check if this is a double-tap (within 1 second)
+    if (this.state.swapModeState.active && timeSinceLastATap < 1000) {
+      // Second tap - confirm swap
+      const firstExerciseIndex = this.state.swapModeState.firstExerciseIndex;
+      const firstDayKey = this.state.swapModeState.firstDayKey;
+      const secondExerciseIndex = field.exerciseIndex;
+      const secondDayKey = field.dayKey;
+
+      // Can't swap an exercise with itself
+      if (firstDayKey === secondDayKey && firstExerciseIndex === secondExerciseIndex) {
+        this.setStatus('Cannot swap exercise with itself', 'error');
+        this.state.swapModeState.active = false;
+        return;
+      }
+
+      // Get exercise names for confirmation prompt
+      const workout = this.editor.getWorkout();
+      const firstExercise = workout.days[firstDayKey!].exercises[firstExerciseIndex!];
+      const secondExercise = workout.days[secondDayKey].exercises[secondExerciseIndex];
+
+      // Show confirmation prompt
+      this.promptSwapConfirmation(
+        firstDayKey!,
+        firstExerciseIndex!,
+        firstExercise.name,
+        secondDayKey,
+        secondExerciseIndex,
+        secondExercise.name
+      );
+
+      // Clear swap mode
+      this.state.swapModeState.active = false;
+    } else {
+      // First tap - mark exercise
+      this.state.swapModeState.active = true;
+      this.state.swapModeState.firstExerciseIndex = field.exerciseIndex;
+      this.state.swapModeState.firstDayKey = field.dayKey;
+      this.setStatus(`Exercise marked for swap. Tap 'a' on another exercise to swap.`, 'info');
+    }
+
+    this.state.swapModeState.lastATapTime = now;
+  }
+
+  /**
+   * Prompt user to confirm exercise swap
+   */
+  private promptSwapConfirmation(
+    dayKey1: string,
+    exerciseIndex1: number,
+    exerciseName1: string,
+    dayKey2: string,
+    exerciseIndex2: number,
+    exerciseName2: string
+  ): void {
+    console.clear();
+    console.log(chalk.yellow.bold('=== SWAP EXERCISES ==='));
+    console.log('');
+    console.log(`  ${chalk.cyan('Exercise A:')} ${exerciseName1} (${dayKey1}, position ${exerciseIndex1 + 1})`);
+    console.log(`  ${chalk.cyan('Exercise B:')} ${exerciseName2} (${dayKey2}, position ${exerciseIndex2 + 1})`);
+    console.log('');
+    console.log(chalk.yellow(`Swap these exercises?`));
+    console.log('');
+    console.log(`  ${chalk.green('y')} - Yes, swap them`);
+    console.log(`  ${chalk.red('n')} - No, cancel`);
+    console.log('');
+
+    // Wait for y/n keypress
+    const handler = (str: string, key: any) => {
+      process.stdin.removeListener('keypress', handler);
+
+      if (str === 'y' || str === 'Y') {
+        // Execute swap
+        const result = this.editor.swapExercises(dayKey1, exerciseIndex1, dayKey2, exerciseIndex2);
+
+        if (result.success) {
+          this.setStatus(result.message, 'success');
+          this.editableFields = this.editor.getAllEditableFields();
+        } else {
+          this.setStatus(result.message, 'error');
+        }
+      } else {
+        this.setStatus('Swap cancelled', 'info');
+      }
+
+      this.render();
+    };
+
+    process.stdin.once('keypress', handler);
+  }
+
+  /**
    * Check if the current exercise is a compound exercise
    */
   private isCurrentExerciseCompound(): boolean {
@@ -1071,6 +1316,93 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
+   * Show exercise information from exercise_descriptions.json
+   */
+  private showExerciseInfo(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field) return;
+
+    // Get exercise name from current field
+    let exerciseName: string | undefined;
+
+    if (field.fieldName === 'name' && field.type !== 'insertion_point') {
+      exerciseName = String(field.currentValue);
+    } else {
+      this.setStatus('Navigate to an exercise name field first', 'error');
+      return;
+    }
+
+    if (!exerciseName) {
+      this.setStatus('No exercise selected', 'error');
+      return;
+    }
+
+    // Look up exercise in descriptions database
+    const descriptions = exerciseDescriptions as Record<string, {
+      description: {
+        overview: string;
+        setup: string;
+        movement: string;
+        cues: string;
+      }
+    }>;
+
+    const exerciseInfo = descriptions[exerciseName];
+
+    if (!exerciseInfo) {
+      this.setStatus(`No description found for: ${exerciseName}`, 'error');
+      return;
+    }
+
+    // Get exercise metadata from exercise database
+    const exerciseData = this.findExerciseInDatabase(exerciseName);
+
+    // Render description overlay
+    console.clear();
+    console.log(chalk.cyan.bold('='.repeat(60)));
+    console.log(chalk.cyan.bold(`EXERCISE: ${exerciseName}`));
+    console.log(chalk.cyan.bold('='.repeat(60)));
+    console.log('');
+
+    if (exerciseData) {
+      console.log(chalk.gray(`Category: ${exerciseData.category} | Difficulty: ${exerciseData.difficulty} | External Load: ${exerciseData.external_load}`));
+      if (exerciseData.muscle_groups && exerciseData.muscle_groups.length > 0) {
+        console.log(chalk.gray(`Muscles: ${exerciseData.muscle_groups.join(', ')}`));
+      }
+      if (exerciseData.equipment && exerciseData.equipment.length > 0) {
+        console.log(chalk.gray(`Equipment: ${exerciseData.equipment.join(', ')}`));
+      }
+      console.log('');
+    }
+
+    console.log(chalk.yellow.bold('OVERVIEW:'));
+    console.log(exerciseInfo.description.overview);
+    console.log('');
+
+    console.log(chalk.yellow.bold('SETUP:'));
+    console.log(exerciseInfo.description.setup);
+    console.log('');
+
+    console.log(chalk.yellow.bold('MOVEMENT:'));
+    console.log(exerciseInfo.description.movement);
+    console.log('');
+
+    console.log(chalk.yellow.bold('CUES:'));
+    console.log(exerciseInfo.description.cues);
+    console.log('');
+
+    console.log(chalk.gray('-'.repeat(60)));
+    console.log(chalk.gray('Press any key to return to editor...'));
+
+    // Wait for keypress
+    const handler = () => {
+      process.stdin.removeListener('keypress', handler);
+      this.render();
+    };
+    process.stdin.once('keypress', handler);
+  }
+
+  /**
    * Render help screen
    */
   private renderHelp(): void {
@@ -1080,21 +1412,26 @@ export class InteractiveWorkoutEditor {
     console.log('  d/w         - Toggle Day/Week view');
     console.log('  ← →         - Navigate between days (Day view)');
     console.log('  t/T         - Jump to next/previous editable field');
-    console.log('  1-9         - Jump to exercise number');
-    console.log('  r           - Replace/edit field (or add exercise by name)');
+    console.log('  1-99        - Jump to exercise number (multi-digit supported)');
+    console.log('  r           - Replace/edit field (vim-like: auto-clears value)');
     console.log('  e           - Open exercise database browser');
+    console.log('  i           - Show exercise info (descriptions, cues, setup)');
+    console.log('  a (2x)      - Swap mode: tap twice to swap exercises');
     console.log('  s           - Swap/add random matching exercise');
     console.log('  m           - Toggle work definition (reps <-> work_time)');
+    console.log('  b           - Create compound block (EMOM/AMRAP/Circuit/Interval)');
     console.log('  Del         - Delete current exercise');
     console.log('  u           - Undo last change');
     console.log('  :           - Enter command mode');
     console.log('  q           - Quit (checks for unsaved changes)');
     console.log('');
     console.log(chalk.gray('Note: On <add exercise> markers, r/e/s will add exercises'));
+    console.log(chalk.gray('Note: On compound parent names, e/a/c/i change block type'));
     console.log('');
     console.log(chalk.yellow('EDIT MODE:'));
     console.log('  Type        - Enter new value');
-    console.log('  Enter       - Confirm edit');
+    console.log('  Enter       - Confirm edit (save to current week)');
+    console.log('  Enter (2x)  - Broadcast to all weeks (week-specific fields only)');
     console.log('  Tab         - Confirm and jump to next field');
     console.log('  Esc         - Cancel edit');
     console.log('');
@@ -1105,6 +1442,13 @@ export class InteractiveWorkoutEditor {
     console.log('  :wq         - Save and quit');
     console.log('  :q!         - Force quit (discard changes)');
     console.log('  :validate   - Validate workout structure');
+    console.log('');
+    console.log(chalk.cyan('NEW FEATURES:'));
+    console.log('  • Multi-digit jump: Type "15" to jump to exercise 15');
+    console.log('  • Exercise info: Press "i" on any exercise name for details');
+    console.log('  • Swap mode: Tap "a" on first exercise, then "a" on second');
+    console.log('  • Broadcast: Press Enter twice to copy value to all weeks');
+    console.log('  • Vim replace: "r" now auto-clears the field (no backspace needed)');
     console.log('');
     console.log(chalk.gray('Press Esc or Q to close help'));
   }

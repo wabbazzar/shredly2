@@ -1090,6 +1090,69 @@ export class WorkoutEditor {
   }
 
   /**
+   * Swap two exercises (can be in same day or different days)
+   *
+   * @param dayKey1 - Day key for first exercise
+   * @param exerciseIndex1 - Index of first exercise
+   * @param dayKey2 - Day key for second exercise
+   * @param exerciseIndex2 - Index of second exercise
+   * @returns Success result with message
+   */
+  swapExercises(
+    dayKey1: string,
+    exerciseIndex1: number,
+    dayKey2: string,
+    exerciseIndex2: number
+  ): { success: boolean; message: string } {
+    // Validate day keys
+    if (!this.workout.days[dayKey1]) {
+      return { success: false, message: `Day ${dayKey1} not found` };
+    }
+    if (!this.workout.days[dayKey2]) {
+      return { success: false, message: `Day ${dayKey2} not found` };
+    }
+
+    const day1 = this.workout.days[dayKey1];
+    const day2 = this.workout.days[dayKey2];
+
+    // Validate exercise indices
+    if (exerciseIndex1 < 0 || exerciseIndex1 >= day1.exercises.length) {
+      return { success: false, message: `Exercise index ${exerciseIndex1} out of range in ${dayKey1}` };
+    }
+    if (exerciseIndex2 < 0 || exerciseIndex2 >= day2.exercises.length) {
+      return { success: false, message: `Exercise index ${exerciseIndex2} out of range in ${dayKey2}` };
+    }
+
+    // Perform swap
+    const temp = day1.exercises[exerciseIndex1];
+    day1.exercises[exerciseIndex1] = day2.exercises[exerciseIndex2];
+    day2.exercises[exerciseIndex2] = temp;
+
+    // Add to undo stack
+    const undoEntry: UndoEntry = {
+      timestamp: Date.now(),
+      action: `Swapped ${day1.exercises[exerciseIndex1].name} with ${day2.exercises[exerciseIndex2].name}`,
+      location: `${dayKey1}.exercises[${exerciseIndex1}] <-> ${dayKey2}.exercises[${exerciseIndex2}]`,
+      previousValue: { dayKey1, exerciseIndex1, dayKey2, exerciseIndex2 },
+      newValue: { dayKey1, exerciseIndex1, dayKey2, exerciseIndex2 },
+      reverseOperation: () => {
+        // Reverse swap
+        const temp = day1.exercises[exerciseIndex1];
+        day1.exercises[exerciseIndex1] = day2.exercises[exerciseIndex2];
+        day2.exercises[exerciseIndex2] = temp;
+      }
+    };
+
+    this.addUndo(undoEntry);
+    this.modified = true;
+
+    return {
+      success: true,
+      message: `Swapped ${day2.exercises[exerciseIndex2].name} with ${day1.exercises[exerciseIndex1].name}`
+    };
+  }
+
+  /**
    * Private helper: add to undo stack
    */
   private addUndo(entry: UndoEntry): void {

@@ -946,89 +946,143 @@
           ]
         },
         {
-          "name": "Restorative Yoga",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "EMOM: Gentle Walk + Stretching + Overhead Extension",
+          "name": "[INTERVAL] INTERVAL: Renegade Rows + Kettlebell Swings + Single-arm Overhead Carry + Reverse Lunge",
+          "category": "interval",
+          "sub_exercises": [
+            {
+              "name": "Renegade Rows",
+              "week1": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              },
+              "week2": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              },
+              "week3": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              }
+            },
+            {
+              "name": "Kettlebell Swings",
+              "week1": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              },
+              "week2": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              },
+              "week3": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              }
+            },
+            {
+              "name": "Single-arm Overhead Carry + Reverse Lunge",
+              "week1": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              },
+              "week2": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              },
+              "week3": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 8,
+                "work_time_unit": "seconds"
+              }
+            }
+          ],
           "week1": {
             "work_time_minutes": 6,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 7,
+            "work_time_minutes": 8,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 7.5,
+            "work_time_minutes": 10,
             "work_time_unit": "minutes"
-          },
-          "category": "emom",
+          }
+        },
+        {
+          "name": "[CIRCUIT] CIRCUIT: Curtsy Lunges",
+          "category": "circuit",
           "sub_exercises": [
             {
-              "name": "Gentle Walk + Stretching",
+              "name": "Curtsy Lunges",
               "week1": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
-              },
-              "week2": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week3": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              }
-            },
-            {
-              "name": "Overhead Extension",
-              "week1": {
-                "reps": 8,
+                "reps": 50,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week2": {
-                "reps": 9,
+                "reps": 50,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "reps": 10,
+                "reps": 50,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               }
             }
-          ]
-        },
-        {
-          "name": "Hip Opening Flow",
+          ],
           "week1": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 3,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 3,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 3,
             "work_time_unit": "minutes"
           }
         },

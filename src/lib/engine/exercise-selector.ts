@@ -502,12 +502,16 @@ export function roundRobinSelectExercises(
     rules.category_workout_structure.category_priority_by_goal[answers.primary_goal];
 
   // Determine which layers should use compound exercises
+  // When multiple compound types are available, randomly select one for variety
   const compoundLayersMap = new Map<string, string>();
   for (const layer of layerOrder) {
     const categories = categoryPriorities[layer as keyof typeof categoryPriorities] as string[] | undefined;
     if (categories) {
-      const compoundCat = categories.find(cat => isCompoundCategory(cat));
-      if (compoundCat) {
+      const compoundCats = categories.filter(cat => isCompoundCategory(cat));
+      if (compoundCats.length > 0) {
+        // Randomly select from available compound types for equal representation
+        const selectedIndex = Math.floor(random() * compoundCats.length);
+        const compoundCat = compoundCats[selectedIndex];
         compoundLayersMap.set(layer, compoundCat);
       }
     }

@@ -423,6 +423,21 @@ These should be answered in the CLI prototype phase.
 - **Smart filtering**: Equipment-aware, experience-based, muscle group targeting
 - **Progressive overload**: Linear, volume, density, wave loading progressions
 
+**CLI Workout Editor (Complete)**:
+- **Interactive editing**: Vim-like modal interface with field navigation
+- **Exercise replacement**: Browse 326 exercises, smart defaults on replacement
+- **Manual compound blocks**: Create EMOM/AMRAP/Circuit/Interval blocks with 'b' key
+- **Block type switching**: Change compound block types with 'e', 'a', 'c', 'i' keys
+- **Visual feedback**: Colored type prefixes, empty block placeholders, undo support
+- **Test coverage**: 96 passing unit tests (29 for compound blocks)
+
+**Recent Completions (2026-01-06)**:
+- ✅ Ticket #007: Manual compound exercise block creation feature
+  * Added createCompoundBlock(), setCompoundBlockType(), updateCompoundBlockName() methods
+  * Keyboard shortcuts: 'b' (create), 'e'/'a'/'c'/'i' (change type)
+  * Visual enhancements: colored prefixes, empty block placeholders
+  * Comprehensive test coverage with full undo support
+
 **Current Focus**: Phase 2 (Core UI Development)
 
 **Next Steps**:
@@ -432,7 +447,7 @@ These should be answered in the CLI prototype phase.
 4. Add localStorage persistence for workout programs
 5. Create workout display components
 
-**Next Developer**: CLI prototype and engine are complete! All generation logic is tested and working. Read tests/README.md for test infrastructure patterns. Focus on building the SvelteKit UI while reusing the validated engine from src/lib/engine/.
+**Next Developer**: CLI prototype and engine are complete! All generation logic is tested and working. Manual compound block creation now fully implemented in CLI editor. Read tests/README.md for test infrastructure patterns. Focus on building the SvelteKit UI while reusing the validated engine from src/lib/engine/.
 
 ---
 

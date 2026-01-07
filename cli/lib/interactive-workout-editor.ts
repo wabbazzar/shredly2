@@ -332,11 +332,11 @@ export class InteractiveWorkoutEditor {
         return;
       }
 
-      // Check if we're inserting into a compound exercise
+      // Check if we're inserting into a compound exercise (even if empty)
       const workout = this.editor.getWorkout();
       const day = workout.days[field.dayKey];
       const referenceExercise = day?.exercises[field.exerciseIndex];
-      const isCompoundExercise = referenceExercise?.sub_exercises && referenceExercise.sub_exercises.length > 0;
+      const isCompoundExercise = referenceExercise?.sub_exercises !== undefined;
 
       let result: any;
 
@@ -435,11 +435,11 @@ export class InteractiveWorkoutEditor {
     if (result.selected && result.exerciseName) {
       // Special handling for insertion points
       if (field.type === 'insertion_point') {
-        // Check if we're inserting into a compound exercise
+        // Check if we're inserting into a compound exercise (even if empty)
         const workout = this.editor.getWorkout();
         const day = workout.days[field.dayKey];
         const referenceExercise = day?.exercises[field.exerciseIndex];
-        const isCompoundExercise = referenceExercise?.sub_exercises && referenceExercise.sub_exercises.length > 0;
+        const isCompoundExercise = referenceExercise?.sub_exercises !== undefined;
 
         let insertResult: any;
 
@@ -632,11 +632,16 @@ export class InteractiveWorkoutEditor {
     const referenceExercise = day.exercises[field.exerciseIndex];
 
     // Check if this is a compound exercise
-    const isCompoundExercise = referenceExercise.sub_exercises && referenceExercise.sub_exercises.length > 0;
+    const isCompoundExercise = referenceExercise.sub_exercises !== undefined;
 
     let referenceData: any;
 
     if (isCompoundExercise) {
+      // For empty compound blocks, user must add first sub-exercise manually
+      if (referenceExercise.sub_exercises!.length === 0) {
+        this.setStatus('Add first sub-exercise manually (press "e" to browse exercises)', 'info');
+        return;
+      }
       // Use the last sub-exercise as reference
       const lastSubEx = referenceExercise.sub_exercises![referenceExercise.sub_exercises!.length - 1];
       referenceData = this.findExerciseInDatabase(lastSubEx.name);

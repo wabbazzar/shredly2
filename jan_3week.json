@@ -589,7 +589,8 @@
           }
         },
         {
-          "name": "Russian Twists",
+          "name": "Sumo Squat",
+          "category": "strength",
           "week1": {
             "sets": 4,
             "reps": 5,
@@ -655,7 +656,7 @@
           }
         },
         {
-          "name": "EMOM: Single-leg Glute Bridges + Ankle Circles",
+          "name": "EMOM: Single-leg Glute Bridges + Hanging Leg Raises",
           "week1": {
             "work_time_minutes": 6,
             "work_time_unit": "minutes"
@@ -695,7 +696,7 @@
               }
             },
             {
-              "name": "Ankle Circles",
+              "name": "Hanging Leg Raises",
               "week1": {
                 "work_time_minutes": 2,
                 "work_time_unit": "minutes"

@@ -27,7 +27,7 @@
       "replace_current_field": "r",
       "open_exercise_database": "e",
       "swap_with_random": "s",
-      "toggle_work_definition": "W",
+      "toggle_work_definition": "m",
       "delete_exercise": "delete",
       "undo_last_change": "u",
       "show_help": "?",

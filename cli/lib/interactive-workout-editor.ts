@@ -944,7 +944,7 @@ export class InteractiveWorkoutEditor {
     console.log('  r           - Replace/edit field (or add exercise by name)');
     console.log('  e           - Open exercise database browser');
     console.log('  s           - Swap/add random matching exercise');
-    console.log('  W           - Toggle work definition (reps <-> work_time)');
+    console.log('  m           - Toggle work definition (reps <-> work_time)');
     console.log('  Del         - Delete current exercise');
     console.log('  u           - Undo last change');
     console.log('  :           - Enter command mode');

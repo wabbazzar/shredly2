@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import type { ParameterizedWorkout, ParameterizedDay, ParameterizedExercise, WeekParameters, WeightSpecification } from '../../src/lib/engine/types.js';
 import exerciseDatabase from '../../src/data/exercise_database.json' with { type: 'json' };
 import workoutGenerationRules from '../../src/data/workout_generation_rules.json' with { type: 'json' };
+import { shouldShowWeightField } from '../../src/lib/engine/exercise-metadata.js';
 
 function getExerciseCategory(exerciseName: string): string | null {
   const categories = exerciseDatabase.exercise_database.categories as Record<string, { exercises: Record<string, any> }>;
@@ -495,7 +496,7 @@ function formatCompoundParentSets(
   const firstWeekParams = exercise.week1;
   const workMode = determineWorkMode(firstWeekParams);
 
-  // Filter fields based on work mode
+  // Filter fields based on work mode and exercise metadata
   const fieldsToShow = new Set<string>();
   paramFields.forEach(field => {
     if (workMode === 'reps') {
@@ -504,9 +505,17 @@ function formatCompoundParentSets(
         fieldsToShow.add(field);
       }
     } else if (workMode === 'work_time') {
-      // Show sets, work_time, rest (NOT reps, weight)
-      if (field !== 'reps' && field !== 'weight') {
-        fieldsToShow.add(field);
+      // Show sets, work_time, rest
+      // For weight: use metadata to determine visibility (external_load: "always" exercises keep weight)
+      if (field !== 'reps') {
+        if (field === 'weight') {
+          // Check metadata: external_load: "always" exercises show weight even in work_time mode
+          if (shouldShowWeightField(exercise.name, firstWeekParams?.weight)) {
+            fieldsToShow.add(field);
+          }
+        } else {
+          fieldsToShow.add(field);
+        }
       }
     } else {
       // Show all fields
@@ -584,12 +593,14 @@ function formatCompoundParentSets(
  * Format week-by-week progression with editable field highlighting
  */
 export function formatWeekProgressionInteractive(
-  weekParams: { [key: string]: WeekParameters },
+  weekParams: { [key: string]: any },
   weekCount: number,
   baseLocation: string,
   options: HighlightOptions = {}
 ): string {
   const lines = [];
+  const exerciseName = weekParams.name as string | undefined; // Extract exercise name for metadata lookup
+
   for (let w = 1; w <= weekCount; w++) {
     const weekKey = `week${w}`;
     const params = weekParams[weekKey];
@@ -647,7 +658,8 @@ export function formatWeekProgressionInteractive(
       if (rest) parts.push(rest);
 
     } else if (workMode === 'work_time') {
-      // Work-time based mode: show sets, work_time, rest (NOT reps, weight)
+      // Work-time based mode: show sets, work_time, rest
+      // For weight: use metadata to determine visibility (external_load: "always" exercises keep weight)
       const sets = params.sets !== undefined
         ? (options.showAllEditable || setsIsSelected ? highlightEditableValue(String(params.sets), setsIsSelected) : params.sets)
         : null;
@@ -663,6 +675,17 @@ export function formatWeekProgressionInteractive(
         parts.push(`${sets} sets x ${work}`);
       } else if (work) {
         parts.push(work);
+      }
+
+      // Check metadata: external_load: "always" exercises show weight even in work_time mode
+      if (exerciseName && shouldShowWeightField(exerciseName, params.weight)) {
+        const weight = params.weight !== undefined
+          ? (options.showAllEditable || weightIsSelected
+            ? highlightEditableValue(formatWeight(params.weight), weightIsSelected)
+            : formatWeight(params.weight))
+          : null;
+
+        if (weight) parts.push(`@ ${weight}`);
       }
 
       const restUnit = params.rest_time_unit || 'seconds';
@@ -724,7 +747,7 @@ export function formatSubExercisesInteractive(
     const firstWeekParams = (sub as any).week1;
     const workMode = determineWorkMode(firstWeekParams);
 
-    // Filter fields based on work mode
+    // Filter fields based on work mode and exercise metadata
     const fieldsToShow = new Set<string>();
     paramFields.forEach(field => {
       if (workMode === 'reps') {
@@ -733,9 +756,18 @@ export function formatSubExercisesInteractive(
           fieldsToShow.add(field);
         }
       } else if (workMode === 'work_time') {
-        // Show sets, work_time, rest (NOT reps, weight, tempo)
-        if (field !== 'reps' && field !== 'weight' && field !== 'tempo') {
-          fieldsToShow.add(field);
+        // Show sets, work_time, rest
+        // For weight: use metadata to determine visibility (external_load: "always" exercises keep weight)
+        // For tempo: hide in work_time mode (tempo only applies to reps)
+        if (field !== 'reps' && field !== 'tempo') {
+          if (field === 'weight') {
+            // Check metadata: external_load: "always" exercises show weight even in work_time mode
+            if (shouldShowWeightField(sub.name, firstWeekParams?.weight)) {
+              fieldsToShow.add(field);
+            }
+          } else {
+            fieldsToShow.add(field);
+          }
         }
       } else {
         // Show all fields

@@ -212,7 +212,7 @@
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 7.5,
+            "work_time_minutes": 8,
             "work_time_unit": "minutes"
           },
           "category": "emom",
@@ -594,7 +594,7 @@
           "week1": {
             "sets": 4,
             "reps": 5,
-            "rest_time_minutes": 4,
+            "rest_time_minutes": 3,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
@@ -604,7 +604,7 @@
           "week2": {
             "sets": 4,
             "reps": 4,
-            "rest_time_minutes": 3.5,
+            "rest_time_minutes": 3,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
@@ -627,7 +627,7 @@
           "week1": {
             "sets": 4,
             "reps": 5,
-            "rest_time_minutes": 4,
+            "rest_time_minutes": 3,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
@@ -637,7 +637,7 @@
           "week2": {
             "sets": 4,
             "reps": 4,
-            "rest_time_minutes": 3.5,
+            "rest_time_minutes": 3,
             "rest_time_unit": "minutes",
             "weight": {
               "type": "percent_tm",
@@ -666,7 +666,7 @@
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 7.5,
+            "work_time_minutes": 8,
             "work_time_unit": "minutes"
           },
           "category": "emom",
@@ -713,36 +713,6 @@
           ]
         },
         {
-          "name": "Hip Opening Flow",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Heel Walks",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
           "name": "EMOM: Squat Jumps + Bicycle Crunches",
           "week1": {
             "work_time_minutes": 6,
@@ -753,7 +723,7 @@
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 7.5,
+            "work_time_minutes": 8,
             "work_time_unit": "minutes"
           },
           "category": "emom",
@@ -761,44 +731,74 @@
             {
               "name": "Squat Jumps",
               "week1": {
-                "reps": 8
+                "reps": 16
               },
               "week2": {
-                "reps": 9
+                "reps": 24
               },
               "week3": {
-                "reps": 10
+                "reps": 32
               }
             },
             {
               "name": "Bicycle Crunches",
               "week1": {
-                "work_time_minutes": 2,
-                "work_time_unit": "minutes"
+                "reps": 32
               },
               "week2": {
-                "work_time_minutes": 2.5,
-                "work_time_unit": "minutes"
+                "reps": 48
               },
               "week3": {
-                "work_time_minutes": 2.5,
-                "work_time_unit": "minutes"
+                "reps": 96
               }
             }
           ]
         },
         {
-          "name": "90/90 Hip Stretch",
+          "name": "Hamstring Stretch",
+          "category": "flexibility",
           "week1": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 2,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 2,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 2,
+            "work_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "Standing Hip Flexor Stretch",
+          "category": "flexibility",
+          "week1": {
+            "work_time_minutes": 2,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 2,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 2,
+            "work_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "Strength-Flexibility Flow",
+          "category": "flexibility",
+          "week1": {
+            "work_time_minutes": 2,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 2,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 2,
             "work_time_unit": "minutes"
           }
         }

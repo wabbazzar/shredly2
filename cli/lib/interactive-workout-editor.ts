@@ -790,12 +790,43 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
-   * Toggle work definition between reps and work_time for current exercise
+   * Toggle work definition between reps and work_time for current exercise or sub-exercise
    */
   private toggleWorkDefinition(): void {
     const field = this.editableFields[this.state.selectedFieldIndex];
     if (!field) return;
 
+    // Check if we're on a sub-exercise field within a compound block
+    if (field.subExerciseIndex !== undefined) {
+      // Toggle sub-exercise work definition
+      const result = this.editor.toggleSubExerciseWorkDefinition(
+        field.dayKey,
+        field.exerciseIndex,
+        field.subExerciseIndex
+      );
+
+      if (result.success) {
+        this.setStatus(result.message, 'success');
+        this.editableFields = this.editor.getAllEditableFields();
+      } else {
+        this.setStatus(result.message, 'error');
+      }
+      return;
+    }
+
+    // Check if this is a compound parent block
+    const workout = this.editor.getWorkout();
+    const day = workout.days[field.dayKey];
+    const exercise = day?.exercises[field.exerciseIndex];
+
+    if (exercise?.sub_exercises !== undefined) {
+      // Don't allow toggling parent compound block work definition
+      // Parent blocks have block-level work_time (total EMOM/Circuit duration) that shouldn't toggle
+      this.setStatus('Cannot toggle compound block. Toggle individual sub-exercises instead.', 'error');
+      return;
+    }
+
+    // Toggle standalone exercise work definition
     const result = this.editor.toggleWorkDefinition(field.dayKey, field.exerciseIndex);
 
     if (result.success) {

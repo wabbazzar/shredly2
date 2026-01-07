@@ -1,5 +1,5 @@
 {
-  "id": "workout_gene_com_1767651995051",
+  "id": "workout_gene_com_1767814024868",
   "name": "General Fitness Beginner Program",
   "description": "2 days per week workout program focused on general fitness. Each session is 20-30 minutes.",
   "version": "2.0.0",
@@ -15,8 +15,7 @@
       "general_fitness",
       "complete_beginner",
       "2_days_week",
-      "home_gym_basic",
-      "liss"
+      "home_gym_basic"
     ]
   },
   "days": {
@@ -26,7 +25,7 @@
       "focus": "Full Body",
       "exercises": [
         {
-          "name": "Fire Hydrants",
+          "name": "Arm Circles",
           "week1": {
             "work_time_minutes": 1,
             "work_time_unit": "minutes"
@@ -43,6 +42,33 @@
             "work_time_minutes": 1,
             "work_time_unit": "minutes"
           }
+        },
+        {
+          "name": "Bodyweight Squats",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 5,
+            "rest_time_unit": "minutes"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 4.5,
+            "rest_time_unit": "minutes"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 4,
+            "rest_time_unit": "minutes"
+          },
+          "week4": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 3.5,
+            "rest_time_unit": "minutes"
+          }
         }
       ]
     },
@@ -52,7 +78,7 @@
       "focus": "Full Body",
       "exercises": [
         {
-          "name": "Fire Hydrants",
+          "name": "Arm Circles",
           "week1": {
             "work_time_minutes": 1,
             "work_time_unit": "minutes"
@@ -68,6 +94,33 @@
           "week4": {
             "work_time_minutes": 1,
             "work_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "Bodyweight Squats",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 5,
+            "rest_time_unit": "minutes"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 4.5,
+            "rest_time_unit": "minutes"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 4,
+            "rest_time_unit": "minutes"
+          },
+          "week4": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 3.5,
+            "rest_time_unit": "minutes"
           }
         }
       ]

@@ -10,9 +10,9 @@ You are a comprehensive ticket generator for the Shredly 2.0 project, specializi
 
 1. Read ALL required context files in this exact order:
    - CLAUDE.md (project guidelines and standards)
-   - SPEC.md (project specifications)
-   - WORKOUT_SPEC.md (workout template data structure)
-   - EXERCISE_HISTORY_SPEC.md (exercise history data structure)
+   - docs/SPEC.md (project specifications)
+   - docs/WORKOUT_SPEC.md (workout template data structure)
+   - docs/EXERCISE_HISTORY_SPEC.md (exercise history data structure)
 
 2. Scan docs/tickets/ directory to determine the next ticket number (find highest XXX number and increment by 1)
    - If directory doesn't exist, start with 001

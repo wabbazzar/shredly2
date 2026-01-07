@@ -267,7 +267,7 @@ export class WorkoutEditor {
         // If editing a sub-exercise name, update parent compound exercise title
         if (field.subExerciseIndex !== undefined && field.fieldName === 'name' && exercise.sub_exercises) {
           const oldParentName = exercise.name;
-          const newParentName = this.generateCompoundExerciseName(exercise);
+          const newParentName = this.updateCompoundBlockName(exercise);
           if (newParentName && newParentName !== oldParentName) {
             exercise.name = newParentName;
             // Note: we don't add this to undo stack separately - it will be reverted when the sub-exercise name is reverted
@@ -290,7 +290,7 @@ export class WorkoutEditor {
 
             // If reverting a sub-exercise name edit, also revert parent title
             if (field.subExerciseIndex !== undefined && field.fieldName === 'name' && exercise.sub_exercises) {
-              const revertedParentName = this.generateCompoundExerciseName(exercise);
+              const revertedParentName = this.updateCompoundBlockName(exercise);
               if (revertedParentName) {
                 exercise.name = revertedParentName;
               }
@@ -452,7 +452,7 @@ export class WorkoutEditor {
     oldSubEx.name = newExerciseName;
 
     // Update parent exercise title to reflect new sub-exercise name
-    const newParentName = this.generateCompoundExerciseName(exercise);
+    const newParentName = this.updateCompoundBlockName(exercise);
     const oldParentName = exercise.name;
     if (newParentName) {
       exercise.name = newParentName;
@@ -652,7 +652,7 @@ export class WorkoutEditor {
 
     // Update parent exercise title
     const oldParentName = exercise.name;
-    const newParentName = this.generateCompoundExerciseName(exercise);
+    const newParentName = this.updateCompoundBlockName(exercise);
     if (newParentName) {
       exercise.name = newParentName;
     }
@@ -677,6 +677,173 @@ export class WorkoutEditor {
       message: `Inserted ${newExerciseName} as sub-exercise`,
       newSubExerciseIndex: newSubIndex
     };
+  }
+
+  /**
+   * Create a compound exercise block (EMOM/AMRAP/Circuit/Interval) with empty sub-exercises
+   */
+  createCompoundBlock(
+    dayKey: string,
+    insertAfterIndex: number,
+    defaultCategory: 'emom' | 'amrap' | 'circuit' | 'interval' = 'emom',
+    experienceLevel: string = 'intermediate'
+  ): { success: boolean; message: string; newExerciseIndex?: number } {
+    const day = this.workout.days[dayKey];
+    if (!day) {
+      return { success: false, message: 'Day not found' };
+    }
+
+    // Create compound exercise structure with placeholder name
+    const categoryLabel = defaultCategory.toUpperCase();
+    const newExercise: any = {
+      name: `[${categoryLabel}] (empty block - add sub-exercises)`,
+      category: defaultCategory,
+      sub_exercises: []
+    };
+
+    // Populate week parameters with smart defaults for compound exercises
+    for (let w = 1; w <= this.workout.weeks; w++) {
+      const weekKey = `week${w}`;
+      const newWeekParams: any = {};
+
+      // Get smart defaults for compound category
+      const defaults = this.getSmartDefaults(defaultCategory, experienceLevel);
+
+      // Apply defaults
+      Object.assign(newWeekParams, defaults);
+
+      newExercise[weekKey] = newWeekParams;
+    }
+
+    // Insert into exercises array at insertAfterIndex + 1
+    const insertIndex = insertAfterIndex + 1;
+    const oldExercises = [...day.exercises];
+    day.exercises.splice(insertIndex, 0, newExercise as ParameterizedExercise);
+
+    // Add to undo stack
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Create compound block: ${categoryLabel}`,
+      location: `${dayKey}.exercises[${insertIndex}]`,
+      previousValue: null,
+      newValue: newExercise,
+      reverseOperation: () => {
+        day.exercises = oldExercises;
+      }
+    });
+
+    this.modified = true;
+
+    return {
+      success: true,
+      message: `Created ${categoryLabel} block. Add sub-exercises with 'e' key.`,
+      newExerciseIndex: insertIndex
+    };
+  }
+
+  /**
+   * Change the category type of a compound block
+   */
+  setCompoundBlockType(
+    dayKey: string,
+    exerciseIndex: number,
+    newCategory: 'emom' | 'amrap' | 'circuit' | 'interval',
+    experienceLevel: string = 'intermediate'
+  ): { success: boolean; message: string } {
+    const exercise = this.getExercise(dayKey, exerciseIndex);
+    if (!exercise) {
+      return { success: false, message: 'Exercise not found' };
+    }
+
+    // Verify this is a compound exercise
+    if (!exercise.sub_exercises) {
+      return { success: false, message: 'Cannot change type of non-compound exercise' };
+    }
+
+    const oldCategory = exercise.category;
+    const oldName = exercise.name;
+
+    // Capture old week parameters that might change
+    const oldWeekParams: any = {};
+    for (let w = 1; w <= this.workout.weeks; w++) {
+      const weekKey = `week${w}`;
+      oldWeekParams[weekKey] = JSON.parse(JSON.stringify((exercise as any)[weekKey]));
+    }
+
+    // Update category
+    exercise.category = newCategory;
+
+    // Regenerate name with new category prefix
+    const newName = this.updateCompoundBlockName(exercise);
+    if (newName) {
+      exercise.name = newName;
+    }
+
+    // Update week parameters if needed (get new defaults for new category)
+    const newDefaults = this.getSmartDefaults(newCategory, experienceLevel);
+
+    for (let w = 1; w <= this.workout.weeks; w++) {
+      const weekKey = `week${w}`;
+      const weekParams = (exercise as any)[weekKey];
+
+      if (weekParams) {
+        // Apply new category defaults, but preserve existing values where they make sense
+        // For compound exercises, work_time_minutes and rest_time_minutes are common across all types
+        if (newDefaults.work_time_minutes !== undefined && weekParams.work_time_minutes === undefined) {
+          weekParams.work_time_minutes = newDefaults.work_time_minutes;
+        }
+        if (newDefaults.work_time_unit && !weekParams.work_time_unit) {
+          weekParams.work_time_unit = newDefaults.work_time_unit;
+        }
+      }
+    }
+
+    // Add to undo stack - only revert specific changes, don't replace entire object
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Change block type from ${oldCategory || 'compound'} to ${newCategory}`,
+      location: `${dayKey}.exercises[${exerciseIndex}]`,
+      previousValue: { category: oldCategory, name: oldName },
+      newValue: { category: newCategory, name: exercise.name },
+      reverseOperation: () => {
+        if (oldCategory) {
+          exercise.category = oldCategory;
+        }
+        exercise.name = oldName;
+        // Restore old week parameters
+        for (let w = 1; w <= this.workout.weeks; w++) {
+          const weekKey = `week${w}`;
+          (exercise as any)[weekKey] = oldWeekParams[weekKey];
+        }
+      }
+    });
+
+    this.modified = true;
+
+    return {
+      success: true,
+      message: `Changed block type to ${newCategory.toUpperCase()}`
+    };
+  }
+
+  /**
+   * Update compound block name based on category and sub-exercises
+   * Public method that can be called after sub-exercises change
+   * Returns the new name, or null if not a compound exercise
+   */
+  updateCompoundBlockName(exercise: ParameterizedExercise): string | null {
+    if (!exercise.sub_exercises) return null;
+
+    const category = exercise.category ? exercise.category.toUpperCase() : 'COMPOUND';
+
+    // Handle empty sub-exercises with placeholder
+    if (exercise.sub_exercises.length === 0) {
+      return `[${category}] (empty block - add sub-exercises)`;
+    }
+
+    // Generate name from sub-exercises
+    const subNames = exercise.sub_exercises.map(sub => sub.name).join(' + ');
+    return `[${category}] ${category}: ${subNames}`;
   }
 
   /**
@@ -798,19 +965,6 @@ export class WorkoutEditor {
     const day = this.workout.days[dayKey];
     if (!day || !day.exercises[exerciseIndex]) return null;
     return day.exercises[exerciseIndex];
-  }
-
-  /**
-   * Generate compound exercise name from sub-exercises
-   * Format: "CATEGORY: Exercise1 + Exercise2 + Exercise3"
-   */
-  private generateCompoundExerciseName(exercise: ParameterizedExercise): string | null {
-    if (!exercise.sub_exercises || exercise.sub_exercises.length === 0) return null;
-
-    const category = exercise.category ? exercise.category.toUpperCase() : 'COMPOUND';
-    const subNames = exercise.sub_exercises.map(sub => sub.name).join(' + ');
-
-    return `${category}: ${subNames}`;
   }
 
   /**

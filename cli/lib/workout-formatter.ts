@@ -30,6 +30,17 @@ function formatWeight(weight?: WeightSpecification): string {
 }
 
 /**
+ * Determine work mode for an exercise based on parameters
+ * Returns 'reps' if reps are defined, 'work_time' if work_time is defined
+ */
+function determineWorkMode(params?: WeekParameters): 'reps' | 'work_time' | 'none' {
+  if (!params) return 'none';
+  if (params.reps !== undefined) return 'reps';
+  if (params.work_time_minutes !== undefined) return 'work_time';
+  return 'none';
+}
+
+/**
  * Format entire workout for terminal display
  */
 export function formatWorkoutForTerminal(workout: ParameterizedWorkout): string {
@@ -469,8 +480,31 @@ function formatCompoundParentSets(
 
   const lines: string[] = [];
 
+  // Determine work mode from first week to apply consistent filtering
+  const firstWeekParams = exercise.week1;
+  const workMode = determineWorkMode(firstWeekParams);
+
+  // Filter fields based on work mode
+  const fieldsToShow = new Set<string>();
+  paramFields.forEach(field => {
+    if (workMode === 'reps') {
+      // Show sets, reps, weight, rest (NOT work_time)
+      if (field !== 'work_time_minutes') {
+        fieldsToShow.add(field);
+      }
+    } else if (workMode === 'work_time') {
+      // Show work_time, rest (NOT sets, reps, weight)
+      if (field !== 'sets' && field !== 'reps' && field !== 'weight') {
+        fieldsToShow.add(field);
+      }
+    } else {
+      // Show all fields
+      fieldsToShow.add(field);
+    }
+  });
+
   // For each parameter type found, show progression across weeks
-  paramFields.forEach(fieldName => {
+  fieldsToShow.forEach(fieldName => {
     const progression: string[] = [];
 
     for (let w = 1; w <= weekCount; w++) {
@@ -501,6 +535,14 @@ function formatCompoundParentSets(
           displayValue = (options.showAllEditable || isSelected)
             ? highlightEditableValue(formatted, isSelected)
             : formatted;
+        } else if (fieldName === 'sets') {
+          displayValue = (options.showAllEditable || isSelected)
+            ? highlightEditableValue(`${params[fieldName]} sets`, isSelected)
+            : `${params[fieldName]} sets`;
+        } else if (fieldName === 'reps') {
+          displayValue = (options.showAllEditable || isSelected)
+            ? highlightEditableValue(`${params[fieldName]} reps`, isSelected)
+            : `${params[fieldName]} reps`;
         } else {
           // Default: just show the value
           displayValue = (options.showAllEditable || isSelected)
@@ -542,6 +584,9 @@ export function formatWeekProgressionInteractive(
     const params = weekParams[weekKey];
     if (!params) continue;
 
+    // Determine work mode to show EITHER reps OR work_time, not both
+    const workMode = determineWorkMode(params);
+
     const setsLocation = `${baseLocation}.${weekKey}.sets`;
     const repsLocation = `${baseLocation}.${weekKey}.reps`;
     const weightLocation = `${baseLocation}.${weekKey}.weight`;
@@ -554,42 +599,62 @@ export function formatWeekProgressionInteractive(
     const restIsSelected = options.selectedFieldLocation === restLocation;
     const workIsSelected = options.selectedFieldLocation === workLocation;
 
-    const sets = params.sets !== undefined
-      ? (options.showAllEditable || setsIsSelected ? highlightEditableValue(String(params.sets), setsIsSelected) : params.sets)
-      : null;
-
-    const reps = params.reps !== undefined
-      ? (options.showAllEditable || repsIsSelected ? highlightEditableValue(String(params.reps), repsIsSelected) : params.reps)
-      : null;
-
-    const weight = params.weight !== undefined
-      ? (options.showAllEditable || weightIsSelected
-        ? highlightEditableValue(formatWeight(params.weight), weightIsSelected)
-        : formatWeight(params.weight))
-      : null;
-
-    const restUnit = params.rest_time_unit || 'seconds';
-    const rest = params.rest_time_minutes !== undefined
-      ? (options.showAllEditable || restIsSelected
-        ? highlightEditableValue(`${params.rest_time_minutes} ${restUnit} rest`, restIsSelected)
-        : `${params.rest_time_minutes} ${restUnit} rest`)
-      : null;
-
-    const workUnit = params.work_time_unit || 'minutes';
-    const work = params.work_time_minutes !== undefined
-      ? (options.showAllEditable || workIsSelected
-        ? highlightEditableValue(`${params.work_time_minutes} ${workUnit} work`, workIsSelected)
-        : `${params.work_time_minutes} ${workUnit} work`)
-      : null;
-
     const parts = [];
-    if (sets && reps) {
-      parts.push(`${sets} sets x ${reps} reps`);
-    } else if (work) {
-      parts.push(work);
+
+    // Show EITHER reps-based OR work_time-based parameters (not both)
+    if (workMode === 'reps') {
+      // Rep-based mode: show sets, reps, weight, rest
+      const sets = params.sets !== undefined
+        ? (options.showAllEditable || setsIsSelected ? highlightEditableValue(String(params.sets), setsIsSelected) : params.sets)
+        : null;
+
+      const reps = params.reps !== undefined
+        ? (options.showAllEditable || repsIsSelected ? highlightEditableValue(String(params.reps), repsIsSelected) : params.reps)
+        : null;
+
+      if (sets && reps) {
+        parts.push(`${sets} sets x ${reps} reps`);
+      } else if (reps) {
+        parts.push(`${reps} reps`);
+      }
+
+      const weight = params.weight !== undefined
+        ? (options.showAllEditable || weightIsSelected
+          ? highlightEditableValue(formatWeight(params.weight), weightIsSelected)
+          : formatWeight(params.weight))
+        : null;
+
+      if (weight) parts.push(`@ ${weight}`);
+
+      const restUnit = params.rest_time_unit || 'seconds';
+      const rest = params.rest_time_minutes !== undefined
+        ? (options.showAllEditable || restIsSelected
+          ? highlightEditableValue(`${params.rest_time_minutes} ${restUnit} rest`, restIsSelected)
+          : `${params.rest_time_minutes} ${restUnit} rest`)
+        : null;
+
+      if (rest) parts.push(rest);
+
+    } else if (workMode === 'work_time') {
+      // Work-time based mode: show work_time, rest (NO reps/sets/weight)
+      const workUnit = params.work_time_unit || 'minutes';
+      const work = params.work_time_minutes !== undefined
+        ? (options.showAllEditable || workIsSelected
+          ? highlightEditableValue(`${params.work_time_minutes} ${workUnit} work`, workIsSelected)
+          : `${params.work_time_minutes} ${workUnit} work`)
+        : null;
+
+      if (work) parts.push(work);
+
+      const restUnit = params.rest_time_unit || 'seconds';
+      const rest = params.rest_time_minutes !== undefined
+        ? (options.showAllEditable || restIsSelected
+          ? highlightEditableValue(`${params.rest_time_minutes} ${restUnit} rest`, restIsSelected)
+          : `${params.rest_time_minutes} ${restUnit} rest`)
+        : null;
+
+      if (rest) parts.push(rest);
     }
-    if (weight) parts.push(`@ ${weight}`);
-    if (rest) parts.push(rest);
 
     if (parts.length > 0) {
       lines.push(`    Week ${w}: ${parts.join(', ')}`);
@@ -636,8 +701,31 @@ export function formatSubExercisesInteractive(
 
     lines.push(`  - ${subName}:`);
 
+    // Determine work mode from first week to apply consistent filtering
+    const firstWeekParams = (sub as any).week1;
+    const workMode = determineWorkMode(firstWeekParams);
+
+    // Filter fields based on work mode
+    const fieldsToShow = new Set<string>();
+    paramFields.forEach(field => {
+      if (workMode === 'reps') {
+        // Show sets, reps, weight, rest, tempo (NOT work_time)
+        if (field !== 'work_time_minutes') {
+          fieldsToShow.add(field);
+        }
+      } else if (workMode === 'work_time') {
+        // Show work_time, rest (NOT sets, reps, weight, tempo)
+        if (field !== 'sets' && field !== 'reps' && field !== 'weight' && field !== 'tempo') {
+          fieldsToShow.add(field);
+        }
+      } else {
+        // Show all fields
+        fieldsToShow.add(field);
+      }
+    });
+
     // For each parameter type found, show progression across weeks
-    paramFields.forEach(fieldName => {
+    fieldsToShow.forEach(fieldName => {
       const progression: string[] = [];
 
       for (let w = 1; w <= weekCount; w++) {

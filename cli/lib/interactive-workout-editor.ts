@@ -163,6 +163,11 @@ export class InteractiveWorkoutEditor {
    * View mode keyboard handler
    */
   private async handleViewModeKey(str: string, key: any): Promise<void> {
+    // DEBUG: Log ALL keypresses
+    if (process.env.DEBUG_KEYS) {
+      console.log(`[KEY DEBUG] str="${str}", key.name="${key.name}", ctrl=${key.ctrl}, meta=${key.meta}`);
+    }
+
     const hotkeys = hotkeysConfig.view_mode;
 
     // Clear number input buffer on Escape

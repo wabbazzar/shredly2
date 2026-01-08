@@ -276,7 +276,7 @@ export class InteractiveWorkoutEditor {
 
     // Swap mode - double-tap 'x' to exchange/swap two exercises
     else if (str === 'x' || str === 'X') {
-      this.handleSwapMode();
+      await this.handleSwapMode();
     }
 
     // Actions
@@ -1166,12 +1166,12 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
-   * Handle swap mode activation (double-tap 'a')
+   * Handle swap mode activation (double-tap 'x')
    * First tap: mark first exercise
    * Second tap (within 1 second): mark second exercise and prompt for confirmation
    * Works on any field - uses the exercise index from the current field
    */
-  private handleSwapMode(): void {
+  private async handleSwapMode(): Promise<void> {
     const field = this.editableFields[this.state.selectedFieldIndex];
     if (!field) return;
 
@@ -1210,8 +1210,8 @@ export class InteractiveWorkoutEditor {
       const firstExercise = workout.days[firstDayKey!].exercises[firstExerciseIndex!];
       const secondExercise = workout.days[secondDayKey].exercises[secondExerciseIndex];
 
-      // Show confirmation prompt
-      this.promptSwapConfirmation(
+      // Show confirmation prompt (AWAIT to prevent render() from clearing it)
+      await this.promptSwapConfirmation(
         firstDayKey!,
         firstExerciseIndex!,
         firstExercise.name,
@@ -1235,6 +1235,7 @@ export class InteractiveWorkoutEditor {
 
   /**
    * Prompt user to confirm exercise swap
+   * Returns a Promise that resolves when the user confirms or cancels
    */
   private promptSwapConfirmation(
     dayKey1: string,
@@ -1243,7 +1244,7 @@ export class InteractiveWorkoutEditor {
     dayKey2: string,
     exerciseIndex2: number,
     exerciseName2: string
-  ): void {
+  ): Promise<void> {
     console.clear();
     console.log(chalk.yellow.bold('=== SWAP EXERCISES ==='));
     console.log('');
@@ -1256,28 +1257,30 @@ export class InteractiveWorkoutEditor {
     console.log(`  ${chalk.red('n')} - No, cancel`);
     console.log('');
 
-    // Wait for y/n keypress
-    const handler = (str: string, key: any) => {
-      process.stdin.removeListener('keypress', handler);
+    // Return a Promise that resolves when user presses y/n
+    return new Promise((resolve) => {
+      const handler = (str: string, key: any) => {
+        process.stdin.removeListener('keypress', handler);
 
-      if (str === 'y' || str === 'Y') {
-        // Execute swap
-        const result = this.editor.swapExercises(dayKey1, exerciseIndex1, dayKey2, exerciseIndex2);
+        if (str === 'y' || str === 'Y') {
+          // Execute swap
+          const result = this.editor.swapExercises(dayKey1, exerciseIndex1, dayKey2, exerciseIndex2);
 
-        if (result.success) {
-          this.setStatus(result.message, 'success');
-          this.editableFields = this.editor.getAllEditableFields();
+          if (result.success) {
+            this.setStatus(result.message, 'success');
+            this.editableFields = this.editor.getAllEditableFields();
+          } else {
+            this.setStatus(result.message, 'error');
+          }
         } else {
-          this.setStatus(result.message, 'error');
+          this.setStatus('Swap cancelled', 'info');
         }
-      } else {
-        this.setStatus('Swap cancelled', 'info');
-      }
 
-      this.render();
-    };
+        resolve();
+      };
 
-    process.stdin.once('keypress', handler);
+      process.stdin.once('keypress', handler);
+    });
   }
 
   /**
@@ -1538,7 +1541,7 @@ export class InteractiveWorkoutEditor {
     console.log('  r           - Replace/edit field (vim-like: auto-clears value)');
     console.log('  e           - Open exercise database browser');
     console.log('  i           - Show exercise info (descriptions, cues, setup)');
-    console.log('  a (2x)      - Swap mode: tap twice to swap exercises');
+    console.log('  x (2x)      - Swap mode: tap twice to swap exercises');
     console.log('  s           - Swap/add random matching exercise');
     console.log('  m           - Toggle work definition (reps <-> work_time)');
     console.log('  b           - Create compound block (EMOM/AMRAP/Circuit/Interval)');
@@ -1568,7 +1571,7 @@ export class InteractiveWorkoutEditor {
     console.log(chalk.cyan('NEW FEATURES:'));
     console.log('  • Multi-digit jump: Type "15" to jump to exercise 15');
     console.log('  • Exercise info: Press "i" on any exercise name for details');
-    console.log('  • Swap mode: Tap "a" on first exercise, then "a" on second');
+    console.log('  • Swap mode: Tap "x" on first exercise, then "x" on second');
     console.log('  • Broadcast: Press Enter twice to copy value to all weeks');
     console.log('  • Vim replace: "r" now auto-clears the field (no backspace needed)');
     console.log('');

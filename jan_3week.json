@@ -1087,17 +1087,96 @@
           }
         },
         {
-          "name": "Quad Roll",
+          "name": "[AMRAP] AMRAP: Pike Toe Touch + Renegade Rows + Lateral Walks with Resistance Band",
+          "category": "amrap",
+          "sub_exercises": [
+            {
+              "name": "Pike Toe Touch",
+              "week1": {
+                "reps": 8
+              },
+              "week2": {
+                "reps": 8
+              },
+              "week3": {
+                "reps": 8
+              }
+            },
+            {
+              "name": "Renegade Rows",
+              "week1": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Lateral Walks with Resistance Band",
+              "week1": {
+                "reps": 16,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            }
+          ],
           "week1": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 6,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 6,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 6,
+            "work_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "Shoulder Mobility",
+          "category": "mobility",
+          "week1": {
+            "work_time_minutes": 2,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 2,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 2,
             "work_time_unit": "minutes"
           }
         }

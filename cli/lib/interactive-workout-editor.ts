@@ -261,6 +261,12 @@ export class InteractiveWorkoutEditor {
         field.subExerciseIndex === undefined &&
         this.isCurrentExerciseCompound();
 
+      // DEBUG: Log when 'a' is pressed
+      if (str === 'a' && process.env.DEBUG_SWAP) {
+        console.log(`[SWAP DEBUG] 'a' key handler reached`);
+        console.log(`[SWAP DEBUG] field=${field?.fieldName}, isCompoundParent=${isCompoundParent}`);
+      }
+
       if (isCompoundParent) {
         // Change compound block type
         const typeMap: Record<string, 'emom' | 'amrap' | 'circuit' | 'interval'> = {
@@ -275,6 +281,9 @@ export class InteractiveWorkoutEditor {
         await this.openExerciseDatabase();
       } else if (str === 'a') {
         // Fallback: 'a' activates swap mode when not on compound parent
+        if (process.env.DEBUG_SWAP) {
+          console.log(`[SWAP DEBUG] Calling handleSwapMode()`);
+        }
         this.handleSwapMode();
       }
     }
@@ -296,12 +305,21 @@ export class InteractiveWorkoutEditor {
       this.state.mode = 'command';
       this.state.commandBuffer = '';
     } else if (key.name === 'return') {
+      // DEBUG: Log Enter key press
+      if (process.env.DEBUG_JUMP) {
+        console.log(`[JUMP DEBUG] Enter pressed, buffer="${this.state.numberInputBuffer}"`);
+      }
+
       // If number input buffer is active, execute jump immediately
       if (this.state.numberInputBuffer) {
         // Clear the timeout since we're executing now
         if (this.state.numberInputTimeout) {
           clearTimeout(this.state.numberInputTimeout);
           this.state.numberInputTimeout = null;
+        }
+
+        if (process.env.DEBUG_JUMP) {
+          console.log(`[JUMP DEBUG] Executing jump immediately`);
         }
 
         const exerciseNum = parseInt(this.state.numberInputBuffer);
@@ -1189,6 +1207,11 @@ export class InteractiveWorkoutEditor {
 
     const now = Date.now();
     const timeSinceLastATap = now - this.state.swapModeState.lastATapTime;
+
+    // DEBUG: Log swap mode state
+    if (process.env.DEBUG_SWAP) {
+      console.log(`[SWAP DEBUG] timeSince=${timeSinceLastATap}ms, active=${this.state.swapModeState.active}, condition=${this.state.swapModeState.active && timeSinceLastATap < 1000}`);
+    }
 
     // Check if this is a double-tap (within 1 second)
     if (this.state.swapModeState.active && timeSinceLastATap < 1000) {

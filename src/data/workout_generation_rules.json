@@ -826,5 +826,15 @@
     "5": "push_pull_legs",
     "6": "push_pull_legs",
     "7": "push_pull_legs"
+  },
+
+  "default_progression_by_goal": {
+    "description": "Maps primary training goal to default progression scheme for strength/bodyweight exercises when user selects 'no_preference'",
+    "muscle_gain": "linear",
+    "fat_loss": "volume",
+    "athletic_performance": "wave_loading",
+    "general_fitness": "volume",
+    "rehabilitation": "volume",
+    "body_recomposition": "linear"
   }
 }

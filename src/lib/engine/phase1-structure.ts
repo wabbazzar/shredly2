@@ -134,7 +134,8 @@ export function generateDayStructure(
  */
 export function assignProgressionScheme(
   answers: QuestionnaireAnswers,
-  exerciseCategory: string
+  exerciseCategory: string,
+  rules: GenerationRules
 ): "linear" | "density" | "wave_loading" | "volume" | "static" {
   const { progression_preference, primary_goal, experience_level } = answers;
 
@@ -142,9 +143,6 @@ export function assignProgressionScheme(
   if (progression_preference && progression_preference !== 'no_preference') {
     return progression_preference as "linear" | "density" | "wave_loading" | "volume";
   }
-
-  // Otherwise, assign based on goal and category
-  // Future enhancement: Move to workout_generation_rules.json as default_progression_by_goal
 
   // For mobility and flexibility exercises, always use static (no progression)
   if (exerciseCategory === 'mobility' || exerciseCategory === 'flexibility' || exerciseCategory === 'cardio') {
@@ -156,17 +154,17 @@ export function assignProgressionScheme(
     return 'density';
   }
 
-  // For strength and bodyweight, use goal-based defaults
-  const goalProgressionMap: { [key: string]: "linear" | "volume" | "wave_loading" } = {
-    muscle_gain: 'linear',
-    fat_loss: 'volume', // Fat loss uses volume for strength, density for metabolic
-    athletic_performance: 'wave_loading',
-    general_fitness: 'volume',
-    rehabilitation: 'volume',
-    body_recomposition: 'linear'
-  };
+  // For strength and bodyweight, use goal-based defaults from config
+  const defaultProgression = rules.default_progression_by_goal[primary_goal];
 
-  return goalProgressionMap[primary_goal] || 'linear';
+  if (!defaultProgression) {
+    throw new Error(
+      `No default progression configured for goal: ${primary_goal}. ` +
+      `Check workout_generation_rules.json default_progression_by_goal section.`
+    );
+  }
+
+  return defaultProgression as "linear" | "density" | "wave_loading" | "volume";
 }
 
 /**
@@ -227,7 +225,8 @@ export function applyProgressionAndIntensity(
   exercises: ExerciseStructure[],
   answers: QuestionnaireAnswers,
   layers: Map<number, string>,
-  exerciseCategories: Map<string, string>
+  exerciseCategories: Map<string, string>,
+  rules: GenerationRules
 ): ExerciseStructure[] {
   return exercises.map((exercise, index) => {
     const layer = layers.get(index) || 'primary';
@@ -235,7 +234,7 @@ export function applyProgressionAndIntensity(
 
     return {
       ...exercise,
-      progressionScheme: assignProgressionScheme(answers, category),
+      progressionScheme: assignProgressionScheme(answers, category, rules),
       intensityProfile: assignIntensityProfile(layer, category)
     };
   });

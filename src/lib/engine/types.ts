@@ -207,6 +207,16 @@ export interface DefaultSplitByFrequency {
   [frequency: string]: string; // "2" -> "full_body", etc.
 }
 
+export interface DefaultProgressionByGoal {
+  description: string;
+  muscle_gain: string;
+  fat_loss: string;
+  athletic_performance: string;
+  general_fitness: string;
+  rehabilitation: string;
+  body_recomposition: string;
+}
+
 export interface GenerationRules {
   version: string;
   intensity_profiles: IntensityProfiles;
@@ -223,6 +233,7 @@ export interface GenerationRules {
   equipment_quotas: EquipmentQuotas;
   exercise_selection_strategy: ExerciseSelectionStrategy;
   default_split_by_frequency: DefaultSplitByFrequency;
+  default_progression_by_goal: DefaultProgressionByGoal;
 }
 
 export interface CompoundExerciseConstruction {

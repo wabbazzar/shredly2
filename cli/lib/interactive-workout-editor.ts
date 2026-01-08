@@ -38,6 +38,8 @@ interface EditorState {
   numberInputBuffer: string; // buffer for multi-digit exercise numbers
   numberInputTimeout: NodeJS.Timeout | null; // timeout for multi-digit input
   lastEnterPressTime: number; // timestamp of last enter press (for double-enter detection)
+  lastEditedField: EditableField | null; // last field that was edited (for broadcast detection)
+  lastEditedValue: any; // value that was last saved (for broadcast)
   swapModeState: {
     active: boolean;
     firstExerciseIndex?: number;
@@ -82,6 +84,8 @@ export class InteractiveWorkoutEditor {
       numberInputBuffer: '',
       numberInputTimeout: null,
       lastEnterPressTime: 0,
+      lastEditedField: null,
+      lastEditedValue: null,
       swapModeState: {
         active: false,
         lastATapTime: 0
@@ -291,6 +295,51 @@ export class InteractiveWorkoutEditor {
     } else if (str === hotkeys.actions.enter_command_mode) {
       this.state.mode = 'command';
       this.state.commandBuffer = '';
+    } else if (key.name === 'return') {
+      // If number input buffer is active, execute jump immediately
+      if (this.state.numberInputBuffer) {
+        // Clear the timeout since we're executing now
+        if (this.state.numberInputTimeout) {
+          clearTimeout(this.state.numberInputTimeout);
+          this.state.numberInputTimeout = null;
+        }
+
+        const exerciseNum = parseInt(this.state.numberInputBuffer);
+
+        if (exerciseNum > 0) {
+          // In day view, only search within current day
+          const dayKey = this.state.viewMode === 'day' ? this.dayKeys[this.state.currentDayIndex] : undefined;
+          const targetField = this.findFieldByExerciseNumber(exerciseNum - 1, dayKey);
+
+          if (targetField !== -1) {
+            this.state.selectedFieldIndex = targetField;
+            this.syncDayViewToSelectedField();
+            this.setStatus(`Jumped to exercise ${exerciseNum}`, 'success');
+          } else {
+            this.setStatus(`Exercise ${exerciseNum} not found`, 'error');
+          }
+        } else {
+          this.setStatus('Invalid exercise number', 'error');
+        }
+
+        // Clear buffer
+        this.state.numberInputBuffer = '';
+      } else {
+        // Check for double-enter broadcast (Enter in view mode after recent edit)
+        const now = Date.now();
+        const timeSinceLastEdit = now - this.state.lastEnterPressTime;
+        const currentField = this.editableFields[this.state.selectedFieldIndex];
+
+        // If we're on the same field that was just edited, and it's within 500ms, broadcast
+        if (this.state.lastEditedField &&
+            currentField &&
+            this.state.lastEditedField.location === currentField.location &&
+            timeSinceLastEdit < 500 &&
+            timeSinceLastEdit > 0) {
+          // Broadcast the saved value to all weeks
+          this.broadcastLastEdit();
+        }
+      }
     } else if (str === hotkeys.actions.quit) {
       await this.quit();
     }
@@ -473,6 +522,10 @@ export class InteractiveWorkoutEditor {
       this.setStatus(`Updated ${field.fieldName}`, 'success');
       // Refresh editable fields
       this.editableFields = this.editor.getAllEditableFields();
+
+      // Save field and value for potential broadcast (double-enter in view mode)
+      this.state.lastEditedField = field;
+      this.state.lastEditedValue = typedValue;
     } else {
       this.setStatus('Edit failed', 'error');
     }
@@ -541,6 +594,57 @@ export class InteractiveWorkoutEditor {
     }
 
     this.state.editBuffer = '';
+  }
+
+  /**
+   * Broadcast last edited value to all weeks (double-enter from view mode)
+   */
+  private broadcastLastEdit(): void {
+    if (!this.state.lastEditedField || this.state.lastEditedValue === null) {
+      this.setStatus('No recent edit to broadcast', 'error');
+      return;
+    }
+
+    const field = this.state.lastEditedField;
+    const typedValue = this.state.lastEditedValue;
+
+    // Check if this is a week-specific field
+    const weekSpecificFields = ['sets', 'reps', 'weight', 'rest_time', 'work_time', 'tempo', 'rpe', 'rir'];
+    if (!weekSpecificFields.includes(field.fieldName)) {
+      this.setStatus(`Cannot broadcast ${field.fieldName} - not a week-specific field`, 'error');
+      return;
+    }
+
+    // Broadcast to all weeks
+    const workout = this.editor.getWorkout();
+    const numWeeks = workout.weeks;
+    let successCount = 0;
+
+    for (let weekIndex = 0; weekIndex < numWeeks; weekIndex++) {
+      // Create a field location for this week
+      const broadcastField = {
+        ...field,
+        weekIndex,
+        location: field.location.replace(/\[week:\d+\]/, `[week:${weekIndex}]`)
+      };
+
+      const success = this.editor.editField(broadcastField, typedValue);
+      if (success) {
+        successCount++;
+      }
+    }
+
+    if (successCount > 0) {
+      this.setStatus(`Broadcasted ${field.fieldName}=${typedValue} to all ${numWeeks} weeks`, 'success');
+      // Refresh editable fields
+      this.editableFields = this.editor.getAllEditableFields();
+
+      // Clear last edited state to prevent accidental re-broadcast
+      this.state.lastEditedField = null;
+      this.state.lastEditedValue = null;
+    } else {
+      this.setStatus('Broadcast failed', 'error');
+    }
   }
 
   /**
@@ -1494,6 +1598,10 @@ export class InteractiveWorkoutEditor {
    * Navigate to next editable field (day-aware in day view)
    */
   private navigateToNextField(): void {
+    // Clear last edited state when navigating away
+    this.state.lastEditedField = null;
+    this.state.lastEditedValue = null;
+
     if (this.state.viewMode === 'week') {
       // Week view: navigate through all fields
       this.state.selectedFieldIndex = Math.min(this.editableFields.length - 1, this.state.selectedFieldIndex + 1);
@@ -1523,6 +1631,10 @@ export class InteractiveWorkoutEditor {
    * Navigate to previous editable field (day-aware in day view)
    */
   private navigateToPreviousField(): void {
+    // Clear last edited state when navigating away
+    this.state.lastEditedField = null;
+    this.state.lastEditedValue = null;
+
     if (this.state.viewMode === 'week') {
       // Week view: navigate through all fields
       this.state.selectedFieldIndex = Math.max(0, this.state.selectedFieldIndex - 1);

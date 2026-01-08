@@ -217,6 +217,20 @@ export interface DefaultProgressionByGoal {
   body_recomposition: string;
 }
 
+export interface IntensityProfileByLayerAndCategory {
+  description: string;
+  default: {
+    [layer: string]: string; // Allow any layer key
+    first: string;
+    primary: string;
+    secondary: string;
+    tertiary: string;
+    finisher: string;
+    last: string;
+  };
+  [category: string]: any; // Allow any category with optional layer overrides and default
+}
+
 export interface GenerationRules {
   version: string;
   intensity_profiles: IntensityProfiles;
@@ -234,6 +248,7 @@ export interface GenerationRules {
   exercise_selection_strategy: ExerciseSelectionStrategy;
   default_split_by_frequency: DefaultSplitByFrequency;
   default_progression_by_goal: DefaultProgressionByGoal;
+  intensity_profile_by_layer_and_category: IntensityProfileByLayerAndCategory;
 }
 
 export interface CompoundExerciseConstruction {

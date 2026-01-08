@@ -836,5 +836,46 @@
     "general_fitness": "volume",
     "rehabilitation": "volume",
     "body_recomposition": "linear"
+  },
+
+  "intensity_profile_by_layer_and_category": {
+    "description": "Maps workout layer + exercise category to intensity profile. Falls back to 'default' if category not specified.",
+    "default": {
+      "first": "light",
+      "primary": "heavy",
+      "secondary": "moderate",
+      "tertiary": "moderate",
+      "finisher": "heavy",
+      "last": "light"
+    },
+    "cardio": {
+      "finisher": "hiit",
+      "default": "liss"
+    },
+    "interval": {
+      "finisher": "tabata",
+      "tertiary": "heavy",
+      "default": "moderate"
+    },
+    "mobility": {
+      "last": "extended",
+      "default": "light"
+    },
+    "flexibility": {
+      "last": "extended",
+      "default": "light"
+    },
+    "emom": {
+      "finisher": "heavy",
+      "default": "moderate"
+    },
+    "amrap": {
+      "finisher": "heavy",
+      "default": "moderate"
+    },
+    "circuit": {
+      "finisher": "heavy",
+      "default": "moderate"
+    }
   }
 }

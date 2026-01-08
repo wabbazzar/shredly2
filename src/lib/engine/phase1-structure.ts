@@ -176,40 +176,32 @@ export function assignProgressionScheme(
  */
 export function assignIntensityProfile(
   layer: string,
-  exerciseCategory: string
+  exerciseCategory: string,
+  rules: GenerationRules
 ): "light" | "moderate" | "moderate_heavy" | "heavy" | "max" | "tabata" | "liss" | "hiit" | "amrap" | "extended" {
-  // Future enhancement: Move to workout_generation_rules.json as intensity_profile_by_layer
+  const intensityConfig = rules.intensity_profile_by_layer_and_category;
 
-  // For certain categories, use category-specific profiles
-  if (exerciseCategory === 'cardio') {
-    return layer === 'finisher' ? 'hiit' : 'liss';
+  // Try category-specific mapping first
+  const categoryConfig = intensityConfig[exerciseCategory];
+  if (categoryConfig && typeof categoryConfig === 'object') {
+    // Check if layer has specific override
+    if (categoryConfig[layer]) {
+      return categoryConfig[layer] as any;
+    }
+    // Otherwise use category's default
+    if (categoryConfig.default) {
+      return categoryConfig.default as any;
+    }
   }
 
-  if (exerciseCategory === 'interval') {
-    if (layer === 'finisher') return 'tabata';
-    if (layer === 'tertiary') return 'heavy';
-    return 'moderate';
+  // Fall back to default layer mapping
+  const defaultConfig = intensityConfig.default;
+  if (defaultConfig && defaultConfig[layer]) {
+    return defaultConfig[layer] as any;
   }
 
-  if (exerciseCategory === 'mobility' || exerciseCategory === 'flexibility') {
-    return layer === 'last' ? 'extended' : 'light';
-  }
-
-  if (['emom', 'amrap', 'circuit'].includes(exerciseCategory)) {
-    return layer === 'finisher' ? 'heavy' : 'moderate';
-  }
-
-  // For strength and bodyweight, use layer-based mapping
-  const layerIntensityMap: { [key: string]: "light" | "moderate" | "moderate_heavy" | "heavy" | "max" } = {
-    first: 'light',
-    primary: 'heavy',
-    secondary: 'moderate',
-    tertiary: 'moderate',
-    finisher: 'heavy',
-    last: 'light'
-  };
-
-  return layerIntensityMap[layer] || 'moderate';
+  // Ultimate fallback
+  return 'moderate';
 }
 
 /**
@@ -235,7 +227,7 @@ export function applyProgressionAndIntensity(
     return {
       ...exercise,
       progressionScheme: assignProgressionScheme(answers, category, rules),
-      intensityProfile: assignIntensityProfile(layer, category)
+      intensityProfile: assignIntensityProfile(layer, category, rules)
     };
   });
 }

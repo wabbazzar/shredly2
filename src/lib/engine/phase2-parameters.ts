@@ -97,7 +97,12 @@ export function applyIntensityProfile(
 
   // Apply work time
   if (profile.base_work_time_minutes !== undefined) {
-    week1.work_time_minutes = profile.base_work_time_minutes;
+    // Convert seconds to minutes if unit is specified as "seconds"
+    let workTimeMinutes = profile.base_work_time_minutes;
+    if (profile.base_work_time_unit === 'seconds') {
+      workTimeMinutes = workTimeMinutes / 60;
+    }
+    week1.work_time_minutes = workTimeMinutes;
     // Add explicit time unit if available
     if (profile.base_work_time_unit) {
       week1.work_time_unit = profile.base_work_time_unit;
@@ -106,7 +111,12 @@ export function applyIntensityProfile(
 
   // Apply rest time (with rest time multiplier) - SKIP for sub-exercises
   if (!isSubExercise && profile.base_rest_time_minutes !== undefined) {
-    const calculatedRest = profile.base_rest_time_minutes * experienceModifier.rest_time_multiplier;
+    // Convert seconds to minutes if unit is specified as "seconds"
+    let restTimeMinutes = profile.base_rest_time_minutes;
+    if (profile.base_rest_time_unit === 'seconds') {
+      restTimeMinutes = restTimeMinutes / 60;
+    }
+    const calculatedRest = restTimeMinutes * experienceModifier.rest_time_multiplier;
     week1.rest_time_minutes = roundToHalfMinute(calculatedRest);
     // Add explicit time unit if available
     if (profile.base_rest_time_unit) {

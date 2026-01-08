@@ -71,6 +71,15 @@ export class InteractiveWorkoutEditor {
 
     this.editableFields = this.editor.getAllEditableFields();
 
+    // DEBUG: Show debug flags on startup
+    if (process.env.DEBUG_KEYS || process.env.DEBUG_SWAP || process.env.DEBUG_JUMP) {
+      console.log('\n=== DEBUG MODE ENABLED ===');
+      console.log(`DEBUG_KEYS: ${process.env.DEBUG_KEYS || 'off'}`);
+      console.log(`DEBUG_SWAP: ${process.env.DEBUG_SWAP || 'off'}`);
+      console.log(`DEBUG_JUMP: ${process.env.DEBUG_JUMP || 'off'}`);
+      console.log('=========================\n');
+    }
+
     this.state = {
       mode: 'view',
       viewMode: 'week',
@@ -212,6 +221,7 @@ export class InteractiveWorkoutEditor {
 
     // Jump to exercise number (supports multi-digit: 10, 11, 12, etc.)
     else if (str && /^[0-9]$/.test(str)) {
+      console.log(`[DEBUG] Number '${str}' pressed`);
       // Clear any existing timeout
       if (this.state.numberInputTimeout) {
         clearTimeout(this.state.numberInputTimeout);
@@ -219,6 +229,7 @@ export class InteractiveWorkoutEditor {
 
       // Append digit to buffer
       this.state.numberInputBuffer += str;
+      console.log(`[DEBUG] Buffer now: "${this.state.numberInputBuffer}"`);
       this.setStatus(`Jumping to exercise: ${this.state.numberInputBuffer}...`, 'info');
 
       // Set timeout to execute jump after 500ms of no input
@@ -286,9 +297,7 @@ export class InteractiveWorkoutEditor {
         await this.openExerciseDatabase();
       } else if (str === 'a') {
         // Fallback: 'a' activates swap mode when not on compound parent
-        if (process.env.DEBUG_SWAP) {
-          console.log(`[SWAP DEBUG] Calling handleSwapMode()`);
-        }
+        console.log(`[DEBUG] 'a' pressed, calling handleSwapMode()`);
         this.handleSwapMode();
       }
     }
@@ -310,21 +319,15 @@ export class InteractiveWorkoutEditor {
       this.state.mode = 'command';
       this.state.commandBuffer = '';
     } else if (key.name === 'return') {
-      // DEBUG: Log Enter key press
-      if (process.env.DEBUG_JUMP) {
-        console.log(`[JUMP DEBUG] Enter pressed, buffer="${this.state.numberInputBuffer}"`);
-      }
+      console.log(`[DEBUG] Enter key pressed, buffer="${this.state.numberInputBuffer}"`);
 
       // If number input buffer is active, execute jump immediately
       if (this.state.numberInputBuffer) {
+        console.log(`[DEBUG] Buffer active, executing jump immediately`);
         // Clear the timeout since we're executing now
         if (this.state.numberInputTimeout) {
           clearTimeout(this.state.numberInputTimeout);
           this.state.numberInputTimeout = null;
-        }
-
-        if (process.env.DEBUG_JUMP) {
-          console.log(`[JUMP DEBUG] Executing jump immediately`);
         }
 
         const exerciseNum = parseInt(this.state.numberInputBuffer);
@@ -1196,7 +1199,12 @@ export class InteractiveWorkoutEditor {
    */
   private handleSwapMode(): void {
     const field = this.editableFields[this.state.selectedFieldIndex];
-    if (!field) return;
+    if (!field) {
+      console.log('[DEBUG] handleSwapMode: no field');
+      return;
+    }
+
+    console.log(`[DEBUG] handleSwapMode: field=${field.fieldName}, type=${field.type}, subEx=${field.subExerciseIndex}`);
 
     // Don't allow swapping on insertion points
     if (field.type === 'insertion_point') {
@@ -1213,10 +1221,8 @@ export class InteractiveWorkoutEditor {
     const now = Date.now();
     const timeSinceLastATap = now - this.state.swapModeState.lastATapTime;
 
-    // DEBUG: Log swap mode state
-    if (process.env.DEBUG_SWAP) {
-      console.log(`[SWAP DEBUG] timeSince=${timeSinceLastATap}ms, active=${this.state.swapModeState.active}, condition=${this.state.swapModeState.active && timeSinceLastATap < 1000}`);
-    }
+    console.log(`[DEBUG] Swap mode: timeSince=${timeSinceLastATap}ms, active=${this.state.swapModeState.active}`);
+    console.log(`[DEBUG] Condition check: ${this.state.swapModeState.active} && ${timeSinceLastATap} < 1000 = ${this.state.swapModeState.active && timeSinceLastATap < 1000}`);
 
     // Check if this is a double-tap (within 1 second)
     if (this.state.swapModeState.active && timeSinceLastATap < 1000) {

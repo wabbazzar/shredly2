@@ -71,15 +71,6 @@ export class InteractiveWorkoutEditor {
 
     this.editableFields = this.editor.getAllEditableFields();
 
-    // DEBUG: Show debug flags on startup
-    if (process.env.DEBUG_KEYS || process.env.DEBUG_SWAP || process.env.DEBUG_JUMP) {
-      console.log('\n=== DEBUG MODE ENABLED ===');
-      console.log(`DEBUG_KEYS: ${process.env.DEBUG_KEYS || 'off'}`);
-      console.log(`DEBUG_SWAP: ${process.env.DEBUG_SWAP || 'off'}`);
-      console.log(`DEBUG_JUMP: ${process.env.DEBUG_JUMP || 'off'}`);
-      console.log('=========================\n');
-    }
-
     this.state = {
       mode: 'view',
       viewMode: 'week',
@@ -172,11 +163,6 @@ export class InteractiveWorkoutEditor {
    * View mode keyboard handler
    */
   private async handleViewModeKey(str: string, key: any): Promise<void> {
-    // DEBUG: Log ALL keypresses
-    if (process.env.DEBUG_KEYS) {
-      console.log(`[KEY DEBUG] str="${str}", key.name="${key.name}", ctrl=${key.ctrl}, meta=${key.meta}`);
-    }
-
     const hotkeys = hotkeysConfig.view_mode;
 
     // Clear number input buffer on Escape
@@ -221,7 +207,6 @@ export class InteractiveWorkoutEditor {
 
     // Jump to exercise number (supports multi-digit: 10, 11, 12, etc.)
     else if (str && /^[0-9]$/.test(str)) {
-      console.log(`[DEBUG] Number '${str}' pressed`);
       // Clear any existing timeout
       if (this.state.numberInputTimeout) {
         clearTimeout(this.state.numberInputTimeout);
@@ -229,7 +214,6 @@ export class InteractiveWorkoutEditor {
 
       // Append digit to buffer
       this.state.numberInputBuffer += str;
-      console.log(`[DEBUG] Buffer now: "${this.state.numberInputBuffer}"`);
       this.setStatus(`Jumping to exercise: ${this.state.numberInputBuffer}...`, 'info');
 
       // Set timeout to execute jump after 500ms of no input
@@ -265,9 +249,7 @@ export class InteractiveWorkoutEditor {
 
     // Compound block type change (context-sensitive)
     // If on a compound exercise parent, change block type
-    // Otherwise:
-    //   - 'e' opens exercise database
-    //   - 'a' activates swap mode (double-tap)
+    // Otherwise, 'e' opens exercise database
     else if (str === 'e' || str === 'a' || str === 'c' || str === 'i') {
       const field = this.editableFields[this.state.selectedFieldIndex];
 
@@ -276,12 +258,6 @@ export class InteractiveWorkoutEditor {
         field.fieldName === 'name' &&
         field.subExerciseIndex === undefined &&
         this.isCurrentExerciseCompound();
-
-      // DEBUG: Log when 'a' is pressed
-      if (str === 'a' && process.env.DEBUG_SWAP) {
-        console.log(`[SWAP DEBUG] 'a' key handler reached`);
-        console.log(`[SWAP DEBUG] field=${field?.fieldName}, isCompoundParent=${isCompoundParent}`);
-      }
 
       if (isCompoundParent) {
         // Change compound block type
@@ -295,11 +271,12 @@ export class InteractiveWorkoutEditor {
       } else if (str === 'e') {
         // Fallback: 'e' opens exercise database when not on compound parent
         await this.openExerciseDatabase();
-      } else if (str === 'a') {
-        // Fallback: 'a' activates swap mode when not on compound parent
-        console.log(`[DEBUG] 'a' pressed, calling handleSwapMode()`);
-        this.handleSwapMode();
       }
+    }
+
+    // Swap mode - double-tap 'x' to exchange/swap two exercises
+    else if (str === 'x' || str === 'X') {
+      this.handleSwapMode();
     }
 
     // Actions
@@ -319,11 +296,8 @@ export class InteractiveWorkoutEditor {
       this.state.mode = 'command';
       this.state.commandBuffer = '';
     } else if (key.name === 'return') {
-      console.log(`[DEBUG] Enter key pressed, buffer="${this.state.numberInputBuffer}"`);
-
       // If number input buffer is active, execute jump immediately
       if (this.state.numberInputBuffer) {
-        console.log(`[DEBUG] Buffer active, executing jump immediately`);
         // Clear the timeout since we're executing now
         if (this.state.numberInputTimeout) {
           clearTimeout(this.state.numberInputTimeout);
@@ -1199,12 +1173,7 @@ export class InteractiveWorkoutEditor {
    */
   private handleSwapMode(): void {
     const field = this.editableFields[this.state.selectedFieldIndex];
-    if (!field) {
-      console.log('[DEBUG] handleSwapMode: no field');
-      return;
-    }
-
-    console.log(`[DEBUG] handleSwapMode: field=${field.fieldName}, type=${field.type}, subEx=${field.subExerciseIndex}`);
+    if (!field) return;
 
     // Don't allow swapping on insertion points
     if (field.type === 'insertion_point') {
@@ -1220,9 +1189,6 @@ export class InteractiveWorkoutEditor {
 
     const now = Date.now();
     const timeSinceLastATap = now - this.state.swapModeState.lastATapTime;
-
-    console.log(`[DEBUG] Swap mode: timeSince=${timeSinceLastATap}ms, active=${this.state.swapModeState.active}`);
-    console.log(`[DEBUG] Condition check: ${this.state.swapModeState.active} && ${timeSinceLastATap} < 1000 = ${this.state.swapModeState.active && timeSinceLastATap < 1000}`);
 
     // Check if this is a double-tap (within 1 second)
     if (this.state.swapModeState.active && timeSinceLastATap < 1000) {
@@ -1261,7 +1227,7 @@ export class InteractiveWorkoutEditor {
       this.state.swapModeState.active = true;
       this.state.swapModeState.firstExerciseIndex = field.exerciseIndex;
       this.state.swapModeState.firstDayKey = field.dayKey;
-      this.setStatus(`Exercise marked for swap. Tap 'a' on another exercise to swap.`, 'info');
+      this.setStatus(`Exercise marked for swap. Tap 'x' on another exercise to swap.`, 'info');
     }
 
     this.state.swapModeState.lastATapTime = now;

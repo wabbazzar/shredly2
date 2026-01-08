@@ -38,10 +38,12 @@ Add five advanced editing features to the CLI workout editor:
 ### Phase 1: Swap Mode (5 points)
 
 **Behavior**:
-- Tap 'a' once → mark first exercise
-- Tap 'a' again → mark second exercise, show confirmation prompt
+- Tap 'x' once → mark first exercise
+- Tap 'x' again → mark second exercise, show confirmation prompt
 - User confirms → swap exercises
 - User cancels → clear marks
+
+**Note**: Originally planned to use 'a' key, but changed to 'x' (eXchange) because 'a' is already used to change compound blocks to AMRAP type.
 
 **Implementation**:
 - Add `swapModeState` to EditorState:
@@ -52,7 +54,7 @@ Add five advanced editing features to the CLI workout editor:
     secondFieldIndex?: number;
   }
   ```
-- Modify `handleViewModeKey` to detect double-tap 'a'
+- Modify `handleViewModeKey` to detect double-tap 'x'
 - Add visual highlights in `formatWorkoutInteractive` (yellow border around marked exercises)
 - Add confirmation prompt: "Swap Exercise A with Exercise B? (y/n)"
 - Call `editor.swapExercises(dayKey, indexA, indexB)`
@@ -202,11 +204,11 @@ Add five advanced editing features to the CLI workout editor:
 
 ### Test Cases
 1. **Swap Mode**:
-   - Tap 'a' once → verify first exercise marked (visual highlight)
-   - Tap 'a' second time → verify confirmation prompt appears
+   - Tap 'x' once → verify first exercise marked (visual highlight)
+   - Tap 'x' second time → verify confirmation prompt appears
    - Confirm swap → verify exercises swapped positions
    - Cancel swap → verify marks cleared, no changes
-   - Tap 'a' then navigate away → verify marks cleared
+   - Tap 'x' then navigate away → verify marks cleared
 
 2. **Exercise Info Viewer**:
    - Navigate to exercise name field

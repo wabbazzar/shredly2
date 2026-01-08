@@ -22,7 +22,7 @@ import hotkeysConfig from '../cli_hotkeys.json' with { type: 'json' };
 import exerciseDatabase from '../../src/data/exercise_database.json' with { type: 'json' };
 import exerciseDescriptions from '../../src/data/exercise_descriptions.json' with { type: 'json' };
 
-type EditorMode = 'view' | 'edit' | 'command' | 'help';
+type EditorMode = 'view' | 'edit' | 'command' | 'help' | 'info';
 type ViewMode = 'week' | 'day'; // week = all days, day = one day at a time
 
 interface EditorState {
@@ -152,6 +152,8 @@ export class InteractiveWorkoutEditor {
       await this.handleCommandModeKey(str, key);
     } else if (this.state.mode === 'help') {
       this.handleHelpModeKey(str, key);
+    } else if (this.state.mode === 'info') {
+      this.handleInfoModeKey(str, key);
     }
 
     this.render();
@@ -419,6 +421,14 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
+   * Info mode keyboard handler (for exercise info display)
+   */
+  private handleInfoModeKey(str: string, key: any): void {
+    // Any key returns to view mode
+    this.state.mode = 'view';
+  }
+
+  /**
    * Enter edit mode for current field
    * @param autoClear - If true, start with empty buffer (vim-like replace)
    */
@@ -581,10 +591,12 @@ export class InteractiveWorkoutEditor {
 
     for (let weekIndex = 0; weekIndex < numWeeks; weekIndex++) {
       // Create a field location for this week
+      const weekKey = `week${weekIndex + 1}`; // week1, week2, week3 (1-indexed)
       const broadcastField = {
         ...field,
+        weekKey,
         weekIndex,
-        location: field.location.replace(/\[week:\d+\]/, `[week:${weekIndex}]`)
+        location: field.location.replace(/\.week\d+/, `.${weekKey}`)
       };
 
       const success = this.editor.editField(broadcastField, typedValue);
@@ -630,10 +642,12 @@ export class InteractiveWorkoutEditor {
 
     for (let weekIndex = 0; weekIndex < numWeeks; weekIndex++) {
       // Create a field location for this week
+      const weekKey = `week${weekIndex + 1}`; // week1, week2, week3 (1-indexed)
       const broadcastField = {
         ...field,
+        weekKey,
         weekIndex,
-        location: field.location.replace(/\[week:\d+\]/, `[week:${weekIndex}]`)
+        location: field.location.replace(/\.week\d+/, `.${weekKey}`)
       };
 
       const success = this.editor.editField(broadcastField, typedValue);
@@ -1407,6 +1421,11 @@ export class InteractiveWorkoutEditor {
       return;
     }
 
+    if (this.state.mode === 'info') {
+      // Info mode - don't render anything, showExerciseInfo() already displayed
+      return;
+    }
+
     if (this.state.viewMode === 'week') {
       console.log(formatWorkoutInteractive(workout, highlightOptions));
     } else {
@@ -1532,12 +1551,8 @@ export class InteractiveWorkoutEditor {
     console.log(chalk.gray('-'.repeat(60)));
     console.log(chalk.gray('Press any key to return to editor...'));
 
-    // Wait for keypress
-    const handler = () => {
-      process.stdin.removeListener('keypress', handler);
-      this.render();
-    };
-    process.stdin.once('keypress', handler);
+    // Set mode to 'info' so render() doesn't overwrite this display
+    this.state.mode = 'info';
   }
 
   /**
@@ -1607,6 +1622,7 @@ export class InteractiveWorkoutEditor {
     if (this.state.mode === 'edit') return chalk.yellow('[EDIT]');
     if (this.state.mode === 'command') return chalk.cyan('[COMMAND]');
     if (this.state.mode === 'help') return chalk.blue('[HELP]');
+    if (this.state.mode === 'info') return chalk.magenta('[INFO]');
     return '';
   }
 

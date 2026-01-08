@@ -1406,16 +1406,7 @@ export class InteractiveWorkoutEditor {
    * Render the current view
    */
   private render(): void {
-    console.clear();
-
-    const workout = this.editor.getWorkout();
-    const selectedField = this.editableFields[this.state.selectedFieldIndex];
-
-    const highlightOptions: HighlightOptions = {
-      selectedFieldLocation: selectedField?.location,
-      showAllEditable: false
-    };
-
+    // Check special modes first BEFORE clearing screen
     if (this.state.mode === 'help') {
       this.renderHelp();
       return;
@@ -1425,6 +1416,17 @@ export class InteractiveWorkoutEditor {
       // Info mode - don't render anything, showExerciseInfo() already displayed
       return;
     }
+
+    // Clear screen for normal rendering
+    console.clear();
+
+    const workout = this.editor.getWorkout();
+    const selectedField = this.editableFields[this.state.selectedFieldIndex];
+
+    const highlightOptions: HighlightOptions = {
+      selectedFieldLocation: selectedField?.location,
+      showAllEditable: false
+    };
 
     if (this.state.viewMode === 'week') {
       console.log(formatWorkoutInteractive(workout, highlightOptions));

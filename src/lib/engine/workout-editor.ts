@@ -518,6 +518,94 @@ export class WorkoutEditor {
   }
 
   /**
+   * Delete a sub-exercise from a compound exercise block
+   * If this is the last sub-exercise, the entire compound block will be deleted
+   *
+   * @param dayKey - Day key
+   * @param exerciseIndex - Index of the compound parent exercise
+   * @param subExerciseIndex - Index of the sub-exercise to delete
+   * @returns Success result with message
+   */
+  deleteSubExercise(
+    dayKey: string,
+    exerciseIndex: number,
+    subExerciseIndex: number
+  ): { success: boolean; message: string } {
+    const day = this.workout.days[dayKey];
+    if (!day || !day.exercises[exerciseIndex]) {
+      return { success: false, message: 'Exercise not found' };
+    }
+
+    const exercise = day.exercises[exerciseIndex];
+
+    // Validate this is a compound exercise
+    if (!exercise.sub_exercises || exercise.sub_exercises.length === 0) {
+      return { success: false, message: 'Not a compound exercise' };
+    }
+
+    // Validate sub-exercise index
+    if (subExerciseIndex < 0 || subExerciseIndex >= exercise.sub_exercises.length) {
+      return { success: false, message: 'Sub-exercise index out of range' };
+    }
+
+    const deletedSubExercise = { ...exercise.sub_exercises[subExerciseIndex] };
+
+    // If this is the last sub-exercise, delete the entire compound block
+    if (exercise.sub_exercises.length === 1) {
+      return this.deleteExercise(dayKey, exerciseIndex);
+    }
+
+    // Remove sub-exercise from array
+    exercise.sub_exercises.splice(subExerciseIndex, 1);
+
+    // Also remove from week parameters
+    for (let weekIndex = 0; weekIndex < this.workout.weeks; weekIndex++) {
+      const weekKey = `week${weekIndex + 1}` as `week${number}`;
+      const weekParams = (exercise as any)[weekKey];
+
+      if (weekParams && weekParams.sub_exercises) {
+        weekParams.sub_exercises.splice(subExerciseIndex, 1);
+      }
+    }
+
+    // Update compound block name to reflect new sub-exercises
+    const newParentName = this.updateCompoundBlockName(exercise);
+    if (newParentName) {
+      exercise.name = newParentName;
+    }
+
+    // Add to undo stack
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Delete sub-exercise: ${deletedSubExercise.name}`,
+      location: `${dayKey}.exercises[${exerciseIndex}].sub_exercises[${subExerciseIndex}]`,
+      previousValue: deletedSubExercise,
+      newValue: null,
+      reverseOperation: () => {
+        // Re-insert the sub-exercise
+        exercise.sub_exercises!.splice(subExerciseIndex, 0, deletedSubExercise);
+
+        // Re-insert week parameters
+        for (let weekIndex = 0; weekIndex < this.workout.weeks; weekIndex++) {
+          const weekKey = `week${weekIndex + 1}` as `week${number}`;
+          const weekParams = (exercise as any)[weekKey];
+
+          if (weekParams && weekParams.sub_exercises) {
+            // We don't have the week-specific params, so just add empty object
+            weekParams.sub_exercises.splice(subExerciseIndex, 0, {});
+          }
+        }
+
+        // Restore compound block name
+        this.updateCompoundBlockName(exercise);
+      }
+    });
+
+    this.modified = true;
+    return { success: true, message: `Deleted sub-exercise: ${deletedSubExercise.name}` };
+  }
+
+  /**
    * Insert a new exercise after a given exercise index
    * Used for "add exercise" functionality
    */
@@ -844,7 +932,7 @@ export class WorkoutEditor {
 
     // Generate name from sub-exercises
     const subNames = exercise.sub_exercises.map(sub => sub.name).join(' + ');
-    return `[${category}] ${category}: ${subNames}`;
+    return `${category}: ${subNames}`;
   }
 
   /**

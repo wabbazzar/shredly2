@@ -905,13 +905,24 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
-   * Delete current exercise
+   * Delete current exercise or sub-exercise
+   * If on a sub-exercise, only delete that sub-exercise
+   * If on the compound parent name, delete the entire block
    */
   private deleteCurrentExercise(): void {
     const field = this.editableFields[this.state.selectedFieldIndex];
     if (!field) return;
 
-    const result = this.editor.deleteExercise(field.dayKey, field.exerciseIndex);
+    let result;
+
+    // Check if we're on a sub-exercise field
+    if (field.subExerciseIndex !== undefined) {
+      // Delete just the sub-exercise
+      result = this.editor.deleteSubExercise(field.dayKey, field.exerciseIndex, field.subExerciseIndex);
+    } else {
+      // Delete the entire exercise (or compound block if on parent name)
+      result = this.editor.deleteExercise(field.dayKey, field.exerciseIndex);
+    }
 
     if (result.success) {
       this.setStatus(result.message, 'success');
@@ -1054,14 +1065,21 @@ export class InteractiveWorkoutEditor {
    * Handle swap mode activation (double-tap 'a')
    * First tap: mark first exercise
    * Second tap (within 1 second): mark second exercise and prompt for confirmation
+   * Works on any field - uses the exercise index from the current field
    */
   private handleSwapMode(): void {
     const field = this.editableFields[this.state.selectedFieldIndex];
     if (!field) return;
 
-    // Only allow swapping on exercise name fields (not insertion points)
-    if (field.fieldName !== 'name' || field.type === 'insertion_point') {
-      this.setStatus('Navigate to an exercise name field to swap', 'error');
+    // Don't allow swapping on insertion points
+    if (field.type === 'insertion_point') {
+      this.setStatus('Cannot swap insertion points', 'error');
+      return;
+    }
+
+    // Don't allow swapping sub-exercises (only whole exercises)
+    if (field.subExerciseIndex !== undefined) {
+      this.setStatus('Cannot swap sub-exercises - navigate to parent exercise', 'error');
       return;
     }
 

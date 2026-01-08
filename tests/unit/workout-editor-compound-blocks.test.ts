@@ -260,7 +260,7 @@ describe("WorkoutEditor - setCompoundBlockType()", () => {
     const block = afterChange.days.day1.exercises[1];
 
     expect(block.category).toBe("circuit");
-    expect(block.name).toBe("[CIRCUIT] CIRCUIT: Pull-ups + Push-ups");
+    expect(block.name).toBe("CIRCUIT: Pull-ups + Push-ups");
   });
 
   it("should preserve existing week parameters", () => {
@@ -354,7 +354,7 @@ describe("WorkoutEditor - updateCompoundBlockName()", () => {
     const block = editor.getWorkout().days.day1.exercises[1];
     const name = editor.updateCompoundBlockName(block);
 
-    expect(name).toBe("[EMOM] EMOM: Pull-ups");
+    expect(name).toBe("EMOM: Pull-ups");
   });
 
   it("should generate name with multiple sub-exercises", () => {
@@ -369,7 +369,7 @@ describe("WorkoutEditor - updateCompoundBlockName()", () => {
     const block = editor.getWorkout().days.day1.exercises[1];
     const name = editor.updateCompoundBlockName(block);
 
-    expect(name).toBe("[CIRCUIT] CIRCUIT: Pull-ups + Push-ups + Squat Jumps");
+    expect(name).toBe("CIRCUIT: Pull-ups + Push-ups + Squat Jumps");
   });
 
   it("should use correct category prefix for AMRAP", () => {
@@ -382,7 +382,7 @@ describe("WorkoutEditor - updateCompoundBlockName()", () => {
     const block = editor.getWorkout().days.day1.exercises[1];
     const name = editor.updateCompoundBlockName(block);
 
-    expect(name).toBe("[AMRAP] AMRAP: Burpees");
+    expect(name).toBe("AMRAP: Burpees");
   });
 
   it("should use correct category prefix for Interval", () => {
@@ -395,7 +395,7 @@ describe("WorkoutEditor - updateCompoundBlockName()", () => {
     const block = editor.getWorkout().days.day1.exercises[1];
     const name = editor.updateCompoundBlockName(block);
 
-    expect(name).toBe("[INTERVAL] INTERVAL: Sprint in Place");
+    expect(name).toBe("INTERVAL: Sprint in Place");
   });
 
   it("should return null for non-compound exercise", () => {
@@ -422,7 +422,7 @@ describe("WorkoutEditor - updateCompoundBlockName()", () => {
     editor.insertSubExercise("day1", 1, "Pull-ups");
 
     const afterAdd = editor.getWorkout();
-    expect(afterAdd.days.day1.exercises[1].name).toBe("[EMOM] EMOM: Pull-ups");
+    expect(afterAdd.days.day1.exercises[1].name).toBe("EMOM: Pull-ups");
   });
 
   it("should auto-update name when second sub-exercise added", () => {
@@ -433,13 +433,13 @@ describe("WorkoutEditor - updateCompoundBlockName()", () => {
     editor.insertSubExercise("day1", 1, "Pull-ups");
 
     const beforeAdd = editor.getWorkout();
-    expect(beforeAdd.days.day1.exercises[1].name).toBe("[EMOM] EMOM: Pull-ups");
+    expect(beforeAdd.days.day1.exercises[1].name).toBe("EMOM: Pull-ups");
 
     editor.insertSubExercise("day1", 1, "Push-ups");
 
     const afterAdd = editor.getWorkout();
     expect(afterAdd.days.day1.exercises[1].name).toBe(
-      "[EMOM] EMOM: Pull-ups + Push-ups"
+      "EMOM: Pull-ups + Push-ups"
     );
   });
 });
@@ -458,19 +458,19 @@ describe("WorkoutEditor - Integration: Compound Block Workflow", () => {
     // Step 2: Add first sub-exercise
     editor.insertSubExercise("day1", 1, "Pull-ups");
     expect(editor.getWorkout().days.day1.exercises[1].name).toBe(
-      "[EMOM] EMOM: Pull-ups"
+      "EMOM: Pull-ups"
     );
 
     // Step 3: Add second sub-exercise
     editor.insertSubExercise("day1", 1, "Push-ups");
     expect(editor.getWorkout().days.day1.exercises[1].name).toBe(
-      "[EMOM] EMOM: Pull-ups + Push-ups"
+      "EMOM: Pull-ups + Push-ups"
     );
 
     // Step 4: Change to Circuit
     editor.setCompoundBlockType("day1", 1, "circuit");
     expect(editor.getWorkout().days.day1.exercises[1].name).toBe(
-      "[CIRCUIT] CIRCUIT: Pull-ups + Push-ups"
+      "CIRCUIT: Pull-ups + Push-ups"
     );
     expect(editor.getWorkout().days.day1.exercises[1].category).toBe("circuit");
   });

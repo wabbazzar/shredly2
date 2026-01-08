@@ -556,7 +556,7 @@ export class InteractiveWorkoutEditor {
     }
 
     // Check if this is a week-specific field
-    const weekSpecificFields = ['sets', 'reps', 'weight', 'rest_time', 'work_time', 'tempo', 'rpe', 'rir'];
+    const weekSpecificFields = ['sets', 'reps', 'weight', 'rest_time_minutes', 'work_time_minutes', 'tempo', 'rpe', 'rir'];
     if (!weekSpecificFields.includes(field.fieldName)) {
       this.setStatus(`Cannot broadcast ${field.fieldName} - not a week-specific field`, 'error');
       return;
@@ -617,7 +617,7 @@ export class InteractiveWorkoutEditor {
     const typedValue = this.state.lastEditedValue;
 
     // Check if this is a week-specific field
-    const weekSpecificFields = ['sets', 'reps', 'weight', 'rest_time', 'work_time', 'tempo', 'rpe', 'rir'];
+    const weekSpecificFields = ['sets', 'reps', 'weight', 'rest_time_minutes', 'work_time_minutes', 'tempo', 'rpe', 'rir'];
     if (!weekSpecificFields.includes(field.fieldName)) {
       this.setStatus(`Cannot broadcast ${field.fieldName} - not a week-specific field`, 'error');
       return;
@@ -1451,19 +1451,28 @@ export class InteractiveWorkoutEditor {
     const field = this.editableFields[this.state.selectedFieldIndex];
     if (!field) return;
 
-    // Get exercise name from current field
-    let exerciseName: string | undefined;
-
-    if (field.fieldName === 'name' && field.type !== 'insertion_point') {
-      exerciseName = String(field.currentValue);
-    } else {
-      this.setStatus('Navigate to an exercise name field first', 'error');
+    // Skip insertion points
+    if (field.type === 'insertion_point') {
+      this.setStatus('Navigate to an exercise field first', 'error');
       return;
     }
 
-    if (!exerciseName) {
-      this.setStatus('No exercise selected', 'error');
-      return;
+    // Get exercise name from workout data (works for any field of the exercise)
+    const workout = this.editor.getWorkout();
+    const day = workout.days[field.dayKey];
+    if (!day) return;
+
+    const exercise = day.exercises[field.exerciseIndex];
+    if (!exercise) return;
+
+    // Get the actual exercise name (parent exercise or sub-exercise)
+    let exerciseName: string;
+    if (field.subExerciseIndex !== undefined && exercise.sub_exercises) {
+      const subEx = exercise.sub_exercises[field.subExerciseIndex];
+      if (!subEx) return;
+      exerciseName = subEx.name;
+    } else {
+      exerciseName = exercise.name;
     }
 
     // Look up exercise in descriptions database

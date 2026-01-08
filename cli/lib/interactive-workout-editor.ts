@@ -1561,6 +1561,7 @@ export class InteractiveWorkoutEditor {
    * Render help screen
    */
   private renderHelp(): void {
+    console.clear();
     console.log(chalk.cyan('=== INTERACTIVE WORKOUT EDITOR HELP ==='));
     console.log('');
     console.log(chalk.yellow('VIEW MODE:'));

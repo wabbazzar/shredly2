@@ -202,6 +202,11 @@ export interface Exercise {
 // GENERATION RULES TYPES
 // ============================================================================
 
+export interface DefaultSplitByFrequency {
+  description: string;
+  [frequency: string]: string; // "2" -> "full_body", etc.
+}
+
 export interface GenerationRules {
   version: string;
   intensity_profiles: IntensityProfiles;
@@ -217,6 +222,7 @@ export interface GenerationRules {
   exercise_count_constraints: ExerciseCountConstraints;
   equipment_quotas: EquipmentQuotas;
   exercise_selection_strategy: ExerciseSelectionStrategy;
+  default_split_by_frequency: DefaultSplitByFrequency;
 }
 
 export interface CompoundExerciseConstruction {

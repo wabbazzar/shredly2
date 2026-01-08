@@ -28,50 +28,16 @@
           "name": "Band Pull-Aparts",
           "category": "mobility",
           "week1": {
-            "work_time_minutes": 3,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 3,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 3,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Dumbbell Bench Press",
-          "category": "strength",
-          "week1": {
-            "sets": 4,
-            "reps": 5,
-            "rest_time_minutes": 4,
-            "rest_time_unit": "minutes",
-            "weight": {
-              "type": "percent_tm",
-              "value": 80
-            }
-          },
-          "week2": {
-            "sets": 4,
-            "reps": 4,
-            "rest_time_minutes": 3.5,
-            "rest_time_unit": "minutes",
-            "weight": {
-              "type": "percent_tm",
-              "value": 85
-            }
-          },
-          "week3": {
-            "sets": 4,
-            "reps": 3,
-            "rest_time_minutes": 3,
-            "rest_time_unit": "minutes",
-            "weight": {
-              "type": "percent_tm",
-              "value": 90
-            }
           }
         },
         {
@@ -106,6 +72,40 @@
               "value": 90
             },
             "reps": 8
+          }
+        },
+        {
+          "name": "Dumbbell Bench Press",
+          "category": "strength",
+          "week1": {
+            "sets": 4,
+            "reps": 5,
+            "rest_time_minutes": 4,
+            "rest_time_unit": "minutes",
+            "weight": {
+              "type": "percent_tm",
+              "value": 80
+            }
+          },
+          "week2": {
+            "sets": 4,
+            "reps": 4,
+            "rest_time_minutes": 3.5,
+            "rest_time_unit": "minutes",
+            "weight": {
+              "type": "percent_tm",
+              "value": 85
+            }
+          },
+          "week3": {
+            "sets": 4,
+            "reps": 3,
+            "rest_time_minutes": 3,
+            "rest_time_unit": "minutes",
+            "weight": {
+              "type": "percent_tm",
+              "value": 90
+            }
           }
         },
         {
@@ -823,7 +823,8 @@
           }
         },
         {
-          "name": "Glute Bridge",
+          "name": "Pendlay Row",
+          "category": "strength",
           "week1": {
             "sets": 4,
             "reps": 5,
@@ -856,7 +857,8 @@
           }
         },
         {
-          "name": "Jefferson Squat",
+          "name": "Zercher Squat",
+          "category": "strength",
           "week1": {
             "sets": 4,
             "reps": 5,
@@ -895,11 +897,11 @@
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 7,
+            "work_time_minutes": 8,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 7.5,
+            "work_time_minutes": 10,
             "work_time_unit": "minutes"
           },
           "category": "emom",
@@ -931,16 +933,13 @@
             {
               "name": "Bicycle Crunches",
               "week1": {
-                "work_time_minutes": 2,
-                "work_time_unit": "minutes"
+                "reps": 40
               },
               "week2": {
-                "work_time_minutes": 2.5,
-                "work_time_unit": "minutes"
+                "reps": 50
               },
               "week3": {
-                "work_time_minutes": 2.5,
-                "work_time_unit": "minutes"
+                "reps": 60
               }
             }
           ]
@@ -956,24 +955,30 @@
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 30,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 30,
+                "rest_time_unit": "seconds"
               },
               "week2": {
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 30,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 30,
+                "rest_time_unit": "seconds"
               },
               "week3": {
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 30,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 30,
+                "rest_time_unit": "seconds"
               }
             },
             {
@@ -983,24 +988,30 @@
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 35,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 25,
+                "rest_time_unit": "seconds"
               },
               "week2": {
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 40,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 20,
+                "rest_time_unit": "seconds"
               },
               "week3": {
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 45,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 15,
+                "rest_time_unit": "seconds"
               }
             },
             {
@@ -1010,38 +1021,41 @@
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 35,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 25,
+                "rest_time_unit": "seconds"
               },
               "week2": {
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 40,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 20,
+                "rest_time_unit": "seconds"
               },
               "week3": {
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 },
-                "work_time_minutes": 8,
-                "work_time_unit": "seconds"
+                "work_time_minutes": 45,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 15,
+                "rest_time_unit": "seconds"
               }
             }
           ],
           "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
+            "sets": 2
           },
           "week2": {
-            "work_time_minutes": 8,
-            "work_time_unit": "minutes"
+            "sets": 2
           },
           "week3": {
-            "work_time_minutes": 10,
-            "work_time_unit": "minutes"
+            "sets": 2
           }
         },
         {
@@ -1087,7 +1101,7 @@
           }
         },
         {
-          "name": "[AMRAP] AMRAP: Pike Toe Touch + Renegade Rows + Lateral Walks with Resistance Band",
+          "name": "AMRAP: Pike Toe Touch + Lateral Walks with Resistance Band",
           "category": "amrap",
           "sub_exercises": [
             {
@@ -1100,30 +1114,6 @@
               },
               "week3": {
                 "reps": 8
-              }
-            },
-            {
-              "name": "Renegade Rows",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
               }
             },
             {
@@ -1165,18 +1155,18 @@
           }
         },
         {
-          "name": "Shoulder Mobility",
+          "name": "Joint Mobility Drills",
           "category": "mobility",
           "week1": {
-            "work_time_minutes": 2,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 2,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 2,
+            "work_time_minutes": 5,
             "work_time_unit": "minutes"
           }
         }

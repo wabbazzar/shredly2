@@ -76,23 +76,23 @@
     "interval": {
       "light": {
         "base_sets": 3,
-        "base_work_time_minutes": 20,
+        "base_work_time_minutes": 30,
         "base_work_time_unit": "seconds",
-        "base_rest_time_minutes": 10,
+        "base_rest_time_minutes": 30,
         "base_rest_time_unit": "seconds"
       },
       "moderate": {
         "base_sets": 4,
-        "base_work_time_minutes": 30,
+        "base_work_time_minutes": 40,
         "base_work_time_unit": "seconds",
-        "base_rest_time_minutes": 15,
+        "base_rest_time_minutes": 20,
         "base_rest_time_unit": "seconds"
       },
       "heavy": {
         "base_sets": 6,
-        "base_work_time_minutes": 40,
+        "base_work_time_minutes": 50,
         "base_work_time_unit": "seconds",
-        "base_rest_time_minutes": 20,
+        "base_rest_time_minutes": 10,
         "base_rest_time_unit": "seconds"
       },
       "tabata": {
@@ -816,5 +816,15 @@
       "final_duration": "57 minutes",
       "ratio_achieved": "1:2:1:1:1 (2 primary exercises, 1 each for other layers)"
     }
+  },
+
+  "default_split_by_frequency": {
+    "description": "Maps training frequency (days/week) to default split type when user selects 'no_preference'",
+    "2": "full_body",
+    "3": "full_body",
+    "4": "upper_lower",
+    "5": "push_pull_legs",
+    "6": "push_pull_legs",
+    "7": "push_pull_legs"
   }
 }

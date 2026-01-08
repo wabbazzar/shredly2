@@ -11,6 +11,7 @@
 import * as readline from 'readline';
 import chalk from 'chalk';
 import exerciseDatabase from '../../src/data/exercise_database.json' with { type: 'json' };
+import exerciseDescriptions from '../../src/data/exercise_descriptions.json' with { type: 'json' };
 
 interface ExerciseData {
   name: string;
@@ -192,7 +193,7 @@ function renderModeIndicator(state: BrowserState): string {
     lines.push(chalk.cyan('FILTER EQUIPMENT: ') + chalk.yellow(`e/${state.inputBuffer}`));
     lines.push(chalk.gray('Type to find equipment, Space to toggle, Enter to finish'));
   } else {
-    lines.push(chalk.gray('/ search | c filter categories | m filter muscles | e filter equipment | r reset'));
+    lines.push(chalk.gray('/ search | c filter categories | m filter muscles | e filter equipment | i info | r reset'));
   }
 
   lines.push('');
@@ -246,6 +247,71 @@ function renderFilterSelection(
   }
 
   return lines.join('\n');
+}
+
+/**
+ * Show exercise information overlay (descriptions, setup, cues)
+ */
+function showExerciseInfo(exercise: ExerciseData): Promise<void> {
+  console.clear();
+  console.log(chalk.cyan.bold('='.repeat(60)));
+  console.log(chalk.cyan.bold(`EXERCISE: ${exercise.name}`));
+  console.log(chalk.cyan.bold('='.repeat(60)));
+  console.log('');
+
+  console.log(chalk.gray(`Category: ${exercise.category} | Difficulty: ${exercise.difficulty} | External Load: ${exercise.external_load}`));
+  if (exercise.muscle_groups && exercise.muscle_groups.length > 0) {
+    console.log(chalk.gray(`Muscles: ${exercise.muscle_groups.join(', ')}`));
+  }
+  if (exercise.equipment && exercise.equipment.length > 0) {
+    console.log(chalk.gray(`Equipment: ${exercise.equipment.join(', ')}`));
+  }
+  console.log('');
+
+  // Look up exercise in descriptions database
+  const descriptions = exerciseDescriptions as Record<string, {
+    description: {
+      overview: string;
+      setup: string;
+      movement: string;
+      cues: string;
+    }
+  }>;
+
+  const exerciseInfo = descriptions[exercise.name];
+
+  if (exerciseInfo) {
+    console.log(chalk.yellow.bold('OVERVIEW:'));
+    console.log(exerciseInfo.description.overview);
+    console.log('');
+
+    console.log(chalk.yellow.bold('SETUP:'));
+    console.log(exerciseInfo.description.setup);
+    console.log('');
+
+    console.log(chalk.yellow.bold('MOVEMENT:'));
+    console.log(exerciseInfo.description.movement);
+    console.log('');
+
+    console.log(chalk.yellow.bold('CUES:'));
+    console.log(exerciseInfo.description.cues);
+    console.log('');
+  } else {
+    console.log(chalk.gray('No detailed description available for this exercise.'));
+    console.log('');
+  }
+
+  console.log(chalk.gray('-'.repeat(60)));
+  console.log(chalk.gray('Press any key to return to exercise browser...'));
+
+  // Wait for keypress
+  return new Promise((resolve) => {
+    const handler = () => {
+      process.stdin.removeListener('keypress', handler);
+      resolve();
+    };
+    process.stdin.once('keypress', handler);
+  });
 }
 
 /**
@@ -360,7 +426,7 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
 
         console.log(renderExerciseList(filteredExercises, state.selectedIndex, terminalHeight, state.filterSectionExpanded));
         console.log('');
-        console.log(chalk.gray('↑↓: Navigate | Enter: Select | Esc/Q: Cancel'));
+        console.log(chalk.gray('↑↓: Navigate | Enter: Select | i: Info | Esc/Q: Cancel'));
       }
     };
 
@@ -458,6 +524,16 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
         state.filters.difficulty.clear();
         state.selectedIndex = 0;
         render();
+      }
+
+      // Show exercise info
+      else if (str === 'i' || str === 'I') {
+        if (filteredExercises.length > 0) {
+          const selectedExercise = filteredExercises[state.selectedIndex];
+          showExerciseInfo(selectedExercise).then(() => {
+            render();
+          });
+        }
       }
     };
 

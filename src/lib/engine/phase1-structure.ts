@@ -30,22 +30,18 @@ export function assignSplit(
     return training_split_preference;
   }
 
-  // Otherwise, assign default split based on training frequency
-  // This mapping should ideally be in the config, but for MVP we'll use simple logic
-  const frequency = parseInt(training_frequency);
+  // Otherwise, assign default split based on training frequency from config
+  const frequencyKey = training_frequency; // Already a string like "2", "3", etc.
+  const defaultSplit = rules.default_split_by_frequency[frequencyKey];
 
-  // Default split assignment based on frequency
-  // Future enhancement: Move to workout_generation_rules.json as default_split_by_frequency
-  if (frequency <= 3) {
-    return 'full_body';
-  } else if (frequency === 4) {
-    return 'upper_lower';
-  } else if (frequency >= 5) {
-    return 'push_pull_legs';
+  if (!defaultSplit || defaultSplit === 'description') {
+    throw new Error(
+      `No default split configured for frequency: ${frequencyKey}. ` +
+      `Check workout_generation_rules.json default_split_by_frequency section.`
+    );
   }
 
-  // Fallback (should never reach here with valid input)
-  throw new Error(`Unable to assign split for frequency: ${frequency}`);
+  return defaultSplit;
 }
 
 /**

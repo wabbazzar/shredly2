@@ -46,6 +46,7 @@ function roundToWholeMinutes(minutes: number): number {
  * @param answers - User's questionnaire answers
  * @param isSubExercise - Whether this is a sub-exercise in a compound block
  * @param exerciseExternalLoad - External load type from exercise database ("never", "sometimes", "always")
+ * @param parentCategory - Parent exercise category (for sub-exercises in compound blocks)
  * @returns Week 1 baseline parameters
  */
 export function applyIntensityProfile(
@@ -54,7 +55,8 @@ export function applyIntensityProfile(
   rules: GenerationRules,
   answers: QuestionnaireAnswers,
   isSubExercise: boolean = false,
-  exerciseExternalLoad?: string
+  exerciseExternalLoad?: string,
+  parentCategory?: string
 ): WeekParameters {
   const { intensityProfile } = exercise;
 
@@ -78,10 +80,13 @@ export function applyIntensityProfile(
   // Build Week 1 parameters based on profile and experience modifiers
   const week1: WeekParameters = {};
 
-  // Sub-exercises in compound blocks should NOT have sets or rest_time (those belong to parent)
-  // They only have reps and work_time for density progression
+  // Sub-exercises in compound blocks should NOT have sets (belongs to parent)
+  // EXCEPTION: INTERVAL sub-exercises need rest_time (applied below)
 
-  // Apply sets (with volume multiplier) - SKIP for sub-exercises
+  // Apply sets (with volume multiplier)
+  // - For INTERVAL parents: sets = number of times through the block
+  // - For other parents: sets = number of times to do the exercise
+  // - For sub-exercises: SKIP (sets belong to parent)
   if (!isSubExercise && profile.base_sets !== undefined) {
     week1.sets = Math.round(profile.base_sets * experienceModifier.volume_multiplier);
   }
@@ -96,7 +101,9 @@ export function applyIntensityProfile(
   }
 
   // Apply work time
-  if (profile.base_work_time_minutes !== undefined) {
+  // SKIP for INTERVAL parents (they only have sets, not work_time)
+  const shouldAddWorkTime = exerciseCategory === 'interval' ? isSubExercise : true;
+  if (shouldAddWorkTime && profile.base_work_time_minutes !== undefined) {
     // Convert seconds to minutes if unit is specified as "seconds"
     let workTimeMinutes = profile.base_work_time_minutes;
     if (profile.base_work_time_unit === 'seconds') {
@@ -109,8 +116,14 @@ export function applyIntensityProfile(
     }
   }
 
-  // Apply rest time (with rest time multiplier) - SKIP for sub-exercises
-  if (!isSubExercise && profile.base_rest_time_minutes !== undefined) {
+  // Apply rest time
+  // INTERVAL: rest_time goes on sub-exercises (rest after each exercise)
+  // Others: rest_time goes on parent only (rest between sets)
+  const shouldAddRestTime = parentCategory === 'interval'
+    ? isSubExercise  // INTERVAL: add rest_time to sub-exercises
+    : !isSubExercise; // Others: add rest_time to parent only
+
+  if (shouldAddRestTime && profile.base_rest_time_minutes !== undefined) {
     // Convert seconds to minutes if unit is specified as "seconds"
     let restTimeMinutes = profile.base_rest_time_minutes;
     if (profile.base_rest_time_unit === 'seconds') {
@@ -471,7 +484,8 @@ export function parameterizeExercise(
   rules: GenerationRules,
   answers: QuestionnaireAnswers,
   allExercises?: Array<[string, any]>,
-  isSubExercise: boolean = false
+  isSubExercise: boolean = false,
+  parentCategory?: string
 ): ParameterizedExercise {
   // Look up exercise external_load to determine if weight should be assigned
   let exerciseExternalLoad: string | undefined;
@@ -483,7 +497,7 @@ export function parameterizeExercise(
   }
 
   // Get Week 1 baseline
-  const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers, isSubExercise, exerciseExternalLoad);
+  const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers, isSubExercise, exerciseExternalLoad, parentCategory);
 
   // Calculate sub-exercise count for compound volume progression
   const subExerciseCount = exercise.sub_exercises ? exercise.sub_exercises.length : undefined;
@@ -543,7 +557,7 @@ export function parameterizeExercise(
         intensityProfile: exercise.intensityProfile // Inherit from parent
       };
 
-      // Recursively parameterize the sub-exercise (passing isSubExercise=true)
+      // Recursively parameterize the sub-exercise (passing isSubExercise=true and parentCategory)
       return parameterizeExercise(
         subExerciseStructure,
         subCategory,
@@ -551,7 +565,8 @@ export function parameterizeExercise(
         rules,
         answers,
         allExercises,
-        true // This is a sub-exercise
+        true, // This is a sub-exercise
+        exercise.category || exerciseCategory // Pass parent category for INTERVAL rest_time logic
       );
     });
   }

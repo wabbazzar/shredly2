@@ -1,5 +1,5 @@
 {
-  "id": "workout_gene_com_1767828330274",
+  "id": "workout_gene_com_1767896587641",
   "name": "General Fitness Beginner Program",
   "description": "2 days per week workout program focused on general fitness. Each session is 20-30 minutes.",
   "version": "2.0.0",
@@ -121,7 +121,7 @@
           }
         },
         {
-          "name": "Bird Dogs",
+          "name": "Gentle Quad Stretch",
           "week1": {
             "work_time_minutes": 1,
             "work_time_unit": "minutes"

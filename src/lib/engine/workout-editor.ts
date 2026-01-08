@@ -220,6 +220,34 @@ export class WorkoutEditor {
                     type: 'weight'
                   });
                 }
+
+                // Add work_time_minutes and rest_time_minutes for sub-exercises
+                // (needed for INTERVAL blocks where sub-exercises have work_time + rest_time)
+                if (weekParams.work_time_minutes !== undefined) {
+                  fields.push({
+                    location: `${subLocation}.${weekKey}.work_time_minutes`,
+                    dayKey,
+                    exerciseIndex: exIndex,
+                    subExerciseIndex: subIndex,
+                    weekKey,
+                    fieldName: 'work_time_minutes',
+                    currentValue: weekParams.work_time_minutes,
+                    type: 'number'
+                  });
+                }
+
+                if (weekParams.rest_time_minutes !== undefined) {
+                  fields.push({
+                    location: `${subLocation}.${weekKey}.rest_time_minutes`,
+                    dayKey,
+                    exerciseIndex: exIndex,
+                    subExerciseIndex: subIndex,
+                    weekKey,
+                    fieldName: 'rest_time_minutes',
+                    currentValue: weekParams.rest_time_minutes,
+                    type: 'number'
+                  });
+                }
               }
             }
           });
@@ -938,6 +966,8 @@ export class WorkoutEditor {
   /**
    * Toggle between rep-based and work_time-based definitions for an exercise
    * Swaps reps <-> work_time_minutes for all weeks
+   *
+   * RESTRICTION: INTERVAL compound parents cannot toggle to rep-based mode (time-based only)
    */
   toggleWorkDefinition(
     dayKey: string,
@@ -956,6 +986,19 @@ export class WorkoutEditor {
 
     const hasReps = week1.reps !== undefined;
     const hasWorkTime = week1.work_time_minutes !== undefined;
+
+    // RESTRICTION: INTERVAL compound parents with sub-exercises cannot be toggled
+    // INTERVAL structure: parent has only SETS (number of times through block)
+    // Sub-exercises have work_time + rest_time for each exercise
+    // There's no work mode to toggle at the parent level
+    // EXCEPTION: Empty INTERVAL blocks (no sub-exercises yet) CAN be toggled for setup flexibility
+    if (exercise.category === 'interval' && exercise.sub_exercises && exercise.sub_exercises.length > 0) {
+      return {
+        success: false,
+        message: 'INTERVAL blocks with sub-exercises cannot be toggled (work mode is on sub-exercises only)',
+        newMode: null
+      };
+    }
 
     if (hasReps === hasWorkTime) {
       return {
@@ -982,11 +1025,30 @@ export class WorkoutEditor {
         weekParams.work_time_minutes = reps; // Simple 1:1 mapping (user can adjust)
         // ALWAYS set fresh time unit based on exercise metadata (don't preserve old values)
         weekParams.work_time_unit = this.determineTimeUnit(exercise);
+
+        // SPECIAL CASE: INTERVAL blocks need BOTH work_time AND rest_time
+        if (exercise.category === 'interval' && exercise.sub_exercises && exercise.sub_exercises.length > 0) {
+          // Add rest_time with smart defaults from workout_generation_rules.json
+          const defaults = this.getSmartDefaults('interval', 'intermediate');
+          if (defaults.rest_time_minutes !== undefined) {
+            weekParams.rest_time_minutes = defaults.rest_time_minutes;
+          }
+          if (defaults.rest_time_unit) {
+            weekParams.rest_time_unit = defaults.rest_time_unit;
+          }
+        }
       } else {
         // Convert work_time -> reps
         const workTime = weekParams.work_time_minutes;
         delete weekParams.work_time_minutes;
         delete weekParams.work_time_unit;
+
+        // SPECIAL CASE: INTERVAL blocks also have rest_time that should be removed
+        if (exercise.category === 'interval' && weekParams.rest_time_minutes !== undefined) {
+          delete weekParams.rest_time_minutes;
+          delete weekParams.rest_time_unit;
+        }
+
         weekParams.reps = workTime; // Simple 1:1 mapping (user can adjust)
       }
     }

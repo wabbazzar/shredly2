@@ -1,5 +1,5 @@
 {
-  "id": "workout_fat__beg_1767828330273",
+  "id": "workout_fat__beg_1767896587640",
   "name": "Fat Loss Beginner Program",
   "description": "3 days per week workout program focused on fat loss. Each session is 30-45 minutes.",
   "version": "2.0.0",
@@ -50,306 +50,6 @@
             "work_time_minutes": 1,
             "work_time_unit": "minutes"
           }
-        },
-        {
-          "name": "EMOM: 90/90 Hip Stretch + Squat Pulses",
-          "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "90/90 Hip Stretch",
-              "week1": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              },
-              "week2": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              },
-              "week3": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
-              },
-              "week4": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
-              },
-              "week5": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
-              },
-              "week6": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
-              }
-            },
-            {
-              "name": "Squat Pulses",
-              "week1": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week2": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week3": {
-                "reps": 4,
-                "weight": "heavy"
-              },
-              "week4": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week5": {
-                "reps": 5,
-                "weight": "heavy"
-              },
-              "week6": {
-                "reps": 5,
-                "weight": "heavy"
-              }
-            }
-          ]
-        },
-        {
-          "name": "Mountain Climbers",
-          "week1": {
-            "sets": 3,
-            "reps": 7,
-            "rest_time_minutes": 1,
-            "rest_time_unit": "minutes"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 6,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 5,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week5": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week6": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Plank Jacks",
-          "week1": {
-            "sets": 3,
-            "reps": 7,
-            "rest_time_minutes": 1,
-            "rest_time_unit": "minutes"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 6,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 5,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week5": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week6": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Child's Pose Stretch",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Bird Dogs",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "EMOM: Knee Extensions (Seated) + Hamstring Stretch",
-          "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Knee Extensions (Seated)",
-              "week1": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
-              },
-              "week2": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
-              },
-              "week3": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week4": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week5": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week6": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              }
-            },
-            {
-              "name": "Hamstring Stretch",
-              "week1": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              },
-              "week2": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              },
-              "week3": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
-              },
-              "week4": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
-              },
-              "week5": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
-              },
-              "week6": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
-              }
-            }
-          ]
         }
       ]
     },
@@ -386,7 +86,7 @@
           }
         },
         {
-          "name": "EMOM: 90/90 Hip Stretch + Dynamic Movement",
+          "name": "EMOM: Upper Body Dynamic Warm-up + Hip Circles",
           "week1": {
             "work_time_minutes": 6,
             "work_time_unit": "minutes"
@@ -414,34 +114,34 @@
           "category": "emom",
           "sub_exercises": [
             {
-              "name": "90/90 Hip Stretch",
+              "name": "Upper Body Dynamic Warm-up",
               "week1": {
-                "work_time_minutes": 4,
+                "work_time_minutes": 3,
                 "work_time_unit": "minutes"
               },
               "week2": {
-                "work_time_minutes": 4,
+                "work_time_minutes": 3,
                 "work_time_unit": "minutes"
               },
               "week3": {
-                "work_time_minutes": 4.5,
+                "work_time_minutes": 3.5,
                 "work_time_unit": "minutes"
               },
               "week4": {
-                "work_time_minutes": 4.5,
+                "work_time_minutes": 3.5,
                 "work_time_unit": "minutes"
               },
               "week5": {
-                "work_time_minutes": 5,
+                "work_time_minutes": 3.5,
                 "work_time_unit": "minutes"
               },
               "week6": {
-                "work_time_minutes": 5,
+                "work_time_minutes": 4,
                 "work_time_unit": "minutes"
               }
             },
             {
-              "name": "Dynamic Movement",
+              "name": "Hip Circles",
               "week1": {
                 "work_time_minutes": 3,
                 "work_time_unit": "minutes"
@@ -575,7 +275,7 @@
           }
         },
         {
-          "name": "EMOM: Seated Spinal Twist + Walking Knee Hugs",
+          "name": "EMOM: Side Plank + Dead Bug",
           "week1": {
             "work_time_minutes": 6,
             "work_time_unit": "minutes"
@@ -603,63 +303,51 @@
           "category": "emom",
           "sub_exercises": [
             {
-              "name": "Seated Spinal Twist",
+              "name": "Side Plank",
               "week1": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
+                "reps": 4
               },
               "week2": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
+                "reps": 4
               },
               "week3": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
+                "reps": 4
               },
               "week4": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
+                "reps": 5
               },
               "week5": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
+                "reps": 5
               },
               "week6": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
+                "reps": 5
               }
             },
             {
-              "name": "Walking Knee Hugs",
+              "name": "Dead Bug",
               "week1": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
+                "reps": 4
               },
               "week2": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
+                "reps": 4
               },
               "week3": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
+                "reps": 4
               },
               "week4": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
+                "reps": 5
               },
               "week5": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
+                "reps": 5
               },
               "week6": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
+                "reps": 5
               }
             }
           ]
         },
         {
-          "name": "Balance Series",
+          "name": "Gentle Quad Stretch",
           "week1": {
             "work_time_minutes": 1,
             "work_time_unit": "minutes"
@@ -694,300 +382,6 @@
       "exercises": [
         {
           "name": "Alternating Jump Lunges",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "EMOM: Recovery/Restoration + Cat-Cow Stretches",
-          "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Recovery/Restoration",
-              "week1": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              },
-              "week2": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              },
-              "week3": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
-              },
-              "week4": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
-              },
-              "week5": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
-              },
-              "week6": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
-              }
-            },
-            {
-              "name": "Cat-Cow Stretches",
-              "week1": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
-              },
-              "week2": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
-              },
-              "week3": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week4": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week5": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week6": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              }
-            }
-          ]
-        },
-        {
-          "name": "Mountain Climbers",
-          "week1": {
-            "sets": 3,
-            "reps": 7,
-            "rest_time_minutes": 1,
-            "rest_time_unit": "minutes"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 6,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 5,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week5": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week6": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Plank Jacks",
-          "week1": {
-            "sets": 3,
-            "reps": 7,
-            "rest_time_minutes": 1,
-            "rest_time_unit": "minutes"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 6,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 5,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week5": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week6": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Child's Pose Stretch",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "EMOM: Gentle Quad Stretch + Pull-ups",
-          "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Gentle Quad Stretch",
-              "week1": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              },
-              "week2": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
-              },
-              "week3": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
-              },
-              "week4": {
-                "work_time_minutes": 4.5,
-                "work_time_unit": "minutes"
-              },
-              "week5": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
-              },
-              "week6": {
-                "work_time_minutes": 5,
-                "work_time_unit": "minutes"
-              }
-            },
-            {
-              "name": "Pull-ups",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 4
-              },
-              "week3": {
-                "reps": 4
-              },
-              "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
-                "reps": 5
-              }
-            }
-          ]
-        },
-        {
-          "name": "Balance Series",
           "week1": {
             "work_time_minutes": 1,
             "work_time_unit": "minutes"

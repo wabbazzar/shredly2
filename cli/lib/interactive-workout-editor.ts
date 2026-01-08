@@ -44,7 +44,6 @@ interface EditorState {
     active: boolean;
     firstExerciseIndex?: number;
     firstDayKey?: string;
-    lastATapTime: number;
   };
 }
 
@@ -87,8 +86,7 @@ export class InteractiveWorkoutEditor {
       lastEditedField: null,
       lastEditedValue: null,
       swapModeState: {
-        active: false,
-        lastATapTime: 0
+        active: false
       }
     };
   }
@@ -165,15 +163,25 @@ export class InteractiveWorkoutEditor {
   private async handleViewModeKey(str: string, key: any): Promise<void> {
     const hotkeys = hotkeysConfig.view_mode;
 
-    // Clear number input buffer on Escape
-    if (key.name === 'escape' && this.state.numberInputBuffer) {
-      if (this.state.numberInputTimeout) {
-        clearTimeout(this.state.numberInputTimeout);
+    // Escape key handling
+    if (key.name === 'escape') {
+      // Clear number input buffer
+      if (this.state.numberInputBuffer) {
+        if (this.state.numberInputTimeout) {
+          clearTimeout(this.state.numberInputTimeout);
+        }
+        this.state.numberInputBuffer = '';
+        this.state.numberInputTimeout = null;
+        this.setStatus('Jump cancelled', 'info');
+        return;
       }
-      this.state.numberInputBuffer = '';
-      this.state.numberInputTimeout = null;
-      this.setStatus('Jump cancelled', 'info');
-      return;
+
+      // Cancel swap mode
+      if (this.state.swapModeState.active) {
+        this.state.swapModeState.active = false;
+        this.setStatus('Swap mode cancelled', 'info');
+        return;
+      }
     }
 
     // Navigation
@@ -1166,9 +1174,9 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
-   * Handle swap mode activation (double-tap 'x')
+   * Handle swap mode activation (tap 'x' twice)
    * First tap: mark first exercise
-   * Second tap (within 1 second): mark second exercise and prompt for confirmation
+   * Second tap: mark second exercise and prompt for confirmation
    * Works on any field - uses the exercise index from the current field
    */
   private async handleSwapMode(): Promise<void> {
@@ -1187,11 +1195,8 @@ export class InteractiveWorkoutEditor {
       return;
     }
 
-    const now = Date.now();
-    const timeSinceLastATap = now - this.state.swapModeState.lastATapTime;
-
-    // Check if this is a double-tap (within 1 second)
-    if (this.state.swapModeState.active && timeSinceLastATap < 1000) {
+    // Check if swap mode is already active (this is the second tap)
+    if (this.state.swapModeState.active) {
       // Second tap - confirm swap
       const firstExerciseIndex = this.state.swapModeState.firstExerciseIndex;
       const firstDayKey = this.state.swapModeState.firstDayKey;
@@ -1229,8 +1234,6 @@ export class InteractiveWorkoutEditor {
       this.state.swapModeState.firstDayKey = field.dayKey;
       this.setStatus(`Exercise marked for swap. Tap 'x' on another exercise to swap.`, 'info');
     }
-
-    this.state.swapModeState.lastATapTime = now;
   }
 
   /**
@@ -1425,6 +1428,7 @@ export class InteractiveWorkoutEditor {
     const modeIndicator = this.getModeIndicator();
     const viewIndicator = this.state.viewMode === 'week' ? '[WEEK]' : `[DAY ${this.state.currentDayIndex + 1}/${this.dayKeys.length}]`;
     const undoIndicator = this.editor.getUndoStackSize() > 0 ? `[Undo: ${this.editor.getUndoStackSize()}]` : '';
+    const swapIndicator = this.state.swapModeState.active ? chalk.yellow('[SWAP MODE]') : '';
 
     console.log(chalk.gray('-'.repeat(60)));
 
@@ -1437,7 +1441,7 @@ export class InteractiveWorkoutEditor {
     const statusColor = this.state.statusType === 'error' ? chalk.red : this.state.statusType === 'success' ? chalk.green : chalk.gray;
     console.log(statusColor(this.state.statusMessage));
 
-    console.log(chalk.gray(`${modeIndicator} ${viewIndicator} ${modifiedIndicator} ${undoIndicator} | Press ? for help`));
+    console.log(chalk.gray(`${modeIndicator} ${viewIndicator} ${modifiedIndicator} ${swapIndicator} ${undoIndicator} | Press ? for help`));
   }
 
   /**
@@ -1538,10 +1542,11 @@ export class InteractiveWorkoutEditor {
     console.log('  ← →         - Navigate between days (Day view)');
     console.log('  t/T         - Jump to next/previous editable field');
     console.log('  1-99        - Jump to exercise number (multi-digit supported)');
+    console.log('  Esc         - Cancel swap mode / cancel number jump');
     console.log('  r           - Replace/edit field (vim-like: auto-clears value)');
     console.log('  e           - Open exercise database browser');
     console.log('  i           - Show exercise info (descriptions, cues, setup)');
-    console.log('  x (2x)      - Swap mode: tap twice to swap exercises');
+    console.log('  x (2x)      - Swap mode: tap once, navigate, tap again to swap');
     console.log('  s           - Swap/add random matching exercise');
     console.log('  m           - Toggle work definition (reps <-> work_time)');
     console.log('  b           - Create compound block (EMOM/AMRAP/Circuit/Interval)');
@@ -1571,9 +1576,16 @@ export class InteractiveWorkoutEditor {
     console.log(chalk.cyan('NEW FEATURES:'));
     console.log('  • Multi-digit jump: Type "15" to jump to exercise 15');
     console.log('  • Exercise info: Press "i" on any exercise name for details');
-    console.log('  • Swap mode: Tap "x" on first exercise, then "x" on second');
+    console.log('  • Swap mode: Press "x", navigate to another exercise, press "x" again');
     console.log('  • Broadcast: Press Enter twice to copy value to all weeks');
     console.log('  • Vim replace: "r" now auto-clears the field (no backspace needed)');
+    console.log('');
+    console.log(chalk.cyan('SWAP MODE WORKFLOW:'));
+    console.log('  1. Press "x" on first exercise → [SWAP MODE] appears in status');
+    console.log('  2. Navigate to second exercise (use t/T or numbers)');
+    console.log('  3. Press "x" again → Confirmation prompt appears');
+    console.log('  4. Press "y" to swap or "n" to cancel');
+    console.log('  5. Press Esc at any time to cancel swap mode');
     console.log('');
     console.log(chalk.gray('Press Esc or Q to close help'));
   }

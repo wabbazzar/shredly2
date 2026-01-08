@@ -432,6 +432,26 @@ These should be answered in the CLI prototype phase.
 - **Test coverage**: 96 passing unit tests (29 for compound blocks)
 
 **Recent Completions**:
+- ✅ Ticket #011 (2026-01-08): Migrate hardcoded mappings to config (COMPLETE)
+  * **Phase 1 - Split Assignment**: Moved default split by frequency to config
+    - Added default_split_by_frequency to workout_generation_rules.json
+    - Replaced hardcoded if-else logic with config lookup
+    - Added DefaultSplitByFrequency TypeScript interface
+  * **Phase 2 - Progression Assignment**: Moved default progression by goal to config
+    - Added default_progression_by_goal to workout_generation_rules.json
+    - Replaced hardcoded goalProgressionMap with config lookup
+    - Added DefaultProgressionByGoal TypeScript interface
+  * **Phase 3 - Intensity Assignment**: Moved intensity profile by layer to config
+    - Added intensity_profile_by_layer_and_category to workout_generation_rules.json
+    - Consolidated 50+ lines of scattered category logic into single config structure
+    - Simplified assignIntensityProfile() from 50+ lines to ~25 lines
+    - Added IntensityProfileByLayerAndCategory TypeScript interface
+  * **Phase 4 - Config Cleanup**: Removed unused config features
+    - Removed can_use_set_blocks, can_use_wave_loading, can_use_auto_regulation flags
+    - Removed sequential_filtering_enabled and fallback_order from equipment_quotas
+  * **Impact**: Data-driven architecture score improved from 8.5/10 to 9.5/10
+  * **Testing**: All 251 tests passing, TypeScript compilation succeeds
+  * All 3 TODO comments resolved from phase1-structure.ts
 - ✅ Ticket #009 (2026-01-07): Fix compound exercise progression logic (COMPLETE)
   * **Phase 1 - Density Fix**: Density progression now keeps work_time STATIC for compound parents
     - Added isCompoundParent() helper to detect EMOM/Circuit/AMRAP/Interval exercises

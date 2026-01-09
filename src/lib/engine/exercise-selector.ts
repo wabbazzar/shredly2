@@ -65,10 +65,11 @@ export function filterExercisesForLayer(
     }
 
     // Filter by difficulty (must be in experience level's allowed difficulties)
-    // CRITICAL: For limited equipment (bodyweight/minimal), relax difficulty filter
-    // Otherwise expert users with bodyweight only would have ZERO exercises
+    // CRITICAL: For limited equipment (bodyweight/minimal/dumbbells), relax difficulty filter
+    // Otherwise expert users with limited equipment would have ZERO exercises
     const hasLimitedEquipmentForDifficulty = equipmentAccess === 'bodyweight_only' ||
-                                equipmentAccess === 'minimal_equipment';
+                                equipmentAccess === 'minimal_equipment' ||
+                                equipmentAccess === 'dumbbells_only';
     const relaxedDifficultyFilter = hasLimitedEquipmentForDifficulty
       ? [...difficultyFilter, 'Beginner', 'Intermediate'] // Allow all difficulties for limited equipment
       : difficultyFilter;
@@ -78,15 +79,22 @@ export function filterExercisesForLayer(
     }
 
     // Filter by external load (must be in experience level's allowed external loads)
-    // CRITICAL: Make external load filter equipment-aware
+    // CRITICAL: Make external load filter equipment-aware AND category-aware
     // For limited equipment (bodyweight_only, minimal_equipment, dumbbells_only), relax the filter
     // to allow "never" external load exercises, otherwise advanced/expert users
     // with limited equipment would have ZERO exercises
     const hasLimitedEquipment = equipmentAccess === 'bodyweight_only' ||
                                 equipmentAccess === 'minimal_equipment' ||
                                 equipmentAccess === 'dumbbells_only';
-    const relaxedExternalLoadFilter = hasLimitedEquipment
-      ? [...externalLoadFilter, 'never'] // Allow bodyweight exercises
+
+    // CRITICAL: For certain categories that are inherently low-load (mobility, flexibility, bodyweight, cardio),
+    // relax the external_load filter to prevent empty exercise pools for expert users
+    // These categories typically use bodyweight or minimal equipment, so requiring "always" external load
+    // would result in 0 exercises
+    const isLowLoadCategory = ['mobility', 'flexibility', 'bodyweight', 'cardio'].includes(exercise.category);
+
+    const relaxedExternalLoadFilter = (hasLimitedEquipment || isLowLoadCategory)
+      ? [...externalLoadFilter, 'never', 'sometimes'] // Allow bodyweight and sometimes-loaded exercises
       : externalLoadFilter;
 
     if (!relaxedExternalLoadFilter.includes(exercise.external_load)) {
@@ -315,7 +323,8 @@ function constructCompoundExercise(
     // Meets difficulty and load requirements
     // CRITICAL: Relax difficulty filter for limited equipment (same as filterExercisesForLayer)
     const hasLimitedEquipmentForDifficulty = answers.equipment_access === 'bodyweight_only' ||
-                                answers.equipment_access === 'minimal_equipment';
+                                answers.equipment_access === 'minimal_equipment' ||
+                                answers.equipment_access === 'dumbbells_only';
     const relaxedDifficultyFilter = hasLimitedEquipmentForDifficulty
       ? [...experienceModifier.complexity_filter, 'Beginner', 'Intermediate']
       : experienceModifier.complexity_filter;
@@ -374,8 +383,6 @@ function constructCompoundExercise(
   // VALIDATION: We need at least 2 individual exercises to create any compound exercise
   // If we can't find enough, return a placeholder that will be filtered out later
   if (availableExercises.length < 2) {
-    // Return a placeholder with empty sub_exercises array
-    // This will be filtered out in roundRobinSelectExercises
     return {
       name: `${compoundCategory.toUpperCase()}: [insufficient exercises]`,
       category: compoundCategory,
@@ -495,6 +502,12 @@ export function roundRobinSelectExercises(
   // Determine layer order for round-robin (order matches ratio definition)
   const layerOrder = ["first", "primary", "secondary", "tertiary", "finisher", "last"];
 
+  // Track compound exercises added per layer (to prevent over-adding from finisher)
+  const compoundCountByLayer = new Map<string, number>();
+  for (const layer of layerOrder) {
+    compoundCountByLayer.set(layer, 0);
+  }
+
   // CRITICAL: Use split overrides if available, otherwise use goal-based priorities
   // This MUST match the logic in createExercisePoolsForDay to avoid mismatch
   const splitOverrides = (rules.category_workout_structure as any).split_category_overrides?.[focus];
@@ -561,6 +574,16 @@ export function roundRobinSelectExercises(
         // This layer needs a compound exercise - construct it
         const intensityProfile = getDefaultIntensityForLayer(layer);
 
+        // CRITICAL FIX: Limit finisher compounds to prevent exhausting exercise pool
+        // Finisher should only add 1-2 compounds total, not 1 per round
+        const maxCompoundsForLayer = layer === 'finisher' ? 2 : 999;
+        const currentLayerCompounds = compoundCountByLayer.get(layer) || 0;
+        if (currentLayerCompounds >= maxCompoundsForLayer) {
+          // Already added enough compounds for this layer, skip
+          layerIndices.set(layer, currentIndex + 1);
+          continue;
+        }
+
         // Check exercise count constraint
         if (selectedExercises.length >= maxTotalExercises) {
           if (hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
@@ -597,12 +620,16 @@ export function roundRobinSelectExercises(
           random
         );
 
+
         // Only add if we got at least 2 constituent exercises (minimum for any compound)
         if (compoundExercise.sub_exercises && compoundExercise.sub_exercises.length >= 2) {
           selectedExercises.push(compoundExercise);
           currentDuration += exerciseDuration;
           compoundExerciseCount++;
           addedAnyExercise = true;
+
+          // Track compounds added for this layer
+          compoundCountByLayer.set(layer, (compoundCountByLayer.get(layer) || 0) + 1);
 
           // Track layer duration for time-based selection
           const layerDuration = layerDurations.get(layer) || 0;

@@ -111,6 +111,42 @@ export const MINIMAL_EQUIPMENT_BEGINNER: QuestionnaireAnswers = {
   progression_preference: 'linear'
 };
 
+/**
+ * Edge Case: Expert fat loss with no preferences specified
+ * 4 days per week, 45-60 minute sessions
+ * Tests filter configuration with expert + fat_loss goal + no preferences
+ * Previously failed with "Could not meet minimum layer requirements" due to
+ * empty first/secondary pools for Lower focus days
+ */
+export const EXPERT_FAT_LOSS_NO_PREFERENCE: QuestionnaireAnswers = {
+  primary_goal: 'fat_loss',
+  experience_level: 'expert',
+  training_frequency: '4',
+  session_duration: '45-60',
+  equipment_access: 'commercial_gym',
+  training_split_preference: 'no_preference',
+  program_duration: '3_weeks',
+  progression_preference: 'no_preference'
+};
+
+/**
+ * Edge Case: Advanced user with dumbbells-only equipment
+ * 5 days per week, 20-30 minute sessions
+ * Tests difficulty filter relaxation for dumbbells_only with advanced experience
+ * Previously failed with "Could not meet minimum layer requirements" because
+ * dumbbells_only was not included in difficulty filter relaxation
+ */
+export const ADVANCED_DUMBBELLS_SHORT_SESSION: QuestionnaireAnswers = {
+  primary_goal: 'general_fitness',
+  experience_level: 'advanced',
+  training_frequency: '5',
+  session_duration: '20-30',
+  equipment_access: 'dumbbells_only',
+  training_split_preference: 'no_preference',
+  program_duration: '3_weeks',
+  progression_preference: 'no_preference'
+};
+
 // ============================================================================
 // FIXTURE COLLECTION
 // ============================================================================
@@ -124,7 +160,9 @@ export const ALL_FIXTURES: QuestionnaireAnswers[] = [
   ADVANCED_UPPER_LOWER,
   EXPERT_ULPPL_GYM,
   BODYWEIGHT_ONLY_EXPERT,
-  MINIMAL_EQUIPMENT_BEGINNER
+  MINIMAL_EQUIPMENT_BEGINNER,
+  EXPERT_FAT_LOSS_NO_PREFERENCE,
+  ADVANCED_DUMBBELLS_SHORT_SESSION
 ];
 
 /**
@@ -136,5 +174,7 @@ export const FIXTURE_NAMES = [
   'ADVANCED_UPPER_LOWER',
   'EXPERT_ULPPL_GYM',
   'BODYWEIGHT_ONLY_EXPERT',
-  'MINIMAL_EQUIPMENT_BEGINNER'
+  'MINIMAL_EQUIPMENT_BEGINNER',
+  'EXPERT_FAT_LOSS_NO_PREFERENCE',
+  'ADVANCED_DUMBBELLS_SHORT_SESSION'
 ];

@@ -152,7 +152,7 @@ function main() {
     try {
       // Load questionnaire
       const answers = loadQuestionnaire(filename);
-      console.log(`Goal: ${answers.primary_goal}`);
+      console.log(`Goal: ${answers.goal}`);
       console.log(`Experience: ${answers.experience_level}`);
       console.log(`Frequency: ${answers.training_frequency} days/week`);
       console.log(`Duration: ${answers.session_duration} minutes`);

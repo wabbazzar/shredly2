@@ -23,7 +23,8 @@ import {
   ADVANCED_UPPER_LOWER,
   EXPERT_ULPPL_GYM,
   BODYWEIGHT_ONLY_EXPERT,
-  MINIMAL_EQUIPMENT_BEGINNER
+  MINIMAL_EQUIPMENT_BEGINNER,
+  EXPERT_FAT_LOSS_NO_PREFERENCE
 } from '../fixtures/questionnaire-answers.js';
 import {
   validateWorkoutStructure,
@@ -146,6 +147,33 @@ describe('End-to-End Workout Generation', () => {
       expect(workout.daysPerWeek).toBe(3);
       expect(Object.keys(workout.days).length).toBe(3);
     });
+
+    it('should generate workout for EXPERT_FAT_LOSS_NO_PREFERENCE (edge case)', () => {
+      const workout = generateWorkout(EXPERT_FAT_LOSS_NO_PREFERENCE, 12345);
+
+      expect(workout).toBeDefined();
+      expect(workout.days).toBeDefined();
+
+      // Validate structure
+      validateWorkoutStructure(workout);
+
+      // Validate exercise references
+      validateExerciseReferences(workout, exerciseDB);
+
+      // Edge case: Expert + fat_loss + no_preference
+      // Previously failed with "Could not meet minimum layer requirements"
+      // Should now generate valid exercises for all focus days
+      expect(workout.daysPerWeek).toBe(4);
+      expect(Object.keys(workout.days).length).toBe(4);
+
+      // Verify all days have exercises (especially Lower focus days)
+      Object.entries(workout.days).forEach(([dayKey, day]) => {
+        expect(
+          day.exercises.length,
+          `Day ${dayKey} (${day.focus}) should have exercises`
+        ).toBeGreaterThan(0);
+      });
+    });
   });
 
   describe('All Fixtures Batch Test', () => {
@@ -158,7 +186,8 @@ describe('End-to-End Workout Generation', () => {
         { fixture: ADVANCED_UPPER_LOWER, name: 'ADVANCED_UPPER_LOWER' },
         { fixture: EXPERT_ULPPL_GYM, name: 'EXPERT_ULPPL_GYM' },
         { fixture: BODYWEIGHT_ONLY_EXPERT, name: 'BODYWEIGHT_ONLY_EXPERT' },
-        { fixture: MINIMAL_EQUIPMENT_BEGINNER, name: 'MINIMAL_EQUIPMENT_BEGINNER' }
+        { fixture: MINIMAL_EQUIPMENT_BEGINNER, name: 'MINIMAL_EQUIPMENT_BEGINNER' },
+        { fixture: EXPERT_FAT_LOSS_NO_PREFERENCE, name: 'EXPERT_FAT_LOSS_NO_PREFERENCE' }
       ];
 
       workingFixtures.forEach(({ fixture, name }) => {
@@ -200,7 +229,8 @@ describe('End-to-End Workout Generation', () => {
         { fixture: ADVANCED_UPPER_LOWER, name: 'ADVANCED_UPPER_LOWER' },
         { fixture: EXPERT_ULPPL_GYM, name: 'EXPERT_ULPPL_GYM' },
         { fixture: BODYWEIGHT_ONLY_EXPERT, name: 'BODYWEIGHT_ONLY_EXPERT' },
-        { fixture: MINIMAL_EQUIPMENT_BEGINNER, name: 'MINIMAL_EQUIPMENT_BEGINNER' }
+        { fixture: MINIMAL_EQUIPMENT_BEGINNER, name: 'MINIMAL_EQUIPMENT_BEGINNER' },
+        { fixture: EXPERT_FAT_LOSS_NO_PREFERENCE, name: 'EXPERT_FAT_LOSS_NO_PREFERENCE' }
       ];
 
       workingFixtures.forEach(({ fixture, name }) => {

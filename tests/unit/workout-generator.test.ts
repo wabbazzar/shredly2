@@ -86,10 +86,13 @@ describe("workout-generator", () => {
         const workout = generateWorkout(INTERMEDIATE_PPL);
 
         expect(workout.metadata.difficulty).toBe("Intermediate");
-        expect(workout.metadata.equipment).toContain("home_gym_full");
+        // Equipment is mapped: full_gym -> commercial_gym
+        expect(workout.metadata.equipment).toContain("commercial_gym");
+        // Duration is mapped: 60 -> 45-60
         expect(workout.metadata.estimatedDuration).toBe("45-60");
         expect(workout.metadata.tags).toContain("intermediate");
-        expect(workout.metadata.tags).toContain("muscle_gain");
+        // Tags use new format: build_muscle (not muscle_gain)
+        expect(workout.metadata.tags).toContain("build_muscle");
       } catch (error: any) {
         // Some fixtures may fail with current configuration
         if (error.message?.includes("profile")) {
@@ -150,7 +153,7 @@ describe("workout-generator", () => {
     it("should throw on invalid QuestionnaireAnswers - missing required field", () => {
       const invalid = {
         ...BEGINNER_FULL_BODY,
-        primary_goal: undefined as any,
+        goal: undefined as any, // Missing required goal field
       };
 
       expect(() => generateWorkout(invalid)).toThrow();

@@ -1,8 +1,10 @@
 /**
  * Test Fixtures for Questionnaire Answers
  *
- * Contains 6 questionnaire answer fixtures covering critical scenarios
+ * Contains questionnaire answer fixtures covering critical scenarios
  * and edge cases for the workout generation engine.
+ *
+ * Uses new v2.0 format with 6 required questions.
  */
 
 import type { QuestionnaireAnswers } from '../../src/lib/engine/types.js';
@@ -13,66 +15,58 @@ import type { QuestionnaireAnswers } from '../../src/lib/engine/types.js';
 
 /**
  * Beginner user with bodyweight-only equipment
- * 3 days per week, 30-45 minute sessions
- * Full body training split
+ * 3 days per week, 30 minute sessions
+ * Tone goal (general fitness)
  */
-export const BEGINNER_FULL_BODY: QuestionnaireAnswers = {
-  primary_goal: 'general_fitness',
+export const BEGINNER_BODYWEIGHT: QuestionnaireAnswers = {
+  goal: 'tone',
   experience_level: 'beginner',
   training_frequency: '3',
-  session_duration: '30-45',
+  session_duration: '30',
   equipment_access: 'bodyweight_only',
-  training_split_preference: 'full_body',
-  program_duration: '3_weeks',
-  progression_preference: 'linear'
+  program_duration: '3'
 };
 
 /**
- * Intermediate user with home gym setup
- * 5 days per week, 45-60 minute sessions
- * Push/Pull/Legs split
+ * Intermediate user with full gym access
+ * 5 days per week, 60 minute sessions
+ * Build muscle goal
  */
-export const INTERMEDIATE_PPL: QuestionnaireAnswers = {
-  primary_goal: 'muscle_gain',
+export const INTERMEDIATE_GYM: QuestionnaireAnswers = {
+  goal: 'build_muscle',
   experience_level: 'intermediate',
   training_frequency: '5',
-  session_duration: '45-60',
-  equipment_access: 'home_gym_full',
-  training_split_preference: 'push_pull_legs',
-  program_duration: '3_weeks',
-  progression_preference: 'volume'
+  session_duration: '60',
+  equipment_access: 'full_gym',
+  program_duration: '4'
 };
 
 /**
- * Advanced user with commercial gym access
- * 4 days per week, 60-90 minute sessions
- * Upper/Lower split
+ * Advanced user with full gym access
+ * 4 days per week, 60 minute sessions
+ * Build muscle goal
  */
-export const ADVANCED_UPPER_LOWER: QuestionnaireAnswers = {
-  primary_goal: 'muscle_gain',
+export const ADVANCED_GYM: QuestionnaireAnswers = {
+  goal: 'build_muscle',
   experience_level: 'advanced',
   training_frequency: '4',
-  session_duration: '60-90',
-  equipment_access: 'commercial_gym',
-  training_split_preference: 'upper_lower',
-  program_duration: '3_weeks',
-  progression_preference: 'wave_loading'
+  session_duration: '60',
+  equipment_access: 'full_gym',
+  program_duration: '6'
 };
 
 /**
- * Expert user with commercial gym access
- * 5 days per week, 60-90 minute sessions
- * ULPPL (Upper/Lower/Push/Pull/Legs) split
+ * Advanced user with full gym access
+ * 5 days per week, 60 minute sessions
+ * Build muscle goal
  */
-export const EXPERT_ULPPL_GYM: QuestionnaireAnswers = {
-  primary_goal: 'muscle_gain',
-  experience_level: 'expert',
+export const ADVANCED_5DAY_GYM: QuestionnaireAnswers = {
+  goal: 'build_muscle',
+  experience_level: 'advanced',
   training_frequency: '5',
-  session_duration: '60-90',
-  equipment_access: 'commercial_gym',
-  training_split_preference: 'ulppl',
-  program_duration: '3_weeks',
-  progression_preference: 'volume'
+  session_duration: '60',
+  equipment_access: 'full_gym',
+  program_duration: '4'
 };
 
 // ============================================================================
@@ -80,71 +74,59 @@ export const EXPERT_ULPPL_GYM: QuestionnaireAnswers = {
 // ============================================================================
 
 /**
- * Edge Case: Expert user with bodyweight-only equipment
- * 6 days per week, 45-60 minute sessions
+ * Edge Case: Advanced user with bodyweight-only equipment
+ * 6 days per week, 30 minute sessions
  * Tests exercise pool constraints for high experience + limited equipment
  */
-export const BODYWEIGHT_ONLY_EXPERT: QuestionnaireAnswers = {
-  primary_goal: 'athletic_performance',
-  experience_level: 'expert',
+export const BODYWEIGHT_ONLY_ADVANCED: QuestionnaireAnswers = {
+  goal: 'tone',
+  experience_level: 'advanced',
   training_frequency: '6',
-  session_duration: '45-60',
+  session_duration: '30',
   equipment_access: 'bodyweight_only',
-  training_split_preference: 'push_pull_legs',
-  program_duration: '3_weeks',
-  progression_preference: 'density'
+  program_duration: '3'
 };
 
 /**
- * Edge Case: Beginner with minimal equipment (dumbbells only)
- * 3 days per week, 30-45 minute sessions
- * Tests limited equipment scenarios for beginners
+ * Edge Case: Beginner with dumbbells only
+ * 3 days per week, 30 minute sessions
+ * Lose weight goal
  */
-export const MINIMAL_EQUIPMENT_BEGINNER: QuestionnaireAnswers = {
-  primary_goal: 'fat_loss',
+export const BEGINNER_DUMBBELLS_LOSE_WEIGHT: QuestionnaireAnswers = {
+  goal: 'lose_weight',
   experience_level: 'beginner',
   training_frequency: '3',
-  session_duration: '30-45',
+  session_duration: '30',
   equipment_access: 'dumbbells_only',
-  training_split_preference: 'full_body',
-  program_duration: '3_weeks',
-  progression_preference: 'linear'
+  program_duration: '3'
 };
 
 /**
- * Edge Case: Expert fat loss with no preferences specified
- * 4 days per week, 45-60 minute sessions
- * Tests filter configuration with expert + fat_loss goal + no preferences
- * Previously failed with "Could not meet minimum layer requirements" due to
- * empty first/secondary pools for Lower focus days
+ * Edge Case: Advanced with lose weight goal
+ * 4 days per week, 60 minute sessions
+ * Tests fat loss with advanced experience
  */
-export const EXPERT_FAT_LOSS_NO_PREFERENCE: QuestionnaireAnswers = {
-  primary_goal: 'fat_loss',
-  experience_level: 'expert',
+export const ADVANCED_LOSE_WEIGHT: QuestionnaireAnswers = {
+  goal: 'lose_weight',
+  experience_level: 'advanced',
   training_frequency: '4',
-  session_duration: '45-60',
-  equipment_access: 'commercial_gym',
-  training_split_preference: 'no_preference',
-  program_duration: '3_weeks',
-  progression_preference: 'no_preference'
+  session_duration: '60',
+  equipment_access: 'full_gym',
+  program_duration: '4'
 };
 
 /**
  * Edge Case: Advanced user with dumbbells-only equipment
- * 5 days per week, 20-30 minute sessions
+ * 5 days per week, 20 minute sessions
  * Tests difficulty filter relaxation for dumbbells_only with advanced experience
- * Previously failed with "Could not meet minimum layer requirements" because
- * dumbbells_only was not included in difficulty filter relaxation
  */
-export const ADVANCED_DUMBBELLS_SHORT_SESSION: QuestionnaireAnswers = {
-  primary_goal: 'general_fitness',
+export const ADVANCED_DUMBBELLS_SHORT: QuestionnaireAnswers = {
+  goal: 'tone',
   experience_level: 'advanced',
   training_frequency: '5',
-  session_duration: '20-30',
+  session_duration: '20',
   equipment_access: 'dumbbells_only',
-  training_split_preference: 'no_preference',
-  program_duration: '3_weeks',
-  progression_preference: 'no_preference'
+  program_duration: '3'
 };
 
 // ============================================================================
@@ -155,26 +137,40 @@ export const ADVANCED_DUMBBELLS_SHORT_SESSION: QuestionnaireAnswers = {
  * All fixtures in an array for easy iteration in tests
  */
 export const ALL_FIXTURES: QuestionnaireAnswers[] = [
-  BEGINNER_FULL_BODY,
-  INTERMEDIATE_PPL,
-  ADVANCED_UPPER_LOWER,
-  EXPERT_ULPPL_GYM,
-  BODYWEIGHT_ONLY_EXPERT,
-  MINIMAL_EQUIPMENT_BEGINNER,
-  EXPERT_FAT_LOSS_NO_PREFERENCE,
-  ADVANCED_DUMBBELLS_SHORT_SESSION
+  BEGINNER_BODYWEIGHT,
+  INTERMEDIATE_GYM,
+  ADVANCED_GYM,
+  ADVANCED_5DAY_GYM,
+  BODYWEIGHT_ONLY_ADVANCED,
+  BEGINNER_DUMBBELLS_LOSE_WEIGHT,
+  ADVANCED_LOSE_WEIGHT,
+  ADVANCED_DUMBBELLS_SHORT
 ];
 
 /**
  * Fixture names for descriptive test output
  */
 export const FIXTURE_NAMES = [
-  'BEGINNER_FULL_BODY',
-  'INTERMEDIATE_PPL',
-  'ADVANCED_UPPER_LOWER',
-  'EXPERT_ULPPL_GYM',
-  'BODYWEIGHT_ONLY_EXPERT',
-  'MINIMAL_EQUIPMENT_BEGINNER',
-  'EXPERT_FAT_LOSS_NO_PREFERENCE',
-  'ADVANCED_DUMBBELLS_SHORT_SESSION'
+  'BEGINNER_BODYWEIGHT',
+  'INTERMEDIATE_GYM',
+  'ADVANCED_GYM',
+  'ADVANCED_5DAY_GYM',
+  'BODYWEIGHT_ONLY_ADVANCED',
+  'BEGINNER_DUMBBELLS_LOSE_WEIGHT',
+  'ADVANCED_LOSE_WEIGHT',
+  'ADVANCED_DUMBBELLS_SHORT'
 ];
+
+// ============================================================================
+// LEGACY FIXTURE ALIASES (for backward compatibility in tests)
+// ============================================================================
+
+// These aliases help tests that reference old fixture names continue to work
+export const BEGINNER_FULL_BODY = BEGINNER_BODYWEIGHT;
+export const INTERMEDIATE_PPL = INTERMEDIATE_GYM;
+export const ADVANCED_UPPER_LOWER = ADVANCED_GYM;
+export const EXPERT_ULPPL_GYM = ADVANCED_5DAY_GYM;
+export const BODYWEIGHT_ONLY_EXPERT = BODYWEIGHT_ONLY_ADVANCED;
+export const MINIMAL_EQUIPMENT_BEGINNER = BEGINNER_DUMBBELLS_LOSE_WEIGHT;
+export const EXPERT_FAT_LOSS_NO_PREFERENCE = ADVANCED_LOSE_WEIGHT;
+export const ADVANCED_DUMBBELLS_SHORT_SESSION = ADVANCED_DUMBBELLS_SHORT;

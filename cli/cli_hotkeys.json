@@ -9,8 +9,6 @@
       "toggle_week_day_view": "w",
       "previous_day": "left",
       "next_day": "right",
-      "previous_exercise": "up",
-      "next_exercise": "down",
       "jump_to_exercise_1": "1",
       "jump_to_exercise_2": "2",
       "jump_to_exercise_3": "3",
@@ -21,7 +19,11 @@
       "jump_to_exercise_8": "8",
       "jump_to_exercise_9": "9",
       "next_editable_field": "t",
-      "previous_editable_field": "T"
+      "next_editable_field_alt": "down",
+      "previous_editable_field": "T",
+      "previous_editable_field_alt": "up",
+      "next_exercise_vim": "j",
+      "previous_exercise_vim": "k"
     },
     "actions": {
       "replace_current_field": "r",

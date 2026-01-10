@@ -4,6 +4,7 @@
  * Interactive CLI Questionnaire for Workout Generation
  *
  * Prompts user through questionnaire questions and generates a personalized workout
+ * Features single-number selection: press a number to select, Enter to confirm
  */
 
 import inquirer from 'inquirer';
@@ -21,6 +22,20 @@ const __dirname = dirname(__filename);
 
 const QUESTIONNAIRE_PATH = join(__dirname, '../src/data/workout-questionnaire.json');
 
+// ANSI escape codes
+const ANSI = {
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
+  dim: '\x1b[2m',
+  cyan: '\x1b[36m',
+  green: '\x1b[32m',
+  gray: '\x1b[90m',
+  clearLine: '\x1b[2K',
+  clearToEnd: '\x1b[0J', // Clear from cursor to end of screen
+  cursorUp: (n: number) => `\x1b[${n}A`,
+  cursorToStart: '\x1b[G',
+};
+
 /**
  * Load questionnaire structure
  */
@@ -30,43 +45,123 @@ function loadQuestionnaire() {
 }
 
 /**
- * Convert questionnaire question to inquirer prompt
+ * Custom single-number selection prompt
+ * - Press a number (1-9) to select that option
+ * - Press Enter to confirm and move to next question
+ * - Overwrites in place for clean UI
  */
-function createPrompt(question: any) {
-  const basePrompt = {
-    name: question.id,
-    message: question.question,
-  };
+async function singleNumberPrompt(question: any): Promise<string> {
+  return new Promise((resolve) => {
+    const options = question.options;
+    let selectedIndex = 0;
 
-  if (question.type === 'multiple_choice') {
-    return {
-      ...basePrompt,
-      type: 'rawlist',
-      choices: question.options.map((opt: any) => ({
-        name: `${opt.label} - ${opt.description}`,
-        value: opt.value,
-        short: opt.label,
-      })),
-    };
-  } else if (question.type === 'multiple_choice_multiple') {
-    return {
-      ...basePrompt,
-      type: 'checkbox',
-      choices: question.options.map((opt: any) => ({
-        name: `${opt.label} - ${opt.description}`,
-        value: opt.value,
-        checked: false,
-      })),
-      validate: (answer: string[]) => {
-        if (question.max_selections && answer.length > question.max_selections) {
-          return `Please select no more than ${question.max_selections} options.`;
+    // Calculate number of lines this prompt uses
+    const descLines = question.description ? 1 : 0;
+    const totalLines = 1 + descLines + options.length + 1; // question + desc + options + hint
+
+    // Set up raw mode
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true);
+    }
+    process.stdin.resume();
+
+    const renderOptions = () => {
+      // Move cursor up and clear all lines
+      process.stdout.write(ANSI.cursorUp(totalLines));
+
+      // Reprint question
+      process.stdout.write(ANSI.clearLine + ANSI.cursorToStart);
+      process.stdout.write(`${ANSI.bright}${ANSI.cyan}? ${question.question}${ANSI.reset}\n`);
+
+      if (question.description) {
+        process.stdout.write(ANSI.clearLine + ANSI.cursorToStart);
+        process.stdout.write(`${ANSI.gray}  ${question.description}${ANSI.reset}\n`);
+      }
+
+      // Print options
+      options.forEach((opt: any, index: number) => {
+        process.stdout.write(ANSI.clearLine + ANSI.cursorToStart);
+        const num = index + 1;
+        const isSelected = index === selectedIndex;
+        if (isSelected) {
+          process.stdout.write(`${ANSI.green}> ${num}) ${ANSI.bright}${opt.label}${ANSI.reset} ${ANSI.dim}- ${opt.description}${ANSI.reset}\n`);
+        } else {
+          process.stdout.write(`${ANSI.gray}  ${num}) ${ANSI.reset}${opt.label} ${ANSI.dim}- ${opt.description}${ANSI.reset}\n`);
         }
-        return true;
-      },
-    };
-  }
+      });
 
-  throw new Error(`Unsupported question type: ${question.type}`);
+      // Print hint with trailing newline for correct cursor positioning
+      process.stdout.write(ANSI.clearLine + ANSI.cursorToStart);
+      process.stdout.write(`${ANSI.gray}  [1-${options.length}] select, [Enter] confirm${ANSI.reset}\n`);
+    };
+
+    // Initial render
+    process.stdout.write(`${ANSI.bright}${ANSI.cyan}? ${question.question}${ANSI.reset}\n`);
+    if (question.description) {
+      process.stdout.write(`${ANSI.gray}  ${question.description}${ANSI.reset}\n`);
+    }
+    options.forEach((opt: any, index: number) => {
+      const num = index + 1;
+      const isSelected = index === selectedIndex;
+      if (isSelected) {
+        process.stdout.write(`${ANSI.green}> ${num}) ${ANSI.bright}${opt.label}${ANSI.reset} ${ANSI.dim}- ${opt.description}${ANSI.reset}\n`);
+      } else {
+        process.stdout.write(`${ANSI.gray}  ${num}) ${ANSI.reset}${opt.label} ${ANSI.dim}- ${opt.description}${ANSI.reset}\n`);
+      }
+    });
+    process.stdout.write(`${ANSI.gray}  [1-${options.length}] select, [Enter] confirm${ANSI.reset}\n`);
+
+    const onKeypress = (key: Buffer) => {
+      const char = key.toString();
+
+      // Ctrl+C to exit
+      if (char === '\x03') {
+        if (process.stdin.isTTY) {
+          process.stdin.setRawMode(false);
+        }
+        console.log('\n');
+        process.exit(0);
+      }
+
+      // Number keys
+      const num = parseInt(char, 10);
+      if (!isNaN(num) && num >= 1 && num <= options.length) {
+        selectedIndex = num - 1;
+        renderOptions();
+        return;
+      }
+
+      // Enter key - confirm selection
+      if (char === '\r' || char === '\n') {
+        process.stdin.removeListener('data', onKeypress);
+        if (process.stdin.isTTY) {
+          process.stdin.setRawMode(false);
+        }
+        process.stdin.pause();
+
+        // Move up to start of question, clear everything below, print compact answer
+        process.stdout.write(ANSI.cursorUp(totalLines) + ANSI.cursorToStart);
+        process.stdout.write(ANSI.clearToEnd); // Clear all old content below
+
+        const selected = options[selectedIndex];
+        process.stdout.write(`${ANSI.green}? ${question.question} ${ANSI.bright}${selected.label}${ANSI.reset}\n`);
+
+        resolve(selected.value);
+        return;
+      }
+
+      // Arrow keys
+      if (char === '\x1b[A') { // Up
+        selectedIndex = (selectedIndex - 1 + options.length) % options.length;
+        renderOptions();
+      } else if (char === '\x1b[B') { // Down
+        selectedIndex = (selectedIndex + 1) % options.length;
+        renderOptions();
+      }
+    };
+
+    process.stdin.on('data', onKeypress);
+  });
 }
 
 /**
@@ -124,16 +219,36 @@ async function main() {
   console.log('Answer the following questions to generate your personalized workout program.\n');
 
   try {
-    // Load questionnaire
     const questionnaire = loadQuestionnaire();
+    const answers: any = {};
 
-    // Create prompts
-    const prompts = questionnaire.questions.map(createPrompt);
+    for (const question of questionnaire.questions) {
+      if (question.type === 'multiple_choice') {
+        answers[question.id] = await singleNumberPrompt(question);
+      } else if (question.type === 'multiple_choice_multiple') {
+        // Use inquirer for multi-select
+        const prompt = {
+          name: question.id,
+          type: 'checkbox',
+          message: question.question,
+          choices: question.options.map((opt: any) => ({
+            name: `${opt.label} - ${opt.description}`,
+            value: opt.value,
+            checked: false,
+          })),
+          validate: (answer: string[]) => {
+            if (question.max_selections && answer.length > question.max_selections) {
+              return `Please select no more than ${question.max_selections} options.`;
+            }
+            return true;
+          },
+        };
+        const result = await inquirer.prompt([prompt]);
+        answers[question.id] = result[question.id];
+      }
+    }
 
-    // Run interactive prompts
-    const answers = await inquirer.prompt(prompts);
-
-    // Validate answers
+    // Validate
     const validationErrors = validateAnswers(answers, questionnaire);
     if (validationErrors.length > 0) {
       console.error('Validation errors:');
@@ -146,16 +261,14 @@ async function main() {
     const startTime = Date.now();
     const workout = generateWorkout(answers as QuestionnaireAnswers);
     const endTime = Date.now();
-    console.log(`✓ Generated in ${endTime - startTime}ms`);
+    console.log(`Generated in ${endTime - startTime}ms`);
 
-    // Display summary
     displayWorkoutSummary(workout);
 
-    // Display full formatted workout for terminal
     console.log('\nFull workout details:\n');
     console.log(formatWorkoutForTerminal(workout));
 
-    // Ask if user wants to edit interactively
+    // Ask if user wants to edit
     const { editChoice } = await inquirer.prompt([
       {
         type: 'confirm',
@@ -171,20 +284,16 @@ async function main() {
       console.log('\nLaunching interactive editor in separate process...');
       console.log('Tip: Press ? for help once inside the editor\n');
 
-      // Save workout to temp file
       const tempFile = join(process.cwd(), `.workout-temp-${Date.now()}.json`);
       writeFileSync(tempFile, JSON.stringify(workout, null, 2), 'utf-8');
 
-      // Give user a moment to read the tip
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Spawn editor as completely separate process with fresh stdin
       const editorProcess = spawn('npx', ['tsx', 'cli/edit-workout.ts', tempFile], {
-        stdio: 'inherit', // Pass stdin/stdout/stderr directly to child
+        stdio: 'inherit',
         cwd: process.cwd()
       });
 
-      // Wait for editor to complete
       await new Promise<void>((resolve) => {
         editorProcess.on('close', (code) => {
           console.log(`\nEditor exited with code ${code}`);
@@ -192,17 +301,15 @@ async function main() {
         });
       });
 
-      // Read modified workout back
       try {
         const modifiedContent = readFileSync(tempFile, 'utf-8');
         finalWorkout = JSON.parse(modifiedContent);
-        console.log('✓ Loaded modified workout from editor');
+        console.log('Loaded modified workout from editor');
       } catch (error) {
-        console.log('⚠ Could not load modified workout, using original');
+        console.log('Could not load modified workout, using original');
         finalWorkout = workout;
       }
 
-      // Clean up temp file
       try {
         const fs = await import('fs/promises');
         await fs.unlink(tempFile);
@@ -233,7 +340,7 @@ async function main() {
 
       const filepath = join(process.cwd(), `${filename}.json`);
       writeFileSync(filepath, JSON.stringify(finalWorkout, null, 2), 'utf-8');
-      console.log(`✓ Workout saved to: ${filepath}`);
+      console.log(`Workout saved to: ${filepath}`);
     }
 
     console.log('\nThank you for using Shredly!');

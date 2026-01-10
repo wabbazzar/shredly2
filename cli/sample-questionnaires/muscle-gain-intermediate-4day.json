@@ -1,11 +1,8 @@
 {
-  "primary_goal": "muscle_gain",
+  "goal": "build_muscle",
   "experience_level": "intermediate",
   "training_frequency": "4",
-  "session_duration": "45-60",
-  "equipment_access": "commercial_gym",
-  "training_split_preference": "upper_lower",
-  "cardio_preference": "none",
-  "program_duration": "8_weeks",
-  "progression_preference": "linear"
+  "session_duration": "60",
+  "equipment_access": "full_gym",
+  "program_duration": "4"
 }

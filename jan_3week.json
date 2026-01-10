@@ -1175,93 +1175,270 @@
     "5": {
       "dayNumber": 5,
       "type": "gym",
-      "focus": "Push",
+      "focus": "Full Body",
       "exercises": [
         {
-          "name": "Leg Raises",
+          "name": "[INTERVAL] INTERVAL: Dumbbell Thrusters + Renegade Rows + Walking Lunges",
+          "category": "interval",
+          "sub_exercises": [
+            {
+              "name": "Dumbbell Thrusters",
+              "week1": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 30,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 30,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 35,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 25,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 40,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 20,
+                "rest_time_unit": "seconds"
+              }
+            },
+            {
+              "name": "Renegade Rows",
+              "week1": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 30,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 30,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 35,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 25,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 40,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 20,
+                "rest_time_unit": "seconds"
+              }
+            },
+            {
+              "name": "Walking Lunges",
+              "week1": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 30,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 30,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 35,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 25,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                },
+                "work_time_minutes": 40,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 20,
+                "rest_time_unit": "seconds"
+              }
+            }
+          ],
           "week1": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes",
+            "sets": 3
+          },
+          "week2": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes",
+            "sets": 3
+          },
+          "week3": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes",
+            "sets": 3
+          }
+        },
+        {
+          "name": "AMRAP: Goblet Squats + Dumbbell Burpees + Single-arm Dumbbell Rows",
+          "category": "amrap",
+          "sub_exercises": [
+            {
+              "name": "Goblet Squats",
+              "week1": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 14,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Dumbbell Burpees",
+              "week1": {
+                "reps": 6,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Single-arm Dumbbell Rows",
+              "week1": {
+                "reps": 8,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            }
+          ],
+          "week1": {
+            "work_time_minutes": 10,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 10,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 10,
             "work_time_unit": "minutes"
           }
         },
         {
-          "name": "Strict OHP",
-          "week1": {
-            "sets": 4,
-            "reps": 5,
-            "rest_time_minutes": 4,
-            "rest_time_unit": "minutes",
-            "weight": {
-              "type": "percent_tm",
-              "value": 80
-            }
-          },
-          "week2": {
-            "sets": 4,
-            "reps": 4,
-            "rest_time_minutes": 3.5,
-            "rest_time_unit": "minutes",
-            "weight": {
-              "type": "percent_tm",
-              "value": 85
-            }
-          },
-          "week3": {
-            "sets": 4,
-            "reps": 3,
-            "rest_time_minutes": 3,
-            "rest_time_unit": "minutes",
-            "weight": {
-              "type": "percent_tm",
-              "value": 90
-            }
-          }
-        },
-        {
-          "name": "Side Plank",
-          "week1": {
-            "sets": 4,
-            "reps": 5,
-            "rest_time_minutes": 4,
-            "rest_time_unit": "minutes"
-          },
-          "week2": {
-            "sets": 4,
-            "reps": 4,
-            "rest_time_minutes": 3.5,
-            "rest_time_unit": "minutes"
-          },
-          "week3": {
-            "sets": 4,
-            "reps": 3,
-            "rest_time_minutes": 3,
-            "rest_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "EMOM: Dumbbell Shoulder Press + Single-arm Overhead Carry + Reverse Lunge",
-          "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 7,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 7.5,
-            "work_time_unit": "minutes"
-          },
+          "name": "EMOM: Dumbbell Swings + Reverse Lunges + Dumbbell Shoulder Press",
           "category": "emom",
           "sub_exercises": [
+            {
+              "name": "Dumbbell Swings",
+              "week1": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 14,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 16,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Reverse Lunges",
+              "week1": {
+                "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 14,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
             {
               "name": "Dumbbell Shoulder Press",
               "week1": {
@@ -1272,22 +1449,40 @@
                 }
               },
               "week2": {
-                "reps": 9,
+                "reps": 10,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
-                "reps": 10,
+                "reps": 12,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               }
-            },
+            }
+          ],
+          "week1": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          }
+        },
+        {
+          "name": "[CIRCUIT] CIRCUIT: Single-leg Romanian Deadlifts + Russian Twists + Dumbbell Chest Press",
+          "category": "circuit",
+          "sub_exercises": [
             {
-              "name": "Single-arm Overhead Carry + Reverse Lunge",
+              "name": "Single-leg Romanian Deadlifts",
               "week1": {
                 "reps": 8,
                 "weight": {
@@ -1296,54 +1491,69 @@
                 }
               },
               "week2": {
-                "reps": 9,
+                "reps": 10,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               },
               "week3": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Russian Twists",
+              "week1": {
+                "reps": 20,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 24,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 28,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              }
+            },
+            {
+              "name": "Dumbbell Chest Press",
+              "week1": {
                 "reps": 10,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week2": {
+                "reps": 12,
+                "weight": {
+                  "type": "percent_tm",
+                  "value": 70
+                }
+              },
+              "week3": {
+                "reps": 14,
                 "weight": {
                   "type": "percent_tm",
                   "value": 70
                 }
               }
             }
-          ]
-        },
-        {
-          "name": "Balance Series",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Arm Circles",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "EMOM: Single-Leg Stands + Kettlebell Figure 8",
+          ],
           "week1": {
             "work_time_minutes": 6,
             "work_time_unit": "minutes"
@@ -1353,61 +1563,7 @@
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 7.5,
-            "work_time_unit": "minutes"
-          },
-          "category": "emom",
-          "sub_exercises": [
-            {
-              "name": "Single-Leg Stands",
-              "week1": {
-                "reps": 8
-              },
-              "week2": {
-                "reps": 9
-              },
-              "week3": {
-                "reps": 10
-              }
-            },
-            {
-              "name": "Kettlebell Figure 8",
-              "week1": {
-                "reps": 8,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week2": {
-                "reps": 9,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              },
-              "week3": {
-                "reps": 10,
-                "weight": {
-                  "type": "percent_tm",
-                  "value": 70
-                }
-              }
-            }
-          ]
-        },
-        {
-          "name": "Warrior Sequence",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
+            "work_time_minutes": 8,
             "work_time_unit": "minutes"
           }
         }

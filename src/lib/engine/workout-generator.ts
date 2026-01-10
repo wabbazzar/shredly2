@@ -10,21 +10,19 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import type {
   QuestionnaireAnswers,
+  LegacyQuestionnaireAnswers,
   GenerationRules,
   ExerciseDatabase,
   ParameterizedWorkout,
   DayStructure,
-  ExerciseStructure
+  ExerciseStructure,
+  DayFocus
 } from './types.js';
-import {
-  assignSplit,
-  getDayFocusArray,
-  generateDayStructure
-} from './phase1-structure.js';
+import { mapToLegacyAnswers } from './types.js';
+import { getPrescriptiveSplit } from './phase1-structure.js';
 import {
   flattenExerciseDatabase,
-  createExercisePoolsForDay,
-  roundRobinSelectExercises
+  selectExercisesForDay
 } from './exercise-selector.js';
 import { parameterizeExercise } from './phase2-parameters.js';
 
@@ -53,7 +51,7 @@ function loadExerciseDatabase(): ExerciseDatabase {
 /**
  * Main entry point: Generates complete workout program from questionnaire
  *
- * @param answers - User's questionnaire answers
+ * @param answers - User's questionnaire answers (new v2.0 format)
  * @param seed - Optional seed for deterministic testing. If provided, same seed = same workout. If omitted, randomness varies each generation.
  * @returns Complete parameterized workout program
  */
@@ -61,6 +59,10 @@ export function generateWorkout(
   answers: QuestionnaireAnswers,
   seed?: number
 ): ParameterizedWorkout {
+  // Map new answers to legacy format for backward compatibility
+  // This will be removed when Phases 2-5 are complete
+  const legacyAnswers = mapToLegacyAnswers(answers);
+
   // Load configuration and data
   const rules = loadGenerationRules();
   const exerciseDB = loadExerciseDatabase();
@@ -68,55 +70,39 @@ export function generateWorkout(
 
   // ===== PHASE 1: STRUCTURAL GENERATION =====
 
-  // Step 1: Determine training split and day structure
-  const split = assignSplit(answers, rules);
+  // Step 1: Determine training split and day structure using new prescriptive logic
   const daysPerWeek = parseInt(answers.training_frequency);
-  const focusArray = getDayFocusArray(split, daysPerWeek, rules.split_patterns);
+  const focusArray = getPrescriptiveSplit(answers.goal, daysPerWeek, rules);
 
   // Step 2: Determine program duration
-  const totalWeeks = parseProgramDuration(answers.program_duration);
+  const totalWeeks = parseProgramDuration(legacyAnswers.program_duration);
 
-  // Step 3: Get duration constraints for session
-  const durationConstraints = rules.duration_constraints[answers.session_duration];
-  if (!durationConstraints) {
-    throw new Error(`No duration constraints for session: ${answers.session_duration}`);
-  }
+  // Step 3: Get session duration in minutes
+  const duration = parseInt(answers.session_duration);
 
-  const maxDuration = durationConstraints.total_minutes_max;
-  const includedLayers = durationConstraints.include_layers;
-
-  // Step 4: For each day, select exercises
+  // Step 4: For each day, select exercises using block-based selection
   const days: { [dayNumber: string]: DayStructure } = {};
 
   for (let dayNum = 1; dayNum <= daysPerWeek; dayNum++) {
     const focus = focusArray[dayNum - 1];
 
-    // Create exercise pools for this day
-    const pools = createExercisePoolsForDay(
-      allExercises,
+    // Select exercises using new block-based selection
+    // Pass goal directly for new progression derivation (Phase 4)
+    const selectedExercises = selectExercisesForDay(
       focus,
-      answers,
-      rules,
-      includedLayers,
-      seed
-    );
-
-    // Select exercises using round-robin
-    const selectedExercises = roundRobinSelectExercises(
-      pools,
-      rules,
-      answers,
-      maxDuration,
       allExercises,
-      focus,
-      seed
+      legacyAnswers,
+      rules,
+      duration,
+      seed,
+      answers.goal
     );
 
     // Determine day type
     let dayType: "gym" | "home" | "outdoor";
-    if (answers.equipment_access === 'commercial_gym') {
+    if (legacyAnswers.equipment_access === 'commercial_gym') {
       dayType = 'gym';
-    } else if (answers.equipment_access === 'bodyweight_only') {
+    } else if (legacyAnswers.equipment_access === 'bodyweight_only') {
       dayType = 'outdoor';
     } else {
       dayType = 'home';
@@ -125,7 +111,7 @@ export function generateWorkout(
     days[`${dayNum}`] = {
       dayNumber: dayNum,
       type: dayType,
-      focus: focus as "Push" | "Pull" | "Legs" | "Upper" | "Lower" | "Full Body" | "Mobility",
+      focus: focus as DayFocus,
       exercises: selectedExercises
     };
   }
@@ -155,7 +141,7 @@ export function generateWorkout(
         category = exerciseInfo.category;
       }
 
-      return parameterizeExercise(exercise, category, totalWeeks, rules, answers, allExercises);
+      return parameterizeExercise(exercise, category, totalWeeks, rules, legacyAnswers, allExercises);
     });
 
     parameterizedDays[dayKey] = {
@@ -169,17 +155,17 @@ export function generateWorkout(
   // ===== BUILD FINAL WORKOUT =====
 
   const workout: ParameterizedWorkout = {
-    id: generateWorkoutId(answers),
-    name: generateWorkoutName(answers),
-    description: generateWorkoutDescription(answers),
+    id: generateWorkoutId(answers, legacyAnswers),
+    name: generateWorkoutName(legacyAnswers),
+    description: generateWorkoutDescription(answers, legacyAnswers),
     version: "2.0.0",
     weeks: totalWeeks,
     daysPerWeek: daysPerWeek,
     metadata: {
-      difficulty: mapExperienceToDifficulty(answers.experience_level),
-      equipment: [answers.equipment_access],
-      estimatedDuration: answers.session_duration,
-      tags: generateTags(answers)
+      difficulty: mapExperienceToDifficulty(legacyAnswers.experience_level),
+      equipment: [legacyAnswers.equipment_access],
+      estimatedDuration: legacyAnswers.session_duration,
+      tags: generateTags(answers, legacyAnswers)
     },
     days: parameterizedDays
   };
@@ -210,9 +196,9 @@ function parseProgramDuration(duration?: string): number {
 /**
  * Helper: Generate unique workout ID
  */
-function generateWorkoutId(answers: QuestionnaireAnswers): string {
+function generateWorkoutId(answers: QuestionnaireAnswers, legacyAnswers: LegacyQuestionnaireAnswers): string {
   const timestamp = Date.now();
-  const goal = answers.primary_goal.substring(0, 4);
+  const goal = answers.goal.substring(0, 4);
   const exp = answers.experience_level.substring(0, 3);
   return `workout_${goal}_${exp}_${timestamp}`;
 }
@@ -220,7 +206,7 @@ function generateWorkoutId(answers: QuestionnaireAnswers): string {
 /**
  * Helper: Generate workout name
  */
-function generateWorkoutName(answers: QuestionnaireAnswers): string {
+function generateWorkoutName(legacyAnswers: LegacyQuestionnaireAnswers): string {
   const goalNames: { [key: string]: string } = {
     muscle_gain: 'Muscle Building',
     fat_loss: 'Fat Loss',
@@ -238,18 +224,22 @@ function generateWorkoutName(answers: QuestionnaireAnswers): string {
     expert: 'Expert'
   };
 
-  return `${goalNames[answers.primary_goal]} ${expNames[answers.experience_level]} Program`;
+  return `${goalNames[legacyAnswers.primary_goal]} ${expNames[legacyAnswers.experience_level]} Program`;
 }
 
 /**
  * Helper: Generate workout description
  */
-function generateWorkoutDescription(answers: QuestionnaireAnswers): string {
+function generateWorkoutDescription(answers: QuestionnaireAnswers, legacyAnswers: LegacyQuestionnaireAnswers): string {
   const days = answers.training_frequency;
   const duration = answers.session_duration;
-  const goal = answers.primary_goal.replace(/_/g, ' ');
+  const goalNames: { [key: string]: string } = {
+    build_muscle: 'building muscle',
+    tone: 'toning and fitness',
+    lose_weight: 'losing weight'
+  };
 
-  return `${days} days per week workout program focused on ${goal}. Each session is ${duration} minutes.`;
+  return `${days} days per week workout program focused on ${goalNames[answers.goal]}. Each session is ${duration} minutes.`;
 }
 
 /**
@@ -272,10 +262,10 @@ function mapExperienceToDifficulty(
 /**
  * Helper: Generate tags for the workout
  */
-function generateTags(answers: QuestionnaireAnswers): string[] {
+function generateTags(answers: QuestionnaireAnswers, legacyAnswers: LegacyQuestionnaireAnswers): string[] {
   const tags: string[] = [];
 
-  tags.push(answers.primary_goal);
+  tags.push(answers.goal);
   tags.push(answers.experience_level);
   tags.push(`${answers.training_frequency}_days_week`);
   tags.push(answers.equipment_access);

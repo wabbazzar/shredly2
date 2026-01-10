@@ -187,10 +187,14 @@ export class InteractiveWorkoutEditor {
     }
 
     // Navigation
-    if (str === hotkeys.navigation.next_editable_field) {
+    if (str === hotkeys.navigation.next_editable_field || key.name === 'down') {
       this.navigateToNextField();
-    } else if (str === hotkeys.navigation.previous_editable_field) {
+    } else if (str === hotkeys.navigation.previous_editable_field || key.name === 'up') {
       this.navigateToPreviousField();
+    } else if (str === 'j') {
+      this.navigateToNextExercise();
+    } else if (str === 'k') {
+      this.navigateToPreviousExercise();
     } else if (key.name === hotkeys.navigation.previous_day) {
       if (this.state.viewMode === 'day') {
         this.state.currentDayIndex = Math.max(0, this.state.currentDayIndex - 1);
@@ -1567,7 +1571,8 @@ export class InteractiveWorkoutEditor {
     console.log(chalk.yellow('VIEW MODE:'));
     console.log('  d/w         - Toggle Day/Week view');
     console.log('  ← →         - Navigate between days (Day view)');
-    console.log('  t/T         - Jump to next/previous editable field');
+    console.log('  j/k         - Jump to next/previous exercise');
+    console.log('  t/T (or up/down) - Jump to next/previous editable field');
     console.log('  1-99        - Jump to exercise number (multi-digit supported)');
     console.log('  Esc         - Cancel swap mode / cancel number jump');
     console.log('  r           - Replace/edit field (vim-like: auto-clears value)');
@@ -1699,6 +1704,149 @@ export class InteractiveWorkoutEditor {
           this.state.selectedFieldIndex = i;
           return;
         }
+      }
+    }
+  }
+
+  /**
+   * Navigate to next exercise (jumps to first field of next exercise)
+   * Similar to t/T but at exercise level, not field level
+   */
+  private navigateToNextExercise(): void {
+    // Clear last edited state when navigating away
+    this.state.lastEditedField = null;
+    this.state.lastEditedValue = null;
+
+    const currentField = this.editableFields[this.state.selectedFieldIndex];
+    if (!currentField) return;
+
+    const currentDayKey = this.state.viewMode === 'day' ? this.dayKeys[this.state.currentDayIndex] : null;
+    const currentExerciseIndex = currentField.exerciseIndex;
+
+    // Find the first field of the next exercise
+    for (let i = this.state.selectedFieldIndex + 1; i < this.editableFields.length; i++) {
+      const field = this.editableFields[i];
+
+      // In day view, only navigate within current day
+      if (currentDayKey && field.dayKey !== currentDayKey) {
+        continue;
+      }
+
+      // Skip fields of the same exercise (unless it's a different day in week view)
+      if (field.exerciseIndex === currentExerciseIndex && field.dayKey === currentField.dayKey) {
+        continue;
+      }
+
+      // Found first field of next exercise
+      this.state.selectedFieldIndex = i;
+      this.syncDayViewToSelectedField();
+      return;
+    }
+
+    // If we reached the end, wrap around
+    if (this.state.viewMode === 'week') {
+      // Week view: wrap to first exercise of first day
+      this.state.selectedFieldIndex = 0;
+    } else {
+      // Day view: wrap to first exercise of current day
+      for (let i = 0; i < this.editableFields.length; i++) {
+        if (this.editableFields[i].dayKey === currentDayKey) {
+          this.state.selectedFieldIndex = i;
+          return;
+        }
+      }
+    }
+  }
+
+  /**
+   * Navigate to previous exercise (jumps to first field of previous exercise)
+   * Similar to t/T but at exercise level, not field level
+   */
+  private navigateToPreviousExercise(): void {
+    // Clear last edited state when navigating away
+    this.state.lastEditedField = null;
+    this.state.lastEditedValue = null;
+
+    const currentField = this.editableFields[this.state.selectedFieldIndex];
+    if (!currentField) return;
+
+    const currentDayKey = this.state.viewMode === 'day' ? this.dayKeys[this.state.currentDayIndex] : null;
+    const currentExerciseIndex = currentField.exerciseIndex;
+
+    // First, find the start of the current exercise
+    let currentExerciseStart = this.state.selectedFieldIndex;
+    for (let i = this.state.selectedFieldIndex - 1; i >= 0; i--) {
+      const field = this.editableFields[i];
+      if (field.exerciseIndex === currentExerciseIndex && field.dayKey === currentField.dayKey) {
+        currentExerciseStart = i;
+      } else {
+        break;
+      }
+    }
+
+    // Now find the first field of the previous exercise
+    let prevExerciseStart = -1;
+    let prevExerciseIndex = -1;
+    let prevExerciseDayKey = '';
+
+    for (let i = currentExerciseStart - 1; i >= 0; i--) {
+      const field = this.editableFields[i];
+
+      // In day view, only navigate within current day
+      if (currentDayKey && field.dayKey !== currentDayKey) {
+        continue;
+      }
+
+      // Track the start of this exercise
+      if (prevExerciseIndex === -1) {
+        // First field of the previous exercise found
+        prevExerciseIndex = field.exerciseIndex;
+        prevExerciseDayKey = field.dayKey;
+        prevExerciseStart = i;
+      } else if (field.exerciseIndex === prevExerciseIndex && field.dayKey === prevExerciseDayKey) {
+        // Same exercise, update start position (we're iterating backwards)
+        prevExerciseStart = i;
+      } else {
+        // Different exercise encountered - we've found the start of prev exercise, stop
+        break;
+      }
+    }
+
+    if (prevExerciseStart !== -1) {
+      this.state.selectedFieldIndex = prevExerciseStart;
+      this.syncDayViewToSelectedField();
+      return;
+    }
+
+    // If we reached the beginning, wrap around to last exercise
+    if (this.state.viewMode === 'week') {
+      // Week view: wrap to last exercise
+      const lastField = this.editableFields[this.editableFields.length - 1];
+      // Find the start of the last exercise
+      for (let i = this.editableFields.length - 1; i >= 0; i--) {
+        if (this.editableFields[i].exerciseIndex !== lastField.exerciseIndex || this.editableFields[i].dayKey !== lastField.dayKey) {
+          this.state.selectedFieldIndex = i + 1;
+          return;
+        }
+      }
+      this.state.selectedFieldIndex = 0;
+    } else {
+      // Day view: wrap to last exercise of current day
+      let lastExStart = -1;
+      let lastExIndex = -1;
+      for (let i = this.editableFields.length - 1; i >= 0; i--) {
+        const field = this.editableFields[i];
+        if (field.dayKey === currentDayKey) {
+          if (lastExIndex === -1 || field.exerciseIndex !== lastExIndex) {
+            lastExIndex = field.exerciseIndex;
+            lastExStart = i;
+          } else {
+            lastExStart = i;
+          }
+        }
+      }
+      if (lastExStart !== -1) {
+        this.state.selectedFieldIndex = lastExStart;
       }
     }
   }

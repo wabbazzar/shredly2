@@ -432,6 +432,20 @@ These should be answered in the CLI prototype phase.
 - **Test coverage**: 96 passing unit tests (29 for compound blocks)
 
 **Recent Completions**:
+- ✅ Ticket #012 Phase 3 (2026-01-09): Day Structure by Equipment - Block-based selection
+  * **Phase 3 - Block-Based Selection**: Replaced round-robin with deterministic block selection
+    - Added `day_structure_by_equipment` config (full_gym, dumbbells_only, bodyweight_only)
+    - Added `compound_blocks_by_time` config for duration-based block counts
+    - Created `buildDayStructure()` function in phase1-structure.ts
+    - Created `selectExercisesForDay()` with block-based selection in exercise-selector.ts
+    - Created equipment-specific selection functions (strength, compound, interval, mobility)
+    - Updated workout-generator.ts to use new block-based selection
+  * **Code Removal**: Removed ~540 lines of round-robin code
+    - `roundRobinSelectExercises()`, `prioritizeByMuscleGroupCoverage()`
+    - `getDefaultIntensityForLayer()`, `hasMetMinimumRequirements()`, `trackMuscleGroupCoverage()`
+  * **Bug Fixes**: Fixed sub-exercise intensity profile inheritance (fallback to compatible profiles)
+  * **Testing**: All 279 tests passing, TypeScript clean
+  * exercise-selector.ts reduced from 1352 to 815 lines
 - ✅ Ticket #011 (2026-01-08): Migrate hardcoded mappings to config (COMPLETE)
   * **Phase 1 - Split Assignment**: Moved default split by frequency to config
     - Added default_split_by_frequency to workout_generation_rules.json

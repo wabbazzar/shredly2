@@ -1,11 +1,8 @@
 {
-  "primary_goal": "general_fitness",
-  "experience_level": "complete_beginner",
+  "goal": "tone",
+  "experience_level": "beginner",
   "training_frequency": "2",
-  "session_duration": "20-30",
-  "equipment_access": "home_gym_basic",
-  "training_split_preference": "no_preference",
-  "cardio_preference": "liss",
-  "program_duration": "4_weeks",
-  "progression_preference": "volume"
+  "session_duration": "20",
+  "equipment_access": "bodyweight_only",
+  "program_duration": "3"
 }

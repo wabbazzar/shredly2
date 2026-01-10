@@ -42,8 +42,26 @@ export function estimateExerciseDuration(
   // Calculate work time based on category
   let workTime = 0;
 
-  if (profile.base_work_time_minutes !== undefined) {
-    // For time-based exercises (emom, amrap, interval, mobility, flexibility, cardio)
+  if (profile.base_sets !== undefined &&
+      profile.base_work_time_minutes !== undefined &&
+      profile.base_rest_time_minutes !== undefined) {
+    // For interval-style exercises with sets (e.g., 4 sets of 40s work / 20s rest)
+    // Total = sets * (work_time + rest_time)
+    const sets = profile.base_sets;
+    const workPerSet = profile.base_work_time_minutes;
+    const restPerSet = profile.base_rest_time_minutes;
+    workTime = sets * (workPerSet + restPerSet);
+  } else if (profile.base_sets !== undefined && profile.base_rest_between_circuits_minutes !== undefined) {
+    // For circuits (has sets + rest_between_circuits)
+    const sets = profile.base_sets;
+    const exercisesPerCircuit = profile.base_exercises_per_circuit || 3;
+    const restBetweenCircuits = profile.base_rest_between_circuits_minutes;
+
+    // Rough estimate: ~1 minute per exercise in circuit + rest between circuits
+    workTime = sets * (exercisesPerCircuit + restBetweenCircuits);
+  } else if (profile.base_work_time_minutes !== undefined) {
+    // For pure time-based exercises (emom, amrap, mobility, flexibility, cardio)
+    // These have a single block time (e.g., 6 min EMOM, 4 min AMRAP)
     workTime = profile.base_work_time_minutes;
   } else if (profile.base_sets !== undefined && profile.base_reps !== undefined) {
     // For sets/reps-based exercises (strength, bodyweight)
@@ -57,14 +75,6 @@ export function estimateExerciseDuration(
 
     // Total work time = (work time per set * sets) + (rest time * (sets - 1))
     workTime = (workTimePerSet * sets) + (restTimeBetweenSets * (sets - 1));
-  } else if (profile.base_sets !== undefined && profile.base_rest_between_circuits_minutes !== undefined) {
-    // For circuits
-    const sets = profile.base_sets;
-    const exercisesPerCircuit = profile.base_exercises_per_circuit || 3;
-    const restBetweenCircuits = profile.base_rest_between_circuits_minutes;
-
-    // Rough estimate: ~1 minute per exercise in circuit + rest
-    workTime = sets * (exercisesPerCircuit + restBetweenCircuits);
   }
 
   // Add transition time

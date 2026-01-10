@@ -1,9 +1,9 @@
 {
-  "id": "workout_fat__beg_1767896587640",
+  "id": "workout_lose_beg_1768027287492",
   "name": "Fat Loss Beginner Program",
-  "description": "3 days per week workout program focused on fat loss. Each session is 30-45 minutes.",
+  "description": "3 days per week workout program focused on losing weight. Each session is 30 minutes.",
   "version": "2.0.0",
-  "weeks": 6,
+  "weeks": 4,
   "daysPerWeek": 3,
   "metadata": {
     "difficulty": "Beginner",
@@ -12,7 +12,7 @@
     ],
     "estimatedDuration": "30-45",
     "tags": [
-      "fat_loss",
+      "lose_weight",
       "beginner",
       "3_days_week",
       "bodyweight_only"
@@ -22,260 +22,302 @@
     "1": {
       "dayNumber": 1,
       "type": "outdoor",
-      "focus": "Full Body",
+      "focus": "Push-HIIT",
       "exercises": [
         {
-          "name": "Alternating Jump Lunges",
+          "name": "INTERVAL: Mountain Climbers + Diamond Push-ups",
           "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+            "sets": 7
           },
           "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+            "sets": 7
           },
           "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+            "sets": 7
           },
           "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+            "sets": 7
           },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+          "category": "interval",
+          "sub_exercises": [
+            {
+              "name": "Mountain Climbers",
+              "week1": {
+                "reps": 7,
+                "rest_time_minutes": 1,
+                "rest_time_unit": "minutes"
+              },
+              "week2": {
+                "reps": 8,
+                "rest_time_minutes": 0.98,
+                "rest_time_unit": "minutes"
+              },
+              "week3": {
+                "reps": 8,
+                "rest_time_minutes": 0.96,
+                "rest_time_unit": "minutes"
+              },
+              "week4": {
+                "reps": 9,
+                "rest_time_minutes": 0.94,
+                "rest_time_unit": "minutes"
+              }
+            },
+            {
+              "name": "Diamond Push-ups",
+              "week1": {
+                "reps": 7,
+                "rest_time_minutes": 1,
+                "rest_time_unit": "minutes"
+              },
+              "week2": {
+                "reps": 8,
+                "rest_time_minutes": 0.98,
+                "rest_time_unit": "minutes"
+              },
+              "week3": {
+                "reps": 8,
+                "rest_time_minutes": 0.96,
+                "rest_time_unit": "minutes"
+              },
+              "week4": {
+                "reps": 9,
+                "rest_time_minutes": 0.94,
+                "rest_time_unit": "minutes"
+              }
+            }
+          ]
+        },
+        {
+          "name": "INTERVAL: Pike Push-ups + Plank Hold",
+          "week1": {
+            "sets": 7
           },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
+          "week2": {
+            "sets": 7
+          },
+          "week3": {
+            "sets": 7
+          },
+          "week4": {
+            "sets": 7
+          },
+          "category": "interval",
+          "sub_exercises": [
+            {
+              "name": "Pike Push-ups",
+              "week1": {
+                "reps": 7,
+                "rest_time_minutes": 1,
+                "rest_time_unit": "minutes"
+              },
+              "week2": {
+                "reps": 8,
+                "rest_time_minutes": 0.98,
+                "rest_time_unit": "minutes"
+              },
+              "week3": {
+                "reps": 8,
+                "rest_time_minutes": 0.96,
+                "rest_time_unit": "minutes"
+              },
+              "week4": {
+                "reps": 9,
+                "rest_time_minutes": 0.94,
+                "rest_time_unit": "minutes"
+              }
+            },
+            {
+              "name": "Plank Hold",
+              "week1": {
+                "reps": 7,
+                "rest_time_minutes": 1,
+                "rest_time_unit": "minutes"
+              },
+              "week2": {
+                "reps": 8,
+                "rest_time_minutes": 0.98,
+                "rest_time_unit": "minutes"
+              },
+              "week3": {
+                "reps": 8,
+                "rest_time_minutes": 0.96,
+                "rest_time_unit": "minutes"
+              },
+              "week4": {
+                "reps": 9,
+                "rest_time_minutes": 0.94,
+                "rest_time_unit": "minutes"
+              }
+            }
+          ]
         }
       ]
     },
     "2": {
       "dayNumber": 2,
       "type": "outdoor",
-      "focus": "Full Body",
+      "focus": "Pull-HIIT",
       "exercises": [
         {
-          "name": "Alternating Jump Lunges",
+          "name": "INTERVAL: Bodyweight Chin/Pull-Ups + Pull-ups",
           "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+            "sets": 7
           },
           "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+            "sets": 7
           },
           "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+            "sets": 7
           },
           "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
+            "sets": 7
           },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "EMOM: Upper Body Dynamic Warm-up + Hip Circles",
-          "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "category": "emom",
+          "category": "interval",
           "sub_exercises": [
             {
-              "name": "Upper Body Dynamic Warm-up",
+              "name": "Bodyweight Chin/Pull-Ups",
               "week1": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
+                "reps": 7,
+                "rest_time_minutes": 1,
+                "rest_time_unit": "minutes"
               },
               "week2": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
+                "reps": 8,
+                "rest_time_minutes": 0.98,
+                "rest_time_unit": "minutes"
               },
               "week3": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
+                "reps": 8,
+                "rest_time_minutes": 0.96,
+                "rest_time_unit": "minutes"
               },
               "week4": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week5": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
-              },
-              "week6": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
+                "reps": 9,
+                "rest_time_minutes": 0.94,
+                "rest_time_unit": "minutes"
               }
             },
             {
-              "name": "Hip Circles",
+              "name": "Pull-ups",
               "week1": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
+                "reps": 7,
+                "rest_time_minutes": 1,
+                "rest_time_unit": "minutes"
               },
               "week2": {
-                "work_time_minutes": 3,
-                "work_time_unit": "minutes"
+                "reps": 8,
+                "rest_time_minutes": 0.98,
+                "rest_time_unit": "minutes"
               },
               "week3": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
+                "reps": 8,
+                "rest_time_minutes": 0.96,
+                "rest_time_unit": "minutes"
               },
               "week4": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
+                "reps": 9,
+                "rest_time_minutes": 0.94,
+                "rest_time_unit": "minutes"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "3": {
+      "dayNumber": 3,
+      "type": "outdoor",
+      "focus": "Legs-HIIT",
+      "exercises": [
+        {
+          "name": "CIRCUIT: Glute Bridges + Box Jumps + Single-leg Glute Bridges + Squat Pulses",
+          "week1": {
+            "sets": 4
+          },
+          "week2": {
+            "sets": 4
+          },
+          "week3": {
+            "sets": 4
+          },
+          "week4": {
+            "sets": 4
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Glute Bridges",
+              "week1": {
+                "reps": 4
               },
-              "week5": {
-                "work_time_minutes": 3.5,
-                "work_time_unit": "minutes"
+              "week2": {
+                "reps": 4
               },
-              "week6": {
-                "work_time_minutes": 4,
-                "work_time_unit": "minutes"
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Box Jumps",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Single-leg Glute Bridges",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week4": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            },
+            {
+              "name": "Squat Pulses",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week4": {
+                "reps": 5,
+                "weight": "heavy"
               }
             }
           ]
         },
         {
-          "name": "Mountain Climbers",
-          "week1": {
-            "sets": 3,
-            "reps": 7,
-            "rest_time_minutes": 1,
-            "rest_time_unit": "minutes"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 6,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 5,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week5": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week6": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Plank Jacks",
-          "week1": {
-            "sets": 3,
-            "reps": 7,
-            "rest_time_minutes": 1,
-            "rest_time_unit": "minutes"
-          },
-          "week2": {
-            "sets": 3,
-            "reps": 6,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week3": {
-            "sets": 3,
-            "reps": 5,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week4": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week5": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          },
-          "week6": {
-            "sets": 3,
-            "reps": 3,
-            "rest_time_minutes": 2,
-            "rest_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "Child's Pose Stretch",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        },
-        {
-          "name": "EMOM: Side Plank + Dead Bug",
+          "name": "AMRAP: Side Plank + Wall Sit + strength Squats",
           "week1": {
             "work_time_minutes": 6,
             "work_time_unit": "minutes"
@@ -292,15 +334,7 @@
             "work_time_minutes": 6,
             "work_time_unit": "minutes"
           },
-          "week5": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
-          },
-          "category": "emom",
+          "category": "amrap",
           "sub_exercises": [
             {
               "name": "Side Plank",
@@ -311,101 +345,51 @@
                 "reps": 4
               },
               "week3": {
-                "reps": 4
+                "reps": 5
               },
               "week4": {
-                "reps": 5
-              },
-              "week5": {
-                "reps": 5
-              },
-              "week6": {
                 "reps": 5
               }
             },
             {
-              "name": "Dead Bug",
+              "name": "Wall Sit",
               "week1": {
-                "reps": 4
+                "reps": 4,
+                "weight": "heavy"
               },
               "week2": {
-                "reps": 4
+                "reps": 4,
+                "weight": "heavy"
               },
               "week3": {
-                "reps": 4
+                "reps": 5,
+                "weight": "heavy"
               },
               "week4": {
-                "reps": 5
+                "reps": 5,
+                "weight": "heavy"
+              }
+            },
+            {
+              "name": "strength Squats",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
               },
-              "week5": {
-                "reps": 5
+              "week2": {
+                "reps": 4,
+                "weight": "heavy"
               },
-              "week6": {
-                "reps": 5
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week4": {
+                "reps": 5,
+                "weight": "heavy"
               }
             }
           ]
-        },
-        {
-          "name": "Gentle Quad Stretch",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
-        }
-      ]
-    },
-    "3": {
-      "dayNumber": 3,
-      "type": "outdoor",
-      "focus": "Full Body",
-      "exercises": [
-        {
-          "name": "Alternating Jump Lunges",
-          "week1": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week2": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week3": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week4": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week5": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          },
-          "week6": {
-            "work_time_minutes": 1,
-            "work_time_unit": "minutes"
-          }
         }
       ]
     }

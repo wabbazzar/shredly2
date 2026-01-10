@@ -1,43 +1,52 @@
 {
-  "version": "1.0",
-  "title": "Personalized Workout Program Creator",
-  "description": "Answer these questions to get a custom workout program designed specifically for you",
+  "version": "2.0",
+  "title": "Shredly Workout Program Creator",
+  "description": "Answer these questions to get a custom workout program",
   "questions": [
     {
-      "id": "primary_goal",
+      "id": "goal",
       "type": "multiple_choice",
-      "question": "What's your primary fitness goal?",
-      "description": "This helps determine the overall structure and focus of your program",
+      "question": "What is your primary goal?",
+      "description": "This determines your training split and exercise selection",
       "options": [
         {
-          "value": "muscle_gain",
-          "label": "Build Muscle & Strength",
-          "description": "Focus on hypertrophy and progressive strength training"
+          "value": "build_muscle",
+          "label": "Build Muscle",
+          "description": "Strength-focused training with progressive overload"
         },
         {
-          "value": "fat_loss",
-          "label": "Lose Fat & Get Lean",
-          "description": "Combine strength training with metabolic conditioning"
+          "value": "tone",
+          "label": "Tone / Get Fit",
+          "description": "Balanced strength and conditioning"
         },
         {
-          "value": "athletic_performance",
-          "label": "Athletic Performance",
-          "description": "Improve power, speed, agility for sports"
+          "value": "lose_weight",
+          "label": "Lose Weight",
+          "description": "HIIT-focused with metabolic conditioning"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "session_duration",
+      "type": "multiple_choice",
+      "question": "How much time per workout?",
+      "description": "Determines number of exercises and compound blocks",
+      "options": [
+        {
+          "value": "20",
+          "label": "20 minutes",
+          "description": "Quick, efficient workouts"
         },
         {
-          "value": "general_fitness",
-          "label": "General Health & Fitness",
-          "description": "Overall wellness and functional movement"
+          "value": "30",
+          "label": "30 minutes",
+          "description": "Balanced volume and efficiency"
         },
         {
-          "value": "rehabilitation",
-          "label": "Injury Recovery & Rehab",
-          "description": "Therapeutic exercise and gradual return to activity"
-        },
-        {
-          "value": "body_recomposition",
-          "label": "Body Recomposition",
-          "description": "Build muscle while losing fat simultaneously"
+          "value": "60",
+          "label": "60 minutes",
+          "description": "Full sessions with higher volume"
         }
       ],
       "required": true
@@ -45,18 +54,13 @@
     {
       "id": "experience_level",
       "type": "multiple_choice",
-      "question": "What's your experience level with structured training?",
-      "description": "This affects exercise complexity and progression schemes",
+      "question": "What is your experience level?",
+      "description": "Affects exercise complexity and difficulty filtering",
       "options": [
-        {
-          "value": "complete_beginner",
-          "label": "Complete Beginner",
-          "description": "New to structured exercise (0-3 months)"
-        },
         {
           "value": "beginner",
           "label": "Beginner",
-          "description": "Some experience with basic exercises (3-12 months)"
+          "description": "New to structured training (0-12 months)"
         },
         {
           "value": "intermediate",
@@ -66,90 +70,7 @@
         {
           "value": "advanced",
           "label": "Advanced",
-          "description": "Experienced lifter with solid technique (3+ years)"
-        },
-        {
-          "value": "expert",
-          "label": "Expert/Competitive",
-          "description": "Competitive athlete or very experienced (5+ years)"
-        }
-      ],
-      "required": true
-    },
-    {
-      "id": "training_frequency",
-      "type": "multiple_choice",
-      "question": "How many days per week can you realistically commit to training?",
-      "description": "Be honest about your schedule - consistency is more important than frequency",
-      "options": [
-        {
-          "value": "2",
-          "label": "2 Days per Week",
-          "description": "Full body workouts, perfect for beginners or busy schedules"
-        },
-        {
-          "value": "3",
-          "label": "3 Days per Week",
-          "description": "Full body or upper/lower split"
-        },
-        {
-          "value": "4",
-          "label": "4 Days per Week",
-          "description": "Upper/lower split or push/pull/legs"
-        },
-        {
-          "value": "5",
-          "label": "5 Days per Week",
-          "description": "Body part splits or push/pull/legs with extra day"
-        },
-        {
-          "value": "6",
-          "label": "6 Days per Week",
-          "description": "Push/pull/legs twice or specialized split"
-        },
-        {
-          "value": "7",
-          "label": "7 Days per Week (Daily)",
-          "description": "Advanced training with active recovery days"
-        }
-      ],
-      "required": true
-    },
-    {
-      "id": "session_duration",
-      "type": "multiple_choice",
-      "question": "How much time do you have per workout session?",
-      "description": "This determines exercise volume and rest periods",
-      "options": [
-        {
-          "value": "20-30",
-          "label": "20-30 minutes",
-          "description": "Quick, efficient workouts focusing on compound movements"
-        },
-        {
-          "value": "30-45",
-          "label": "30-45 minutes",
-          "description": "Good balance of volume and efficiency"
-        },
-        {
-          "value": "45-60",
-          "label": "45-60 minutes",
-          "description": "Standard workout duration with adequate volume"
-        },
-        {
-          "value": "60-90",
-          "label": "60-90 minutes",
-          "description": "Longer sessions allowing for higher volume"
-        },
-        {
-          "value": "90+",
-          "label": "90+ minutes",
-          "description": "Extended training sessions for advanced athletes"
-        },
-        {
-          "value": "flexible",
-          "label": "Flexible/Varies",
-          "description": "Different durations on different days"
+          "description": "Experienced with solid technique (3+ years)"
         }
       ],
       "required": true
@@ -158,22 +79,12 @@
       "id": "equipment_access",
       "type": "multiple_choice",
       "question": "What equipment do you have access to?",
-      "description": "This determines which exercises we can include in your program",
+      "description": "Determines exercise pool and workout structure",
       "options": [
         {
-          "value": "commercial_gym",
-          "label": "Commercial Gym",
-          "description": "Full access to barbells, dumbbells, machines, cables"
-        },
-        {
-          "value": "home_gym_full",
-          "label": "Home Gym (Full Setup)",
-          "description": "Power rack, barbells, dumbbells, bench, plates"
-        },
-        {
-          "value": "home_gym_basic",
-          "label": "Home Gym (Basic)",
-          "description": "Dumbbells, resistance bands, maybe a bench"
+          "value": "full_gym",
+          "label": "Full Gym",
+          "description": "Barbells, dumbbells, machines, cables"
         },
         {
           "value": "dumbbells_only",
@@ -182,138 +93,85 @@
         },
         {
           "value": "bodyweight_only",
-          "label": "Bodyweight Only",
-          "description": "No equipment, using body weight and creativity"
-        },
-        {
-          "value": "minimal_equipment",
-          "label": "Minimal Equipment",
-          "description": "Limited space/equipment, need creative solutions"
+          "label": "Bodyweight / Basic",
+          "description": "No equipment or minimal (bands, mat)"
         }
       ],
       "required": true
     },
     {
-      "id": "training_split_preference",
+      "id": "training_frequency",
       "type": "multiple_choice",
-      "question": "Do you have a preference for how your training is organized?",
-      "description": "Different splits work better for different goals and schedules",
+      "question": "How many days per week can you train?",
+      "description": "Determines your training split structure",
       "options": [
         {
-          "value": "no_preference",
-          "label": "No Preference",
-          "description": "Let the AI choose what's best for my goals"
+          "value": "2",
+          "label": "2 days",
+          "description": "Upper / Lower split"
         },
         {
-          "value": "full_body",
-          "label": "Full Body",
-          "description": "Train all muscle groups each session"
+          "value": "3",
+          "label": "3 days",
+          "description": "Push / Pull / Legs"
         },
         {
-          "value": "upper_lower",
-          "label": "Upper/Lower Split",
-          "description": "Alternate between upper and lower body days"
+          "value": "4",
+          "label": "4 days",
+          "description": "PPL + Mobility"
         },
         {
-          "value": "push_pull_legs",
-          "label": "Push/Pull/Legs",
-          "description": "Separate pushing, pulling, and leg movements"
+          "value": "5",
+          "label": "5 days",
+          "description": "PPL + Volume days"
         },
         {
-          "value": "ulppl",
-          "label": "ULPPL (Upper/Lower/Push/Pull/Legs)",
-          "description": "5-day rotation focusing on upper, lower, push, pull, and legs"
+          "value": "6",
+          "label": "6 days",
+          "description": "PPL + Mobility + Volume"
+        },
+        {
+          "value": "7",
+          "label": "7 days",
+          "description": "Full PPL rotation + Flexibility"
         }
       ],
-      "required": false
+      "required": true
     },
     {
       "id": "program_duration",
       "type": "multiple_choice",
-      "question": "How long would you like this program to last?",
-      "description": "Programs should be followed consistently before making major changes",
+      "question": "How long should this program be?",
+      "description": "Number of weeks for the program",
       "options": [
         {
-          "value": "3_weeks",
-          "label": "3 Weeks",
+          "value": "3",
+          "label": "3 weeks",
           "description": "Quick start or trial program"
         },
         {
-          "value": "4_weeks",
-          "label": "4 Weeks",
-          "description": "Short introduction or specific focus program"
+          "value": "4",
+          "label": "4 weeks",
+          "description": "Standard program length"
         },
         {
-          "value": "6_weeks",
-          "label": "6 Weeks",
-          "description": "Good for beginners or specific adaptations"
-        },
-        {
-          "value": "8_weeks",
-          "label": "8 Weeks",
-          "description": "Standard program length for most goals"
-        },
-        {
-          "value": "12_weeks",
-          "label": "12 Weeks",
-          "description": "Comprehensive program with multiple phases"
-        },
-        {
-          "value": "16_weeks",
-          "label": "16 Weeks",
-          "description": "Extended program for significant transformations"
-        },
-        {
-          "value": "ongoing",
-          "label": "Ongoing/Flexible",
-          "description": "Program I can follow indefinitely with progressions"
+          "value": "6",
+          "label": "6 weeks",
+          "description": "Extended program with more progression"
         }
       ],
-      "required": false
-    },
-    {
-      "id": "progression_preference",
-      "type": "multiple_choice",
-      "question": "How do you prefer to progress in your training?",
-      "description": "Different progression schemes work better for different goals",
-      "options": [
-        {
-          "value": "linear",
-          "label": "Linear Progression",
-          "description": "Gradually increase intensity, decrease volume (e.g., 5 reps → 4 reps → 3 reps, heavier weight each week)"
-        },
-        {
-          "value": "volume",
-          "label": "Volume Progression",
-          "description": "Increase sets/reps while keeping weight constant (e.g., 3x8 → 4x10 → 4x12)"
-        },
-        {
-          "value": "density",
-          "label": "Density Progression",
-          "description": "Same work in less time OR more work in same time (e.g., EMOM, AMRAP, circuits)"
-        },
-        {
-          "value": "wave_loading",
-          "label": "Wave Loading",
-          "description": "Undulating intensity - peak middle weeks, deload final week (advanced)"
-        },
-        {
-          "value": "no_preference",
-          "label": "No Preference",
-          "description": "Let the program choose based on my goals"
-        }
-      ],
-      "required": false
+      "required": true
     }
   ],
   "validation_rules": {
     "required_questions": [
-      "primary_goal",
-      "experience_level",
-      "training_frequency",
+      "goal",
       "session_duration",
-      "equipment_access"
+      "experience_level",
+      "equipment_access",
+      "training_frequency",
+      "program_duration"
     ],
-    "min_questions_answered": 5
+    "min_questions_answered": 6
   }
 }

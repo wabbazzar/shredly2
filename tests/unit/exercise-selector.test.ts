@@ -25,6 +25,7 @@ import type {
   GenerationRules,
   Exercise,
 } from "../../src/lib/engine/types.js";
+import { mapToLegacyAnswers } from "../../src/lib/engine/types.js";
 
 // Load exercise database and rules
 const __filename = fileURLToPath(import.meta.url);
@@ -67,7 +68,7 @@ describe("exercise-selector", () => {
     });
 
     it("should match total_exercises count from database", () => {
-      const expectedCount = 261; // Actual count in database
+      const expectedCount = 357; // Actual count in database
 
       expect(allExercises.length).toBe(expectedCount);
     });
@@ -218,7 +219,7 @@ describe("exercise-selector", () => {
       const pools = createExercisePoolsForDay(
         allExercises,
         "Full Body",
-        BEGINNER_FULL_BODY,
+        mapToLegacyAnswers(BEGINNER_FULL_BODY),
         rules,
         ["layer1", "layer2", "layer3"],
       );
@@ -229,11 +230,11 @@ describe("exercise-selector", () => {
     });
 
     it("should create pools for bodyweight-only expert without throwing", () => {
-      // Edge case: expert + bodyweight-only should NOT throw errors
+      // Edge case: advanced + bodyweight-only should NOT throw errors
       const pools = createExercisePoolsForDay(
         allExercises,
         "Push",
-        BODYWEIGHT_ONLY_EXPERT,
+        mapToLegacyAnswers(BODYWEIGHT_ONLY_EXPERT),
         rules,
         ["layer1", "layer2", "layer3"],
       );
@@ -243,14 +244,14 @@ describe("exercise-selector", () => {
       const layer1 = pools.get("layer1");
       expect(layer1).toBeDefined();
       expect(Array.isArray(layer1)).toBe(true);
-      // Note: May be empty for expert + bodyweight + Push combination
+      // Note: May be empty for advanced + bodyweight + Push combination
     });
 
     it("should create pools respecting equipment constraints", () => {
       const pools = createExercisePoolsForDay(
         allExercises,
         "Legs",
-        MINIMAL_EQUIPMENT_BEGINNER,
+        mapToLegacyAnswers(MINIMAL_EQUIPMENT_BEGINNER),
         rules,
         ["layer1", "layer2", "layer3"],
       );
@@ -271,7 +272,7 @@ describe("exercise-selector", () => {
       const pools = createExercisePoolsForDay(
         allExercises,
         "Upper",
-        ADVANCED_UPPER_LOWER,
+        mapToLegacyAnswers(ADVANCED_UPPER_LOWER),
         rules,
         ["layer1", "layer2", "layer3"],
       );
@@ -288,7 +289,7 @@ describe("exercise-selector", () => {
       const pools = createExercisePoolsForDay(
         allExercises,
         "Push",
-        ADVANCED_UPPER_LOWER,
+        mapToLegacyAnswers(ADVANCED_UPPER_LOWER),
         rules,
         ["layer1", "layer2"],
       );
@@ -309,12 +310,12 @@ describe("exercise-selector", () => {
   });
 
   describe("Edge Cases", () => {
-    it("should handle expert + bodyweight-only without empty pool errors", () => {
+    it("should handle advanced + bodyweight-only without empty pool errors", () => {
       // This is a critical edge case
       const pools = createExercisePoolsForDay(
         allExercises,
         "Full Body",
-        BODYWEIGHT_ONLY_EXPERT,
+        mapToLegacyAnswers(BODYWEIGHT_ONLY_EXPERT),
         rules,
         ["layer1", "layer2", "layer3"],
       );
@@ -323,7 +324,7 @@ describe("exercise-selector", () => {
       expect(pools.has("layer1")).toBe(true);
       const layer1 = pools.get("layer1");
       expect(layer1).toBeDefined();
-      // Note: Pool may be empty for expert + bodyweight-only combinations
+      // Note: Pool may be empty for advanced + bodyweight-only combinations
       expect(Array.isArray(layer1)).toBe(true);
     });
 
@@ -331,7 +332,7 @@ describe("exercise-selector", () => {
       const pools = createExercisePoolsForDay(
         allExercises,
         "Full Body",
-        MINIMAL_EQUIPMENT_BEGINNER,
+        mapToLegacyAnswers(MINIMAL_EQUIPMENT_BEGINNER),
         rules,
         ["layer1", "layer2", "layer3"],
       );

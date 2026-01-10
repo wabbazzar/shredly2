@@ -1,0 +1,373 @@
+{
+  "id": "workout_tone_beg_1768065683795",
+  "name": "General Fitness Beginner Program",
+  "description": "2 days per week workout program focused on toning and fitness. Each session is 20 minutes.",
+  "version": "2.0.0",
+  "weeks": 3,
+  "daysPerWeek": 2,
+  "metadata": {
+    "difficulty": "Beginner",
+    "equipment": [
+      "bodyweight_only"
+    ],
+    "estimatedDuration": "20-30",
+    "tags": [
+      "tone",
+      "beginner",
+      "2_days_week",
+      "bodyweight_only"
+    ]
+  },
+  "days": {
+    "1": {
+      "dayNumber": 1,
+      "type": "outdoor",
+      "focus": "Upper",
+      "exercises": [
+        {
+          "name": "INTERVAL: Pull-ups + Pike Push-ups",
+          "week1": {
+            "sets": 3
+          },
+          "week2": {
+            "sets": 3
+          },
+          "week3": {
+            "sets": 3
+          },
+          "category": "interval",
+          "sub_exercises": [
+            {
+              "name": "Pull-ups",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.4166666666666667,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
+              }
+            },
+            {
+              "name": "Pike Push-ups",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.4166666666666667,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
+              }
+            }
+          ]
+        },
+        {
+          "name": "AMRAP: Mountain Climbers + Flutter Kicks + Bodyweight Chin/Pull-Ups",
+          "week1": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "category": "amrap",
+          "sub_exercises": [
+            {
+              "name": "Mountain Climbers",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Flutter Kicks",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Bodyweight Chin/Pull-Ups",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            }
+          ]
+        },
+        {
+          "name": "EMOM: Pike Toe Touch + Scapular Retractions",
+          "week1": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Pike Toe Touch",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Scapular Retractions",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "2": {
+      "dayNumber": 2,
+      "type": "outdoor",
+      "focus": "Lower",
+      "exercises": [
+        {
+          "name": "INTERVAL: Bicycle Crunches + Squat Pulse",
+          "week1": {
+            "sets": 3
+          },
+          "week2": {
+            "sets": 3
+          },
+          "week3": {
+            "sets": 3
+          },
+          "category": "interval",
+          "sub_exercises": [
+            {
+              "name": "Bicycle Crunches",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.4166666666666667,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
+              }
+            },
+            {
+              "name": "Squat Pulse",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.4166666666666667,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
+              }
+            }
+          ]
+        },
+        {
+          "name": "CIRCUIT: Box Jumps + Wall Sits + Squat Jumps + Prone Superman",
+          "week1": {
+            "sets": 4
+          },
+          "week2": {
+            "sets": 4
+          },
+          "week3": {
+            "sets": 4
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Box Jumps",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Wall Sits",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Squat Jumps",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Prone Superman",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            }
+          ]
+        },
+        {
+          "name": "CIRCUIT: Frog Pumps + Jump Squats + Broad Jump + Flutter Kicks",
+          "week1": {
+            "sets": 4
+          },
+          "week2": {
+            "sets": 4
+          },
+          "week3": {
+            "sets": 4
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Frog Pumps",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Jump Squats",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Broad Jump",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Flutter Kicks",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

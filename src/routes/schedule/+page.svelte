@@ -18,6 +18,7 @@
 	import CalendarView from '$lib/components/schedule/CalendarView.svelte';
 	import WeekView from '$lib/components/schedule/WeekView.svelte';
 	import DayView from '$lib/components/schedule/DayView.svelte';
+	import LoadTemplateModal from '$lib/components/schedule/LoadTemplateModal.svelte';
 
 	let showCreateModal = false;
 	let showLoadModal = false;
@@ -61,6 +62,16 @@
 
 	function handleScheduleCreated(e: CustomEvent<StoredSchedule>) {
 		showCreateModal = false;
+		showLibrary = false;
+	}
+
+	function handleLoadModalClose() {
+		showLoadModal = false;
+	}
+
+	function handleScheduleLoaded(e: CustomEvent<StoredSchedule>) {
+		showLoadModal = false;
+		showLibrary = false;
 	}
 
 	function handleWeekSelect(e: CustomEvent<number>) {
@@ -146,4 +157,11 @@
 	isOpen={showCreateModal}
 	on:close={handleCreateModalClose}
 	on:created={handleScheduleCreated}
+/>
+
+<!-- Load Template Modal -->
+<LoadTemplateModal
+	isOpen={showLoadModal}
+	on:close={handleLoadModalClose}
+	on:loaded={handleScheduleLoaded}
 />

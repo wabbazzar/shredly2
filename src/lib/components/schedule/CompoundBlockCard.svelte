@@ -45,7 +45,7 @@
 				};
 			default:
 				return {
-					label: exercise.category?.toUpperCase() || 'BLOCK',
+					label: 'BLOCK',
 					borderClass: 'border-slate-500',
 					bgClass: 'bg-slate-500/10',
 					badgeClass: 'bg-slate-500/20 text-slate-400'

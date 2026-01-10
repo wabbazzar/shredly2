@@ -13,7 +13,26 @@
 // QUESTIONNAIRE TYPES
 // ============================================================================
 
+/**
+ * New simplified questionnaire answers (v2.0)
+ * - 6 required questions
+ * - Simplified options for goal, duration, experience, equipment
+ * - No user-selectable split or progression (derived from goal)
+ */
 export interface QuestionnaireAnswers {
+  goal: "build_muscle" | "tone" | "lose_weight";
+  session_duration: "20" | "30" | "60";
+  experience_level: "beginner" | "intermediate" | "advanced";
+  equipment_access: "full_gym" | "dumbbells_only" | "bodyweight_only";
+  training_frequency: "2" | "3" | "4" | "5" | "6" | "7";
+  program_duration: "3" | "4" | "6";
+}
+
+/**
+ * Legacy questionnaire format (v1.0) - used internally for backward compatibility
+ * until Phases 2-5 are complete
+ */
+export interface LegacyQuestionnaireAnswers {
   primary_goal: "muscle_gain" | "fat_loss" | "athletic_performance" | "general_fitness" | "rehabilitation" | "body_recomposition";
   experience_level: "complete_beginner" | "beginner" | "intermediate" | "advanced" | "expert";
   training_frequency: "2" | "3" | "4" | "5" | "6" | "7";
@@ -22,6 +41,58 @@ export interface QuestionnaireAnswers {
   training_split_preference?: "no_preference" | "full_body" | "upper_lower" | "push_pull_legs" | "ulppl";
   program_duration?: "3_weeks" | "4_weeks" | "6_weeks" | "8_weeks" | "12_weeks" | "16_weeks" | "ongoing";
   progression_preference?: "linear" | "volume" | "density" | "wave_loading" | "no_preference";
+}
+
+/**
+ * Maps new simplified questionnaire answers to legacy format
+ * This allows existing generator logic to work during transition
+ */
+export function mapToLegacyAnswers(answers: QuestionnaireAnswers): LegacyQuestionnaireAnswers {
+  // Map goal -> primary_goal
+  const goalMap: Record<QuestionnaireAnswers['goal'], LegacyQuestionnaireAnswers['primary_goal']> = {
+    build_muscle: 'muscle_gain',
+    tone: 'general_fitness',
+    lose_weight: 'fat_loss'
+  };
+
+  // Map session_duration -> legacy ranges
+  const durationMap: Record<QuestionnaireAnswers['session_duration'], LegacyQuestionnaireAnswers['session_duration']> = {
+    '20': '20-30',
+    '30': '30-45',
+    '60': '45-60'  // 60 min maps to 45-60 range
+  };
+
+  // Map equipment_access -> legacy values
+  const equipmentMap: Record<QuestionnaireAnswers['equipment_access'], LegacyQuestionnaireAnswers['equipment_access']> = {
+    full_gym: 'commercial_gym',
+    dumbbells_only: 'dumbbells_only',
+    bodyweight_only: 'bodyweight_only'
+  };
+
+  // Map program_duration -> legacy format with _weeks suffix
+  const programMap: Record<QuestionnaireAnswers['program_duration'], NonNullable<LegacyQuestionnaireAnswers['program_duration']>> = {
+    '3': '3_weeks',
+    '4': '4_weeks',
+    '6': '6_weeks'
+  };
+
+  // Map goal -> progression (derived, not user-selected)
+  const progressionMap: Record<QuestionnaireAnswers['goal'], NonNullable<LegacyQuestionnaireAnswers['progression_preference']>> = {
+    build_muscle: 'linear',
+    tone: 'volume',
+    lose_weight: 'density'
+  };
+
+  return {
+    primary_goal: goalMap[answers.goal],
+    experience_level: answers.experience_level, // beginner/intermediate/advanced map directly
+    training_frequency: answers.training_frequency,
+    session_duration: durationMap[answers.session_duration],
+    equipment_access: equipmentMap[answers.equipment_access],
+    training_split_preference: 'no_preference', // No longer user-selectable
+    program_duration: programMap[answers.program_duration],
+    progression_preference: progressionMap[answers.goal]
+  };
 }
 
 // ============================================================================
@@ -66,10 +137,23 @@ export interface WorkoutMetadata {
   tags: string[];
 }
 
+/**
+ * Day focus types - base types and suffixed variants
+ * Base: Push, Pull, Legs, Upper, Lower, Full Body, Mobility
+ * Suffixes: -HIIT, -Volume, -Strength, -Mobility
+ * Special: Flexibility, FullBody-Mobility
+ */
+export type DayFocus =
+  | "Push" | "Pull" | "Legs" | "Upper" | "Lower" | "Full Body" | "Mobility"
+  | "Push-HIIT" | "Pull-HIIT" | "Legs-HIIT" | "Upper-HIIT" | "Lower-HIIT"
+  | "Push-Volume" | "Pull-Volume" | "Legs-Volume" | "Upper-Volume" | "Lower-Volume"
+  | "Push-Strength" | "Pull-Strength" | "Legs-Strength"
+  | "FullBody-Mobility" | "Flexibility";
+
 export interface DayStructure {
   dayNumber: number;
   type: "gym" | "home" | "outdoor" | "recovery";
-  focus: "Push" | "Pull" | "Legs" | "Upper" | "Lower" | "Full Body" | "Mobility";
+  focus: DayFocus;
   exercises: ExerciseStructure[];
 }
 
@@ -202,19 +286,15 @@ export interface Exercise {
 // GENERATION RULES TYPES
 // ============================================================================
 
-export interface DefaultSplitByFrequency {
+/**
+ * Progression by goal configuration (v2.0)
+ * Maps new goal values directly to progression scheme
+ */
+export interface ProgressionByGoal {
   description: string;
-  [frequency: string]: string; // "2" -> "full_body", etc.
-}
-
-export interface DefaultProgressionByGoal {
-  description: string;
-  muscle_gain: string;
-  fat_loss: string;
-  athletic_performance: string;
-  general_fitness: string;
-  rehabilitation: string;
-  body_recomposition: string;
+  build_muscle: string;
+  tone: string;
+  lose_weight: string;
 }
 
 export interface IntensityProfileByLayerAndCategory {
@@ -229,6 +309,80 @@ export interface IntensityProfileByLayerAndCategory {
     last: string;
   };
   [category: string]: any; // Allow any category with optional layer overrides and default
+}
+
+/**
+ * Prescriptive splits configuration
+ * Maps goal + frequency to deterministic day focus array
+ */
+export interface PrescriptiveSplits {
+  description: string;
+  build_muscle: {
+    [frequency: string]: string[];
+  };
+  tone: {
+    [frequency: string]: string[];
+  };
+  lose_weight: {
+    [frequency: string]: string[];
+  };
+}
+
+/**
+ * Block specification for day structure
+ */
+export interface BlockSpec {
+  type: 'strength' | 'strength_high_rep' | 'compound' | 'interval' | 'mobility';
+  equipment_preference?: 'barbell' | 'dumbbell' | 'any';
+  count: number | 'time_based';
+  exercise_count?: number;  // For interval blocks
+}
+
+/**
+ * Day structure configuration for a specific equipment level and day type
+ */
+export interface DayStructureConfig {
+  description: string;
+  blocks: BlockSpec[];
+}
+
+/**
+ * Equipment-based day structure configuration
+ */
+export interface DayStructureByEquipment {
+  description: string;
+  full_gym: {
+    standard: DayStructureConfig;
+    hiit: DayStructureConfig;
+    volume: DayStructureConfig;
+    strength: DayStructureConfig;
+    mobility: DayStructureConfig;
+    [key: string]: DayStructureConfig | string;
+  };
+  dumbbells_only: {
+    standard: DayStructureConfig;
+    hiit: DayStructureConfig;
+    volume: DayStructureConfig;
+    strength: DayStructureConfig;
+    mobility: DayStructureConfig;
+    [key: string]: DayStructureConfig | string;
+  };
+  bodyweight_only: {
+    standard: DayStructureConfig;
+    hiit: DayStructureConfig;
+    volume: DayStructureConfig;
+    strength: DayStructureConfig;
+    mobility: DayStructureConfig;
+    [key: string]: DayStructureConfig | string;
+  };
+}
+
+/**
+ * Compound blocks by time configuration
+ */
+export interface CompoundBlocksByTime {
+  description?: string;
+  [duration: string]: number | string | undefined;
 }
 
 export interface GenerationRules {
@@ -246,9 +400,11 @@ export interface GenerationRules {
   exercise_count_constraints: ExerciseCountConstraints;
   equipment_quotas: EquipmentQuotas;
   exercise_selection_strategy: ExerciseSelectionStrategy;
-  default_split_by_frequency: DefaultSplitByFrequency;
-  default_progression_by_goal: DefaultProgressionByGoal;
+  progression_by_goal: ProgressionByGoal;
   intensity_profile_by_layer_and_category: IntensityProfileByLayerAndCategory;
+  prescriptive_splits: PrescriptiveSplits;
+  day_structure_by_equipment: DayStructureByEquipment;
+  compound_blocks_by_time: CompoundBlocksByTime;
 }
 
 export interface CompoundExerciseConstruction {
@@ -359,12 +515,33 @@ export interface SplitPatterns {
   };
 }
 
+/**
+ * Base focus types for split muscle group mapping
+ * Only these 7 base types need config entries - suffixed variants (e.g., "Upper-HIIT")
+ * are mapped to their base type via getBaseFocus() before lookup
+ */
+export type BaseFocusType = 'Full Body' | 'Upper' | 'Lower' | 'Push' | 'Pull' | 'Legs' | 'Mobility';
+
+/**
+ * Muscle group mapping entry
+ */
+export interface MuscleGroupMappingEntry {
+  include_muscle_groups: string[];
+  exclude_muscle_groups?: string[];
+  description: string;
+}
+
+/**
+ * Muscle group mapping configuration
+ * Contains exactly 7 entries for base focus types:
+ * - Full Body, Upper, Lower, Push, Pull, Legs, Mobility
+ *
+ * Suffixed focus types (e.g., "Push-HIIT", "Upper-Volume") use getBaseFocus() to lookup
+ * their base type before accessing this mapping.
+ */
 export interface SplitMuscleGroupMapping {
-  [focus: string]: {
-    include_muscle_groups: string[];
-    exclude_muscle_groups?: string[];
-    description: string;
-  };
+  description?: string;
+  [focus: string]: MuscleGroupMappingEntry | string | undefined;
 }
 
 export interface MuscleGroupPriorityMapping {
@@ -408,22 +585,19 @@ export interface CategoryWorkoutStructure {
 export interface ExerciseSelectionStrategy {
   description?: string;
   strategy: string;
-  algorithm: string;
-  layer_ratios: {
-    [layer: string]: number;
-  };
-  layer_requirements: {
+  shuffle_pools?: boolean;
+  layer_requirements?: {
     must_include: string[];
     optional: string[];
     always_end_with_last_if_available: boolean;
   };
-  diversity_rules: {
+  diversity_rules?: {
     no_duplicate_exercises: boolean;
-    no_duplicate_exercises_within_week: boolean;
+    no_duplicate_exercises_within_week?: boolean;
     muscle_diversity_within_day: boolean;
     description: string;
   };
-  equipment_priority: {
+  equipment_priority?: {
     description: string;
     prefer_available_equipment: boolean;
     fallback_to_bodyweight: boolean;

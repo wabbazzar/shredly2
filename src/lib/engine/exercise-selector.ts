@@ -1,20 +1,24 @@
 /**
- * Exercise Selection with Filtering and Round-Robin Algorithm
+ * Exercise Selection with Block-Based Algorithm
  *
- * Implements stochastic exercise sampling from the 323-exercise database
+ * Implements prescriptive block-based exercise selection from the 323-exercise database
  * All filtering criteria are config-driven from workout_generation_rules.json
  */
 
 import type {
+  LegacyQuestionnaireAnswers,
   QuestionnaireAnswers,
   GenerationRules,
   Exercise,
   ExerciseDatabase,
   ExerciseStructure,
-  ExercisePool
+  ExercisePool,
+  BlockSpec,
+  MuscleGroupMappingEntry
 } from './types.js';
 import { estimateExerciseDuration } from './duration-estimator.js';
 import { createRandom, shuffleArray, type RandomGenerator } from './seeded-random.js';
+import { buildDayStructure, getBaseFocus, assignIntensityProfile, getProgressionFromGoal } from './phase1-structure.js';
 
 /**
  * Flattens the exercise database into a simple array with exercise names
@@ -191,7 +195,7 @@ function checkEquipmentAvailability(
 export function createExercisePoolsForDay(
   allExercises: Array<[string, Exercise]>,
   focus: string,
-  answers: QuestionnaireAnswers,
+  answers: LegacyQuestionnaireAnswers,
   rules: GenerationRules,
   includedLayers: string[],
   seed?: number
@@ -212,12 +216,14 @@ export function createExercisePoolsForDay(
     throw new Error(`No category priorities found for goal: ${answers.primary_goal}`);
   }
 
-  // Get muscle group mapping for this focus
-  const muscleMapping = rules.split_muscle_group_mapping[focus];
+  // Get muscle group mapping using base focus (suffixed variants use same muscle groups)
+  const baseFocusForMapping = getBaseFocus(focus);
+  const muscleMappingRaw = rules.split_muscle_group_mapping[baseFocusForMapping];
 
-  if (!muscleMapping) {
-    throw new Error(`No muscle group mapping found for focus: ${focus}`);
+  if (!muscleMappingRaw || typeof muscleMappingRaw === 'string') {
+    throw new Error(`No muscle group mapping found for base focus: ${baseFocusForMapping}`);
   }
+  const muscleMapping = muscleMappingRaw as MuscleGroupMappingEntry;
 
   // Get experience modifiers
   const experienceModifier = rules.experience_modifiers[answers.experience_level];
@@ -243,8 +249,10 @@ export function createExercisePoolsForDay(
 
     // If compound categories requested, filter for individual exercises instead
     // (compound exercises will be constructed from individual exercises)
+    // NOTE: Exclude mobility and flexibility from compound sub-exercises - they should only
+    // appear at start (warmup) or end (cooldown), never in middle of workout
     const categoriesToFilter = hasCompoundCategory
-      ? ['strength', 'mobility', 'flexibility', 'cardio']
+      ? ['strength', 'cardio', 'bodyweight']
       : categoriesForLayer;
 
     const filteredExercises = filterExercisesForLayer(
@@ -275,6 +283,378 @@ function isCompoundCategory(category: string): boolean {
   return ['circuit', 'emom', 'amrap', 'interval'].includes(category);
 }
 
+// ============================================================================
+// BLOCK-BASED SELECTION (Phase 3 - Replaces Round-Robin)
+// ============================================================================
+
+/**
+ * Selects exercises for a day using block-based selection
+ *
+ * @param dayFocus - Day focus with possible suffix (e.g., "Upper-HIIT", "Push-Volume")
+ * @param allExercises - Flattened exercise database
+ * @param answers - User's questionnaire answers (legacy format)
+ * @param rules - Generation rules configuration
+ * @param duration - Session duration in minutes
+ * @param seed - Optional seed for deterministic testing
+ * @param goal - User's goal (v2.0 format) for progression derivation
+ * @returns Array of selected exercise structures
+ */
+export function selectExercisesForDay(
+  dayFocus: string,
+  allExercises: Array<[string, Exercise]>,
+  answers: LegacyQuestionnaireAnswers,
+  rules: GenerationRules,
+  duration: number,
+  seed?: number,
+  goal?: QuestionnaireAnswers['goal']
+): ExerciseStructure[] {
+  const random = createRandom(seed);
+  const usedExerciseNames = new Set<string>();
+  const selectedExercises: ExerciseStructure[] = [];
+
+  // Get block structure for this day
+  const blocks = buildDayStructure(dayFocus, answers.equipment_access, duration, rules);
+
+  // Get base focus for muscle group filtering
+  const baseFocus = getBaseFocus(dayFocus);
+
+  // Get muscle group mapping using base focus (suffixed variants use same muscle groups)
+  const muscleMappingRaw = rules.split_muscle_group_mapping[baseFocus];
+  if (!muscleMappingRaw || typeof muscleMappingRaw === 'string') {
+    throw new Error(`No muscle group mapping found for base focus: ${baseFocus}`);
+  }
+  const muscleMapping = muscleMappingRaw as MuscleGroupMappingEntry;
+
+  // Get experience modifiers
+  const experienceModifier = rules.experience_modifiers[answers.experience_level];
+  if (!experienceModifier) {
+    throw new Error(`No experience modifiers found for level: ${answers.experience_level}`);
+  }
+
+  // Process each block
+  for (const block of blocks) {
+    const blockCount = typeof block.count === 'number' ? block.count : 1;
+
+    for (let i = 0; i < blockCount; i++) {
+      const exercise = selectExerciseForBlock(
+        block,
+        baseFocus,
+        allExercises,
+        answers,
+        rules,
+        muscleMapping,
+        experienceModifier,
+        usedExerciseNames,
+        random,
+        goal
+      );
+
+      if (exercise) {
+        selectedExercises.push(exercise);
+      }
+    }
+  }
+
+  return selectedExercises;
+}
+
+/**
+ * Selects a single exercise for a block specification
+ */
+function selectExerciseForBlock(
+  block: BlockSpec,
+  baseFocus: string,
+  allExercises: Array<[string, Exercise]>,
+  answers: LegacyQuestionnaireAnswers,
+  rules: GenerationRules,
+  muscleMapping: { include_muscle_groups: string[]; exclude_muscle_groups?: string[] },
+  experienceModifier: {
+    complexity_filter: string[];
+    external_load_filter: string[];
+    [key: string]: any;
+  },
+  usedExerciseNames: Set<string>,
+  random: RandomGenerator,
+  goal?: QuestionnaireAnswers['goal']
+): ExerciseStructure | null {
+  switch (block.type) {
+    case 'strength':
+    case 'strength_high_rep':
+      return selectStrengthExercise(
+        block,
+        baseFocus,
+        allExercises,
+        answers,
+        rules,
+        muscleMapping,
+        experienceModifier,
+        usedExerciseNames,
+        random,
+        goal
+      );
+
+    case 'compound':
+      return selectCompoundExercise(
+        baseFocus,
+        allExercises,
+        answers,
+        rules,
+        muscleMapping,
+        experienceModifier,
+        usedExerciseNames,
+        random,
+        goal
+      );
+
+    case 'interval':
+      return selectIntervalBlock(
+        block,
+        baseFocus,
+        allExercises,
+        answers,
+        rules,
+        muscleMapping,
+        experienceModifier,
+        usedExerciseNames,
+        random,
+        goal
+      );
+
+    case 'mobility':
+      return selectMobilityExercise(
+        baseFocus,
+        allExercises,
+        answers,
+        rules,
+        usedExerciseNames,
+        random
+      );
+
+    default:
+      return null;
+  }
+}
+
+/**
+ * Selects a strength exercise based on block specification
+ */
+function selectStrengthExercise(
+  block: BlockSpec,
+  baseFocus: string,
+  allExercises: Array<[string, Exercise]>,
+  answers: LegacyQuestionnaireAnswers,
+  rules: GenerationRules,
+  muscleMapping: { include_muscle_groups: string[]; exclude_muscle_groups?: string[] },
+  experienceModifier: {
+    complexity_filter: string[];
+    external_load_filter: string[];
+    [key: string]: any;
+  },
+  usedExerciseNames: Set<string>,
+  random: RandomGenerator,
+  goal?: QuestionnaireAnswers['goal']
+): ExerciseStructure | null {
+  // Filter for strength exercises
+  let filtered = filterExercisesForLayer(
+    allExercises,
+    baseFocus,
+    ['strength'],
+    answers.equipment_access,
+    experienceModifier.complexity_filter,
+    experienceModifier.external_load_filter,
+    muscleMapping
+  );
+
+  // Apply equipment preference filter
+  if (block.equipment_preference === 'barbell') {
+    filtered = filtered.filter(([_, ex]) => ex.equipment.includes('Barbell'));
+  } else if (block.equipment_preference === 'dumbbell') {
+    filtered = filtered.filter(([_, ex]) =>
+      ex.equipment.includes('Dumbbell') || ex.equipment.includes('Dumbbells')
+    );
+  }
+
+  // Remove already used exercises
+  filtered = filtered.filter(([name, _]) => !usedExerciseNames.has(name));
+
+  // Shuffle for variety
+  if (rules.exercise_selection_strategy.shuffle_pools) {
+    shuffleArray(filtered, random);
+  }
+
+  if (filtered.length === 0) {
+    // Fallback: try without equipment preference
+    filtered = filterExercisesForLayer(
+      allExercises,
+      baseFocus,
+      ['strength'],
+      answers.equipment_access,
+      experienceModifier.complexity_filter,
+      experienceModifier.external_load_filter,
+      muscleMapping
+    ).filter(([name, _]) => !usedExerciseNames.has(name));
+
+    if (rules.exercise_selection_strategy.shuffle_pools) {
+      shuffleArray(filtered, random);
+    }
+  }
+
+  if (filtered.length === 0) {
+    return null;
+  }
+
+  const [name, _] = filtered[0];
+  usedExerciseNames.add(name);
+
+  // Determine intensity profile based on block type
+  const layer = block.type === 'strength_high_rep' ? 'secondary' : 'primary';
+  const intensityProfile = assignIntensityProfile(layer, 'strength', rules);
+
+  // Use new goal-based progression derivation if goal is provided
+  const progressionScheme = goal
+    ? getProgressionFromGoal(goal, 'strength', rules)
+    : 'linear'; // Fallback for backward compatibility
+
+  return {
+    name,
+    progressionScheme,
+    intensityProfile
+  };
+}
+
+/**
+ * Selects a compound exercise (EMOM, AMRAP, Circuit, or Interval)
+ */
+function selectCompoundExercise(
+  baseFocus: string,
+  allExercises: Array<[string, Exercise]>,
+  answers: LegacyQuestionnaireAnswers,
+  rules: GenerationRules,
+  muscleMapping: { include_muscle_groups: string[]; exclude_muscle_groups?: string[] },
+  experienceModifier: {
+    complexity_filter: string[];
+    external_load_filter: string[];
+    [key: string]: any;
+  },
+  usedExerciseNames: Set<string>,
+  random: RandomGenerator,
+  goal?: QuestionnaireAnswers['goal']
+): ExerciseStructure | null {
+  // Try each compound type until we find one that works
+  const compoundTypes: Array<'emom' | 'amrap' | 'circuit' | 'interval'> = ['emom', 'amrap', 'circuit', 'interval'];
+
+  // Shuffle compound types for variety
+  shuffleArray(compoundTypes, random);
+
+  for (const compoundType of compoundTypes) {
+    // Construct the compound exercise
+    const intensityProfile = assignIntensityProfile('finisher', compoundType, rules);
+
+    const compound = constructCompoundExercise(
+      compoundType,
+      allExercises,
+      baseFocus,
+      rules,
+      answers,
+      usedExerciseNames,
+      intensityProfile,
+      random
+    );
+
+    // Check if compound has valid sub-exercises (at least 2)
+    if (compound && compound.sub_exercises && compound.sub_exercises.length >= 2) {
+      return compound;
+    }
+  }
+
+  // Couldn't create any valid compound - return null
+  return null;
+}
+
+/**
+ * Selects an interval block with multiple exercises
+ */
+function selectIntervalBlock(
+  block: BlockSpec,
+  baseFocus: string,
+  allExercises: Array<[string, Exercise]>,
+  answers: LegacyQuestionnaireAnswers,
+  rules: GenerationRules,
+  muscleMapping: { include_muscle_groups: string[]; exclude_muscle_groups?: string[] },
+  experienceModifier: {
+    complexity_filter: string[];
+    external_load_filter: string[];
+    [key: string]: any;
+  },
+  usedExerciseNames: Set<string>,
+  random: RandomGenerator,
+  goal?: QuestionnaireAnswers['goal']
+): ExerciseStructure | null {
+  const intensityProfile = assignIntensityProfile('primary', 'interval', rules);
+
+  // Create interval compound exercise
+  const compound = constructCompoundExercise(
+    'interval',
+    allExercises,
+    baseFocus,
+    rules,
+    answers,
+    usedExerciseNames,
+    intensityProfile,
+    random
+  );
+
+  // Only return if compound has valid sub-exercises
+  if (compound && compound.sub_exercises && compound.sub_exercises.length >= 2) {
+    return compound;
+  }
+
+  return null;
+}
+
+/**
+ * Selects a mobility exercise
+ */
+function selectMobilityExercise(
+  baseFocus: string,
+  allExercises: Array<[string, Exercise]>,
+  answers: LegacyQuestionnaireAnswers,
+  rules: GenerationRules,
+  usedExerciseNames: Set<string>,
+  random: RandomGenerator
+): ExerciseStructure | null {
+  // Filter for mobility/flexibility exercises
+  let filtered = allExercises.filter(([name, ex]) => {
+    if (usedExerciseNames.has(name)) return false;
+    if (!['mobility', 'flexibility'].includes(ex.category)) return false;
+
+    // Check equipment availability
+    if (ex.equipment.length > 0 && !ex.equipment.includes('None')) {
+      const hasEquipment = checkEquipmentAvailability(ex.equipment, answers.equipment_access);
+      if (!hasEquipment) return false;
+    }
+
+    return true;
+  });
+
+  if (rules.exercise_selection_strategy.shuffle_pools) {
+    shuffleArray(filtered, random);
+  }
+
+  if (filtered.length === 0) {
+    return null;
+  }
+
+  const [name, _] = filtered[0];
+  usedExerciseNames.add(name);
+
+  return {
+    name,
+    progressionScheme: 'static',
+    intensityProfile: assignIntensityProfile('first', 'mobility', rules)
+  };
+}
+
 /**
  * Constructs a compound exercise by selecting multiple constituent exercises
  *
@@ -293,7 +673,7 @@ function constructCompoundExercise(
   allExercises: Array<[string, Exercise]>,
   focus: string,
   rules: GenerationRules,
-  answers: QuestionnaireAnswers,
+  answers: LegacyQuestionnaireAnswers,
   usedExerciseNames: Set<string>,
   intensityProfile: string,
   random: RandomGenerator
@@ -302,11 +682,16 @@ function constructCompoundExercise(
   const count = rules.compound_exercise_construction[compoundCategory].base_constituent_exercises;
 
   // CRITICAL: Filter for individual exercises only - NEVER allow compound categories to be nested
-  // Compound exercises can ONLY contain individual exercises (strength, mobility, flexibility, cardio)
-  const individualCategories = ['strength', 'mobility', 'flexibility', 'cardio'];
+  // Compound exercises can ONLY contain individual exercises (strength, cardio, bodyweight)
+  // NOTE: Exclude mobility and flexibility - these should only appear at start (warmup) or end (cooldown)
+  const individualCategories = ['strength', 'cardio', 'bodyweight'];
 
-  // Get muscle group mapping
-  const muscleMapping = rules.split_muscle_group_mapping[focus];
+  // Get muscle group mapping using base focus (suffixed variants use same muscle groups)
+  const baseFocusForMapping = getBaseFocus(focus);
+  const muscleMappingRaw = rules.split_muscle_group_mapping[baseFocusForMapping];
+  const muscleMapping = (muscleMappingRaw && typeof muscleMappingRaw !== 'string')
+    ? muscleMappingRaw as MuscleGroupMappingEntry
+    : undefined;
   const experienceModifier = rules.experience_modifiers[answers.experience_level];
 
   // Filter available exercises
@@ -357,8 +742,8 @@ function constructCompoundExercise(
       }
     }
 
-    // Check muscle groups
-    if (!muscleMapping.include_muscle_groups.includes("all")) {
+    // Check muscle groups (only if mapping exists)
+    if (muscleMapping && !muscleMapping.include_muscle_groups.includes("all")) {
       const targetsIncluded = exercise.muscle_groups.some(mg =>
         muscleMapping.include_muscle_groups.includes(mg)
       );
@@ -450,540 +835,3 @@ function constructCompoundExercise(
   };
 }
 
-/**
- * Selects exercises using round-robin algorithm to maintain layer ratios
- *
- * @param pools - Exercise pools for each layer
- * @param rules - Generation rules configuration
- * @param answers - User's questionnaire answers
- * @param maxDuration - Maximum duration constraint in minutes
- * @param allExercises - All exercises from database (for compound construction)
- * @param focus - Day focus (for compound construction)
- * @param seed - Optional seed for deterministic testing
- * @returns Array of selected exercise structures
- */
-export function roundRobinSelectExercises(
-  pools: Map<string, Array<[string, Exercise]>>,
-  rules: GenerationRules,
-  answers: QuestionnaireAnswers,
-  maxDuration: number,
-  allExercises: Array<[string, Exercise]>,
-  focus: string,
-  seed?: number
-): ExerciseStructure[] {
-  const selectedExercises: ExerciseStructure[] = [];
-  const usedExerciseNames = new Set<string>();
-  const layerRatios = rules.exercise_selection_strategy.layer_ratios;
-  const layerRequirements = rules.exercise_selection_strategy.layer_requirements;
-
-  // Create random number generator (seeded if seed provided, unseeded otherwise)
-  const random = createRandom(seed);
-
-  // Exercise count constraints
-  const constraints = rules.exercise_count_constraints;
-  const maxTotalExercises = constraints.total_max_by_duration[answers.session_duration] || 12;
-  let strengthExerciseCount = 0;
-  let compoundExerciseCount = 0;
-
-  // Equipment quota tracking
-  const equipmentQuotas = rules.equipment_quotas;
-  let barbellExerciseCount = 0;
-
-  // Muscle group coverage tracking for ALL workouts
-  // Track muscle group frequency to ensure balanced primary muscle coverage
-  const muscleGroupCoverage = new Map<string, number>();
-
-  // Track current index for each layer
-  const layerIndices = new Map<string, number>();
-  for (const layer of pools.keys()) {
-    layerIndices.set(layer, 0);
-  }
-
-  // Determine layer order for round-robin (order matches ratio definition)
-  const layerOrder = ["first", "primary", "secondary", "tertiary", "finisher", "last"];
-
-  // Track compound exercises added per layer (to prevent over-adding from finisher)
-  const compoundCountByLayer = new Map<string, number>();
-  for (const layer of layerOrder) {
-    compoundCountByLayer.set(layer, 0);
-  }
-
-  // CRITICAL: Use split overrides if available, otherwise use goal-based priorities
-  // This MUST match the logic in createExercisePoolsForDay to avoid mismatch
-  const splitOverrides = (rules.category_workout_structure as any).split_category_overrides?.[focus];
-  const categoryPriorities = splitOverrides ||
-    rules.category_workout_structure.category_priority_by_goal[answers.primary_goal];
-
-  // Determine which layers should use compound exercises
-  // When multiple compound types are available, randomly select one for variety
-  const compoundLayersMap = new Map<string, string>();
-  for (const layer of layerOrder) {
-    const categories = categoryPriorities[layer as keyof typeof categoryPriorities] as string[] | undefined;
-    if (categories) {
-      const compoundCats = categories.filter(cat => isCompoundCategory(cat));
-      if (compoundCats.length > 0) {
-        // Randomly select from available compound types for equal representation
-        const selectedIndex = Math.floor(random() * compoundCats.length);
-        const compoundCat = compoundCats[selectedIndex];
-        compoundLayersMap.set(layer, compoundCat);
-      }
-    }
-  }
-
-  let currentDuration = 0;
-  let roundNumber = 0;
-  let maxRounds = 50; // Safety limit
-
-  // Track duration per layer (for time-based warm-up selection)
-  const layerDurations = new Map<string, number>();
-  for (const layer of layerOrder) {
-    layerDurations.set(layer, 0);
-  }
-
-  // Warm-up target: config-driven (default 3 minutes)
-  const warmupTargetMinutes = rules.exercise_selection_strategy.warmup_target_duration_minutes || 3;
-
-  while (currentDuration < maxDuration && roundNumber < maxRounds) {
-    roundNumber++;
-    let addedAnyExercise = false;
-
-    // Go through each layer in order, respecting the ratios
-    for (const layer of layerOrder) {
-      if (!pools.has(layer)) {
-        continue; // Layer not included for this session duration
-      }
-
-      const ratio = layerRatios[layer] || 1;
-      const pool = pools.get(layer)!;
-      const currentIndex = layerIndices.get(layer)!;
-
-      // SPECIAL: Time-based selection for warm-up phase (first layer)
-      // For warm-up, select exercises until we have 3-5 minutes total
-      if (layer === 'first') {
-        const warmupDuration = layerDurations.get(layer) || 0;
-        if (warmupDuration >= warmupTargetMinutes) {
-          // Already have enough warm-up time, skip this layer
-          continue;
-        }
-      }
-
-      // Check if this layer needs a compound exercise
-      const compoundType = compoundLayersMap.get(layer);
-
-      if (compoundType) {
-        // This layer needs a compound exercise - construct it
-        const intensityProfile = getDefaultIntensityForLayer(layer);
-
-        // CRITICAL FIX: Limit finisher compounds to prevent exhausting exercise pool
-        // Finisher should only add 1-2 compounds total, not 1 per round
-        const maxCompoundsForLayer = layer === 'finisher' ? 2 : 999;
-        const currentLayerCompounds = compoundCountByLayer.get(layer) || 0;
-        if (currentLayerCompounds >= maxCompoundsForLayer) {
-          // Already added enough compounds for this layer, skip
-          layerIndices.set(layer, currentIndex + 1);
-          continue;
-        }
-
-        // Check exercise count constraint
-        if (selectedExercises.length >= maxTotalExercises) {
-          if (hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
-            return selectedExercises;
-          }
-          continue;
-        }
-
-        // Estimate duration for compound exercise
-        const exerciseDuration = estimateExerciseDuration(
-          compoundType,
-          intensityProfile,
-          rules.intensity_profiles,
-          rules.time_estimates
-        );
-
-        // Check if adding this exercise would exceed duration
-        if (currentDuration + exerciseDuration > maxDuration) {
-          if (hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
-            return selectedExercises;
-          }
-          continue;
-        }
-
-        // Construct the compound exercise
-        const compoundExercise = constructCompoundExercise(
-          compoundType as 'circuit' | 'emom' | 'amrap' | 'interval',
-          allExercises,
-          focus,
-          rules,
-          answers,
-          usedExerciseNames,
-          intensityProfile,
-          random
-        );
-
-
-        // Only add if we got at least 2 constituent exercises (minimum for any compound)
-        if (compoundExercise.sub_exercises && compoundExercise.sub_exercises.length >= 2) {
-          selectedExercises.push(compoundExercise);
-          currentDuration += exerciseDuration;
-          compoundExerciseCount++;
-          addedAnyExercise = true;
-
-          // Track compounds added for this layer
-          compoundCountByLayer.set(layer, (compoundCountByLayer.get(layer) || 0) + 1);
-
-          // Track layer duration for time-based selection
-          const layerDuration = layerDurations.get(layer) || 0;
-          layerDurations.set(layer, layerDuration + exerciseDuration);
-
-          // Track muscle group coverage for compound exercises
-          // Track all muscle groups from constituent exercises
-          for (const subEx of compoundExercise.sub_exercises) {
-            const subExerciseData = allExercises.find(([name]) => name === subEx.name)?.[1];
-            if (subExerciseData) {
-              trackMuscleGroupCoverage(subExerciseData, muscleGroupCoverage);
-            }
-          }
-        }
-
-        // Always increment index for compound layers (avoid infinite loops)
-        layerIndices.set(layer, currentIndex + 1);
-      } else {
-        // Normal individual exercise selection
-        // Prioritize exercises by muscle group coverage for ALL split types
-        let workingPool = pool;
-
-        // Re-prioritize the pool based on current muscle group coverage
-        // This ensures balanced primary muscle group distribution
-        const remainingPool = pool.slice(currentIndex);
-        const prioritized = prioritizeByMuscleGroupCoverage(
-          remainingPool,
-          muscleGroupCoverage,
-          focus,
-          rules
-        );
-        // Reconstruct pool with prioritized remaining exercises
-        workingPool = [...pool.slice(0, currentIndex), ...prioritized];
-
-        // Add 'ratio' exercises from this layer in this round
-        for (let i = 0; i < ratio; i++) {
-          if (currentIndex + i >= workingPool.length) {
-            // No more exercises in this pool
-            continue;
-          }
-
-          const [exerciseName, exerciseData] = workingPool[currentIndex + i];
-
-          // Check for duplicates
-          if (usedExerciseNames.has(exerciseName)) {
-            // Skip duplicate and try next
-            continue;
-          }
-
-          // Check total exercise count constraint
-          if (selectedExercises.length >= maxTotalExercises) {
-            if (hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
-              return selectedExercises;
-            }
-            continue;
-          }
-
-          // Check strength exercise count constraint
-          const category = exerciseData.category;
-          if (category === 'strength' && strengthExerciseCount >= constraints.strength_max_per_day) {
-            // Skip this strength exercise - already hit limit
-            continue;
-          }
-
-          // Check barbell equipment quota
-          const usesBarbell = exerciseData.equipment.includes("Barbell");
-          if (usesBarbell && barbellExerciseCount >= equipmentQuotas.barbell_max_per_day) {
-            // Skip this barbell exercise - already hit limit
-            continue;
-          }
-
-          // Estimate duration
-          // Assign a default intensity profile (will be refined later)
-          const intensityProfile = getDefaultIntensityForLayer(layer);
-          const exerciseDuration = estimateExerciseDuration(
-            category,
-            intensityProfile,
-            rules.intensity_profiles,
-            rules.time_estimates
-          );
-
-          // Check if adding this exercise would exceed duration
-          if (currentDuration + exerciseDuration > maxDuration) {
-            // Check if we've met minimum requirements
-            if (hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
-              // We're done - hit duration limit
-              return selectedExercises;
-            }
-            // Otherwise, skip this exercise and try to add from other layers
-            continue;
-          }
-
-          // Add the exercise
-          selectedExercises.push({
-            name: exerciseName,
-            progressionScheme: "linear", // Default, will be refined later
-            intensityProfile: intensityProfile
-          });
-
-          usedExerciseNames.add(exerciseName);
-          currentDuration += exerciseDuration;
-
-          // Track layer duration for time-based selection
-          const layerDuration = layerDurations.get(layer) || 0;
-          layerDurations.set(layer, layerDuration + exerciseDuration);
-
-          // Track exercise counts
-          if (category === 'strength') {
-            strengthExerciseCount++;
-          }
-          if (usesBarbell) {
-            barbellExerciseCount++;
-          }
-
-          // Track muscle group coverage for all workouts
-          trackMuscleGroupCoverage(exerciseData, muscleGroupCoverage);
-
-          addedAnyExercise = true;
-        }
-
-        // Update index for this layer
-        layerIndices.set(layer, currentIndex + ratio);
-      }
-    }
-
-    // If we couldn't add any exercises this round, we're done
-    if (!addedAnyExercise) {
-      break;
-    }
-  }
-
-  // Ensure minimum requirements are met
-  if (!hasMetMinimumRequirements(selectedExercises, layerRequirements)) {
-    // Build diagnostic error message
-    const poolSizes = Array.from(pools.entries())
-      .map(([layer, pool]) => `${layer}: ${pool.length} exercises`)
-      .join(', ');
-
-    const diagnostics = [
-      `Failed to select enough exercises.`,
-      `Selected: ${selectedExercises.length} exercises`,
-      `Max duration: ${maxDuration} minutes`,
-      `Current duration: ${currentDuration} minutes`,
-      `Rounds completed: ${roundNumber}`,
-      `Pool sizes: ${poolSizes}`,
-      `Focus: ${focus}`
-    ].join('\n  ');
-
-    throw new Error(`Could not meet minimum layer requirements within duration constraint\n  ${diagnostics}`);
-  }
-
-  // Check compound exercise requirement (if enabled and applicable)
-  // Note: Only enforce if session has enough exercises (skip for very short sessions)
-  if (constraints.require_compound_exercises &&
-      selectedExercises.length >= 3 &&
-      compoundExerciseCount < constraints.compound_min_count) {
-    // Warning: Could not meet compound exercise requirement
-    // For MVP, we'll allow this rather than failing workout generation
-    // In production, consider adding a compound exercise retroactively
-  }
-
-  return selectedExercises;
-}
-
-/**
- * Gets a default intensity profile for a layer
- *
- * @param layer - Layer name
- * @returns Intensity profile string
- */
-function getDefaultIntensityForLayer(
-  layer: string
-): "light" | "moderate" | "moderate_heavy" | "heavy" | "max" | "tabata" | "liss" | "hiit" | "amrap" | "extended" {
-  const intensityMap: { [key: string]: "light" | "moderate" | "moderate_heavy" | "heavy" | "max" | "tabata" | "liss" | "hiit" | "amrap" | "extended" } = {
-    first: "light",
-    primary: "heavy",
-    secondary: "moderate",
-    tertiary: "moderate",
-    finisher: "heavy",
-    last: "light"
-  };
-
-  return intensityMap[layer] || "moderate";
-}
-
-/**
- * Checks if minimum layer requirements have been met
- *
- * @param exercises - Currently selected exercises
- * @param requirements - Layer requirements configuration
- * @returns True if requirements met, false otherwise
- */
-function hasMetMinimumRequirements(
-  exercises: ExerciseStructure[],
-  requirements: { must_include: string[]; optional: string[]; always_end_with_last_if_available: boolean }
-): boolean {
-  // Relaxed check: We need at least 1 exercise to have a minimal valid workout
-  // In production, we'd track layer assignments, but for now we just ensure
-  // we have something to work with
-  return exercises.length >= 1;
-}
-
-/**
- * Prioritizes exercises based on muscle group coverage using tier-based scoring
- *
- * Works for ALL split types (Full Body, Push/Pull/Legs, Upper/Lower).
- * Uses primary/secondary muscle group config to ensure balanced coverage.
- *
- * @param pool - Exercise pool to prioritize
- * @param muscleGroupCoverage - Map tracking how many times each muscle group has been selected
- * @param focus - Split focus (e.g., "Push", "Pull", "Full Body")
- * @param rules - Generation rules (for muscle group priority mapping)
- * @returns Prioritized pool with underrepresented primary muscles first
- */
-function prioritizeByMuscleGroupCoverage(
-  pool: Array<[string, Exercise]>,
-  muscleGroupCoverage: Map<string, number>,
-  focus: string,
-  rules: GenerationRules
-): Array<[string, Exercise]> {
-  // Get primary and secondary muscles for this focus
-  const priorityMapping = rules.muscle_group_priority_mapping[focus];
-
-  // If no priority mapping exists for this focus, return pool as-is
-  if (!priorityMapping) {
-    return pool;
-  }
-
-  const primaryMuscles = new Set(priorityMapping.primary);
-  const secondaryMuscles = new Set(priorityMapping.secondary);
-
-  // Score each exercise based on muscle group coverage
-  const scored = pool.map(([name, exercise]) => {
-    // Separate primary and secondary muscle coverage
-    let primaryMinCoverage = Infinity;
-    let primaryTotalCoverage = 0;
-    let primaryUncoveredCount = 0;
-    let primaryCoveredCount = 0;
-
-    let secondaryMinCoverage = Infinity;
-    let secondaryTotalCoverage = 0;
-    let secondaryUncoveredCount = 0;
-
-    if (exercise.muscle_groups.length > 0) {
-      for (const mg of exercise.muscle_groups) {
-        const coverage = muscleGroupCoverage.get(mg) || 0;
-
-        if (primaryMuscles.has(mg)) {
-          // Primary muscle
-          primaryMinCoverage = Math.min(primaryMinCoverage, coverage);
-          primaryTotalCoverage += coverage;
-          if (coverage === 0) {
-            primaryUncoveredCount++;
-          } else {
-            primaryCoveredCount++;
-          }
-        } else if (secondaryMuscles.has(mg)) {
-          // Secondary muscle
-          secondaryMinCoverage = Math.min(secondaryMinCoverage, coverage);
-          secondaryTotalCoverage += coverage;
-          if (coverage === 0) {
-            secondaryUncoveredCount++;
-          }
-        }
-      }
-    }
-
-    // Reset infinity to 0 if no muscles found
-    if (primaryMinCoverage === Infinity) primaryMinCoverage = 0;
-    if (secondaryMinCoverage === Infinity) secondaryMinCoverage = 0;
-
-    // FIVE-TIER SCORING SYSTEM (TUNED FOR ≤5.0 RATIO):
-    // Tier 1 (Highest): Primary muscles with 0 coverage
-    //   - Score = 2000 * primaryUncoveredCount - primaryTotalCoverage
-    //   - Ensures uncovered primary muscles get selected first
-    //
-    // Tier 2 (High): Primary muscles with low coverage (≤2 hits)
-    //   - Score = 1000 - primaryTotalCoverage
-    //   - Balances primary muscle distribution aggressively
-    //
-    // Tier 3 (Medium): Secondary muscles with 0 coverage
-    //   - Score = 100 * secondaryUncoveredCount - secondaryTotalCoverage
-    //   - Allows secondary muscles (traps, forearms) to appear
-    //
-    // Tier 4 (Low): Any muscle with some coverage
-    //   - Score = -primaryTotalCoverage - secondaryTotalCoverage
-    //   - Fills remaining slots with variety
-    //
-    // Tier 5 (Lowest): Heavily covered primary muscles (>2 hits)
-    //   - Score = -2000 * primaryMinCoverage - primaryTotalCoverage
-    //   - Strongly prevents muscle group dominance
-
-    let score: number;
-    let tier: number;
-
-    if (primaryUncoveredCount > 0) {
-      // Tier 1: Uncovered primary muscles - HIGHEST PRIORITY
-      score = 2000 * primaryUncoveredCount - primaryTotalCoverage;
-      tier = 1;
-    } else if (primaryCoveredCount > 0 && primaryMinCoverage <= 2) {
-      // Tier 2: Primary muscles with low coverage - HIGH PRIORITY
-      score = 1000 - primaryTotalCoverage;
-      tier = 2;
-    } else if (secondaryUncoveredCount > 0) {
-      // Tier 3: Uncovered secondary muscles - MEDIUM PRIORITY
-      score = 100 * secondaryUncoveredCount - secondaryTotalCoverage;
-      tier = 3;
-    } else if (primaryMinCoverage <= 2 || secondaryMinCoverage <= 2) {
-      // Tier 4: Any muscle with some coverage - LOW PRIORITY
-      score = -(primaryTotalCoverage + secondaryTotalCoverage);
-      tier = 4;
-    } else {
-      // Tier 5: Heavily covered muscles - LOWEST PRIORITY
-      score = -2000 * primaryMinCoverage - primaryTotalCoverage;
-      tier = 5;
-    }
-
-    return {
-      name,
-      exercise,
-      score,
-      tier,
-      primaryUncoveredCount,
-      primaryMinCoverage,
-      primaryTotalCoverage
-    };
-  });
-
-  // Sort by tier first, then score (descending), then name (alphabetical)
-  scored.sort((a, b) => {
-    if (a.tier !== b.tier) {
-      return a.tier - b.tier; // Lower tier number = higher priority
-    }
-    if (a.score !== b.score) {
-      return b.score - a.score; // Higher score first within same tier
-    }
-    return a.name.localeCompare(b.name); // Alphabetical tiebreaker
-  });
-
-  return scored.map(({ name, exercise }) => [name, exercise]);
-}
-
-/**
- * Updates muscle group coverage tracking after selecting an exercise
- *
- * @param exercise - Selected exercise
- * @param muscleGroupCoverage - Coverage map to update
- */
-function trackMuscleGroupCoverage(
-  exercise: Exercise,
-  muscleGroupCoverage: Map<string, number>
-): void {
-  for (const muscleGroup of exercise.muscle_groups) {
-    const current = muscleGroupCoverage.get(muscleGroup) || 0;
-    muscleGroupCoverage.set(muscleGroup, current + 1);
-  }
-}

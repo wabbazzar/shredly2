@@ -8,163 +8,216 @@
 import type {
   QuestionnaireAnswers,
   GenerationRules,
-  SplitPatterns,
-  ExerciseStructure
+  BlockSpec,
+  ProgressionByGoal
 } from './types.js';
 
 /**
- * Assigns the training split based on user preference or goal-based default
+ * Gets prescriptive split directly from goal + frequency using new decision tree
  *
- * @param answers - User's questionnaire answers
+ * @param goal - User's goal (build_muscle, tone, lose_weight)
+ * @param frequency - Training frequency (2-7)
  * @param rules - Generation rules configuration
- * @returns Split type (e.g., "full_body", "upper_lower", "push_pull_legs", "ulppl")
+ * @returns Array of day focus strings
  */
-export function assignSplit(
-  answers: QuestionnaireAnswers,
+export function getPrescriptiveSplit(
+  goal: QuestionnaireAnswers['goal'],
+  frequency: number,
   rules: GenerationRules
-): string {
-  const { training_split_preference, training_frequency, primary_goal } = answers;
+): string[] {
+  const prescriptiveSplits = rules.prescriptive_splits;
+  const frequencyKey = frequency.toString();
 
-  // If user has explicit preference (and it's not "no_preference"), use it
-  if (training_split_preference && training_split_preference !== 'no_preference') {
-    return training_split_preference;
+  const goalSplits = prescriptiveSplits[goal];
+  if (!goalSplits) {
+    throw new Error(`No prescriptive splits configured for goal: ${goal}`);
   }
 
-  // Otherwise, assign default split based on training frequency from config
-  const frequencyKey = training_frequency; // Already a string like "2", "3", etc.
-  const defaultSplit = rules.default_split_by_frequency[frequencyKey];
-
-  if (!defaultSplit || defaultSplit === 'description') {
+  const dayFocuses = goalSplits[frequencyKey];
+  if (!dayFocuses) {
     throw new Error(
-      `No default split configured for frequency: ${frequencyKey}. ` +
-      `Check workout_generation_rules.json default_split_by_frequency section.`
+      `No prescriptive split configured for goal=${goal}, frequency=${frequency}. ` +
+      `Check workout_generation_rules.json prescriptive_splits section.`
     );
   }
 
-  return defaultSplit;
+  return dayFocuses;
 }
 
 /**
- * Gets the day focus array for all training days based on split pattern
+ * Extracts the base focus type from a suffixed focus string
+ * e.g., "Upper-HIIT" -> "Upper", "Push-Volume" -> "Push", "Flexibility" -> "Flexibility"
  *
- * @param split - Split type (e.g., "full_body", "upper_lower", "push_pull_legs", "ulppl")
- * @param daysPerWeek - Number of training days per week
- * @param splitPatterns - Split patterns configuration from rules
- * @returns Array of focus strings for each day (e.g., ["Upper", "Lower", "Push", "Pull", "Legs"])
+ * @param focus - The focus string, possibly with suffix
+ * @returns The base focus type
  */
-export function getDayFocusArray(
-  split: string,
-  daysPerWeek: number,
-  splitPatterns: SplitPatterns
-): string[] {
-  // Get the split pattern configuration
-  const splitConfig = splitPatterns[split];
-
-  if (!splitConfig) {
-    throw new Error(`Split type "${split}" not found in configuration`);
+export function getBaseFocus(focus: string): string {
+  // Special cases that map to Mobility for muscle group lookup
+  // These focus types use the same muscle groups as Mobility (include_muscle_groups: ["all"])
+  if (focus === 'Flexibility' || focus === 'FullBody-Mobility') {
+    return 'Mobility';
   }
 
-  // First, check if there's a pre-defined example for this exact number of days
-  const exactDaysKey = `${daysPerWeek}_days`;
-  if (splitConfig[exactDaysKey]) {
-    return splitConfig[exactDaysKey] as string[];
+  // Check for known suffixes
+  const suffixes = ['-HIIT', '-Volume', '-Strength', '-Mobility'];
+  for (const suffix of suffixes) {
+    if (focus.endsWith(suffix)) {
+      return focus.slice(0, -suffix.length);
+    }
   }
 
-  // Otherwise, use the pattern and repeat it cyclically to fill all days
-  const pattern = splitConfig.pattern as string[];
-
-  if (!pattern || pattern.length === 0) {
-    throw new Error(`Split "${split}" has no pattern defined`);
-  }
-
-  const focusArray: string[] = [];
-  for (let i = 0; i < daysPerWeek; i++) {
-    focusArray.push(pattern[i % pattern.length]);
-  }
-
-  return focusArray;
+  // No suffix found, return as-is
+  return focus;
 }
 
 /**
- * Generates the complete day structure for a workout program
+ * Parses the day type suffix from a focus string
  *
- * @param answers - User's questionnaire answers
- * @param rules - Generation rules configuration
- * @returns Object mapping day numbers to their focus
+ * @param focus - The focus string, possibly with suffix
+ * @returns The suffix type or null if no suffix
  */
-export function generateDayStructure(
-  answers: QuestionnaireAnswers,
-  rules: GenerationRules
-): { [dayNumber: string]: { dayNumber: number; type: "gym" | "home" | "outdoor"; focus: string } } {
-  const split = assignSplit(answers, rules);
-  const daysPerWeek = parseInt(answers.training_frequency);
-  const focusArray = getDayFocusArray(split, daysPerWeek, rules.split_patterns);
-
-  // Determine day type based on equipment access
-  let dayType: "gym" | "home" | "outdoor";
-  if (answers.equipment_access === 'commercial_gym') {
-    dayType = 'gym';
-  } else if (answers.equipment_access === 'bodyweight_only') {
-    dayType = 'outdoor';
-  } else {
-    dayType = 'home';
-  }
-
-  // Build the day structure object
-  const days: { [dayNumber: string]: { dayNumber: number; type: "gym" | "home" | "outdoor"; focus: string } } = {};
-
-  for (let i = 0; i < daysPerWeek; i++) {
-    const dayNum = i + 1;
-    days[`${dayNum}`] = {
-      dayNumber: dayNum,
-      type: dayType,
-      focus: focusArray[i]
-    };
-  }
-
-  return days;
+export function parseFocusSuffix(focus: string): 'HIIT' | 'Volume' | 'Strength' | 'Mobility' | null {
+  if (focus.endsWith('-HIIT')) return 'HIIT';
+  if (focus.endsWith('-Volume')) return 'Volume';
+  if (focus.endsWith('-Strength')) return 'Strength';
+  if (focus.endsWith('-Mobility')) return 'Mobility';
+  return null;
 }
 
 /**
- * Assigns progression scheme based on user preference or goal-based default
+ * Gets progression scheme directly from goal (v2.0)
+ * Progression is derived from goal, not user-selectable
  *
- * @param answers - User's questionnaire answers
+ * @param goal - User's goal (build_muscle, tone, lose_weight)
  * @param exerciseCategory - Exercise category (strength, mobility, etc.)
+ * @param rules - Generation rules configuration
  * @returns Progression scheme type
  */
-export function assignProgressionScheme(
-  answers: QuestionnaireAnswers,
+export function getProgressionFromGoal(
+  goal: QuestionnaireAnswers['goal'],
   exerciseCategory: string,
   rules: GenerationRules
 ): "linear" | "density" | "wave_loading" | "volume" | "static" {
-  const { progression_preference, primary_goal, experience_level } = answers;
-
-  // If user has explicit preference (and it's not "no_preference"), validate and use it
-  if (progression_preference && progression_preference !== 'no_preference') {
-    return progression_preference as "linear" | "density" | "wave_loading" | "volume";
-  }
-
-  // For mobility and flexibility exercises, always use static (no progression)
+  // For mobility, flexibility, and cardio exercises, always use static (no progression)
   if (exerciseCategory === 'mobility' || exerciseCategory === 'flexibility' || exerciseCategory === 'cardio') {
     return 'static';
   }
 
-  // For metabolic categories (emom, amrap, circuit, interval), use density
-  if (['emom', 'amrap', 'circuit', 'interval'].includes(exerciseCategory)) {
-    return 'density';
-  }
+  // Note: Compound exercise categories (emom, amrap, circuit, interval) get 'density' progression
+  // hardcoded in constructCompoundExercise(), so this function is only called for strength/bodyweight
 
-  // For strength and bodyweight, use goal-based defaults from config
-  const defaultProgression = rules.default_progression_by_goal[primary_goal];
+  // For strength and bodyweight, derive from goal using config
+  const progressionByGoal = rules.progression_by_goal as ProgressionByGoal;
+  const progression = progressionByGoal[goal];
 
-  if (!defaultProgression) {
+  if (!progression) {
     throw new Error(
-      `No default progression configured for goal: ${primary_goal}. ` +
-      `Check workout_generation_rules.json default_progression_by_goal section.`
+      `No progression configured for goal: ${goal}. ` +
+      `Check workout_generation_rules.json progression_by_goal section.`
     );
   }
 
-  return defaultProgression as "linear" | "density" | "wave_loading" | "volume";
+  return progression as "linear" | "density" | "wave_loading" | "volume";
+}
+
+/**
+ * Maps focus suffix to day type key for config lookup
+ */
+function suffixToDayType(suffix: 'HIIT' | 'Volume' | 'Strength' | 'Mobility' | null): string {
+  if (suffix === 'HIIT') return 'hiit';
+  if (suffix === 'Volume') return 'volume';
+  if (suffix === 'Strength') return 'strength';
+  if (suffix === 'Mobility') return 'mobility';
+  return 'standard';
+}
+
+/**
+ * Maps equipment access from questionnaire to config key
+ */
+function equipmentToConfigKey(equipment: string): 'full_gym' | 'dumbbells_only' | 'bodyweight_only' {
+  // Map legacy equipment values to new config keys
+  const equipmentMap: { [key: string]: 'full_gym' | 'dumbbells_only' | 'bodyweight_only' } = {
+    'commercial_gym': 'full_gym',
+    'home_gym_full': 'full_gym',
+    'home_gym_basic': 'dumbbells_only',
+    'dumbbells_only': 'dumbbells_only',
+    'bodyweight_only': 'bodyweight_only',
+    'minimal_equipment': 'bodyweight_only',
+    // New questionnaire values
+    'full_gym': 'full_gym'
+  };
+  return equipmentMap[equipment] || 'bodyweight_only';
+}
+
+/**
+ * Builds day structure based on focus suffix, equipment, and duration
+ *
+ * @param dayFocus - Day focus with possible suffix (e.g., "Upper-HIIT", "Push-Volume", "Push")
+ * @param equipment - User's equipment access level
+ * @param duration - Session duration in minutes (20, 30, or 60)
+ * @param rules - Generation rules configuration
+ * @returns Array of resolved block specifications with concrete counts
+ */
+export function buildDayStructure(
+  dayFocus: string,
+  equipment: string,
+  duration: number,
+  rules: GenerationRules
+): BlockSpec[] {
+  // Special handling for Flexibility day - entirely mobility-focused
+  if (dayFocus === 'Flexibility') {
+    return [
+      { type: 'mobility', count: 3 },
+      { type: 'compound', count: 1 }
+    ];
+  }
+
+  // Parse the focus suffix to determine day type
+  const suffix = parseFocusSuffix(dayFocus);
+  const dayType = suffixToDayType(suffix);
+
+  // Map equipment to config key
+  const equipmentKey = equipmentToConfigKey(equipment);
+
+  // Get day structure from config
+  const equipmentConfig = rules.day_structure_by_equipment[equipmentKey];
+  if (!equipmentConfig) {
+    throw new Error(`No day structure config for equipment: ${equipmentKey}`);
+  }
+
+  const dayConfig = equipmentConfig[dayType];
+  if (!dayConfig || typeof dayConfig === 'string') {
+    // Fall back to standard if specific day type not found
+    const standardConfig = equipmentConfig.standard;
+    if (!standardConfig || typeof standardConfig === 'string') {
+      throw new Error(`No standard day structure config for equipment: ${equipmentKey}`);
+    }
+    return resolveBlockCounts(standardConfig.blocks, duration, rules);
+  }
+
+  return resolveBlockCounts(dayConfig.blocks, duration, rules);
+}
+
+/**
+ * Resolves 'time_based' block counts to concrete numbers based on duration
+ */
+function resolveBlockCounts(
+  blocks: BlockSpec[],
+  duration: number,
+  rules: GenerationRules
+): BlockSpec[] {
+  const durationKey = duration.toString();
+  const compoundCount = rules.compound_blocks_by_time[durationKey];
+
+  // Default to 2 if not found
+  const resolvedCompoundCount = typeof compoundCount === 'number' ? compoundCount : 2;
+
+  return blocks.map(block => {
+    if (block.count === 'time_based') {
+      return { ...block, count: resolvedCompoundCount };
+    }
+    return block;
+  });
 }
 
 /**
@@ -204,30 +257,3 @@ export function assignIntensityProfile(
   return 'moderate';
 }
 
-/**
- * Applies progression scheme and intensity profile to exercises
- *
- * @param exercises - Array of exercise structures (with names only)
- * @param answers - User's questionnaire answers
- * @param layers - Map of exercise index to layer name
- * @param exerciseCategories - Map of exercise name to category
- * @returns Updated exercises with progression and intensity assigned
- */
-export function applyProgressionAndIntensity(
-  exercises: ExerciseStructure[],
-  answers: QuestionnaireAnswers,
-  layers: Map<number, string>,
-  exerciseCategories: Map<string, string>,
-  rules: GenerationRules
-): ExerciseStructure[] {
-  return exercises.map((exercise, index) => {
-    const layer = layers.get(index) || 'primary';
-    const category = exerciseCategories.get(exercise.name) || 'strength';
-
-    return {
-      ...exercise,
-      progressionScheme: assignProgressionScheme(answers, category, rules),
-      intensityProfile: assignIntensityProfile(layer, category, rules)
-    };
-  });
-}

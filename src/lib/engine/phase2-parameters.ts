@@ -13,7 +13,7 @@ import type {
   WeekParameters,
   WeightSpecification,
   GenerationRules,
-  QuestionnaireAnswers
+  LegacyQuestionnaireAnswers
 } from './types.js';
 
 /**
@@ -26,15 +26,6 @@ function roundToHalfMinute(minutes: number): number {
     return Math.round(minutes * 2) / 2;
   }
   return minutes;
-}
-
-/**
- * Round time values to whole minutes for compound exercise volume progression
- * Uses Math.round for unbiased rounding (8.4 -> 8, 8.5 -> 9, 8.6 -> 9)
- * This ensures EMOM/AMRAP progressions have whole, even minute deltas
- */
-function roundToWholeMinutes(minutes: number): number {
-  return Math.round(minutes);
 }
 
 /**
@@ -53,7 +44,7 @@ export function applyIntensityProfile(
   exercise: ExerciseStructure,
   exerciseCategory: string,
   rules: GenerationRules,
-  answers: QuestionnaireAnswers,
+  answers: LegacyQuestionnaireAnswers,
   isSubExercise: boolean = false,
   exerciseExternalLoad?: string,
   parentCategory?: string
@@ -117,11 +108,16 @@ export function applyIntensityProfile(
   }
 
   // Apply rest time
-  // INTERVAL: rest_time goes on sub-exercises (rest after each exercise)
-  // Others: rest_time goes on parent only (rest between sets)
-  const shouldAddRestTime = parentCategory === 'interval'
-    ? isSubExercise  // INTERVAL: add rest_time to sub-exercises
-    : !isSubExercise; // Others: add rest_time to parent only
+  // INTERVAL PARENT: should NOT have rest_time (only sub-exercises get it)
+  // INTERVAL SUB-EXERCISE: should have rest_time (rest after each exercise)
+  // Other PARENT: should have rest_time (rest between sets)
+  // Other SUB-EXERCISE: should NOT have rest_time
+  const isIntervalParent = exerciseCategory === 'interval' && !isSubExercise;
+  const shouldAddRestTime = !isIntervalParent && (
+    parentCategory === 'interval'
+      ? isSubExercise  // INTERVAL sub-exercises get rest_time
+      : !isSubExercise // Non-INTERVAL parents get rest_time
+  );
 
   if (shouldAddRestTime && profile.base_rest_time_minutes !== undefined) {
     // Convert seconds to minutes if unit is specified as "seconds"
@@ -382,7 +378,8 @@ function applyWaveLoading(
 
 /**
  * Applies volume progression (increase sets and reps, weight stays constant)
- * For compound exercises, increases work_time with whole-minute rounding
+ * Note: Compound exercises always use 'density' progression (hardcoded in constructCompoundExercise),
+ * so this function only handles regular (non-compound) exercises.
  */
 function applyVolumeProgression(
   weekN: WeekParameters,
@@ -390,57 +387,14 @@ function applyVolumeProgression(
   weekNumber: number,
   totalWeeks: number,
   rules: any,
-  exerciseCategory?: string,
-  subExerciseCount?: number
+  _exerciseCategory?: string,
+  _subExerciseCount?: number
 ): WeekParameters {
   const weeksDelta = weekNumber - 1;
 
-  // Handle compound block volume progression FIRST
-  if (isCompoundParent(exerciseCategory)) {
-    if (weekN.work_time_minutes !== undefined) {
-      const baseWorkTime = week1.work_time_minutes!;
-
-      // Determine time increase per week based on compound type
-      let timeIncreasePerWeek = 0;
-
-      if (exerciseCategory === 'emom') {
-        // EMOM: increase by (1 minute * sub_exercise_count) per week
-        const subCount = subExerciseCount || rules.compound_emom_default_sub_count || 2;
-        timeIncreasePerWeek = (rules.compound_emom_time_increase_per_sub_per_week || 1) * subCount;
-      } else if (exerciseCategory === 'amrap') {
-        // AMRAP: increase by 1 minute per week
-        timeIncreasePerWeek = rules.compound_amrap_time_increase_per_week || 1;
-      } else if (exerciseCategory === 'circuit' || exerciseCategory === 'interval') {
-        // Circuit/Interval: optionally increase time OR increase sets (based on config)
-        const shouldIncreaseTime = rules.compound_circuit_increase_time !== false;
-        if (shouldIncreaseTime) {
-          timeIncreasePerWeek = rules.compound_circuit_time_increase_per_week || 1;
-        }
-        // If not increasing time, sets will increase via existing logic below
-      }
-
-      // Calculate new work_time with whole-minute rounding
-      const calculatedTime = baseWorkTime + (timeIncreasePerWeek * weeksDelta);
-      weekN.work_time_minutes = roundToWholeMinutes(calculatedTime);
-
-      // Preserve time unit from week1
-      if (week1.work_time_unit) {
-        weekN.work_time_unit = week1.work_time_unit;
-      }
-    }
-
-    // For compound blocks, reps can also increase if configured
-    if (weekN.reps !== undefined && typeof weekN.reps === 'number' && rules.compound_reps_increase_enabled) {
-      const totalIncrease = rules.reps_increase_percent_total || 20;
-      const increasePerWeek = (totalIncrease / 100) / (totalWeeks - 1);
-      weekN.reps = Math.round(week1.reps as number * (1 + increasePerWeek * weeksDelta));
-    }
-
-    // Return early for compound blocks (don't apply regular set increases)
-    return weekN;
-  }
-
   // Regular (non-compound) exercise volume progression
+  // Note: Compound exercises always use 'density' progression (hardcoded in constructCompoundExercise),
+  // so this code path only executes for strength/bodyweight exercises with 'tone' goal
 
   // Increase sets every N weeks
   if (weekN.sets !== undefined) {
@@ -482,7 +436,7 @@ export function parameterizeExercise(
   exerciseCategory: string,
   totalWeeks: number,
   rules: GenerationRules,
-  answers: QuestionnaireAnswers,
+  answers: LegacyQuestionnaireAnswers,
   allExercises?: Array<[string, any]>,
   isSubExercise: boolean = false,
   parentCategory?: string
@@ -550,11 +504,31 @@ export function parameterizeExercise(
       const [_, subExInfo] = subExData;
       const subCategory = subExInfo.category;
 
+      // Determine appropriate intensity profile for sub-exercise
+      // Parent's intensity profile may not exist for sub-exercise's category (e.g., 'tabata' doesn't exist for 'strength')
+      // Use 'moderate' as a safe fallback that exists for most categories
+      let subIntensityProfile = exercise.intensityProfile;
+
+      // Check if parent's intensity profile exists for sub-exercise's category
+      const categoryProfiles = rules.intensity_profiles[subCategory];
+      if (categoryProfiles && !categoryProfiles[exercise.intensityProfile]) {
+        // Parent's profile doesn't exist for this category - use 'moderate' or 'heavy' as fallback
+        if (categoryProfiles['moderate']) {
+          subIntensityProfile = 'moderate';
+        } else if (categoryProfiles['heavy']) {
+          subIntensityProfile = 'heavy';
+        } else {
+          // Use first available profile
+          const availableProfiles = Object.keys(categoryProfiles);
+          subIntensityProfile = availableProfiles[0] as any;
+        }
+      }
+
       // Create a temporary ExerciseStructure for the sub-exercise
       const subExerciseStructure: ExerciseStructure = {
         name: subEx.name,
         progressionScheme: subEx.progressionScheme,
-        intensityProfile: exercise.intensityProfile // Inherit from parent
+        intensityProfile: subIntensityProfile
       };
 
       // Recursively parameterize the sub-exercise (passing isSubExercise=true and parentCategory)

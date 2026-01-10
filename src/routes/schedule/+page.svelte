@@ -6,11 +6,15 @@
 		activeSchedule,
 		viewState,
 		navigateToCalendar,
-		openModal
+		setActiveSchedule
 	} from '$lib/stores/schedule';
 	import type { StoredSchedule } from '$lib/types/schedule';
 	import ScheduleActions from '$lib/components/schedule/ScheduleActions.svelte';
 	import ScheduleLibrary from '$lib/components/schedule/ScheduleLibrary.svelte';
+	import CreateScheduleModal from '$lib/components/schedule/CreateScheduleModal.svelte';
+
+	let showCreateModal = false;
+	let showLoadModal = false;
 
 	onMount(() => {
 		navigationStore.setActiveTab('schedule');
@@ -18,11 +22,12 @@
 	});
 
 	function handleCreateClick() {
-		openModal('create');
+		showCreateModal = true;
 	}
 
 	function handleLoadClick() {
-		openModal('load');
+		// Will be implemented in Phase 7
+		showLoadModal = true;
 	}
 
 	function handleViewClick() {
@@ -31,10 +36,19 @@
 		}
 	}
 
-	function handleScheduleSelect(schedule: StoredSchedule) {
-		// When a schedule is selected from the library, view it
-		// For now, just log - we'll implement CalendarView in Phase 4
-		console.log('Selected schedule:', schedule.name);
+	async function handleScheduleSelect(schedule: StoredSchedule) {
+		// Set as active and view calendar
+		await setActiveSchedule(schedule.id);
+		navigateToCalendar();
+	}
+
+	function handleCreateModalClose() {
+		showCreateModal = false;
+	}
+
+	function handleScheduleCreated(e: CustomEvent<StoredSchedule>) {
+		showCreateModal = false;
+		// Schedule is already saved and set as active in the modal
 	}
 </script>
 
@@ -63,3 +77,10 @@
 		<ScheduleLibrary onScheduleSelect={handleScheduleSelect} />
 	</div>
 </div>
+
+<!-- Create Schedule Modal -->
+<CreateScheduleModal
+	isOpen={showCreateModal}
+	on:close={handleCreateModalClose}
+	on:created={handleScheduleCreated}
+/>

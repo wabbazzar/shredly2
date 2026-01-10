@@ -31,6 +31,23 @@ function formatWeight(weight?: WeightSpecification): string {
 }
 
 /**
+ * Convert time value from internal storage (always minutes) to display value
+ * The WeekParameters stores time as minutes internally but preserves original unit for display.
+ * - If unit is 'seconds', multiply by 60 to convert minutes back to seconds
+ * - If unit is 'minutes', use value as-is
+ */
+function formatTimeValue(valueInMinutes: number, unit: string): string {
+  if (unit === 'seconds') {
+    // Convert from internal minutes storage back to seconds
+    const seconds = Math.round(valueInMinutes * 60);
+    return `${seconds} seconds`;
+  }
+  // Minutes - round to 1 decimal for cleaner display
+  const rounded = Math.round(valueInMinutes * 10) / 10;
+  return `${rounded} minutes`;
+}
+
+/**
  * Determine work mode for an exercise based on parameters
  * Returns 'reps' if reps are defined, 'work_time' if work_time is defined
  */
@@ -163,10 +180,10 @@ function formatCompoundParentParams(
           displayValue = formatWeight(params[fieldName]);
         } else if (fieldName === 'rest_time_minutes') {
           const unit = params.rest_time_unit || 'seconds';
-          displayValue = `${params[fieldName]} ${unit}`;
+          displayValue = formatTimeValue(params[fieldName], unit);
         } else if (fieldName === 'work_time_minutes') {
           const unit = params.work_time_unit || 'minutes';
-          displayValue = `${params[fieldName]} ${unit}`;
+          displayValue = formatTimeValue(params[fieldName], unit);
         } else if (fieldName === 'sets') {
           displayValue = `${params[fieldName]} sets`;
         } else if (fieldName === 'reps') {
@@ -244,10 +261,10 @@ export function formatSubExercises(
             displayValue = formatWeight(params[fieldName]);
           } else if (fieldName === 'rest_time_minutes') {
             const unit = params.rest_time_unit || 'seconds';
-            displayValue = `${params[fieldName]} ${unit}`;
+            displayValue = formatTimeValue(params[fieldName], unit);
           } else if (fieldName === 'work_time_minutes') {
             const unit = params.work_time_unit || 'minutes';
-            displayValue = `${params[fieldName]} ${unit}`;
+            displayValue = formatTimeValue(params[fieldName], unit);
           } else if (fieldName === 'sets') {
             displayValue = `${params[fieldName]} sets`;
           } else if (fieldName === 'reps') {
@@ -294,9 +311,9 @@ export function formatWeekProgression(
     const reps = params.reps;
     const weight = formatWeight(params.weight);
     const restUnit = params.rest_time_unit || 'seconds';
-    const rest = params.rest_time_minutes ? `${params.rest_time_minutes} ${restUnit} rest` : '';
+    const rest = params.rest_time_minutes ? formatTimeValue(params.rest_time_minutes, restUnit) + ' rest' : '';
     const workUnit = params.work_time_unit || 'minutes';
-    const work = params.work_time_minutes ? `${params.work_time_minutes} ${workUnit} work` : '';
+    const work = params.work_time_minutes ? formatTimeValue(params.work_time_minutes, workUnit) + ' work' : '';
     const parts = [];
     if (sets && reps) {
       parts.push(`${sets} sets x ${reps} reps`);
@@ -545,13 +562,13 @@ function formatCompoundParentSets(
             : formatted;
         } else if (fieldName === 'rest_time_minutes') {
           const unit = params.rest_time_unit || 'seconds';
-          const formatted = `${params[fieldName]} ${unit}`;
+          const formatted = formatTimeValue(params[fieldName], unit);
           displayValue = (options.showAllEditable || isSelected)
             ? highlightEditableValue(formatted, isSelected)
             : formatted;
         } else if (fieldName === 'work_time_minutes') {
           const unit = params.work_time_unit || 'minutes';
-          const formatted = `${params[fieldName]} ${unit}`;
+          const formatted = formatTimeValue(params[fieldName], unit);
           displayValue = (options.showAllEditable || isSelected)
             ? highlightEditableValue(formatted, isSelected)
             : formatted;
@@ -649,10 +666,11 @@ export function formatWeekProgressionInteractive(
       if (weight) parts.push(`@ ${weight}`);
 
       const restUnit = params.rest_time_unit || 'seconds';
-      const rest = params.rest_time_minutes !== undefined
+      const restFormatted = params.rest_time_minutes !== undefined ? formatTimeValue(params.rest_time_minutes, restUnit) + ' rest' : null;
+      const rest = restFormatted !== null
         ? (options.showAllEditable || restIsSelected
-          ? highlightEditableValue(`${params.rest_time_minutes} ${restUnit} rest`, restIsSelected)
-          : `${params.rest_time_minutes} ${restUnit} rest`)
+          ? highlightEditableValue(restFormatted, restIsSelected)
+          : restFormatted)
         : null;
 
       if (rest) parts.push(rest);
@@ -665,10 +683,11 @@ export function formatWeekProgressionInteractive(
         : null;
 
       const workUnit = params.work_time_unit || 'minutes';
-      const work = params.work_time_minutes !== undefined
+      const workFormatted = params.work_time_minutes !== undefined ? formatTimeValue(params.work_time_minutes, workUnit) + ' work' : null;
+      const work = workFormatted !== null
         ? (options.showAllEditable || workIsSelected
-          ? highlightEditableValue(`${params.work_time_minutes} ${workUnit} work`, workIsSelected)
-          : `${params.work_time_minutes} ${workUnit} work`)
+          ? highlightEditableValue(workFormatted, workIsSelected)
+          : workFormatted)
         : null;
 
       if (sets && work) {
@@ -688,11 +707,12 @@ export function formatWeekProgressionInteractive(
         if (weight) parts.push(`@ ${weight}`);
       }
 
-      const restUnit = params.rest_time_unit || 'seconds';
-      const rest = params.rest_time_minutes !== undefined
+      const restUnit2 = params.rest_time_unit || 'seconds';
+      const restFormatted2 = params.rest_time_minutes !== undefined ? formatTimeValue(params.rest_time_minutes, restUnit2) + ' rest' : null;
+      const rest = restFormatted2 !== null
         ? (options.showAllEditable || restIsSelected
-          ? highlightEditableValue(`${params.rest_time_minutes} ${restUnit} rest`, restIsSelected)
-          : `${params.rest_time_minutes} ${restUnit} rest`)
+          ? highlightEditableValue(restFormatted2, restIsSelected)
+          : restFormatted2)
         : null;
 
       if (rest) parts.push(rest);
@@ -797,13 +817,13 @@ export function formatSubExercisesInteractive(
               : formatted;
           } else if (fieldName === 'rest_time_minutes') {
             const unit = params.rest_time_unit || 'seconds';
-            const formatted = `${params[fieldName]} ${unit}`;
+            const formatted = formatTimeValue(params[fieldName], unit);
             displayValue = (options.showAllEditable || isSelected)
               ? highlightEditableValue(formatted, isSelected)
               : formatted;
           } else if (fieldName === 'work_time_minutes') {
             const unit = params.work_time_unit || 'minutes';
-            const formatted = `${params[fieldName]} ${unit}`;
+            const formatted = formatTimeValue(params[fieldName], unit);
             displayValue = (options.showAllEditable || isSelected)
               ? highlightEditableValue(formatted, isSelected)
               : formatted;

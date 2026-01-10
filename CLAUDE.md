@@ -409,8 +409,8 @@ These should be answered in the CLI prototype phase.
 
 **Test Infrastructure Highlights**:
 - **Vitest**: SvelteKit's official test framework
-- **224 tests passing**: 208 unit tests + 16 integration tests
-- **Critical path coverage**: Workout generation, exercise selection, parameter calculation, metadata-driven field visibility
+- **319 tests passing**: 302 unit tests + 17 integration tests
+- **Critical path coverage**: Workout generation, exercise selection, parameter calculation, metadata-driven field visibility, time field parsing
 - **Test fixtures**: 6 questionnaire scenarios (beginner → expert, bodyweight → gym)
 - **Validation helpers**: Workout structure, exercise references, duration constraints
 - **Integration tests**: End-to-end generation, muscle group coverage
@@ -432,6 +432,24 @@ These should be answered in the CLI prototype phase.
 - **Test coverage**: 96 passing unit tests (29 for compound blocks)
 
 **Recent Completions**:
+- ✅ Ticket #016 (2026-01-10): Time Unit Configuration Overhaul (COMPLETE)
+  * **Self-Documenting Field Names**: Replaced confusing _minutes + _unit pairs with unit suffixes
+    - `rest_time_seconds: 30` instead of `base_rest_time_minutes: 0.5, base_rest_time_unit: "seconds"`
+    - `rest_time_minutes: 2.0` for strength exercises
+    - `block_time_minutes: 10` for EMOM/AMRAP parent duration
+  * **sub_work_mode Field**: Added to distinguish sub-exercise parameter mode
+    - `"reps"`: EMOM/AMRAP sub-exercises get reps from their own category
+    - `"time"`: Interval sub-exercises get work_time/rest_time from parent config
+  * **Interval Sub-Exercise Fix**: Fixed bug where interval sub-exercises showed REPS instead of work_time/rest_time
+    - Interval sub-exercises now correctly display "30 seconds work | 30 seconds rest"
+    - Progression: +5 sec work, -5 sec rest per week (maintains 60s total)
+  * **Unit-Aware Rounding**: Added roundTimeValue() helper
+    - Seconds: round to nearest 5
+    - Minutes: round to nearest 0.5 (for values > 1)
+  * **Helper Functions**: Added parseTimeField() and roundTimeValue() to phase2-parameters.ts
+  * **Testing**: 319 tests passing (20 new time field parsing tests)
+  * **Scope**: Strength, Bodyweight, Interval, EMOM, AMRAP categories updated
+  * **Out of Scope**: Circuit, Mobility, Flexibility (future ticket)
 - ✅ Ticket #012 Phase 3 (2026-01-09): Day Structure by Equipment - Block-based selection
   * **Phase 3 - Block-Based Selection**: Replaced round-robin with deterministic block selection
     - Added `day_structure_by_equipment` config (full_gym, dumbbells_only, bodyweight_only)

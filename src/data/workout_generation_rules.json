@@ -5,138 +5,125 @@
   "intensity_profiles": {
     "strength": {
       "light": {
-        "base_sets": 3,
-        "base_reps": 12,
-        "base_rest_time_minutes": 1.0,
-        "base_rest_time_unit": "minutes",
-        "base_weight_percent_tm": 60,
-        "base_weight_descriptor": "light"
+        "sets": 3,
+        "reps": 12,
+        "rest_time_minutes": 1.0,
+        "weight_percent_tm": 60,
+        "weight_descriptor": "light"
       },
       "moderate": {
-        "base_sets": 3,
-        "base_reps": 8,
-        "base_rest_time_minutes": 1.0,
-        "base_rest_time_unit": "minutes",
-        "base_weight_percent_tm": 70,
-        "base_weight_descriptor": "moderate"
+        "sets": 3,
+        "reps": 8,
+        "rest_time_minutes": 1.0,
+        "weight_percent_tm": 70,
+        "weight_descriptor": "moderate"
       },
       "moderate_heavy": {
-        "base_sets": 4,
-        "base_reps": 6,
-        "base_rest_time_minutes": 2.0,
-        "base_rest_time_unit": "minutes",
-        "base_weight_percent_tm": 75,
-        "base_weight_descriptor": "moderate_heavy"
+        "sets": 4,
+        "reps": 6,
+        "rest_time_minutes": 2.0,
+        "weight_percent_tm": 75,
+        "weight_descriptor": "moderate_heavy"
       },
       "heavy": {
-        "base_sets": 4,
-        "base_reps": 5,
-        "base_rest_time_minutes": 2.0,
-        "base_rest_time_unit": "minutes",
-        "base_weight_percent_tm": 80,
-        "base_weight_descriptor": "heavy"
+        "sets": 4,
+        "reps": 5,
+        "rest_time_minutes": 2.0,
+        "weight_percent_tm": 80,
+        "weight_descriptor": "heavy"
       },
       "max": {
-        "base_sets": 5,
-        "base_reps": 3,
-        "base_rest_time_minutes": 3.0,
-        "base_rest_time_unit": "minutes",
-        "base_weight_percent_tm": 85,
-        "base_weight_descriptor": "max"
+        "sets": 5,
+        "reps": 3,
+        "rest_time_minutes": 3.0,
+        "weight_percent_tm": 85,
+        "weight_descriptor": "max"
       }
     },
 
     "bodyweight": {
       "light": {
-        "base_sets": 3,
-        "base_reps": 10,
-        "base_rest_time_minutes": 0.5,
-        "base_rest_time_unit": "seconds"
+        "sets": 3,
+        "reps": 10,
+        "rest_time_seconds": 30
       },
       "moderate": {
-        "base_sets": 3,
-        "base_reps": 15,
-        "base_rest_time_minutes": 0.75,
-        "base_rest_time_unit": "seconds"
+        "sets": 3,
+        "reps": 15,
+        "rest_time_seconds": 45
       },
       "heavy": {
-        "base_sets": 4,
-        "base_reps": 20,
-        "base_rest_time_minutes": 1.0,
-        "base_rest_time_unit": "seconds"
+        "sets": 4,
+        "reps": 20,
+        "rest_time_seconds": 60
       },
       "amrap": {
-        "base_sets": 3,
-        "base_reps": "AMRAP",
-        "base_rest_time_minutes": 1.0,
-        "base_rest_time_unit": "seconds"
+        "sets": 3,
+        "reps": "AMRAP",
+        "rest_time_seconds": 60
       }
     },
 
     "interval": {
       "light": {
-        "base_sets": 3,
-        "base_work_time_minutes": 0.5,
-        "base_work_time_unit": "seconds",
-        "base_rest_time_minutes": 0.5,
-        "base_rest_time_unit": "seconds"
+        "sets": 3,
+        "sub_work_mode": "time",
+        "sub_work_time_seconds": 30,
+        "sub_rest_time_seconds": 30
       },
       "moderate": {
-        "base_sets": 4,
-        "base_work_time_minutes": 0.67,
-        "base_work_time_unit": "seconds",
-        "base_rest_time_minutes": 0.33,
-        "base_rest_time_unit": "seconds"
+        "sets": 4,
+        "sub_work_mode": "time",
+        "sub_work_time_seconds": 40,
+        "sub_rest_time_seconds": 20
       },
       "heavy": {
-        "base_sets": 6,
-        "base_work_time_minutes": 0.83,
-        "base_work_time_unit": "seconds",
-        "base_rest_time_minutes": 0.17,
-        "base_rest_time_unit": "seconds"
+        "sets": 6,
+        "sub_work_mode": "time",
+        "sub_work_time_seconds": 45,
+        "sub_rest_time_seconds": 15
       },
       "tabata": {
-        "base_sets": 8,
-        "base_work_time_minutes": 0.33,
-        "base_work_time_unit": "seconds",
-        "base_rest_time_minutes": 0.17,
-        "base_rest_time_unit": "seconds"
+        "sets": 8,
+        "sub_work_mode": "time",
+        "sub_work_time_seconds": 20,
+        "sub_rest_time_seconds": 10
       }
     },
 
     "emom": {
       "light": {
-        "base_work_time_minutes": 4,
-        "base_work_time_unit": "minutes",
-        "base_target_reps_per_minute": 8
+        "block_time_minutes": 8,
+        "sub_work_mode": "reps",
+        "target_reps_per_minute": 8
       },
       "moderate": {
-        "base_work_time_minutes": 6,
-        "base_work_time_unit": "minutes",
-        "base_target_reps_per_minute": 10
+        "block_time_minutes": 10,
+        "sub_work_mode": "reps",
+        "target_reps_per_minute": 10
       },
       "heavy": {
-        "base_work_time_minutes": 6,
-        "base_work_time_unit": "minutes",
-        "base_target_reps_per_minute": 12
+        "block_time_minutes": 12,
+        "sub_work_mode": "reps",
+        "target_reps_per_minute": 12
       }
     },
 
     "amrap": {
       "light": {
-        "base_work_time_minutes": 2,
-        "base_work_time_unit": "minutes",
-        "base_target_rounds": 2
+        "block_time_minutes": 6,
+        "sub_work_mode": "reps",
+        "target_rounds": 2
       },
       "moderate": {
-        "base_work_time_minutes": 4,
-        "base_work_time_unit": "minutes",
-        "base_target_rounds": 3
+        "block_time_minutes": 8,
+        "sub_work_mode": "reps",
+        "target_rounds": 3
       },
       "heavy": {
-        "base_work_time_minutes": 6,
-        "base_work_time_unit": "minutes",
-        "base_target_rounds": 4
+        "block_time_minutes": 10,
+        "sub_work_mode": "reps",
+        "target_rounds": 4
       }
     },
 
@@ -255,11 +242,16 @@
       "rules": {
         "work_time_increase_percent_total": 25,
         "reps_increase_percent_total": 30,
-        "rest_time_delta_per_week_minutes": -0.02,
-        "rest_time_minimum_minutes": 0.1,
+        "rest_time_delta_per_week_minutes": -0.25,
+        "rest_time_minimum_minutes": 1.5,
+        "rest_time_delta_per_week_seconds": -5,
+        "rest_time_minimum_seconds": 5,
+        "interval_work_time_delta_per_week_seconds": 5,
+        "interval_rest_time_delta_per_week_seconds": -5,
         "compound_parent_work_time_static": true
       },
       "compound_behavior": "For compound exercises (EMOM/Circuit/AMRAP/Interval), work_time stays STATIC across all weeks. Density comes from sub-exercise reps increasing, not time extension. Regular exercises can still increase work_time.",
+      "interval_behavior": "For interval blocks, work_time increases by +5 sec/week and rest_time decreases by -5 sec/week, maintaining a constant 60-second total (work + rest = 60s).",
       "example_3_weeks": {
         "emom_parent": {
           "note": "Starting from intensity_profiles.emom.moderate (10 minutes base) - STATIC work_time for density",
@@ -274,10 +266,10 @@
           "week3": {"reps": 12}
         },
         "interval": {
-          "note": "Rest time decreases each week",
-          "week1": {"rest_time_minutes": 0.333},
-          "week2": {"rest_time_minutes": 0.25},
-          "week3": {"rest_time_minutes": 0.167}
+          "note": "Work + Rest always = 60 seconds. Work increases, rest decreases.",
+          "week1": {"work_time_seconds": 30, "rest_time_seconds": 30},
+          "week2": {"work_time_seconds": 35, "rest_time_seconds": 25},
+          "week3": {"work_time_seconds": 40, "rest_time_seconds": 20}
         }
       }
     },
@@ -418,23 +410,7 @@
   },
 
   "category_workout_structure": {
-    "warmup_categories": ["mobility", "flexibility"],
     "main_strength_categories": ["strength"],
-    "volume_categories": ["strength", "bodyweight", "emom", "amrap", "circuit"],
-    "metabolic_categories": ["interval", "emom", "amrap", "circuit", "cardio"],
-    "cooldown_categories": ["flexibility", "mobility"],
-
-    "category_display_order": [
-      "mobility",
-      "flexibility",
-      "strength",
-      "bodyweight",
-      "emom",
-      "amrap",
-      "circuit",
-      "interval",
-      "cardio"
-    ],
 
     "split_category_overrides": {
       "description": "Override category priorities for specific split focuses to create focused training styles (e.g., high-tempo Upper/Lower days in ULPPL)",
@@ -508,79 +484,6 @@
     }
   },
 
-  "duration_constraints": {
-    "description": "Session duration determines how many exercises fit in each workout via round-robin selection",
-    "20-30": {
-      "total_minutes_min": 20,
-      "total_minutes_max": 30,
-      "include_layers": ["first", "primary", "last"],
-      "description": "Short sessions - warmup, main work, cooldown only"
-    },
-    "30-45": {
-      "total_minutes_min": 30,
-      "total_minutes_max": 45,
-      "include_layers": ["first", "primary", "secondary", "last"],
-      "description": "Standard sessions - warmup, main, accessory, cooldown"
-    },
-    "45-60": {
-      "total_minutes_min": 45,
-      "total_minutes_max": 60,
-      "include_layers": ["first", "primary", "secondary", "finisher", "last"],
-      "description": "Full sessions - warmup, main, accessory, volume, cooldown"
-    },
-    "60-90": {
-      "total_minutes_min": 60,
-      "total_minutes_max": 90,
-      "include_layers": ["first", "primary", "secondary", "tertiary", "finisher", "last"],
-      "description": "Extended sessions - includes finisher work"
-    },
-    "90+": {
-      "total_minutes_min": 90,
-      "total_minutes_max": 120,
-      "include_layers": ["first", "primary", "secondary", "tertiary", "finisher", "last"],
-      "description": "Maximum duration - all category layers available"
-    }
-  },
-
-  "split_patterns": {
-    "description": "Defines day focus patterns for each split type - repeats cyclically to fill all training days",
-    "full_body": {
-      "pattern": ["Full Body"],
-      "description": "Every training day targets all muscle groups",
-      "2_days": ["Full Body", "Full Body"],
-      "3_days": ["Full Body", "Full Body", "Full Body"],
-      "4_days": ["Full Body", "Full Body", "Full Body", "Mobility"],
-      "5_days": ["Full Body", "Full Body", "Full Body", "Mobility", "Full Body"],
-      "6_days": ["Full Body", "Full Body", "Full Body", "Mobility", "Full Body", "Mobility"],
-      "7_days": ["Full Body", "Full Body", "Full Body", "Mobility", "Full Body", "Mobility", "Full Body"]
-    },
-    "upper_lower": {
-      "pattern": ["Upper", "Lower"],
-      "description": "Alternates between upper and lower body",
-      "2_days": ["Upper", "Lower"],
-      "3_days": ["Upper", "Lower", "Mobility"],
-      "4_days": ["Upper", "Lower", "Mobility", "Lower"],
-      "5_days": ["Upper", "Lower", "Mobility", "Lower", "Upper"],
-      "6_days": ["Upper", "Lower", "Mobility", "Lower", "Upper", "Mobility"],
-      "7_days": ["Upper", "Lower", "Mobility", "Lower", "Upper", "Mobility", "Lower"]
-    },
-    "push_pull_legs": {
-      "pattern": ["Push", "Pull", "Legs"],
-      "description": "3-day cycle: push muscles, pull muscles, legs",
-      "3_days": ["Push", "Pull", "Legs"],
-      "4_days": ["Push", "Pull", "Legs", "Mobility"],
-      "5_days": ["Push", "Pull", "Legs", "Mobility", "Push"],
-      "6_days": ["Push", "Pull", "Legs", "Mobility", "Push", "Pull"],
-      "7_days": ["Push", "Pull", "Legs", "Mobility", "Push", "Pull", "Mobility"]
-    },
-    "ulppl": {
-      "pattern": ["Upper", "Lower", "Push", "Pull", "Legs"],
-      "description": "5-day cycle: upper, lower, push, pull, legs",
-      "5_days": ["Upper", "Lower", "Push", "Pull", "Legs"],
-      "6_days": ["Upper", "Lower", "Push", "Pull", "Legs", "Mobility"],
-      "7_days": ["Upper", "Lower", "Push", "Pull", "Legs", "Mobility", "Mobility"]
-    }
-  },
 
   "split_muscle_group_mapping": {
     "description": "Maps base split focus types to muscle groups for exercise selection filtering. Suffixed focus types (e.g., Upper-HIIT, Push-Volume) use getBaseFocus() to look up their base type mapping. Suffixes only affect day structure (compound-only vs strength blocks), not muscle group selection.",
@@ -619,40 +522,6 @@
     }
   },
 
-  "muscle_group_priority_mapping": {
-    "description": "Defines primary (must be balanced) vs secondary (can appear but lower priority) muscle groups for smart exercise selection. Primary muscles get tier-based prioritization to ensure balanced coverage (target ratio ≤3.0). Secondary muscles can still be selected but won't dominate workouts.",
-    "Push": {
-      "primary": ["Chest", "Shoulders", "Front Delts", "Side Delts", "Lateral Delts", "Triceps"],
-      "secondary": ["Traps", "Core", "Forearms", "Upper Chest", "Arms"],
-      "description": "Primary push muscles must be balanced; secondary muscles (traps, core) can appear but won't dominate"
-    },
-    "Pull": {
-      "primary": ["Back", "Lats", "Biceps", "Rhomboids", "Upper Back", "Lower Back"],
-      "secondary": ["Traps", "Forearms", "Rear Delts", "Core"],
-      "description": "Primary pull muscles must be balanced; secondary muscles (traps, forearms) can appear"
-    },
-    "Legs": {
-      "primary": ["Quadriceps", "Quads", "Hamstrings", "Glutes"],
-      "secondary": ["Calves", "Adductors", "Core", "Lower Back"],
-      "description": "Primary leg muscles must be balanced; secondary muscles (calves, adductors) can appear"
-    },
-    "Upper": {
-      "primary": ["Chest", "Back", "Shoulders", "Lats"],
-      "secondary": ["Biceps", "Triceps", "Traps", "Core", "Forearms", "Rhomboids"],
-      "description": "Primary upper body muscles must be balanced; arms/traps are secondary"
-    },
-    "Lower": {
-      "primary": ["Quadriceps", "Quads", "Hamstrings", "Glutes"],
-      "secondary": ["Calves", "Adductors", "Core", "Lower Back"],
-      "description": "Primary lower body muscles must be balanced; calves/core are secondary"
-    },
-    "Full Body": {
-      "primary": ["Chest", "Back", "Legs", "Quadriceps", "Quads", "Shoulders"],
-      "secondary": ["Core", "Arms", "Biceps", "Triceps", "Traps", "Calves", "Hamstrings", "Glutes"],
-      "description": "Major muscle groups are primary; smaller muscles are secondary"
-    }
-  },
-
   "compound_exercise_construction": {
     "description": "Configuration for dynamically constructing compound exercises from individual exercises",
     "circuit": {
@@ -681,51 +550,9 @@
     }
   },
 
-  "exercise_count_constraints": {
-    "description": "Limits on exercise counts to ensure workouts fit within session duration",
-    "strength_max_per_day": 2,
-    "total_max_by_duration": {
-      "20-30": 5,
-      "30-45": 7,
-      "45-60": 8,
-      "60-90": 10,
-      "90+": 12
-    },
-    "require_compound_exercises": true,
-    "compound_categories": ["emom", "amrap", "circuit", "interval"],
-    "compound_min_count": 1
-  },
-
-  "equipment_quotas": {
-    "description": "Limits on specific equipment types to ensure exercise diversity",
-    "barbell_max_per_day": 3
-  },
-
   "exercise_selection_strategy": {
     "description": "Block-based exercise selection with configurable shuffling",
-    "strategy": "block_based",
-    "shuffle_pools": true,
-
-    "layer_requirements": {
-      "description": "Required vs optional layers",
-      "must_include": ["first", "primary"],
-      "optional": ["secondary", "tertiary", "finisher", "last"],
-      "always_end_with_last_if_available": true
-    },
-
-    "warmup_target_duration_minutes": 3,
-
-    "diversity_rules": {
-      "no_duplicate_exercises": true,
-      "muscle_diversity_within_day": true,
-      "description": "Within a single day, avoid duplicate exercises and aim for muscle group variety"
-    },
-
-    "equipment_priority": {
-      "description": "When multiple exercises match criteria, prioritize by equipment availability",
-      "prefer_available_equipment": true,
-      "fallback_to_bodyweight": true
-    }
+    "shuffle_pools": true
   },
 
   "progression_by_goal": {

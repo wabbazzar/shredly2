@@ -157,9 +157,21 @@ Each `weekN` object contains only the fields relevant to that exercise type. **N
 | `weight` | mixed | Weight specification (see Weight Spec below) | Strength |
 | `tempo` | string | Lifting tempo (e.g., `"3-1-2"`) | Strength (optional) |
 
-**Note on Time Fields**: Time values are stored with explicit units to avoid floating point precision errors and ambiguity. The field name includes `_minutes` for backwards compatibility, but the actual unit is determined by the `_unit` field. For example:
-- `work_time_minutes: 30, work_time_unit: "seconds"` = 30 seconds
+**Time Field Naming Convention** (Ticket #016):
+
+The config uses self-documenting field names where the unit is part of the field name suffix:
+- `rest_time_seconds: 30` - 30 seconds rest (for bodyweight, interval sub-exercises)
+- `rest_time_minutes: 2.0` - 2 minutes rest (for strength exercises)
+- `work_time_seconds: 40` - 40 seconds work (for interval sub-exercises)
+- `block_time_minutes: 10` - 10 minute block duration (for EMOM/AMRAP parents)
+
+Generated workouts still use `work_time_minutes` / `rest_time_minutes` with an explicit `_unit` field:
+- `work_time_minutes: 0.5, work_time_unit: "seconds"` = 30 seconds (value stored in minutes, unit clarifies display)
 - `rest_time_minutes: 2, rest_time_unit: "minutes"` = 2 minutes
+
+**Compound Block `sub_work_mode`**: Compound blocks (EMOM, AMRAP, Circuit, Interval) have a `sub_work_mode` field:
+- `"reps"`: Sub-exercises get reps from their own category (EMOM, AMRAP behavior)
+- `"time"`: Sub-exercises get work_time/rest_time from parent config (Interval behavior)
 
 ### Examples by Exercise Type:
 

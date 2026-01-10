@@ -13,7 +13,10 @@ import type {
   WeekParameters,
   WeightSpecification,
   GenerationRules,
-  LegacyQuestionnaireAnswers
+  LegacyQuestionnaireAnswers,
+  TimeUnit,
+  ParsedTimeValue,
+  SubWorkMode
 } from './types.js';
 
 /**
@@ -29,6 +32,67 @@ function roundToHalfMinute(minutes: number): number {
 }
 
 /**
+ * Round time value based on unit
+ * - Seconds: round to nearest 5 seconds
+ * - Minutes: round to nearest 0.5 minutes (existing behavior)
+ */
+export function roundTimeValue(value: number, unit: TimeUnit): number {
+  if (unit === 'seconds') {
+    return Math.round(value / 5) * 5;
+  }
+  // minutes - use existing half-minute rounding
+  return roundToHalfMinute(value);
+}
+
+/**
+ * Parse time field from intensity profile using self-documenting field names
+ * Looks for fields with _seconds or _minutes suffix and infers unit from name
+ *
+ * @param profile - Intensity profile object
+ * @param fieldPrefix - Field prefix to search for (e.g., "rest_time", "work_time", "sub_work_time")
+ * @returns ParsedTimeValue with value, unit, and display string, or null if not found
+ */
+export function parseTimeField(profile: Record<string, any>, fieldPrefix: string): ParsedTimeValue | null {
+  // First check for _seconds suffix
+  const secondsField = `${fieldPrefix}_seconds`;
+  if (profile[secondsField] !== undefined) {
+    const value = profile[secondsField];
+    return {
+      value,
+      unit: 'seconds',
+      displayValue: `${value} seconds`
+    };
+  }
+
+  // Then check for _minutes suffix
+  const minutesField = `${fieldPrefix}_minutes`;
+  if (profile[minutesField] !== undefined) {
+    const value = profile[minutesField];
+    return {
+      value,
+      unit: 'minutes',
+      displayValue: `${value} minutes`
+    };
+  }
+
+  return null;
+}
+
+/**
+ * Get value from profile with fallback to deprecated base_* field
+ * Supports both new field names (sets, reps) and deprecated (base_sets, base_reps)
+ */
+function getProfileValue<T>(profile: Record<string, any>, fieldName: string, deprecatedFieldName?: string): T | undefined {
+  if (profile[fieldName] !== undefined) {
+    return profile[fieldName] as T;
+  }
+  if (deprecatedFieldName && profile[deprecatedFieldName] !== undefined) {
+    return profile[deprecatedFieldName] as T;
+  }
+  return undefined;
+}
+
+/**
  * Applies intensity profile to get Week 1 baseline parameters
  *
  * @param exercise - Exercise structure with name, progression, intensity
@@ -38,6 +102,7 @@ function roundToHalfMinute(minutes: number): number {
  * @param isSubExercise - Whether this is a sub-exercise in a compound block
  * @param exerciseExternalLoad - External load type from exercise database ("never", "sometimes", "always")
  * @param parentCategory - Parent exercise category (for sub-exercises in compound blocks)
+ * @param parentProfile - Parent's intensity profile (for interval sub-exercise time params)
  * @returns Week 1 baseline parameters
  */
 export function applyIntensityProfile(
@@ -47,7 +112,8 @@ export function applyIntensityProfile(
   answers: LegacyQuestionnaireAnswers,
   isSubExercise: boolean = false,
   exerciseExternalLoad?: string,
-  parentCategory?: string
+  parentCategory?: string,
+  parentProfile?: Record<string, any>
 ): WeekParameters {
   const { intensityProfile } = exercise;
 
@@ -71,65 +137,111 @@ export function applyIntensityProfile(
   // Build Week 1 parameters based on profile and experience modifiers
   const week1: WeekParameters = {};
 
+  // Check if parent uses sub_work_mode: "time" (interval behavior)
+  const parentSubWorkMode = parentProfile?.sub_work_mode as SubWorkMode | undefined;
+  const isIntervalSubExercise = isSubExercise && parentSubWorkMode === 'time';
+
   // Sub-exercises in compound blocks should NOT have sets (belongs to parent)
-  // EXCEPTION: INTERVAL sub-exercises need rest_time (applied below)
+  // EXCEPTION: INTERVAL sub-exercises need work_time/rest_time (applied below)
 
   // Apply sets (with volume multiplier)
   // - For INTERVAL parents: sets = number of times through the block
   // - For other parents: sets = number of times to do the exercise
   // - For sub-exercises: SKIP (sets belong to parent)
-  if (!isSubExercise && profile.base_sets !== undefined) {
-    week1.sets = Math.round(profile.base_sets * experienceModifier.volume_multiplier);
+  const setsValue = getProfileValue<number>(profile, 'sets', 'base_sets');
+  if (!isSubExercise && setsValue !== undefined) {
+    week1.sets = Math.round(setsValue * experienceModifier.volume_multiplier);
   }
 
   // Apply reps (with volume multiplier if numeric)
-  if (profile.base_reps !== undefined) {
-    if (typeof profile.base_reps === 'number') {
-      week1.reps = Math.round(profile.base_reps * experienceModifier.volume_multiplier);
+  // SKIP for interval sub-exercises (they use work_time, not reps)
+  const repsValue = getProfileValue<number | string>(profile, 'reps', 'base_reps');
+  if (!isIntervalSubExercise && repsValue !== undefined) {
+    if (typeof repsValue === 'number') {
+      week1.reps = Math.round(repsValue * experienceModifier.volume_multiplier);
     } else {
-      week1.reps = profile.base_reps; // Keep string formats like "AMRAP", "8-12"
+      week1.reps = repsValue; // Keep string formats like "AMRAP", "8-12"
     }
   }
 
-  // Apply work time
-  // SKIP for INTERVAL parents (they only have sets, not work_time)
-  const shouldAddWorkTime = exerciseCategory === 'interval' ? isSubExercise : true;
-  if (shouldAddWorkTime && profile.base_work_time_minutes !== undefined) {
-    // Convert seconds to minutes if unit is specified as "seconds"
-    let workTimeMinutes = profile.base_work_time_minutes;
-    if (profile.base_work_time_unit === 'seconds') {
-      workTimeMinutes = workTimeMinutes / 60;
+  // Handle interval sub-exercises: get work_time/rest_time from parent profile
+  if (isIntervalSubExercise && parentProfile) {
+    // Get sub_work_time_seconds from parent's interval profile
+    const subWorkTime = parseTimeField(parentProfile, 'sub_work_time');
+    if (subWorkTime) {
+      // Store as minutes for output format but preserve unit
+      week1.work_time_minutes = subWorkTime.unit === 'seconds' ? subWorkTime.value / 60 : subWorkTime.value;
+      week1.work_time_unit = subWorkTime.unit;
     }
-    week1.work_time_minutes = workTimeMinutes;
-    // Add explicit time unit if available
-    if (profile.base_work_time_unit) {
-      week1.work_time_unit = profile.base_work_time_unit;
-    }
-  }
 
-  // Apply rest time
-  // INTERVAL PARENT: should NOT have rest_time (only sub-exercises get it)
-  // INTERVAL SUB-EXERCISE: should have rest_time (rest after each exercise)
-  // Other PARENT: should have rest_time (rest between sets)
-  // Other SUB-EXERCISE: should NOT have rest_time
-  const isIntervalParent = exerciseCategory === 'interval' && !isSubExercise;
-  const shouldAddRestTime = !isIntervalParent && (
-    parentCategory === 'interval'
-      ? isSubExercise  // INTERVAL sub-exercises get rest_time
-      : !isSubExercise // Non-INTERVAL parents get rest_time
-  );
-
-  if (shouldAddRestTime && profile.base_rest_time_minutes !== undefined) {
-    // Convert seconds to minutes if unit is specified as "seconds"
-    let restTimeMinutes = profile.base_rest_time_minutes;
-    if (profile.base_rest_time_unit === 'seconds') {
-      restTimeMinutes = restTimeMinutes / 60;
+    // Get sub_rest_time_seconds from parent's interval profile
+    const subRestTime = parseTimeField(parentProfile, 'sub_rest_time');
+    if (subRestTime) {
+      // Apply experience modifier to rest time
+      const calculatedRest = subRestTime.value * experienceModifier.rest_time_multiplier;
+      const roundedRest = roundTimeValue(calculatedRest, subRestTime.unit);
+      week1.rest_time_minutes = subRestTime.unit === 'seconds' ? roundedRest / 60 : roundedRest;
+      week1.rest_time_unit = subRestTime.unit;
     }
-    const calculatedRest = restTimeMinutes * experienceModifier.rest_time_multiplier;
-    week1.rest_time_minutes = roundToHalfMinute(calculatedRest);
-    // Add explicit time unit if available
-    if (profile.base_rest_time_unit) {
-      week1.rest_time_unit = profile.base_rest_time_unit;
+  } else {
+    // Regular work time handling for non-interval-sub-exercises
+    // EMOM/AMRAP parents: use block_time_minutes
+    // Skip work_time for INTERVAL parents (they only have sets)
+    const isIntervalParent = exerciseCategory === 'interval' && !isSubExercise;
+    const shouldAddWorkTime = !isIntervalParent;
+
+    if (shouldAddWorkTime) {
+      // First try block_time_minutes (for EMOM/AMRAP)
+      const blockTime = profile.block_time_minutes;
+      if (blockTime !== undefined) {
+        week1.work_time_minutes = blockTime;
+        week1.work_time_unit = 'minutes';
+      } else {
+        // Try new work_time_* fields, then fall back to deprecated base_work_time_*
+        const workTime = parseTimeField(profile, 'work_time');
+        if (workTime) {
+          week1.work_time_minutes = workTime.unit === 'seconds' ? workTime.value / 60 : workTime.value;
+          week1.work_time_unit = workTime.unit;
+        } else if (profile.base_work_time_minutes !== undefined) {
+          // Fall back to deprecated format
+          let workTimeMinutes = profile.base_work_time_minutes;
+          if (profile.base_work_time_unit === 'seconds') {
+            workTimeMinutes = workTimeMinutes / 60;
+          }
+          week1.work_time_minutes = workTimeMinutes;
+          if (profile.base_work_time_unit) {
+            week1.work_time_unit = profile.base_work_time_unit;
+          }
+        }
+      }
+    }
+
+    // Apply rest time for non-interval-sub-exercises
+    // INTERVAL PARENT: should NOT have rest_time (only sub-exercises get it)
+    // Other PARENT: should have rest_time (rest between sets)
+    // Other SUB-EXERCISE: should NOT have rest_time (EMOM/AMRAP subs don't get rest_time)
+    const shouldAddRestTime = !isIntervalParent && !isSubExercise;
+
+    if (shouldAddRestTime) {
+      // Try new rest_time_* fields, then fall back to deprecated base_rest_time_*
+      const restTime = parseTimeField(profile, 'rest_time');
+      if (restTime) {
+        const calculatedRest = restTime.value * experienceModifier.rest_time_multiplier;
+        const roundedRest = roundTimeValue(calculatedRest, restTime.unit);
+        week1.rest_time_minutes = restTime.unit === 'seconds' ? roundedRest / 60 : roundedRest;
+        week1.rest_time_unit = restTime.unit;
+      } else if (profile.base_rest_time_minutes !== undefined) {
+        // Fall back to deprecated format
+        let restTimeMinutes = profile.base_rest_time_minutes;
+        if (profile.base_rest_time_unit === 'seconds') {
+          restTimeMinutes = restTimeMinutes / 60;
+        }
+        const calculatedRest = restTimeMinutes * experienceModifier.rest_time_multiplier;
+        week1.rest_time_minutes = roundToHalfMinute(calculatedRest);
+        if (profile.base_rest_time_unit) {
+          week1.rest_time_unit = profile.base_rest_time_unit;
+        }
+      }
     }
   }
 
@@ -138,15 +250,18 @@ export function applyIntensityProfile(
   const shouldAssignWeight = exerciseExternalLoad !== 'never';
 
   if (shouldAssignWeight) {
+    const weightDescriptor = getProfileValue<string>(profile, 'weight_descriptor', 'base_weight_descriptor');
+    const weightPercentTm = getProfileValue<number>(profile, 'weight_percent_tm', 'base_weight_percent_tm');
+
     if (experienceModifier.weight_type === 'descriptor') {
-      if (profile.base_weight_descriptor) {
-        week1.weight = profile.base_weight_descriptor;
+      if (weightDescriptor) {
+        week1.weight = weightDescriptor;
       }
     } else if (experienceModifier.weight_type === 'percent_tm') {
-      if (profile.base_weight_percent_tm !== undefined) {
+      if (weightPercentTm !== undefined) {
         week1.weight = {
           type: 'percent_tm',
-          value: profile.base_weight_percent_tm
+          value: weightPercentTm
         };
       }
     }
@@ -168,6 +283,7 @@ export function applyIntensityProfile(
  * @param rules - Generation rules configuration
  * @param exerciseCategory - Optional category for compound exercise detection
  * @param subExerciseCount - Optional count of sub-exercises (for compound volume progression)
+ * @param isIntervalSubExercise - Whether this is a sub-exercise in an interval block (sub_work_mode: "time")
  * @returns Parameters for the specified week
  */
 export function applyProgressionScheme(
@@ -177,7 +293,8 @@ export function applyProgressionScheme(
   totalWeeks: number,
   rules: GenerationRules,
   exerciseCategory?: string,
-  subExerciseCount?: number
+  subExerciseCount?: number,
+  isIntervalSubExercise: boolean = false
 ): WeekParameters {
   // Get progression rules
   const scheme = rules.progression_schemes[progressionScheme];
@@ -196,7 +313,7 @@ export function applyProgressionScheme(
       return applyLinearProgression(weekN, week1, weekNumber, progressionRules);
 
     case 'density':
-      return applyDensityProgression(weekN, week1, weekNumber, totalWeeks, progressionRules, exerciseCategory);
+      return applyDensityProgression(weekN, week1, weekNumber, totalWeeks, progressionRules, exerciseCategory, isIntervalSubExercise);
 
     case 'wave_loading':
       return applyWaveLoading(weekN, week1, weekNumber, totalWeeks, progressionRules);
@@ -273,6 +390,7 @@ function isCompoundParent(exerciseCategory?: string): boolean {
 
 /**
  * Applies density progression (increase work time, increase reps, decrease rest)
+ * Special handling for interval sub-exercises: +5 sec work, -5 sec rest per week
  */
 function applyDensityProgression(
   weekN: WeekParameters,
@@ -280,10 +398,42 @@ function applyDensityProgression(
   weekNumber: number,
   totalWeeks: number,
   rules: any,
-  exerciseCategory?: string
+  exerciseCategory?: string,
+  isIntervalSubExercise: boolean = false
 ): WeekParameters {
   const weeksDelta = weekNumber - 1;
 
+  // Special handling for interval sub-exercises (sub_work_mode: "time")
+  // Work time INCREASES by +5 sec/week, rest time DECREASES by -5 sec/week
+  // Total always = 60 seconds (work + rest = 60s)
+  if (isIntervalSubExercise) {
+    // Get interval-specific deltas from rules
+    const workDeltaSeconds = rules.interval_work_time_delta_per_week_seconds || 5;
+    const restDeltaSeconds = rules.interval_rest_time_delta_per_week_seconds || -5;
+    const restMinimumSeconds = rules.rest_time_minimum_seconds || 5;
+
+    // Increase work time
+    if (weekN.work_time_minutes !== undefined && week1.work_time_unit === 'seconds') {
+      const week1Seconds = week1.work_time_minutes! * 60; // Convert from stored minutes
+      const newSeconds = week1Seconds + (workDeltaSeconds * weeksDelta);
+      const roundedSeconds = roundTimeValue(newSeconds, 'seconds');
+      weekN.work_time_minutes = roundedSeconds / 60; // Store as minutes
+      weekN.work_time_unit = 'seconds';
+    }
+
+    // Decrease rest time
+    if (weekN.rest_time_minutes !== undefined && week1.rest_time_unit === 'seconds') {
+      const week1Seconds = week1.rest_time_minutes! * 60; // Convert from stored minutes
+      const newSeconds = Math.max(week1Seconds + (restDeltaSeconds * weeksDelta), restMinimumSeconds);
+      const roundedSeconds = roundTimeValue(newSeconds, 'seconds');
+      weekN.rest_time_minutes = roundedSeconds / 60; // Store as minutes
+      weekN.rest_time_unit = 'seconds';
+    }
+
+    return weekN;
+  }
+
+  // Standard density progression for non-interval exercises
   // Increase work time (for EMOM, AMRAP, etc.)
   // CRITICAL: Compound parents should keep work_time STATIC for density progression
   // Density means "more work in same time", so time stays constant and reps increase
@@ -319,17 +469,26 @@ function applyDensityProgression(
     weekN.reps = Math.round(week1.reps as number * (1 + increasePerWeek * weeksDelta));
   }
 
-  // Decrease rest time
+  // Decrease rest time (using unit-aware deltas)
   if (weekN.rest_time_minutes !== undefined) {
-    const restDelta = rules.rest_time_delta_per_week_minutes || -0.083;
-    const calculatedRest = Math.max(
-      week1.rest_time_minutes! + (restDelta * weeksDelta),
-      rules.rest_time_minimum_minutes || 0.167
-    );
-    weekN.rest_time_minutes = roundToHalfMinute(calculatedRest);
-    // Preserve time unit from week1
-    if (week1.rest_time_unit) {
-      weekN.rest_time_unit = week1.rest_time_unit;
+    const unit = week1.rest_time_unit || 'minutes';
+
+    if (unit === 'seconds') {
+      // Use seconds-based delta
+      const restDeltaSeconds = rules.rest_time_delta_per_week_seconds || -5;
+      const restMinimumSeconds = rules.rest_time_minimum_seconds || 5;
+      const week1Seconds = week1.rest_time_minutes! * 60; // Convert from stored minutes
+      const newSeconds = Math.max(week1Seconds + (restDeltaSeconds * weeksDelta), restMinimumSeconds);
+      const roundedSeconds = roundTimeValue(newSeconds, 'seconds');
+      weekN.rest_time_minutes = roundedSeconds / 60; // Store as minutes
+      weekN.rest_time_unit = 'seconds';
+    } else {
+      // Use minutes-based delta
+      const restDelta = rules.rest_time_delta_per_week_minutes || -0.25;
+      const restMinimum = rules.rest_time_minimum_minutes || 1.5;
+      const calculatedRest = Math.max(week1.rest_time_minutes! + (restDelta * weeksDelta), restMinimum);
+      weekN.rest_time_minutes = roundToHalfMinute(calculatedRest);
+      weekN.rest_time_unit = 'minutes';
     }
   }
 
@@ -429,6 +588,8 @@ function applyVolumeProgression(
  * @param answers - User answers
  * @param allExercises - Flattened exercise database (for sub-exercise lookup)
  * @param isSubExercise - Whether this is a sub-exercise in a compound block
+ * @param parentCategory - Parent exercise category (for sub-exercises)
+ * @param parentProfile - Parent's intensity profile (for interval sub-exercise time params)
  * @returns Parameterized exercise with week1, week2, ..., weekN
  */
 export function parameterizeExercise(
@@ -439,7 +600,8 @@ export function parameterizeExercise(
   answers: LegacyQuestionnaireAnswers,
   allExercises?: Array<[string, any]>,
   isSubExercise: boolean = false,
-  parentCategory?: string
+  parentCategory?: string,
+  parentProfile?: Record<string, any>
 ): ParameterizedExercise {
   // Look up exercise external_load to determine if weight should be assigned
   let exerciseExternalLoad: string | undefined;
@@ -450,8 +612,11 @@ export function parameterizeExercise(
     }
   }
 
+  // Check if this is an interval sub-exercise (parent has sub_work_mode: "time")
+  const isIntervalSubExercise = isSubExercise && parentProfile?.sub_work_mode === 'time';
+
   // Get Week 1 baseline
-  const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers, isSubExercise, exerciseExternalLoad, parentCategory);
+  const week1 = applyIntensityProfile(exercise, exerciseCategory, rules, answers, isSubExercise, exerciseExternalLoad, parentCategory, parentProfile);
 
   // Calculate sub-exercise count for compound volume progression
   const subExerciseCount = exercise.sub_exercises ? exercise.sub_exercises.length : undefined;
@@ -459,8 +624,9 @@ export function parameterizeExercise(
   // Calculate Week 2 and Week 3 (always required)
   // Pass exercise.category to enable compound parent detection for density/volume progression
   // Pass subExerciseCount for EMOM volume progression calculations
-  const week2 = applyProgressionScheme(week1, exercise.progressionScheme, 2, totalWeeks, rules, exercise.category, subExerciseCount);
-  const week3 = applyProgressionScheme(week1, exercise.progressionScheme, 3, totalWeeks, rules, exercise.category, subExerciseCount);
+  // Pass isIntervalSubExercise for interval-specific time progression
+  const week2 = applyProgressionScheme(week1, exercise.progressionScheme, 2, totalWeeks, rules, exercise.category, subExerciseCount, isIntervalSubExercise);
+  const week3 = applyProgressionScheme(week1, exercise.progressionScheme, 3, totalWeeks, rules, exercise.category, subExerciseCount, isIntervalSubExercise);
 
   // Build parameterized exercise with required weeks
   const parameterized: ParameterizedExercise = {
@@ -480,7 +646,8 @@ export function parameterizeExercise(
       totalWeeks,
       rules,
       exercise.category,
-      subExerciseCount
+      subExerciseCount,
+      isIntervalSubExercise
     );
 
     // TypeScript requires explicit assignment due to dynamic keys
@@ -494,6 +661,10 @@ export function parameterizeExercise(
 
   // Handle sub_exercises for compound exercises (EMOM, Circuit, AMRAP, Interval)
   if (exercise.sub_exercises && exercise.sub_exercises.length > 0 && allExercises) {
+    // Get the parent's intensity profile for passing to sub-exercises
+    const parentCategoryProfiles = rules.intensity_profiles[exercise.category || exerciseCategory];
+    const parentIntensityProfile = parentCategoryProfiles?.[exercise.intensityProfile];
+
     parameterized.sub_exercises = exercise.sub_exercises.map(subEx => {
       // Look up sub-exercise in database to get its category
       const subExData = allExercises.find(([name, _]) => name === subEx.name);
@@ -531,7 +702,7 @@ export function parameterizeExercise(
         intensityProfile: subIntensityProfile
       };
 
-      // Recursively parameterize the sub-exercise (passing isSubExercise=true and parentCategory)
+      // Recursively parameterize the sub-exercise (passing isSubExercise=true, parentCategory, and parentProfile)
       return parameterizeExercise(
         subExerciseStructure,
         subCategory,
@@ -540,7 +711,8 @@ export function parameterizeExercise(
         answers,
         allExercises,
         true, // This is a sub-exercise
-        exercise.category || exerciseCategory // Pass parent category for INTERVAL rest_time logic
+        exercise.category || exerciseCategory, // Pass parent category for INTERVAL rest_time logic
+        parentIntensityProfile // Pass parent's intensity profile for interval sub-exercise time params
       );
     });
   }

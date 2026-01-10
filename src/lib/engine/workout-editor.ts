@@ -798,6 +798,10 @@ export class WorkoutEditor {
 
   /**
    * Create a compound exercise block (EMOM/AMRAP/Circuit/Interval) with empty sub-exercises
+   *
+   * Compound block types have different primary attributes at the parent level:
+   * - TIME-BASED (EMOM, AMRAP): work_time_minutes (total duration)
+   * - SETS-BASED (CIRCUIT, INTERVAL): sets (number of rounds)
    */
   createCompoundBlock(
     dayKey: string,
@@ -818,7 +822,12 @@ export class WorkoutEditor {
       sub_exercises: []
     };
 
-    // Populate week parameters with smart defaults for compound exercises
+    // Determine block type
+    const timeBasedTypes = ['emom', 'amrap'];
+    const setsBasedTypes = ['circuit', 'interval'];
+    const isTimeBased = timeBasedTypes.includes(defaultCategory);
+
+    // Populate week parameters with appropriate defaults based on block type
     for (let w = 1; w <= this.workout.weeks; w++) {
       const weekKey = `week${w}`;
       const newWeekParams: any = {};
@@ -826,8 +835,22 @@ export class WorkoutEditor {
       // Get smart defaults for compound category
       const defaults = this.getSmartDefaults(defaultCategory, experienceLevel);
 
-      // Apply defaults
-      Object.assign(newWeekParams, defaults);
+      // Apply ONLY the appropriate attributes for this block type
+      if (isTimeBased) {
+        // TIME-BASED (EMOM, AMRAP): only include work_time at parent level
+        if (defaults.work_time_minutes !== undefined) {
+          newWeekParams.work_time_minutes = defaults.work_time_minutes;
+        }
+        if (defaults.work_time_unit) {
+          newWeekParams.work_time_unit = defaults.work_time_unit;
+        }
+      } else {
+        // SETS-BASED (CIRCUIT, INTERVAL): only include sets at parent level
+        if (defaults.sets !== undefined) {
+          newWeekParams.sets = defaults.sets;
+        }
+        // Note: work_time and rest_time for INTERVAL go on sub-exercises, not parent
+      }
 
       newExercise[weekKey] = newWeekParams;
     }
@@ -860,6 +883,10 @@ export class WorkoutEditor {
 
   /**
    * Change the category type of a compound block
+   *
+   * Compound block types have different primary attributes:
+   * - TIME-BASED (EMOM, AMRAP): work_time_minutes at parent level
+   * - SETS-BASED (CIRCUIT, INTERVAL): sets at parent level
    */
   setCompoundBlockType(
     dayKey: string,
@@ -896,7 +923,14 @@ export class WorkoutEditor {
       exercise.name = newName;
     }
 
-    // Update week parameters if needed (get new defaults for new category)
+    // Determine if we're switching between time-based and sets-based modes
+    const timeBasedTypes = ['emom', 'amrap'];
+    const setsBasedTypes = ['circuit', 'interval'];
+    const oldIsTimeBased = oldCategory ? timeBasedTypes.includes(oldCategory.toLowerCase()) : true; // default EMOM
+    const newIsTimeBased = timeBasedTypes.includes(newCategory);
+    const newIsSetsBased = setsBasedTypes.includes(newCategory);
+
+    // Get new defaults for the new category
     const newDefaults = this.getSmartDefaults(newCategory, experienceLevel);
 
     for (let w = 1; w <= this.workout.weeks; w++) {
@@ -904,13 +938,74 @@ export class WorkoutEditor {
       const weekParams = (exercise as any)[weekKey];
 
       if (weekParams) {
-        // Apply new category defaults, but preserve existing values where they make sense
-        // For compound exercises, work_time_minutes and rest_time_minutes are common across all types
-        if (newDefaults.work_time_minutes !== undefined && weekParams.work_time_minutes === undefined) {
-          weekParams.work_time_minutes = newDefaults.work_time_minutes;
-        }
-        if (newDefaults.work_time_unit && !weekParams.work_time_unit) {
-          weekParams.work_time_unit = newDefaults.work_time_unit;
+        // Handle mode conversion: time-based <-> sets-based
+        if (oldIsTimeBased && newIsSetsBased) {
+          // Converting FROM time-based (EMOM/AMRAP) TO sets-based (CIRCUIT/INTERVAL)
+          // Remove work_time_minutes from parent, add sets
+          delete weekParams.work_time_minutes;
+          delete weekParams.work_time_unit;
+
+          // Add sets if not present
+          if (weekParams.sets === undefined && newDefaults.sets !== undefined) {
+            weekParams.sets = newDefaults.sets;
+          }
+
+          // INTERVAL has rest_time at parent level between rounds
+          if (newCategory === 'interval') {
+            if (weekParams.rest_time_minutes === undefined && newDefaults.rest_time_minutes !== undefined) {
+              weekParams.rest_time_minutes = newDefaults.rest_time_minutes;
+            }
+            if (!weekParams.rest_time_unit && newDefaults.rest_time_unit) {
+              weekParams.rest_time_unit = newDefaults.rest_time_unit;
+            }
+          }
+        } else if (!oldIsTimeBased && newIsTimeBased) {
+          // Converting FROM sets-based (CIRCUIT/INTERVAL) TO time-based (EMOM/AMRAP)
+          // Remove sets from parent, add work_time_minutes
+          delete weekParams.sets;
+
+          // Also remove rest_time if it was from INTERVAL
+          if (oldCategory?.toLowerCase() === 'interval') {
+            delete weekParams.rest_time_minutes;
+            delete weekParams.rest_time_unit;
+          }
+
+          // Add work_time_minutes if not present
+          if (weekParams.work_time_minutes === undefined && newDefaults.work_time_minutes !== undefined) {
+            weekParams.work_time_minutes = newDefaults.work_time_minutes;
+          }
+          if (!weekParams.work_time_unit && newDefaults.work_time_unit) {
+            weekParams.work_time_unit = newDefaults.work_time_unit;
+          }
+        } else if (newIsSetsBased && oldCategory?.toLowerCase() !== newCategory) {
+          // Converting between sets-based types (CIRCUIT <-> INTERVAL)
+          // Handle INTERVAL-specific rest_time
+          if (newCategory === 'interval') {
+            if (weekParams.rest_time_minutes === undefined && newDefaults.rest_time_minutes !== undefined) {
+              weekParams.rest_time_minutes = newDefaults.rest_time_minutes;
+            }
+            if (!weekParams.rest_time_unit && newDefaults.rest_time_unit) {
+              weekParams.rest_time_unit = newDefaults.rest_time_unit;
+            }
+          } else if (newCategory === 'circuit' && oldCategory?.toLowerCase() === 'interval') {
+            // Converting from INTERVAL to CIRCUIT - remove rest_time if it came from interval
+            delete weekParams.rest_time_minutes;
+            delete weekParams.rest_time_unit;
+          }
+
+          // Ensure sets exists
+          if (weekParams.sets === undefined && newDefaults.sets !== undefined) {
+            weekParams.sets = newDefaults.sets;
+          }
+        } else if (newIsTimeBased && oldCategory?.toLowerCase() !== newCategory) {
+          // Converting between time-based types (EMOM <-> AMRAP)
+          // Both use work_time_minutes, just ensure defaults are sensible
+          if (weekParams.work_time_minutes === undefined && newDefaults.work_time_minutes !== undefined) {
+            weekParams.work_time_minutes = newDefaults.work_time_minutes;
+          }
+          if (!weekParams.work_time_unit && newDefaults.work_time_unit) {
+            weekParams.work_time_unit = newDefaults.work_time_unit;
+          }
         }
       }
     }
@@ -1220,6 +1315,118 @@ export class WorkoutEditor {
   }
 
   /**
+   * Detach a sub-exercise from a compound block and place it as a standalone exercise
+   * The detached exercise is inserted immediately after the compound block
+   */
+  detachSubExercise(
+    dayKey: string,
+    exerciseIndex: number,
+    subExerciseIndex: number,
+    experienceLevel: string = 'intermediate'
+  ): { success: boolean; message: string; newExerciseIndex?: number } {
+    const day = this.workout.days[dayKey];
+    if (!day || !day.exercises[exerciseIndex]) {
+      return { success: false, message: 'Exercise not found' };
+    }
+
+    const exercise = day.exercises[exerciseIndex];
+
+    // Validate this is a compound exercise
+    if (!exercise.sub_exercises || exercise.sub_exercises.length === 0) {
+      return { success: false, message: 'Not a compound exercise' };
+    }
+
+    // Validate sub-exercise index
+    if (subExerciseIndex < 0 || subExerciseIndex >= exercise.sub_exercises.length) {
+      return { success: false, message: 'Sub-exercise index out of range' };
+    }
+
+    // Get the sub-exercise to detach
+    const subExercise = exercise.sub_exercises[subExerciseIndex];
+    const subExerciseCopy = JSON.parse(JSON.stringify(subExercise));
+
+    // Find exercise in database for category and smart defaults
+    const exerciseData = this.findExerciseInDatabase(subExercise.name);
+    const category = exerciseData?.category || 'strength';
+
+    // Create new standalone exercise
+    const newExercise: any = {
+      name: subExercise.name,
+      category: category
+    };
+
+    // Get smart defaults for the category
+    const defaults = this.getSmartDefaults(category, experienceLevel);
+
+    // Populate week parameters
+    for (let w = 1; w <= this.workout.weeks; w++) {
+      const weekKey = `week${w}`;
+      const subWeekParams = (subExercise as any)[weekKey];
+
+      // Start with smart defaults
+      const newWeekParams: any = { ...defaults };
+
+      // Override with sub-exercise params where they exist
+      if (subWeekParams) {
+        if (subWeekParams.reps !== undefined) newWeekParams.reps = subWeekParams.reps;
+        if (subWeekParams.weight !== undefined) newWeekParams.weight = subWeekParams.weight;
+        if (subWeekParams.work_time_minutes !== undefined) newWeekParams.work_time_minutes = subWeekParams.work_time_minutes;
+        if (subWeekParams.work_time_unit !== undefined) newWeekParams.work_time_unit = subWeekParams.work_time_unit;
+        if (subWeekParams.rest_time_minutes !== undefined) newWeekParams.rest_time_minutes = subWeekParams.rest_time_minutes;
+        if (subWeekParams.rest_time_unit !== undefined) newWeekParams.rest_time_unit = subWeekParams.rest_time_unit;
+      }
+
+      // Ensure sets has a value (sub-exercises don't have sets, but standalone does)
+      if (!newWeekParams.sets) {
+        newWeekParams.sets = defaults.sets || 3;
+      }
+
+      newExercise[weekKey] = newWeekParams;
+    }
+
+    // Remove sub-exercise from compound block
+    const oldSubExercises = [...exercise.sub_exercises];
+    exercise.sub_exercises.splice(subExerciseIndex, 1);
+
+    // Update compound block name
+    const oldParentName = exercise.name;
+    const newParentName = this.updateCompoundBlockName(exercise);
+    if (newParentName) {
+      exercise.name = newParentName;
+    }
+
+    // Insert new standalone exercise after the compound block
+    const insertIndex = exerciseIndex + 1;
+    const oldExercises = [...day.exercises];
+    day.exercises.splice(insertIndex, 0, newExercise as ParameterizedExercise);
+
+    // Add to undo stack
+    this.addUndo({
+      timestamp: Date.now(),
+      action: `Detach sub-exercise: ${subExercise.name}`,
+      location: `${dayKey}.exercises[${exerciseIndex}].sub_exercises[${subExerciseIndex}]`,
+      previousValue: subExerciseCopy,
+      newValue: newExercise,
+      reverseOperation: () => {
+        // Remove the detached exercise
+        day.exercises.splice(insertIndex, 1);
+        // Restore sub-exercises
+        exercise.sub_exercises = oldSubExercises;
+        // Restore parent name
+        exercise.name = oldParentName;
+      }
+    });
+
+    this.modified = true;
+
+    return {
+      success: true,
+      message: `Detached ${subExercise.name} as standalone exercise`,
+      newExerciseIndex: insertIndex
+    };
+  }
+
+  /**
    * Undo last change
    */
   undo(): UndoEntry | null {
@@ -1343,6 +1550,7 @@ export class WorkoutEditor {
 
   /**
    * Private helper: get smart defaults from workout_generation_rules.json
+   * Supports new self-documenting field names with fallback to deprecated base_* fields
    */
   private getSmartDefaults(category: string, experienceLevel: string): any {
     const defaults: any = {};
@@ -1352,31 +1560,65 @@ export class WorkoutEditor {
     if (intensityProfiles) {
       const profile = intensityProfiles.moderate || intensityProfiles.light || Object.values(intensityProfiles)[0];
 
-      if (profile.base_sets) defaults.sets = profile.base_sets;
-      if (profile.base_reps) defaults.reps = profile.base_reps;
+      // Sets (new: sets, deprecated: base_sets)
+      if (profile.sets !== undefined) {
+        defaults.sets = profile.sets;
+      } else if (profile.base_sets !== undefined) {
+        defaults.sets = profile.base_sets;
+      }
 
-      // CRITICAL: Copy both value AND unit for time fields
-      if (profile.base_rest_time_minutes !== undefined) {
+      // Reps (new: reps, deprecated: base_reps)
+      if (profile.reps !== undefined) {
+        defaults.reps = profile.reps;
+      } else if (profile.base_reps !== undefined) {
+        defaults.reps = profile.base_reps;
+      }
+
+      // Rest time: try new _seconds/_minutes fields first, then deprecated base_rest_time_*
+      if (profile.rest_time_seconds !== undefined) {
+        defaults.rest_time_minutes = profile.rest_time_seconds / 60;  // Store as minutes for compatibility
+        defaults.rest_time_unit = 'seconds';
+      } else if (profile.rest_time_minutes !== undefined) {
+        defaults.rest_time_minutes = profile.rest_time_minutes;
+        defaults.rest_time_unit = 'minutes';
+      } else if (profile.base_rest_time_minutes !== undefined) {
         defaults.rest_time_minutes = profile.base_rest_time_minutes;
-      }
-      if (profile.base_rest_time_unit) {
-        defaults.rest_time_unit = profile.base_rest_time_unit;
+        if (profile.base_rest_time_unit) {
+          defaults.rest_time_unit = profile.base_rest_time_unit;
+        }
       }
 
-      if (profile.base_work_time_minutes !== undefined) {
+      // Work time: try block_time_minutes first (EMOM/AMRAP), then work_time_*, then deprecated
+      if (profile.block_time_minutes !== undefined) {
+        defaults.work_time_minutes = profile.block_time_minutes;
+        defaults.work_time_unit = 'minutes';
+      } else if (profile.work_time_seconds !== undefined) {
+        defaults.work_time_minutes = profile.work_time_seconds / 60;  // Store as minutes for compatibility
+        defaults.work_time_unit = 'seconds';
+      } else if (profile.work_time_minutes !== undefined) {
+        defaults.work_time_minutes = profile.work_time_minutes;
+        defaults.work_time_unit = 'minutes';
+      } else if (profile.base_work_time_minutes !== undefined) {
         defaults.work_time_minutes = profile.base_work_time_minutes;
-      }
-      if (profile.base_work_time_unit) {
-        defaults.work_time_unit = profile.base_work_time_unit;
+        if (profile.base_work_time_unit) {
+          defaults.work_time_unit = profile.base_work_time_unit;
+        }
       }
 
-      // Weight defaults
-      if (profile.base_weight_percent_tm) {
+      // Weight defaults (new: weight_percent_tm/weight_descriptor, deprecated: base_*)
+      if (profile.weight_percent_tm !== undefined) {
+        defaults.weight = {
+          type: 'percent_tm',
+          value: profile.weight_percent_tm
+        } as WeightSpecification;
+      } else if (profile.weight_descriptor !== undefined) {
+        defaults.weight = profile.weight_descriptor;
+      } else if (profile.base_weight_percent_tm !== undefined) {
         defaults.weight = {
           type: 'percent_tm',
           value: profile.base_weight_percent_tm
         } as WeightSpecification;
-      } else if (profile.base_weight_descriptor) {
+      } else if (profile.base_weight_descriptor !== undefined) {
         defaults.weight = profile.base_weight_descriptor;
       }
     }

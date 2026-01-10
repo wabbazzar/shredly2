@@ -114,6 +114,27 @@ export interface TimeValue {
   unit: TimeUnit;
 }
 
+/**
+ * Sub-exercise work mode for compound blocks
+ * - "reps": Sub-exercises get reps from their own category (EMOM, AMRAP behavior)
+ * - "time": Sub-exercises get work_time/rest_time from parent config (Interval behavior)
+ */
+export type SubWorkMode = "reps" | "time";
+
+/**
+ * Parsed time value with inferred unit from field name
+ */
+export interface ParsedTimeValue {
+  value: number;
+  unit: TimeUnit;
+  displayValue: string; // e.g., "30 seconds" or "2 minutes"
+}
+
+/**
+ * Helper type for time field suffixes
+ */
+export type TimeFieldSuffix = "_seconds" | "_minutes";
+
 // ============================================================================
 // PHASE 1: STRUCTURAL GENERATION TYPES
 // ============================================================================
@@ -392,13 +413,8 @@ export interface GenerationRules {
   experience_modifiers: ExperienceModifiers;
   time_estimates: TimeEstimates;
   category_workout_structure: CategoryWorkoutStructure;
-  duration_constraints: DurationConstraints;
-  split_patterns: SplitPatterns;
   split_muscle_group_mapping: SplitMuscleGroupMapping;
-  muscle_group_priority_mapping: MuscleGroupPriorityMapping;
   compound_exercise_construction: CompoundExerciseConstruction;
-  exercise_count_constraints: ExerciseCountConstraints;
-  equipment_quotas: EquipmentQuotas;
   exercise_selection_strategy: ExerciseSelectionStrategy;
   progression_by_goal: ProgressionByGoal;
   intensity_profile_by_layer_and_category: IntensityProfileByLayerAndCategory;
@@ -434,41 +450,50 @@ export interface CompoundExerciseConstruction {
   };
 }
 
-export interface ExerciseCountConstraints {
-  description?: string;
-  strength_max_per_day: number;
-  total_max_by_duration: {
-    [duration: string]: number;
-  };
-  require_compound_exercises: boolean;
-  compound_categories: string[];
-  compound_min_count: number;
-}
-
-export interface EquipmentQuotas {
-  description?: string;
-  barbell_max_per_day: number;
-  sequential_filtering_enabled: boolean;
-  fallback_order: string[];
-  description_detail?: string;
-}
 
 export interface IntensityProfiles {
   [category: string]: {
     [intensity: string]: {
+      // New self-documenting fields (Phase 1 of ticket #016)
+      sets?: number;
+      reps?: number | string;
+      rest_time_seconds?: number;           // For bodyweight, interval sub-exercises
+      rest_time_minutes?: number;           // For strength exercises
+      work_time_seconds?: number;           // For interval sub-exercises
+      work_time_minutes?: number;           // For EMOM/AMRAP block time
+      block_time_minutes?: number;          // For EMOM/AMRAP total block duration
+      weight_percent_tm?: number;
+      weight_descriptor?: string;
+      target_reps_per_minute?: number;      // For EMOM
+      target_rounds?: number;               // For AMRAP
+      sub_work_mode?: SubWorkMode;          // "reps" | "time" for compound blocks
+      sub_work_time_seconds?: number;       // For interval sub-exercises
+      sub_rest_time_seconds?: number;       // For interval sub-exercises
+
+      // Deprecated fields (for backward compatibility during transition)
+      /** @deprecated Use sets instead */
       base_sets?: number;
+      /** @deprecated Use reps instead */
       base_reps?: number | string;
+      /** @deprecated Use rest_time_seconds or rest_time_minutes instead */
       base_rest_time_minutes?: number;
-      base_rest_time_unit?: TimeUnit; // Explicit unit for rest time
+      /** @deprecated Unit now inferred from field name */
+      base_rest_time_unit?: TimeUnit;
+      /** @deprecated Use weight_percent_tm instead */
       base_weight_percent_tm?: number;
+      /** @deprecated Use weight_descriptor instead */
       base_weight_descriptor?: string;
+      /** @deprecated Use work_time_seconds or work_time_minutes instead */
       base_work_time_minutes?: number;
-      base_work_time_unit?: TimeUnit; // Explicit unit for work time
+      /** @deprecated Unit now inferred from field name */
+      base_work_time_unit?: TimeUnit;
+      /** @deprecated Use target_reps_per_minute instead */
       base_target_reps_per_minute?: number;
+      /** @deprecated Use target_rounds instead */
       base_target_rounds?: number;
       base_exercises_per_circuit?: number;
       base_rest_between_circuits_minutes?: number;
-      base_rest_between_circuits_unit?: TimeUnit; // Explicit unit for circuit rest time
+      base_rest_between_circuits_unit?: TimeUnit;
       intensity_description?: string;
     };
   };
@@ -492,26 +517,6 @@ export interface ExperienceModifiers {
     rest_time_multiplier: number;
     complexity_filter: string[];
     external_load_filter: string[];
-    can_use_set_blocks?: boolean;
-    can_use_wave_loading?: boolean;
-    can_use_auto_regulation?: boolean;
-  };
-}
-
-export interface DurationConstraints {
-  [duration: string]: {
-    total_minutes_min: number;
-    total_minutes_max: number;
-    include_layers: string[];
-    description: string;
-  };
-}
-
-export interface SplitPatterns {
-  [splitType: string]: {
-    pattern: string[];
-    description: string;
-    [key: string]: any; // For examples like "3_days", "5_days", etc.
   };
 }
 
@@ -544,21 +549,8 @@ export interface SplitMuscleGroupMapping {
   [focus: string]: MuscleGroupMappingEntry | string | undefined;
 }
 
-export interface MuscleGroupPriorityMapping {
-  [focus: string]: {
-    primary: string[];
-    secondary: string[];
-    description: string;
-  };
-}
-
 export interface CategoryWorkoutStructure {
-  warmup_categories?: string[];
   main_strength_categories?: string[];
-  volume_categories?: string[];
-  metabolic_categories?: string[];
-  cooldown_categories?: string[];
-  category_display_order?: string[];
   split_category_overrides?: {
     [splitFocus: string]: {
       first: string[];
@@ -584,25 +576,7 @@ export interface CategoryWorkoutStructure {
 
 export interface ExerciseSelectionStrategy {
   description?: string;
-  strategy: string;
   shuffle_pools?: boolean;
-  layer_requirements?: {
-    must_include: string[];
-    optional: string[];
-    always_end_with_last_if_available: boolean;
-  };
-  diversity_rules?: {
-    no_duplicate_exercises: boolean;
-    no_duplicate_exercises_within_week?: boolean;
-    muscle_diversity_within_day: boolean;
-    description: string;
-  };
-  equipment_priority?: {
-    description: string;
-    prefer_available_equipment: boolean;
-    fallback_to_bodyweight: boolean;
-  };
-  [key: string]: any; // For filling_algorithm_pseudocode, examples, etc.
 }
 
 export interface TimeEstimates {

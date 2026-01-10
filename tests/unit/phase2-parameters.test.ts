@@ -243,7 +243,8 @@ describe("phase2-parameters", () => {
         reps: "AMRAP",
         work_time_minutes: 10,
         work_time_unit: "minutes",
-        rest_time_minutes: 1.0,
+        rest_time_minutes: 2.0,  // Start above minimum (1.5 min) to allow decrease
+        rest_time_unit: "minutes",
       };
 
       const week2 = applyProgressionScheme(

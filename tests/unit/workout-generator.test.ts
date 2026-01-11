@@ -212,15 +212,10 @@ describe("workout-generator", () => {
       expect(bodyweight.metadata.equipment).toContain("bodyweight_only");
       expect(bodyweight.days).toBeDefined();
 
-      try {
-        const homeGym = generateWorkout(INTERMEDIATE_PPL);
-        expect(homeGym.metadata.equipment).toContain("home_gym_full");
-        expect(homeGym.days).toBeDefined();
-      } catch (error: any) {
-        console.warn(
-          `Skipping INTERMEDIATE_PPL equipment test: ${error.message}`,
-        );
-      }
+      const fullGym = generateWorkout(INTERMEDIATE_PPL);
+      // full_gym maps to commercial_gym in legacy format
+      expect(fullGym.metadata.equipment).toContain("commercial_gym");
+      expect(fullGym.days).toBeDefined();
     });
   });
 });

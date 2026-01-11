@@ -628,6 +628,20 @@ export class TimerEngine {
             }
             this.emit('minute_marker');
           }
+
+          // EMOM minute-end countdown (at 57, 58, 59 seconds into each minute)
+          // This triggers countdown beeps before each minute marker
+          if (this.config.countdownAtMinuteEnd && this.state.exerciseType === 'emom') {
+            const secondsIntoMinute = Math.floor(totalElapsed % 60);
+            // Emit countdown at 57, 58, 59 (3, 2, 1 seconds before next minute)
+            if (secondsIntoMinute >= 57 && secondsIntoMinute <= 59) {
+              const countdownValue = 60 - secondsIntoMinute;
+              // Only emit once per second (check if we haven't already emitted for this second)
+              if (this.lastTickSecond !== currentSecond) {
+                this.emit('countdown_tick', undefined, countdownValue);
+              }
+            }
+          }
         }
 
         // Timer complete

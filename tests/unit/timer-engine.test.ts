@@ -114,7 +114,62 @@ function createMockEMOMExercise(): LiveExercise {
       reps: null,
       weight: null,
       weightUnit: null,
-      workTimeSeconds: 420, // 7 minutes
+      workTimeSeconds: 300, // 5 minutes
+      restTimeSeconds: null,
+      tempo: null
+    },
+    completed: false,
+    completedSets: 0
+  };
+}
+
+function createMockAMRAPExercise(): LiveExercise {
+  return {
+    exerciseName: 'AMRAP Block',
+    exerciseType: 'amrap',
+    isCompoundParent: true,
+    subExercises: [
+      {
+        exerciseName: 'Burpees',
+        exerciseType: 'bodyweight',
+        isCompoundParent: false,
+        subExercises: [],
+        prescription: {
+          sets: 1,
+          reps: 5,
+          weight: null,
+          weightUnit: null,
+          workTimeSeconds: null,
+          restTimeSeconds: null,
+          tempo: null
+        },
+        completed: false,
+        completedSets: 0
+      },
+      {
+        exerciseName: 'Box Jumps',
+        exerciseType: 'bodyweight',
+        isCompoundParent: false,
+        subExercises: [],
+        prescription: {
+          sets: 1,
+          reps: 10,
+          weight: null,
+          weightUnit: null,
+          workTimeSeconds: null,
+          restTimeSeconds: null,
+          tempo: null
+        },
+        completed: false,
+        completedSets: 0
+      }
+    ],
+    prescription: {
+      sets: 1,
+      reps: null,
+      weight: null,
+      weightUnit: null,
+      workTimeSeconds: 360, // 6 minutes
       restTimeSeconds: null,
       tempo: null
     },
@@ -128,7 +183,25 @@ function createMockCircuitExercise(): LiveExercise {
     exerciseName: 'Circuit Block',
     exerciseType: 'circuit',
     isCompoundParent: true,
-    subExercises: [],
+    subExercises: [
+      {
+        exerciseName: 'Jumping Jacks',
+        exerciseType: 'bodyweight',
+        isCompoundParent: false,
+        subExercises: [],
+        prescription: {
+          sets: 1,
+          reps: 20,
+          weight: null,
+          weightUnit: null,
+          workTimeSeconds: null,
+          restTimeSeconds: null,
+          tempo: null
+        },
+        completed: false,
+        completedSets: 0
+      }
+    ],
     prescription: {
       sets: 3,
       reps: null,
@@ -281,7 +354,7 @@ describe('calculateWorkDuration', () => {
 
     // Uses workTimeSeconds from prescription
     const duration = calculateWorkDuration(exercise, config);
-    expect(duration).toBe(420);
+    expect(duration).toBe(300); // 5 minutes
   });
 
   it('should use prescribed work time for interval', () => {
@@ -407,7 +480,7 @@ describe('TimerEngine', () => {
 
       const state = engine.getState();
       expect(state.exerciseType).toBe('emom');
-      expect(state.totalMinutes).toBe(7);
+      expect(state.totalMinutes).toBe(5); // 300 seconds = 5 minutes
       expect(state.totalSubExercises).toBe(2);
     });
 
@@ -689,6 +762,72 @@ describe('TimerEngine', () => {
 
       engine.setCurrentSubExercise(-1); // Invalid
       expect(engine.getState().currentSubExercise).toBe(0);
+    });
+
+    it('should track minute markers for EMOM', () => {
+      const exercise = createMockEMOMExercise();
+      engine.initializeForExercise(exercise);
+
+      expect(engine.getState().totalMinutes).toBe(5); // 5 minutes
+      expect(engine.getState().currentMinute).toBe(1);
+    });
+  });
+
+  describe('AMRAP timer behavior', () => {
+    it('should initialize AMRAP with countdown mode', () => {
+      const exercise = createMockAMRAPExercise();
+      engine.initializeForExercise(exercise);
+
+      expect(engine.getState().mode).toBe('countdown');
+      expect(engine.getState().exerciseType).toBe('amrap');
+    });
+
+    it('should track total minutes for AMRAP', () => {
+      const exercise = createMockAMRAPExercise();
+      engine.initializeForExercise(exercise);
+
+      expect(engine.getState().totalMinutes).toBe(6); // 6 minutes
+    });
+  });
+
+  describe('Interval timer behavior', () => {
+    it('should initialize Interval with countdown mode', () => {
+      const exercise = createMockIntervalExercise();
+      engine.initializeForExercise(exercise);
+
+      expect(engine.getState().mode).toBe('countdown');
+      expect(engine.getState().exerciseType).toBe('interval');
+    });
+
+    it('should have work/rest phases', () => {
+      const config = getTimerConfigForExercise('interval');
+
+      expect(config.phases).toContain('work');
+      expect(config.phases).toContain('rest');
+    });
+  });
+
+  describe('Circuit timer behavior', () => {
+    it('should initialize Circuit with count_up mode', () => {
+      const exercise = createMockCircuitExercise();
+      engine.initializeForExercise(exercise);
+
+      expect(engine.getState().mode).toBe('count_up');
+      expect(engine.getState().exerciseType).toBe('circuit');
+    });
+
+    it('should count up from zero', () => {
+      const exercise = createMockCircuitExercise();
+      engine.initializeForExercise(exercise);
+      engine.start();
+
+      expect(engine.getState().remainingSeconds).toBe(0);
+
+      // After some time, remaining should increase (count-up)
+      vi.advanceTimersByTime(1000);
+      const state = engine.getState();
+      // In count-up mode, remainingSeconds becomes elapsed time
+      expect(state.remainingSeconds).toBeGreaterThan(0);
     });
   });
 });

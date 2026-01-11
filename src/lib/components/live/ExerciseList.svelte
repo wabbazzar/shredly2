@@ -4,6 +4,7 @@
 
 	export let exercises: LiveExercise[];
 	export let currentIndex: number;
+	export let currentSubExerciseIndex: number = 0;
 
 	const dispatch = createEventDispatcher<{
 		info: { exercise: LiveExercise; index: number };
@@ -131,11 +132,15 @@
 					<!-- Sub-exercises for compound blocks -->
 					{#if exercise.isCompoundParent && exercise.subExercises.length > 0}
 						<div class="mt-2 pl-2 border-l-2 border-slate-600">
-							{#each exercise.subExercises as subEx}
-								<div class="text-slate-500 text-xs py-0.5">
+							{#each exercise.subExercises as subEx, subIdx}
+								{@const isCurrentSub = isCurrent && subIdx === currentSubExerciseIndex}
+								<div class="text-xs py-0.5 {isCurrentSub ? 'text-white font-medium' : 'text-slate-500'}">
+									{#if isCurrentSub}
+										<span class="text-green-400 mr-1">▸</span>
+									{/if}
 									{subEx.exerciseName}
 									{#if subEx.prescription.reps}
-										<span class="text-slate-600">({subEx.prescription.reps} reps)</span>
+										<span class="{isCurrentSub ? 'text-slate-300' : 'text-slate-600'}">({subEx.prescription.reps} reps)</span>
 									{/if}
 								</div>
 							{/each}

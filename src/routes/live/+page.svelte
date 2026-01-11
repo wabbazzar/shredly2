@@ -268,6 +268,7 @@
 			<ExerciseList
 				exercises={$liveSession.exercises}
 				currentIndex={$liveSession.currentExerciseIndex}
+				currentSubExerciseIndex={timerState.currentSubExercise}
 				on:info={handleExerciseInfo}
 			/>
 

@@ -615,3 +615,182 @@ export interface DurationEstimate {
   restTime: number;
   totalTime: number;
 }
+
+// ============================================================================
+// TIMER ENGINE TYPES (Live View)
+// ============================================================================
+
+/**
+ * Timer phase types - represents the current state of the timer
+ */
+export type TimerPhase = 'idle' | 'work' | 'rest' | 'countdown' | 'complete' | 'paused' | 'entry';
+
+/**
+ * Timer mode based on exercise type
+ * - countdown: Timer counts down from a target time (strength, EMOM, AMRAP, interval)
+ * - count_up: Timer counts up from 0 (circuit)
+ */
+export type TimerMode = 'countdown' | 'count_up';
+
+/**
+ * Exercise category for timer behavior
+ */
+export type TimerExerciseType = 'strength' | 'bodyweight' | 'emom' | 'amrap' | 'interval' | 'circuit';
+
+/**
+ * Current state of the timer during a workout
+ */
+export interface TimerState {
+  mode: TimerMode;
+  phase: TimerPhase;
+  exerciseType: TimerExerciseType;
+
+  // Time tracking (all values in seconds)
+  totalSeconds: number;      // Total duration for this phase
+  remainingSeconds: number;  // Countdown: seconds left. Count-up: seconds elapsed
+  targetTimestamp: number;   // Unix timestamp when timer should end (for drift correction)
+
+  // Set/round tracking
+  currentSet: number;
+  totalSets: number;
+  currentSubExercise: number;  // For compound blocks (0-indexed)
+  totalSubExercises: number;
+
+  // Minute tracking (EMOM/AMRAP)
+  currentMinute: number;
+  totalMinutes: number;
+
+  // Audio state
+  audioEnabled: boolean;
+  lastAudioCue: string | null;
+}
+
+/**
+ * Timer behavior configuration for an exercise type
+ */
+export interface TimerConfig {
+  exerciseType: TimerExerciseType;
+  mode: TimerMode;
+  phases: ('work' | 'rest' | 'continuous')[];
+  workCalculation: 'tempo_based' | 'fixed' | 'from_prescription';
+  countdownBefore: 'work' | 'rest' | null;
+  logTiming: 'after_each_set' | 'after_block';
+  minuteMarkers: boolean;
+  countdownAtMinuteEnd?: boolean;
+}
+
+/**
+ * Audio configuration for the timer
+ */
+export interface AudioConfig {
+  enabled: boolean;
+  countdownEnabled: boolean;
+  completionEnabled: boolean;
+  minuteMarkersEnabled: boolean;
+  volume: number;  // 0.0 - 1.0
+  duckMusic: boolean;
+}
+
+/**
+ * Default audio configuration
+ */
+export const DEFAULT_AUDIO_CONFIG: AudioConfig = {
+  enabled: true,
+  countdownEnabled: true,
+  completionEnabled: true,
+  minuteMarkersEnabled: true,
+  volume: 0.8,
+  duckMusic: false
+};
+
+/**
+ * Live workout session - tracks the full state of an active workout
+ */
+export interface LiveWorkoutSession {
+  workoutId: string;
+  scheduleId: string;
+  weekNumber: number;
+  dayNumber: number;
+  startTime: string;  // ISO timestamp
+  currentExerciseIndex: number;
+  exercises: LiveExercise[];
+  logs: ExerciseLog[];
+  timerState: TimerState;
+  audioConfig: AudioConfig;
+  isPaused: boolean;
+  pauseStartTime: string | null;
+  totalPauseTime: number;  // seconds
+}
+
+/**
+ * An exercise as it appears in a live workout
+ */
+export interface LiveExercise {
+  exerciseName: string;
+  exerciseType: TimerExerciseType;
+  isCompoundParent: boolean;
+  subExercises: LiveExercise[];
+  prescription: {
+    sets: number;
+    reps: number | null;
+    weight: number | null;
+    weightUnit: 'lbs' | 'kg' | null;
+    workTimeSeconds: number | null;
+    restTimeSeconds: number | null;
+    tempo: string | null;
+  };
+  completed: boolean;
+  completedSets: number;
+}
+
+/**
+ * Log entry for a single set
+ */
+export interface SetLog {
+  setNumber: number;
+  reps: number | null;
+  weight: number | null;
+  weightUnit: 'lbs' | 'kg' | null;
+  workTime: number | null;
+  rpe: number | null;
+  rir: number | null;
+  completed: boolean;
+  notes: string | null;
+  timestamp: string;
+}
+
+/**
+ * Log entry for a complete exercise (contains all sets)
+ */
+export interface ExerciseLog {
+  exerciseName: string;
+  exerciseOrder: number;
+  isCompoundParent: boolean;
+  compoundParentName: string | null;
+  sets: SetLog[];
+  totalTime?: number;  // For circuits (time to complete)
+  totalRounds?: number;  // For AMRAP
+  timestamp: string;
+}
+
+/**
+ * Timer event types for callbacks
+ */
+export type TimerEventType =
+  | 'tick'
+  | 'phase_change'
+  | 'set_complete'
+  | 'exercise_complete'
+  | 'minute_marker'
+  | 'countdown_tick'
+  | 'workout_complete';
+
+/**
+ * Timer event data
+ */
+export interface TimerEvent {
+  type: TimerEventType;
+  state: TimerState;
+  previousPhase?: TimerPhase;
+  countdownValue?: number;  // For countdown_tick events (3, 2, 1)
+}

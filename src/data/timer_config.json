@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "timer_behavior": {
+    "strength": {
+      "mode": "countdown",
+      "phases": ["work", "rest"],
+      "work_calculation": "tempo_based",
+      "countdown_before": "work",
+      "log_timing": "after_each_set",
+      "minute_markers": false
+    },
+    "bodyweight": {
+      "mode": "countdown",
+      "phases": ["work", "rest"],
+      "work_calculation": "tempo_based",
+      "countdown_before": "work",
+      "log_timing": "after_each_set",
+      "minute_markers": false
+    },
+    "emom": {
+      "mode": "countdown",
+      "phases": ["continuous"],
+      "work_calculation": "from_prescription",
+      "countdown_before": null,
+      "countdown_at_minute_end": true,
+      "log_timing": "after_block",
+      "minute_markers": true
+    },
+    "amrap": {
+      "mode": "countdown",
+      "phases": ["continuous"],
+      "work_calculation": "from_prescription",
+      "countdown_before": null,
+      "countdown_at_minute_end": true,
+      "log_timing": "after_block",
+      "minute_markers": true
+    },
+    "interval": {
+      "mode": "countdown",
+      "phases": ["work", "rest"],
+      "work_calculation": "from_prescription",
+      "countdown_before": "work",
+      "log_timing": "after_block",
+      "minute_markers": false
+    },
+    "circuit": {
+      "mode": "count_up",
+      "phases": ["continuous"],
+      "work_calculation": "fixed",
+      "countdown_before": null,
+      "log_timing": "after_block",
+      "minute_markers": true
+    }
+  },
+  "audio": {
+    "countdown_seconds": [3, 2, 1],
+    "sounds": {
+      "countdown": "countdown.mp3",
+      "work_complete": "work_complete.mp3",
+      "block_complete": "block_complete.mp3",
+      "minute_marker": "minute_marker.mp3"
+    }
+  },
+  "visual": {
+    "colors": {
+      "work": "#22c55e",
+      "rest": "#3b82f6",
+      "countdown": "#eab308",
+      "complete": "#a855f7",
+      "paused": "#6b7280",
+      "idle": "#374151",
+      "entry": "#f59e0b"
+    }
+  },
+  "defaults": {
+    "tempo_seconds_per_rep": 4,
+    "min_rest_seconds": 10,
+    "countdown_duration_seconds": 3,
+    "default_work_seconds": 30,
+    "default_rest_seconds": 60
+  }
+}

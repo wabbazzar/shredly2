@@ -17,26 +17,39 @@
 		hasRecoverableSession,
 		getTodaysWorkout,
 		getWorkoutForDay,
-		updateTimerState
+		updateTimerState,
+		logCompletedSet
 	} from '$lib/stores/liveSession';
 	import { activeSchedule, initializeScheduleStore } from '$lib/stores/schedule';
+	import { logSessionToHistory } from '$lib/stores/history';
 	import {
 		TimerEngine,
 		getTimerEngine,
 		createInitialTimerState
 	} from '$lib/engine/timer-engine';
-	import type { TimerEvent, LiveExercise } from '$lib/engine/types';
+	import { getAudioManager } from '$lib/utils/audioManager';
+	import type { TimerEvent, LiveExercise, SetLog } from '$lib/engine/types';
 	import TimerDisplay from '$lib/components/live/TimerDisplay.svelte';
 	import TimerControls from '$lib/components/live/TimerControls.svelte';
 	import ExerciseList from '$lib/components/live/ExerciseList.svelte';
+	import DataEntryModal from '$lib/components/live/DataEntryModal.svelte';
+	import ExerciseInfoModal from '$lib/components/live/ExerciseInfoModal.svelte';
 
 	let timerEngine: TimerEngine;
 	let unsubscribeTimer: (() => void) | null = null;
+	let audioManager = getAudioManager();
 
 	// Local reactive state
 	let timerState = createInitialTimerState();
 	let showStartPrompt = false;
 	let noScheduleMessage = '';
+
+	// Modal state
+	let showDataEntry = false;
+	let dataEntryExercise: LiveExercise | null = null;
+	let dataEntrySetNumber = 1;
+	let showExerciseInfo = false;
+	let exerciseInfoExercise: LiveExercise | null = null;
 
 	onMount(async () => {
 		navigationStore.setActiveTab('live');
@@ -66,6 +79,11 @@
 		}
 	});
 
+	// Initialize audio on first user interaction
+	async function initializeAudio() {
+		await audioManager.initialize();
+	}
+
 	onDestroy(() => {
 		if (unsubscribeTimer) {
 			unsubscribeTimer();
@@ -78,18 +96,43 @@
 		updateTimerState(event.state);
 
 		switch (event.type) {
+			case 'countdown_tick':
+				// Play countdown beep
+				if (event.countdownValue) {
+					audioManager.playCountdown(event.countdownValue);
+				}
+				break;
+
 			case 'set_complete':
 				advanceToNextSet();
+				audioManager.playWorkComplete();
 				break;
+
+			case 'minute_marker':
+				audioManager.playMinuteMarker();
+				break;
+
 			case 'exercise_complete':
-				// Stay on current exercise, wait for user to advance
+				audioManager.playExerciseComplete();
+				break;
+
+			case 'phase_change':
+				// Show data entry modal when entering entry phase
+				if (event.state.phase === 'entry' && $currentExercise) {
+					dataEntryExercise = $currentExercise;
+					dataEntrySetNumber = event.state.currentSet;
+					showDataEntry = true;
+				}
 				break;
 		}
 	}
 
 	// Start today's workout
-	function handleStartTodaysWorkout() {
+	async function handleStartTodaysWorkout() {
 		if (!$activeSchedule) return;
+
+		// Initialize audio on first user gesture
+		await initializeAudio();
 
 		const todaysWorkout = getTodaysWorkout($activeSchedule);
 		if (!todaysWorkout) return;
@@ -105,7 +148,10 @@
 	}
 
 	// Timer control handlers
-	function handleStart() {
+	async function handleStart() {
+		// Initialize audio on first user gesture
+		await initializeAudio();
+
 		if ($currentExercise) {
 			timerEngine.initializeForExercise($currentExercise);
 		}
@@ -138,8 +184,19 @@
 
 	function handleStop() {
 		timerEngine.stop();
-		const logs = endWorkout();
-		// TODO: Save logs to history
+		const result = endWorkout();
+
+		// Save logs to history if session had data
+		if (result && result.logs.length > 0 && $liveSession) {
+			logSessionToHistory(
+				$liveSession.workoutProgramId,
+				$liveSession.weekNumber,
+				$liveSession.dayNumber,
+				result.logs
+			);
+			audioManager.playSessionComplete();
+		}
+
 		showStartPrompt = false;
 
 		// Reset state
@@ -156,8 +213,37 @@
 
 	// Exercise info handler
 	function handleExerciseInfo(event: CustomEvent<{ exercise: LiveExercise; index: number }>) {
-		// TODO: Show exercise info modal
-		console.log('Exercise info:', event.detail);
+		exerciseInfoExercise = event.detail.exercise;
+		showExerciseInfo = true;
+	}
+
+	// Data entry modal handlers
+	function handleDataEntrySubmit(event: CustomEvent<{ setLog: SetLog; totalRounds?: number; totalTime?: number }>) {
+		const { setLog, totalRounds, totalTime } = event.detail;
+
+		if (dataEntryExercise) {
+			// Log the completed set
+			logCompletedSet(setLog, totalRounds, totalTime);
+		}
+
+		// Close modal and continue
+		showDataEntry = false;
+		dataEntryExercise = null;
+
+		// Tell timer engine to exit data entry mode
+		timerEngine.exitDataEntry();
+	}
+
+	function handleDataEntryCancel() {
+		// Skip logging, just close modal
+		showDataEntry = false;
+		dataEntryExercise = null;
+		timerEngine.exitDataEntry();
+	}
+
+	function handleExerciseInfoClose() {
+		showExerciseInfo = false;
+		exerciseInfoExercise = null;
 	}
 
 	// Check if there's a next exercise
@@ -285,4 +371,23 @@
 			</button>
 		{/if}
 	</div>
+{/if}
+
+<!-- Data Entry Modal -->
+{#if showDataEntry && dataEntryExercise}
+	<DataEntryModal
+		exercise={dataEntryExercise}
+		setNumber={dataEntrySetNumber}
+		isCompoundBlock={dataEntryExercise.isCompoundParent}
+		on:submit={handleDataEntrySubmit}
+		on:cancel={handleDataEntryCancel}
+	/>
+{/if}
+
+<!-- Exercise Info Modal -->
+{#if showExerciseInfo && exerciseInfoExercise}
+	<ExerciseInfoModal
+		exercise={exerciseInfoExercise}
+		on:close={handleExerciseInfoClose}
+	/>
 {/if}

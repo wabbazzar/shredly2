@@ -529,9 +529,10 @@ describe('Live Session Store', () => {
         timestamp: new Date().toISOString()
       });
 
-      const logs = endWorkout();
+      const result = endWorkout();
 
-      expect(logs.length).toBe(1);
+      expect(result).not.toBe(null);
+      expect(result?.logs.length).toBe(1);
       expect(get(liveSession)).toBe(null);
     });
 

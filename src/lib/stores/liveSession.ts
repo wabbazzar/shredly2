@@ -640,15 +640,41 @@ export function logCompoundBlock(
 }
 
 /**
+ * Log a completed set from the data entry modal
+ * Handles both regular sets and compound blocks
+ */
+export function logCompletedSet(
+  setLog: SetLog,
+  totalRounds?: number,
+  totalTime?: number
+): void {
+  const session = get(liveSession);
+  if (!session) return;
+
+  const exerciseIndex = session.currentExerciseIndex;
+  const exercise = session.exercises[exerciseIndex];
+
+  if (exercise.isCompoundParent && (totalRounds !== undefined || totalTime !== undefined)) {
+    // Log as compound block
+    logCompoundBlock(exerciseIndex, totalRounds, totalTime);
+  } else {
+    // Log as regular set
+    logSet(exerciseIndex, setLog);
+  }
+}
+
+/**
  * End the workout session
  */
-export function endWorkout(): ExerciseLog[] {
+export function endWorkout(): { logs: ExerciseLog[]; session: LiveWorkoutSession } | null {
   const session = get(liveSession);
-  const logs = session?.logs ?? [];
+  if (!session) return null;
+
+  const logs = session.logs ?? [];
 
   liveSession.set(null);
 
-  return logs;
+  return { logs, session };
 }
 
 /**

@@ -8,6 +8,20 @@
 import type { ParameterizedWorkout, ParameterizedDay, ParameterizedExercise } from '$lib/engine/types';
 
 /**
+ * Weekday index (0=Monday, 6=Sunday)
+ */
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+
+/**
+ * Maps workout day numbers to weekdays
+ * Key: workout day number (1-based, e.g., "1", "2", "3")
+ * Value: weekday index (0=Monday, 6=Sunday)
+ */
+export interface DayMapping {
+  [dayNumber: string]: Weekday;
+}
+
+/**
  * Schedule-specific metadata (GUI-only, not part of engine output)
  */
 export interface ScheduleMetadata {
@@ -23,6 +37,8 @@ export interface ScheduleMetadata {
   currentWeek: number;
   /** User's current progress - which day they're on (1-based) */
   currentDay: number;
+  /** Maps workout day numbers to weekdays (0=Monday, 6=Sunday) */
+  dayMapping?: DayMapping;
 }
 
 /**
@@ -73,6 +89,8 @@ export interface ScheduleViewState {
   selectedDay: number;
   /** Whether currently in edit mode */
   isEditing: boolean;
+  /** Whether showing library view vs detail view */
+  showLibrary: boolean;
 }
 
 /**

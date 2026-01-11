@@ -9,7 +9,24 @@ export default defineConfig({
 			registerType: 'autoUpdate',
 			manifest: false, // Use static/manifest.json instead
 			workbox: {
-				globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}']
+				globPatterns: ['client/**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+				globIgnores: ['**/node_modules/**'],
+				runtimeCaching: [
+					{
+						urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+						handler: 'CacheFirst',
+						options: {
+							cacheName: 'google-fonts-cache',
+							expiration: {
+								maxEntries: 10,
+								maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
+							},
+							cacheableResponse: {
+								statuses: [0, 200]
+							}
+						}
+					}
+				]
 			},
 			devOptions: {
 				enabled: false // Disable PWA in dev mode to avoid caching issues

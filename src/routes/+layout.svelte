@@ -33,7 +33,7 @@
 <div class="h-screen flex flex-col bg-slate-900 overflow-hidden">
 	<!-- Main content area with swipe handling -->
 	<SwipeContainer>
-		<main class="h-full overflow-auto pb-20">
+		<main class="h-full overflow-auto pb-nav">
 			{#key pageKey}
 				<div
 					class="h-full transition-transform duration-300 ease-out

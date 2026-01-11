@@ -2,8 +2,17 @@
 	import { createEventDispatcher } from 'svelte';
 	import { saveScheduleToDb, setActiveSchedule, navigateToCalendar } from '$lib/stores/schedule';
 	import type { ParameterizedWorkout } from '$lib/engine/types';
-	import type { StoredSchedule } from '$lib/types/schedule';
+	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
 	import DatePicker from './DatePicker.svelte';
+
+	// Create default day mapping (consecutive days starting Monday)
+	function createDefaultDayMapping(daysPerWeek: number): DayMapping {
+		const mapping: DayMapping = {};
+		for (let i = 1; i <= daysPerWeek; i++) {
+			mapping[i.toString()] = ((i - 1) % 7) as Weekday;
+		}
+		return mapping;
+	}
 
 	export let isOpen: boolean;
 
@@ -118,7 +127,8 @@
 					createdAt: new Date().toISOString(),
 					updatedAt: new Date().toISOString(),
 					currentWeek: 1,
-					currentDay: 1
+					currentDay: 1,
+					dayMapping: createDefaultDayMapping(workout.daysPerWeek)
 				}
 			};
 
@@ -162,22 +172,22 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 bg-black/60 z-50 flex items-end justify-center"
+		class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3"
 		on:click={handleBackdropClick}
 	>
 		<!-- Modal -->
 		<div
-			class="w-full max-w-lg bg-slate-800 rounded-t-2xl max-h-[90vh] flex flex-col
-				   animate-slide-up"
+			class="w-full max-w-sm bg-slate-800 rounded-xl flex flex-col max-h-[calc(100vh-1.5rem)] max-h-[calc(100dvh-1.5rem)]"
+			on:click|stopPropagation
 		>
 			<!-- Header -->
-			<div class="flex items-center justify-between p-4 border-b border-slate-700">
-				<h2 class="text-lg font-semibold text-white">Load Schedule</h2>
+			<div class="flex items-center justify-between px-4 py-3 border-b border-slate-700 flex-shrink-0">
+				<h2 class="text-base font-semibold text-white">Load Schedule</h2>
 				<button
 					on:click={handleClose}
 					class="p-1 text-slate-400 hover:text-white transition-colors"
 				>
-					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -188,35 +198,34 @@
 				</button>
 			</div>
 
-			<!-- Content -->
-			<div class="flex-1 overflow-y-auto p-4">
+			<!-- Content - scrollable -->
+			<div class="flex-1 overflow-y-auto overscroll-contain px-3 py-2">
 				{#if error}
-					<div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg">
-						<p class="text-sm text-red-300">{error}</p>
+					<div class="mb-3 p-2 bg-red-900/50 border border-red-700 rounded-lg">
+						<p class="text-xs text-red-300">{error}</p>
 					</div>
 				{/if}
 
 				<!-- Template Selection -->
-				<div class="mb-6">
-					<h3 class="text-sm font-medium text-slate-300 mb-3">Bundled Templates</h3>
-					<div class="space-y-2">
+				<div class="mb-4">
+					<h3 class="text-xs font-medium text-slate-400 mb-2">Bundled Templates</h3>
+					<div class="space-y-1.5">
 						{#each templates as template}
 							<button
 								on:click={() => handleTemplateSelect(template)}
-								class="w-full p-3 rounded-lg text-left transition-colors
+								class="w-full p-2 rounded-md text-left transition-colors
 									   {selectedTemplate?.id === template.id && !importMode
 									? 'bg-indigo-600 text-white'
 									: 'bg-slate-700 text-white hover:bg-slate-600'}"
 							>
-								<div class="font-medium">{template.name}</div>
+								<div class="text-sm font-medium">{template.name}</div>
 								<div
-									class="text-sm mt-0.5
+									class="text-xs
 										   {selectedTemplate?.id === template.id && !importMode
 										? 'text-indigo-200'
 										: 'text-slate-400'}"
 								>
-									{template.weeks} weeks | {template.daysPerWeek} days/week |
-									{template.difficulty}
+									{template.weeks}wk | {template.daysPerWeek}d/wk | {template.difficulty}
 								</div>
 							</button>
 						{/each}
@@ -224,14 +233,14 @@
 				</div>
 
 				<!-- Import from File -->
-				<div class="mb-6">
-					<h3 class="text-sm font-medium text-slate-300 mb-3">Or Import from File</h3>
+				<div class="mb-4">
+					<h3 class="text-xs font-medium text-slate-400 mb-2">Or Import File</h3>
 					<label
-						class="flex items-center justify-center gap-2 p-4 border-2 border-dashed
-							   border-slate-600 rounded-lg cursor-pointer hover:border-slate-500
+						class="flex items-center justify-center gap-2 p-3 border-2 border-dashed
+							   border-slate-600 rounded-md cursor-pointer hover:border-slate-500
 							   transition-colors {importMode ? 'bg-indigo-600/20 border-indigo-500' : ''}"
 					>
-						<svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -239,7 +248,7 @@
 								d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
 							/>
 						</svg>
-						<span class="text-sm text-slate-400">
+						<span class="text-xs text-slate-400">
 							{importFile ? importFile.name : 'Choose .json file'}
 						</span>
 						<input
@@ -252,35 +261,33 @@
 				</div>
 
 				<!-- Start Date -->
-				<DatePicker
-					value={startDate}
-					on:change={handleStartDateChange}
-					minDate={new Date().toISOString().split('T')[0]}
-				/>
+				<div class="overflow-hidden">
+					<label class="block text-xs font-medium text-slate-400 mb-1.5">Start Date</label>
+					<input
+						type="date"
+						value={startDate}
+						on:change={(e) => handleStartDateChange(new CustomEvent('change', { detail: e.currentTarget.value }))}
+						min={new Date().toISOString().split('T')[0]}
+						class="w-full max-w-full py-1.5 px-2 text-sm bg-slate-700 border border-slate-600 rounded-md
+							   text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+					/>
+				</div>
 			</div>
 
 			<!-- Footer -->
-			<div class="p-4 border-t border-slate-700">
+			<div class="px-4 py-3 border-t border-slate-700 flex-shrink-0">
 				<button
 					on:click={handleLoad}
 					disabled={isLoading || (!selectedTemplate && !importFile)}
-					class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700
-						   text-white font-medium rounded-lg transition-colors
+					class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700
+						   text-white text-sm font-medium rounded-lg transition-colors
 						   disabled:opacity-50 disabled:cursor-not-allowed
 						   flex items-center justify-center gap-2"
 				>
 					{#if isLoading}
-						<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+						<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 						Loading...
 					{:else}
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-							/>
-						</svg>
 						Load Schedule
 					{/if}
 				</button>
@@ -289,17 +296,3 @@
 	</div>
 {/if}
 
-<style>
-	@keyframes slide-up {
-		from {
-			transform: translateY(100%);
-		}
-		to {
-			transform: translateY(0);
-		}
-	}
-
-	.animate-slide-up {
-		animation: slide-up 0.3s ease-out;
-	}
-</style>

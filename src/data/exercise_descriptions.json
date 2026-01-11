@@ -2742,5 +2742,741 @@
       "movement": "Gentle stretching and mobility exercises. Listen to body's needs for movement.",
       "cues": "Optional gentle work, listen to body, promote flexibility, light and easy"
     }
+  },
+  "Hammer Curls": {
+    "description": {
+      "overview": "A dumbbell curl variation with neutral grip targeting biceps and brachialis. Builds arm thickness and forearm strength while reducing wrist strain compared to supinated curls.",
+      "setup": "Stand with feet hip-width apart, dumbbell in each hand at sides. Palms face inward (neutral grip). Elbows close to torso.",
+      "movement": "Curl weights toward shoulders keeping palms facing each other throughout. Squeeze at top, lower with control. Alternate arms or curl simultaneously.",
+      "cues": "Palms face each other, elbows pinned, squeeze at top, control the negative"
+    }
+  },
+  "Zottman Curls": {
+    "description": {
+      "overview": "A hybrid curl combining supinated curl up and pronated curl down. Targets biceps, brachialis, and forearm extensors in one movement for complete arm development.",
+      "setup": "Stand with feet hip-width apart, dumbbell in each hand. Start with palms facing forward (supinated). Elbows at sides.",
+      "movement": "Curl weights up with palms facing up. At top, rotate wrists so palms face down. Lower slowly with overhand grip. Rotate back to start at bottom.",
+      "cues": "Supinate up, rotate at top, pronate down, slow eccentric"
+    }
+  },
+  "Concentration Curls": {
+    "description": {
+      "overview": "An isolated single-arm curl performed seated with elbow braced against inner thigh. Eliminates momentum for strict bicep isolation and peak contraction.",
+      "setup": "Sit on bench, feet wide. Hold dumbbell in one hand, brace elbow against inner thigh. Other hand on opposite knee for support.",
+      "movement": "Curl weight toward shoulder, keeping upper arm stationary against thigh. Squeeze at top, lower with full control. Complete all reps then switch arms.",
+      "cues": "Elbow locked against thigh, no swinging, squeeze peak contraction, slow negative"
+    }
+  },
+  "Dumbbell Shrugs": {
+    "description": {
+      "overview": "A trapezius isolation exercise elevating shoulders against dumbbell resistance. Builds upper trap mass and strength essential for shoulder stability and posture.",
+      "setup": "Stand with feet hip-width apart, dumbbell in each hand at sides. Arms straight, shoulders down. Chest up, core engaged.",
+      "movement": "Elevate shoulders straight up toward ears as high as possible. Squeeze traps at top for one second. Lower shoulders with control.",
+      "cues": "Straight up not rolling, squeeze at top, ears to ceiling, control descent"
+    }
+  },
+  "Dumbbell High Pull": {
+    "description": {
+      "overview": "An explosive pulling movement from hip to chin targeting traps, rear delts, and upper back. Builds power and muscle thickness in the upper posterior chain.",
+      "setup": "Stand with feet shoulder-width, dumbbells hanging in front of thighs. Slight knee bend, hips back slightly. Chest up.",
+      "movement": "Explosively drive hips forward while pulling dumbbells to chin height. Lead with elbows high and wide. Lower with control and reset.",
+      "cues": "Elbows high and wide, explosive hip drive, chin height, control the descent"
+    }
+  },
+  "Standing Reverse Fly": {
+    "description": {
+      "overview": "A bent-over rear delt isolation exercise using dumbbells. Targets rear deltoids and rhomboids for shoulder health and upper back development.",
+      "setup": "Stand with feet hip-width, hinge at hips to 45-degree angle. Dumbbells hanging below chest, slight elbow bend. Back flat, core braced.",
+      "movement": "Raise dumbbells out to sides in arc motion until arms parallel to floor. Squeeze shoulder blades at top. Lower with control.",
+      "cues": "Lead with elbows, squeeze shoulder blades, slight elbow bend, control both directions"
+    }
+  },
+  "Prone Dumbbell Y-Raise": {
+    "description": {
+      "overview": "A prone shoulder exercise raising dumbbells in Y-pattern. Targets lower traps and rear delts for shoulder stability and improved posture.",
+      "setup": "Lie face down on incline bench or floor. Arms hanging down with light dumbbells, thumbs up. Forehead resting on bench or floor.",
+      "movement": "Raise arms at 45-degree angle to form Y-shape, thumbs leading. Squeeze lower traps at top. Lower with control.",
+      "cues": "Thumbs up, form Y-shape, squeeze lower traps, light weight high reps"
+    }
+  },
+  "Prone Dumbbell T-Raise": {
+    "description": {
+      "overview": "A prone shoulder exercise raising dumbbells straight out to sides. Targets middle traps and rhomboids for upper back strength and scapular control.",
+      "setup": "Lie face down on incline bench or floor. Arms hanging down with light dumbbells, thumbs up. Forehead resting on bench or floor.",
+      "movement": "Raise arms straight out to sides to form T-shape, thumbs leading. Squeeze middle traps and rhomboids at top. Lower with control.",
+      "cues": "Thumbs up, form T-shape, squeeze between shoulder blades, light weight"
+    }
+  },
+  "Prone Superman": {
+    "description": {
+      "overview": "A bodyweight back extension lifting arms and legs simultaneously while prone. Strengthens entire posterior chain including erectors, glutes, and rear delts.",
+      "setup": "Lie face down on floor, arms extended overhead, legs straight. Forehead near floor, neck neutral.",
+      "movement": "Simultaneously lift arms, chest, and legs off floor. Hold briefly at top squeezing glutes and back. Lower with control.",
+      "cues": "Lift everything together, squeeze glutes, reach long, control the descent"
+    }
+  },
+  "Reverse Snow Angels": {
+    "description": {
+      "overview": "A prone upper back exercise moving arms in snow angel pattern. Targets rear delts, rhomboids, and lower traps for postural strength and shoulder health.",
+      "setup": "Lie face down on floor, arms at sides with palms down. Lift chest slightly off floor, neck neutral. Core engaged.",
+      "movement": "Sweep arms along floor from sides to overhead in arc motion, keeping arms off floor throughout. Reverse motion back to sides.",
+      "cues": "Arms hover off floor, squeeze shoulder blades, slow controlled arc, breathe steadily"
+    }
+  },
+  "Prone Y-Raise": {
+    "description": {
+      "overview": "A bodyweight prone shoulder exercise raising arms in Y-pattern without weights. Targets lower traps for shoulder stability and posture improvement.",
+      "setup": "Lie face down on floor, arms extended overhead at 45-degree angle forming Y. Thumbs up, forehead near floor.",
+      "movement": "Lift arms off floor while maintaining Y-position. Squeeze lower traps at top. Lower with control. Can also lift chest slightly.",
+      "cues": "Thumbs to ceiling, squeeze lower traps, hold at top, light and controlled"
+    }
+  },
+  "Prone T-Raise": {
+    "description": {
+      "overview": "A bodyweight prone shoulder exercise raising arms straight out to form T-shape. Targets middle traps and rhomboids for scapular strength.",
+      "setup": "Lie face down on floor, arms extended straight out to sides forming T. Thumbs up, forehead near floor.",
+      "movement": "Lift arms off floor while maintaining T-position. Squeeze between shoulder blades at top. Lower with control.",
+      "cues": "Thumbs to ceiling, squeeze rhomboids, hold briefly, maintain T-shape"
+    }
+  },
+  "Scapular Retractions": {
+    "description": {
+      "overview": "An isolation exercise squeezing shoulder blades together without arm movement. Activates rhomboids and middle traps for improved posture and scapular control.",
+      "setup": "Stand or sit tall with arms at sides or hands on hips. Shoulders relaxed, chest up. Core engaged.",
+      "movement": "Pull shoulder blades together toward spine without moving arms. Hold squeeze for 2-3 seconds. Release with control and repeat.",
+      "cues": "Squeeze shoulder blades together, no arm movement, hold the squeeze, chest stays up"
+    }
+  },
+  "Band Bicep Curl": {
+    "description": {
+      "overview": "A resistance band curl targeting biceps with constant tension throughout range of motion. Provides accommodating resistance that increases as the band stretches.",
+      "setup": "Stand on center of band, feet shoulder-width apart. Hold handles with palms facing up. Arms at sides, elbows tucked.",
+      "movement": "Curl handles toward shoulders while keeping elbows stationary at sides. Squeeze biceps at top. Lower with control against band tension.",
+      "cues": "Elbows pinned, full range, squeeze at top, control the negative"
+    }
+  },
+  "Band Chest Press": {
+    "description": {
+      "overview": "A horizontal pressing exercise using resistance bands anchored behind body. Targets chest, shoulders, and triceps with accommodating resistance.",
+      "setup": "Anchor band at chest height behind you or loop around back. Hold handles at chest level, elbows out. Stagger stance for stability.",
+      "movement": "Press handles forward until arms fully extended. Squeeze chest at end position. Return with control against band resistance.",
+      "cues": "Press straight ahead, squeeze chest, control return, keep core tight"
+    }
+  },
+  "Band Deadlift": {
+    "description": {
+      "overview": "A hip hinge movement using resistance bands for posterior chain development. Teaches proper deadlift mechanics with accommodating resistance.",
+      "setup": "Stand on center of band, feet hip-width. Hold handles or loop band around hands. Hinge at hips, flat back, slight knee bend.",
+      "movement": "Drive hips forward to stand tall while pulling band up. Squeeze glutes at top. Hinge back down with control, pushing hips back.",
+      "cues": "Hinge not squat, flat back, squeeze glutes at top, control the descent"
+    }
+  },
+  "Band Face Pull": {
+    "description": {
+      "overview": "A pulling exercise targeting rear delts, rhomboids, and external rotators. Essential for shoulder health and counteracting forward posture.",
+      "setup": "Anchor band at face height or higher. Hold handles with palms down, arms extended. Step back to create tension.",
+      "movement": "Pull handles toward face, separating hands and driving elbows high and wide. Squeeze rear delts and rotate hands externally at end. Return with control.",
+      "cues": "Elbows high and wide, pull to ears, external rotation at end, squeeze shoulder blades"
+    }
+  },
+  "Band Front Raise": {
+    "description": {
+      "overview": "An isolation exercise targeting front deltoids using band resistance. Builds anterior shoulder strength with constant tension throughout movement.",
+      "setup": "Stand on band with feet shoulder-width. Hold handles with palms facing thighs. Arms at sides, slight elbow bend.",
+      "movement": "Raise arms forward to shoulder height, maintaining slight elbow bend. Pause at top. Lower with control against band resistance.",
+      "cues": "Lead with knuckles, stop at shoulder height, control descent, no momentum"
+    }
+  },
+  "Band Glute Bridge": {
+    "description": {
+      "overview": "A glute bridge with band resistance above knees for added hip abduction challenge. Targets glutes and teaches proper hip extension with external rotation.",
+      "setup": "Lie on back, loop band above knees. Feet flat, hip-width apart. Arms at sides, palms down.",
+      "movement": "Press knees out against band while driving hips to ceiling. Squeeze glutes at top, maintaining outward knee pressure. Lower with control.",
+      "cues": "Press knees out, squeeze glutes hard, don't hyperextend back, control descent"
+    }
+  },
+  "Band Hammer Curl": {
+    "description": {
+      "overview": "A neutral-grip curl using bands targeting biceps and brachialis. Provides constant tension throughout range of motion for forearm and arm development.",
+      "setup": "Stand on center of band, feet shoulder-width. Hold handles with palms facing each other (neutral grip). Arms at sides.",
+      "movement": "Curl handles toward shoulders keeping palms facing each other throughout. Squeeze at top. Lower with control.",
+      "cues": "Palms stay neutral, elbows pinned, squeeze at top, slow negative"
+    }
+  },
+  "Band High Pull": {
+    "description": {
+      "overview": "An explosive pulling movement targeting upper back, traps, and rear delts. Builds power and upper back thickness with band resistance.",
+      "setup": "Stand on center of band, feet shoulder-width. Hold handles in front of thighs, palms facing body. Slight knee bend.",
+      "movement": "Explosively pull handles to chin height, driving elbows high and wide. Lead with elbows, not hands. Lower with control.",
+      "cues": "Elbows lead, chin height, explosive pull, control descent"
+    }
+  },
+  "Band Lat Pulldown": {
+    "description": {
+      "overview": "A vertical pulling exercise using anchored band to target lats and biceps. Mimics cable lat pulldown for back width development.",
+      "setup": "Anchor band overhead. Kneel or stand facing anchor. Grasp band with overhand grip wider than shoulders. Arms extended overhead.",
+      "movement": "Pull band down to upper chest, driving elbows to ribs. Squeeze lats at bottom. Return arms overhead with control.",
+      "cues": "Pull elbows to ribs, chest up, squeeze lats, control return"
+    }
+  },
+  "Band Lateral Raise": {
+    "description": {
+      "overview": "A lateral shoulder raise using band resistance for constant tension. Targets middle deltoids for shoulder width and definition.",
+      "setup": "Stand on center of band, feet together. Hold handles at sides, palms facing in. Slight elbow bend.",
+      "movement": "Raise arms out to sides until parallel with floor. Lead with elbows slightly. Lower with control against band tension.",
+      "cues": "Lead with elbows, stop at shoulder height, control descent, no momentum"
+    }
+  },
+  "Band Lateral Walk": {
+    "description": {
+      "overview": "A lateral movement exercise with band around legs targeting hip abductors and glutes. Builds hip stability and strengthens gluteus medius.",
+      "setup": "Place band around ankles or above knees. Feet shoulder-width apart, slight squat position. Hands on hips or in front.",
+      "movement": "Step laterally with one foot, then follow with other foot maintaining band tension. Continue in one direction, then reverse.",
+      "cues": "Stay in squat, tension constant, controlled steps, don't let knees cave"
+    }
+  },
+  "Band Leg Curl": {
+    "description": {
+      "overview": "A prone hamstring curl using band anchored at ankle. Isolates hamstrings with constant tension for posterior thigh development.",
+      "setup": "Anchor band low, loop around ankle. Lie prone on floor or bench. Starting leg extended toward anchor.",
+      "movement": "Curl heel toward glute by flexing knee. Squeeze hamstring at top. Extend leg with control against band resistance.",
+      "cues": "Squeeze hamstring, full range, control extension, hips stay down"
+    }
+  },
+  "Band Leg Extension": {
+    "description": {
+      "overview": "A seated quadricep extension using band resistance. Isolates quads with accommodating resistance for knee extension strength.",
+      "setup": "Sit on chair or bench, anchor band behind you at low point. Loop band around ankle. Start with knee bent.",
+      "movement": "Extend knee to straighten leg against band resistance. Squeeze quad at top. Return to start with control.",
+      "cues": "Squeeze quad at top, full extension, control descent, stable upper body"
+    }
+  },
+  "Band Monster Walk": {
+    "description": {
+      "overview": "A forward diagonal walking pattern with band around legs. Targets hip abductors and glutes with multi-directional challenge.",
+      "setup": "Place band around ankles or above knees. Athletic stance, slight squat. Feet shoulder-width, maintaining band tension.",
+      "movement": "Step forward and outward diagonally with one foot. Follow with other foot maintaining stance width. Continue forward in alternating monster walk pattern.",
+      "cues": "Diagonal steps, stay low, maintain tension, knees track over toes"
+    }
+  },
+  "Band Pallof Press": {
+    "description": {
+      "overview": "An anti-rotation core exercise pressing band away from chest while resisting rotational pull. Builds core stability and rotational strength.",
+      "setup": "Anchor band at chest height to side. Stand perpendicular to anchor. Hold band handle at chest with both hands. Feet shoulder-width.",
+      "movement": "Press hands straight out from chest, resisting band's pull to rotate torso. Hold briefly at full extension. Return to chest with control.",
+      "cues": "Resist rotation, brace core, press straight, don't let band pull you"
+    }
+  },
+  "Band Pull-Apart": {
+    "description": {
+      "overview": "A horizontal pulling exercise targeting rear delts and upper back. Essential for shoulder health, posture, and counteracting forward shoulder position.",
+      "setup": "Hold band in front with arms extended, shoulder-width or narrower grip. Palms down or neutral. Shoulders back and down.",
+      "movement": "Pull band apart by squeezing shoulder blades together, arms moving out to sides. Pause at full stretch. Return with control.",
+      "cues": "Squeeze shoulder blades, arms stay straight, chest up, control return"
+    }
+  },
+  "Band Rear Delt Fly": {
+    "description": {
+      "overview": "A bent-over reverse fly using band resistance for rear deltoid isolation. Targets posterior shoulders and upper back for balanced shoulder development.",
+      "setup": "Stand on center of band or anchor at low point. Hinge at hips to near-parallel. Cross band handles, arms hanging down.",
+      "movement": "Raise arms out to sides in arc motion until parallel with floor. Squeeze rear delts at top. Lower with control.",
+      "cues": "Lead with elbows, squeeze rear delts, maintain hip hinge, control descent"
+    }
+  },
+  "Band Reverse Curl": {
+    "description": {
+      "overview": "An overhand grip curl using band resistance targeting brachioradialis and forearm extensors. Builds forearm strength and grip.",
+      "setup": "Stand on center of band, feet shoulder-width. Hold handles with palms facing down (pronated). Arms at sides.",
+      "movement": "Curl handles toward shoulders while maintaining overhand grip. Squeeze forearms and biceps at top. Lower with control.",
+      "cues": "Palms stay down, elbows pinned, squeeze at top, control negative"
+    }
+  },
+  "Band Seated Row": {
+    "description": {
+      "overview": "A seated horizontal row using band anchored at foot level. Targets lats, rhomboids, and biceps for back thickness.",
+      "setup": "Sit on floor, legs extended. Loop band around feet or anchor low. Hold handles with arms extended. Sit tall, chest up.",
+      "movement": "Pull handles to lower ribs, driving elbows back. Squeeze shoulder blades together at end. Extend arms with control.",
+      "cues": "Elbows to ribs, squeeze shoulder blades, chest stays up, control extension"
+    }
+  },
+  "Band Shoulder Press": {
+    "description": {
+      "overview": "A vertical pressing exercise using band resistance for shoulder development. Targets all three deltoid heads with accommodating resistance.",
+      "setup": "Stand on center of band, feet shoulder-width. Hold handles at shoulder height, palms forward. Core braced.",
+      "movement": "Press handles overhead until arms fully extended. Keep core tight to prevent arching. Lower to shoulders with control.",
+      "cues": "Press straight up, full lockout, core tight, control descent"
+    }
+  },
+  "Band Squat": {
+    "description": {
+      "overview": "A bodyweight squat with band resistance for added lower body challenge. Provides accommodating resistance that increases at top of movement.",
+      "setup": "Stand on center of band, feet shoulder-width. Hold handles at shoulders or loop band behind neck. Core braced.",
+      "movement": "Push hips back and squat down, keeping chest up. Descend until thighs parallel. Drive through heels to stand against band resistance.",
+      "cues": "Knees track toes, chest up, drive through heels, squeeze glutes at top"
+    }
+  },
+  "Band Standing Row": {
+    "description": {
+      "overview": "A standing horizontal row using anchored band for back development. Targets lats, rhomboids, and biceps with constant tension.",
+      "setup": "Anchor band at chest height in front of you. Hold handles with arms extended. Step back to create tension. Athletic stance.",
+      "movement": "Pull handles to lower ribs, driving elbows back. Squeeze shoulder blades at end position. Extend arms with control.",
+      "cues": "Pull to ribs, squeeze back, stay stable, control return"
+    }
+  },
+  "Band Tricep Pushdown": {
+    "description": {
+      "overview": "A tricep isolation exercise using band anchored overhead. Targets all three tricep heads with constant band tension.",
+      "setup": "Anchor band overhead. Face anchor, grasp band with both hands at chest height. Elbows at sides, upper arms stationary.",
+      "movement": "Extend elbows to push band down until arms straight. Squeeze triceps at bottom. Return to start with control, elbows stationary.",
+      "cues": "Elbows pinned, full extension, squeeze triceps, control return"
+    }
+  },
+  "Band Woodchop": {
+    "description": {
+      "overview": "A rotational core exercise using anchored band in diagonal chopping pattern. Builds rotational power and core strength.",
+      "setup": "Anchor band at high point to side. Stand perpendicular, feet wider than shoulders. Hold handle with both hands near anchor side shoulder.",
+      "movement": "Rotate torso and pull band diagonally down and across body to opposite hip. Control return to start. Complete reps then switch sides.",
+      "cues": "Rotate from core, arms follow torso, controlled chop, pivot back foot"
+    }
+  },
+  "Archer Push-ups": {
+    "description": {
+      "overview": "An advanced unilateral push-up variation with one arm extended to side. Increases load on working arm while developing strength asymmetry for one-arm push-up progression.",
+      "setup": "Wide push-up position, hands much wider than shoulders. One hand points forward, other points to side. Body straight, core tight.",
+      "movement": "Lower toward forward hand, extending other arm out straight. Push back up through forward hand. Alternate sides or complete set on one side.",
+      "cues": "Lower to working hand, extend support arm, push through palm, stay rigid"
+    }
+  },
+  "Bear Crawl": {
+    "description": {
+      "overview": "A quadruped locomotion pattern crawling forward on hands and feet. Builds total body coordination, core stability, and shoulder endurance.",
+      "setup": "Hands under shoulders, knees under hips lifted 2 inches off ground. Back flat, core braced. Looking slightly ahead.",
+      "movement": "Move opposite hand and foot forward simultaneously. Alternate sides, keeping knees low and back flat. Crawl forward for distance or time.",
+      "cues": "Knees hover low, opposite hand and foot, flat back, controlled crawl"
+    }
+  },
+  "Broad Jump": {
+    "description": {
+      "overview": "An explosive horizontal jump for maximum distance. Develops lower body power, hip extension strength, and athletic jumping ability.",
+      "setup": "Stand with feet hip-width apart, toes near starting line. Arms back in athletic ready position. Slight knee bend.",
+      "movement": "Swing arms forward while explosively jumping forward. Extend hips fully mid-air. Land softly with bent knees, absorbing impact.",
+      "cues": "Arm swing drives jump, full extension, stick the landing, reset each rep"
+    }
+  },
+  "Butterfly Sit-ups": {
+    "description": {
+      "overview": "A sit-up variation with soles of feet together in butterfly position. Reduces hip flexor involvement to better isolate abdominals.",
+      "setup": "Lie on back, soles of feet together, knees out to sides in butterfly. Arms overhead touching floor or across chest.",
+      "movement": "Contract abs to curl torso up, reaching past feet or touching toes. Lower back down with control, arms returning overhead.",
+      "cues": "Curl up with abs, reach past feet, control descent, knees stay open"
+    }
+  },
+  "Crab Walk": {
+    "description": {
+      "overview": "A reverse quadruped locomotion moving face-up on hands and feet. Builds shoulder stability, tricep endurance, and hip flexibility.",
+      "setup": "Sit on floor, hands behind hips, fingers forward. Feet flat, knees bent. Lift hips off ground to table-top position.",
+      "movement": "Walk backward or forward by moving opposite hand and foot. Maintain elevated hip position throughout. Move for distance or time.",
+      "cues": "Hips stay up, opposite hand and foot, fingers forward, steady pace"
+    }
+  },
+  "Donkey Kicks": {
+    "description": {
+      "overview": "A quadruped glute isolation exercise kicking leg back and up. Targets gluteus maximus with focused hip extension movement.",
+      "setup": "Hands under shoulders, knees under hips on all fours. Core braced, back flat. Neck neutral.",
+      "movement": "Drive one heel toward ceiling, keeping knee bent at 90 degrees. Squeeze glute at top. Lower with control without touching floor. Complete reps then switch.",
+      "cues": "Drive heel to ceiling, squeeze glute, don't arch back, control descent"
+    }
+  },
+  "Floor Back Extension": {
+    "description": {
+      "overview": "A prone back extension performed on floor targeting erector spinae. Builds lower back strength and endurance for spine stability.",
+      "setup": "Lie face down, hands beside shoulders or at temples. Legs extended, tops of feet on floor. Core engaged.",
+      "movement": "Lift chest off floor by contracting lower back muscles. Keep neck neutral, looking at floor ahead. Lower with control.",
+      "cues": "Lift with back muscles, neutral neck, don't hyperextend, control descent"
+    }
+  },
+  "Flutter Kicks": {
+    "description": {
+      "overview": "A supine core exercise alternating small leg kicks. Targets lower abs and hip flexors while building muscular endurance.",
+      "setup": "Lie on back, hands under hips or at sides. Lift legs few inches off floor, legs straight. Lower back pressed into floor.",
+      "movement": "Alternate small up and down kicks with each leg in flutter pattern. Maintain constant leg elevation and core engagement throughout.",
+      "cues": "Low back down, small kicks, legs straight, constant motion"
+    }
+  },
+  "Frog Pumps": {
+    "description": {
+      "overview": "A glute bridge variation with soles of feet together in frog position. Maximizes glute activation by externally rotating hips.",
+      "setup": "Lie on back, soles of feet together, knees fallen out to sides. Arms at sides, palms down. Heels close to glutes.",
+      "movement": "Drive through heels to lift hips, squeezing glutes hard at top. Maintain external hip rotation throughout. Lower with control.",
+      "cues": "Drive through heels, squeeze glutes hard, keep knees out, short range"
+    }
+  },
+  "Heel Taps": {
+    "description": {
+      "overview": "A supine oblique exercise reaching alternately toward each heel. Targets obliques through lateral flexion with constant ab engagement.",
+      "setup": "Lie on back, knees bent, feet flat on floor hip-width apart. Arms at sides, palms down. Lift shoulders slightly off floor, engaging abs.",
+      "movement": "Laterally flex spine to reach one hand toward same-side heel. Return to center and reach to other side. Alternate continuously.",
+      "cues": "Shoulders stay up, side bend to reach, maintain ab tension, smooth alternation"
+    }
+  },
+  "Hollow Body Hold": {
+    "description": {
+      "overview": "An isometric core exercise holding curved hollow position. Fundamental gymnastics hold developing anterior core strength and total body tension.",
+      "setup": "Lie on back, arms overhead, legs extended. Press lower back firmly into floor. Lift shoulders and legs off ground.",
+      "movement": "Hold curved hollow position with only lower back touching floor. Arms and legs extended, creating banana shape. Breathe while maintaining position.",
+      "cues": "Low back glued down, curve like a banana, squeeze everything, breathe steady"
+    }
+  },
+  "Inchworm": {
+    "description": {
+      "overview": "A dynamic warm-up exercise walking hands out to plank and walking feet back. Builds hamstring flexibility, core stability, and shoulder endurance.",
+      "setup": "Stand with feet hip-width apart, arms at sides. Hinge forward to place hands on floor in front of feet.",
+      "movement": "Walk hands forward to plank position. Hold briefly, then walk feet toward hands keeping legs straight. Stand and repeat.",
+      "cues": "Straight legs on walk-in, maintain plank in middle, controlled pace, reach forward"
+    }
+  },
+  "Inverted Row": {
+    "description": {
+      "overview": "A horizontal pull performed hanging beneath a bar or rings. Develops back strength and teaches scapular control for pull-up progression.",
+      "setup": "Hang beneath bar with overhand grip, arms extended. Body straight from head to heels at angle. Heels on ground.",
+      "movement": "Pull chest to bar by driving elbows back and squeezing shoulder blades. Lower with control to full arm extension.",
+      "cues": "Pull chest to bar, squeeze shoulder blades, stay rigid, control descent"
+    }
+  },
+  "Jump Lunges": {
+    "description": {
+      "overview": "An explosive plyometric lunge switching legs mid-air. Builds lower body power, single-leg strength, and cardiovascular conditioning.",
+      "setup": "Start in lunge position, one foot forward, back knee near floor. Arms in running position. Core braced.",
+      "movement": "Explosively jump up, switching legs mid-air. Land softly in lunge with opposite leg forward. Immediately spring into next rep.",
+      "cues": "Explode vertically, switch mid-air, land soft, stay upright"
+    }
+  },
+  "Pistol Squat": {
+    "description": {
+      "overview": "An advanced single-leg squat to full depth. Requires exceptional strength, balance, and mobility. Ultimate bodyweight leg exercise.",
+      "setup": "Stand on one leg, other leg extended forward. Arms out front for counterbalance. Core tight.",
+      "movement": "Lower slowly on one leg, extending other leg forward. Descend to full depth, control at bottom. Drive up through heel to stand.",
+      "cues": "Control descent, full depth, counterbalance with arms, drive through heel"
+    }
+  },
+  "Prone I-Raise": {
+    "description": {
+      "overview": "A prone shoulder exercise lifting arms straight forward in I-position. Targets lower traps and improves overhead shoulder mobility.",
+      "setup": "Lie face down on floor, arms extended straight overhead. Thumbs up, forehead resting on floor. Core engaged.",
+      "movement": "Lift both arms off floor keeping them in line with ears. Squeeze lower traps at top. Lower with control.",
+      "cues": "Arms by ears, thumbs up, squeeze lower traps, controlled movement"
+    }
+  },
+  "Prone W-Raise": {
+    "description": {
+      "overview": "A prone shoulder exercise forming W-shape with arms. Targets external rotators, rhomboids, and lower traps for rotator cuff strength.",
+      "setup": "Lie face down, elbows bent at 90 degrees, upper arms at shoulder level forming W. Forehead on floor.",
+      "movement": "Lift elbows and hands off floor maintaining W-position. Squeeze between shoulder blades. Lower with control.",
+      "cues": "Maintain W-shape, squeeze shoulder blades, elbows stay bent, controlled movement"
+    }
+  },
+  "Skater Lunges": {
+    "description": {
+      "overview": "A lateral jumping exercise mimicking skating motion. Builds lateral power, single-leg stability, and hip strength.",
+      "setup": "Stand on one leg, opposite leg behind and across. Slight forward lean, arms ready for counterbalance.",
+      "movement": "Push off laterally, jumping to land on opposite leg. Sweep other leg behind. Absorb landing, then immediately push off to other side.",
+      "cues": "Push laterally, land soft, absorb on one leg, continuous motion"
+    }
+  },
+  "Squat Pulse": {
+    "description": {
+      "overview": "An isometric squat variation with small pulsing movements at bottom. Builds muscular endurance and time under tension in quads and glutes.",
+      "setup": "Feet shoulder-width apart, toes slightly out. Lower to bottom of squat, thighs parallel or below. Arms forward for balance.",
+      "movement": "Make small up and down pulses, staying in bottom portion of squat. Move only a few inches. Maintain position for time or reps.",
+      "cues": "Stay low, small pulses, don't come up fully, burn the quads"
+    }
+  },
+  "Squat Thrust": {
+    "description": {
+      "overview": "A burpee variation without the jump, moving between squat and plank. Builds conditioning and full-body coordination at lower intensity than burpees.",
+      "setup": "Stand with feet shoulder-width apart, arms at sides. Ready to move through multiple positions.",
+      "movement": "Squat down, place hands on floor. Jump feet back to plank position. Jump feet forward to hands. Stand up. Repeat continuously.",
+      "cues": "Hands down, feet back, feet forward, stand up, stay rhythmic"
+    }
+  },
+  "Star Jumps": {
+    "description": {
+      "overview": "An explosive full-body jump spreading arms and legs like a star. Builds explosive power and elevates heart rate for conditioning.",
+      "setup": "Stand with feet together, arms at sides. Slight knee bend, ready to explode upward.",
+      "movement": "Jump explosively, spreading arms and legs wide to form star shape mid-air. Land with feet together, absorbing impact softly.",
+      "cues": "Explode up, spread wide, land soft, reset each rep"
+    }
+  },
+  "Swimmers": {
+    "description": {
+      "overview": "A prone exercise alternating opposite arm and leg lifts mimicking swimming. Strengthens posterior chain and improves coordination.",
+      "setup": "Lie face down, arms extended overhead, legs straight. Forehead near floor, neck neutral.",
+      "movement": "Lift opposite arm and leg simultaneously while lowering the others. Alternate continuously in swimming pattern. Keep movements controlled.",
+      "cues": "Opposite arm and leg, continuous motion, stay long, control pace"
+    }
+  },
+  "V-Ups": {
+    "description": {
+      "overview": "An advanced ab exercise folding body into V-shape. Targets entire rectus abdominis with high-intensity simultaneous lift of torso and legs.",
+      "setup": "Lie flat on back, arms extended overhead, legs straight. Lower back pressed into floor.",
+      "movement": "Simultaneously lift legs and torso, reaching hands toward toes to form V-shape. Balance briefly on tailbone. Lower with control.",
+      "cues": "Lift together, reach for toes, balance on tailbone, control descent"
+    }
+  },
+  "Wide Push-ups": {
+    "description": {
+      "overview": "A push-up variation with wider hand placement emphasizing chest activation. Reduces tricep involvement while increasing pectoral stretch and engagement.",
+      "setup": "High plank position, hands significantly wider than shoulder width. Fingers pointed forward or slightly out. Body straight.",
+      "movement": "Lower body toward floor, keeping elbows tracking toward hands. Chest leads the descent. Push back to start, squeezing chest.",
+      "cues": "Wide hands, elbows toward hands, chest leads, squeeze on push"
+    }
+  },
+  "Arnold Press": {
+    "description": {
+      "overview": "A shoulder press variation rotating from palms-in to palms-out. Hits all three deltoid heads through rotation while pressing for complete shoulder development.",
+      "setup": "Sit or stand with dumbbells at shoulder height, palms facing you. Elbows in front of body. Core braced.",
+      "movement": "Press dumbbells up while rotating palms to face forward at top. Reverse motion on descent, rotating palms back to face you at bottom.",
+      "cues": "Rotate as you press, full lockout, reverse the rotation, controlled tempo"
+    }
+  },
+  "Bent-Over Rear Delt Fly": {
+    "description": {
+      "overview": "A bent-over isolation exercise targeting rear deltoids with dumbbells. Essential for balanced shoulder development and posterior shoulder strength.",
+      "setup": "Stand with feet hip-width, hinge at hips to near-parallel. Dumbbells hanging below chest, slight elbow bend. Back flat.",
+      "movement": "Raise dumbbells out to sides in arc until arms parallel with floor. Squeeze rear delts at top. Lower with control.",
+      "cues": "Lead with elbows, squeeze at top, maintain hip hinge, control descent"
+    }
+  },
+  "Devil Press": {
+    "description": {
+      "overview": "A burpee combined with dumbbell snatch. High-intensity full-body movement combining push-up, jump, and overhead press for conditioning.",
+      "setup": "Stand with dumbbells at sides. Ready for burpee movement with dumbbells.",
+      "movement": "Place dumbbells on floor, jump back to plank, push-up, jump feet forward. Swing dumbbells between legs and snatch overhead in one motion. Lower and repeat.",
+      "cues": "Burpee with dumbbells, swing through legs, powerful hip drive, full lockout overhead"
+    }
+  },
+  "Dumbbell Clean": {
+    "description": {
+      "overview": "An explosive pulling movement bringing dumbbells from hang to shoulder catch. Builds total body power and teaches hip drive mechanics.",
+      "setup": "Stand with feet hip-width, dumbbells at sides or hanging in front. Slight knee bend, chest up.",
+      "movement": "Explosively extend hips and shrug, pulling dumbbells up body. Rotate elbows under to catch dumbbells at shoulders. Lower with control.",
+      "cues": "Hip drive first, shrug and pull, fast elbows, soft catch"
+    }
+  },
+  "Dumbbell Face Pull": {
+    "description": {
+      "overview": "A bent-over pulling exercise targeting rear delts and upper back with external rotation. Builds shoulder health and postural strength.",
+      "setup": "Stand with feet hip-width, hinge at hips. Dumbbells hanging below chest, palms facing back.",
+      "movement": "Pull dumbbells toward face, driving elbows high and wide. Externally rotate at top. Lower with control.",
+      "cues": "Elbows high and wide, external rotation, squeeze at top, maintain hip hinge"
+    }
+  },
+  "Dumbbell Floor Press": {
+    "description": {
+      "overview": "A pressing exercise performed lying on floor limiting range of motion. Builds lockout strength and is shoulder-friendly chest pressing option.",
+      "setup": "Lie on floor, knees bent, feet flat. Dumbbells at chest, elbows on floor at 45 degrees.",
+      "movement": "Press dumbbells straight up until arms extended. Lower until triceps touch floor. Pause briefly, then press.",
+      "cues": "Elbows touch floor, pause at bottom, press straight up, squeeze at top"
+    }
+  },
+  "Dumbbell Front Raise": {
+    "description": {
+      "overview": "An isolation exercise raising dumbbells forward to shoulder height. Targets anterior deltoids for front shoulder development.",
+      "setup": "Stand with feet hip-width, dumbbells at thighs, palms facing body. Slight elbow bend, core braced.",
+      "movement": "Raise dumbbells forward to shoulder height, maintaining slight elbow bend. Lower with control without swinging.",
+      "cues": "Stop at shoulder height, control descent, no momentum, alternate or together"
+    }
+  },
+  "Dumbbell Front Squat": {
+    "description": {
+      "overview": "A squat variation with dumbbells held at shoulders in front rack position. Emphasizes quads and core while teaching upright squat mechanics.",
+      "setup": "Stand with feet shoulder-width, dumbbells at shoulders, elbows high. Core braced, chest up.",
+      "movement": "Push hips back and squat down, keeping chest up and elbows high. Descend to parallel or below. Drive through heels to stand.",
+      "cues": "Elbows up, chest proud, sit between legs, drive through heels"
+    }
+  },
+  "Dumbbell Gorilla Row": {
+    "description": {
+      "overview": "A bent-over alternating row from deep squat position. Targets lats and rhomboids while challenging hip mobility and core stability.",
+      "setup": "Wide stance over two dumbbells, deep squat position. Hands on dumbbells, chest up, back flat.",
+      "movement": "Row one dumbbell to hip while pressing other into floor for stability. Lower and switch sides. Alternate continuously.",
+      "cues": "Stay low in squat, row to hip, press down for stability, alternate smoothly"
+    }
+  },
+  "Dumbbell Hang Clean": {
+    "description": {
+      "overview": "An explosive clean starting from hang position at thighs. Develops hip power and clean technique with lighter load than full clean.",
+      "setup": "Stand with dumbbells at thighs, slight knee bend. Chest up, shoulders over dumbbells.",
+      "movement": "Dip slightly then explosively extend hips, shrugging and pulling dumbbells up body. Catch at shoulders with fast elbows. Lower to hang.",
+      "cues": "Short dip, explosive hip drive, fast elbows under, soft catch at shoulders"
+    }
+  },
+  "Dumbbell Lateral Raise": {
+    "description": {
+      "overview": "An isolation exercise raising dumbbells out to sides. Primary exercise for building middle deltoid width and shoulder definition.",
+      "setup": "Stand with feet hip-width, dumbbells at sides, palms facing in. Slight elbow bend, core braced.",
+      "movement": "Raise arms out to sides until parallel with floor. Lead with elbows slightly. Lower with control.",
+      "cues": "Lead with elbows, stop at shoulder height, control descent, no swinging"
+    }
+  },
+  "Dumbbell Reverse Lunge to Curl": {
+    "description": {
+      "overview": "A combination exercise pairing reverse lunge with bicep curl. Builds lower body strength and arm development in efficient compound movement.",
+      "setup": "Stand with dumbbells at sides, palms facing in. Feet hip-width, core braced.",
+      "movement": "Step back into reverse lunge while curling dumbbells. At bottom of lunge, biceps are contracted. Push back to start while lowering dumbbells.",
+      "cues": "Step back and curl together, knee hovers, push through front heel, lower curl as you stand"
+    }
+  },
+  "Dumbbell Romanian Deadlift": {
+    "description": {
+      "overview": "A hip hinge movement with dumbbells targeting hamstrings and glutes. Essential posterior chain exercise teaching proper hip hinge pattern.",
+      "setup": "Stand with feet hip-width, dumbbells in front of thighs. Soft knee bend, chest up, shoulders back.",
+      "movement": "Hinge at hips, pushing them back while lowering dumbbells along legs. Feel hamstring stretch. Drive hips forward to stand.",
+      "cues": "Push hips back, slight knee bend, flat back, squeeze glutes at top"
+    }
+  },
+  "Dumbbell Tricep Kickback": {
+    "description": {
+      "overview": "A bent-over tricep isolation exercise extending arm behind body. Targets triceps at peak contraction for arm development.",
+      "setup": "Hinge forward at hips, one hand on bench for support. Dumbbell in other hand, upper arm parallel to floor.",
+      "movement": "Extend elbow to straighten arm behind you. Squeeze tricep at full extension. Lower with control without dropping elbow.",
+      "cues": "Upper arm stays still, squeeze at extension, control descent, full straighten"
+    }
+  },
+  "Dumbbell Upright Row": {
+    "description": {
+      "overview": "A vertical pulling exercise raising dumbbells to chin height. Targets traps and lateral delts for upper back and shoulder development.",
+      "setup": "Stand with feet hip-width, dumbbells in front of thighs. Palms facing body, slight grip width.",
+      "movement": "Pull dumbbells up toward chin, leading with elbows. Elbows go high and wide. Lower with control.",
+      "cues": "Elbows lead, chin height, high and wide, control descent"
+    }
+  },
+  "Man Makers": {
+    "description": {
+      "overview": "A complex full-body exercise combining push-up, rows, clean, and thruster. Ultimate conditioning movement targeting all major muscle groups.",
+      "setup": "Stand with dumbbells at sides. Ready to move through multiple positions.",
+      "movement": "Place dumbbells, jump to plank, push-up, row each side, jump feet forward, clean dumbbells to shoulders, squat and press overhead. Lower and repeat.",
+      "cues": "Push-up, row, row, clean, squat, press - one fluid sequence"
+    }
+  },
+  "Prone Dumbbell W-Raise": {
+    "description": {
+      "overview": "A prone shoulder exercise with dumbbells forming W-shape. Targets rotator cuff and rear deltoids for shoulder stability and health.",
+      "setup": "Lie face down on incline bench or floor. Light dumbbells in hands, elbows bent at 90 degrees forming W.",
+      "movement": "Lift dumbbells by elevating elbows and hands, maintaining W-position. Squeeze shoulder blades at top. Lower with control.",
+      "cues": "Maintain W-shape, light weight, squeeze between shoulder blades, controlled movement"
+    }
+  },
+  "Dumbbell Dead Bug": {
+    "description": {
+      "overview": "A dead bug variation holding dumbbell for added anti-extension challenge. Builds core stability while coordinating opposite arm and leg movement.",
+      "setup": "Lie on back, hold one dumbbell with both hands overhead. Knees bent at 90 degrees, shins parallel to floor. Low back pressed down.",
+      "movement": "Lower opposite arm (with dumbbell) and leg toward floor while maintaining low back contact. Return to start and switch sides.",
+      "cues": "Low back glued down, opposite arm and leg, controlled extension, breathe out as you lower"
+    }
+  },
+  "Dumbbell Goblet Squat": {
+    "description": {
+      "overview": "A squat variation holding single dumbbell at chest goblet-style. Perfect for learning squat mechanics and building lower body strength.",
+      "setup": "Hold dumbbell vertically at chest, cupping one end. Feet shoulder-width, toes slightly out. Core braced.",
+      "movement": "Push hips back and squat down, keeping chest up and elbows inside knees. Descend to depth. Drive through heels to stand.",
+      "cues": "Elbows inside knees, chest up, sit between feet, squeeze glutes at top"
+    }
+  },
+  "Dumbbell Overhead Tricep Extension": {
+    "description": {
+      "overview": "A tricep isolation exercise pressing dumbbell overhead. Targets long head of triceps through full stretch and contraction.",
+      "setup": "Stand or sit, hold one dumbbell overhead with both hands cupping one end. Arms extended, elbows by ears.",
+      "movement": "Lower dumbbell behind head by bending elbows. Feel stretch in triceps. Press back to start, squeezing triceps at top.",
+      "cues": "Elbows stay by ears, full stretch, squeeze at top, control descent"
+    }
+  },
+  "Dumbbell Plank Pull-Through": {
+    "description": {
+      "overview": "A plank variation pulling dumbbell from side to side under body. Anti-rotation core exercise building stability and shoulder endurance.",
+      "setup": "High plank position with dumbbell outside one hand. Feet wide for stability. Core braced, hips level.",
+      "movement": "Reach under body with opposite hand to pull dumbbell to other side. Return hand to plank. Repeat to other side.",
+      "cues": "Hips stay level, minimize rotation, wide feet, controlled pulls"
+    }
+  },
+  "Dumbbell Side Bend": {
+    "description": {
+      "overview": "A standing oblique exercise lowering dumbbell along leg. Targets obliques through lateral flexion for core development.",
+      "setup": "Stand with feet shoulder-width, dumbbell in one hand at side. Other hand on hip or behind head. Stand tall.",
+      "movement": "Lower dumbbell along leg by bending sideways at waist. Feel stretch in opposite oblique. Return to upright by contracting obliques.",
+      "cues": "Bend sideways only, no twisting, feel the stretch, control both directions"
+    }
+  },
+  "Dumbbell Snatch": {
+    "description": {
+      "overview": "An explosive single-arm movement taking dumbbell from floor to overhead. Builds total body power, coordination, and shoulder stability.",
+      "setup": "Stand over dumbbell between feet, squat down to grip it. Chest up, back flat, one arm on dumbbell.",
+      "movement": "Explosively extend hips and pull dumbbell up body close to torso. Punch overhead to lockout in one motion. Lower with control.",
+      "cues": "Hip drive, pull close to body, punch to lockout, catch with straight arm"
+    }
+  },
+  "Dumbbell Sumo Squat": {
+    "description": {
+      "overview": "A wide-stance squat holding dumbbell between legs. Emphasizes inner thighs and glutes with deep squat position.",
+      "setup": "Wide stance, toes pointed out 45 degrees. Hold dumbbell with both hands between legs. Chest up, core braced.",
+      "movement": "Push hips back and squat down between legs. Descend to depth, knees tracking toes. Drive through heels to stand.",
+      "cues": "Knees track toes, sit deep, chest stays up, squeeze glutes at top"
+    }
+  },
+  "Dumbbell Woodchop": {
+    "description": {
+      "overview": "A rotational core exercise swinging dumbbell diagonally across body. Builds rotational power for sports and functional strength.",
+      "setup": "Stand with feet wider than shoulder-width. Hold dumbbell with both hands. Start with dumbbell outside one hip.",
+      "movement": "Rotate torso, swinging dumbbell diagonally up and across body to opposite shoulder. Control return to start. Complete reps then switch.",
+      "cues": "Rotate from core, pivot feet, diagonal path, control the swing"
+    }
+  },
+  "Single-Arm Farmers Carry": {
+    "description": {
+      "overview": "A unilateral carry walking with weight in one hand. Builds grip strength, core stability, and anti-lateral flexion strength.",
+      "setup": "Stand tall with heavy dumbbell in one hand. Shoulder packed, opposite side engaged to stay upright.",
+      "movement": "Walk with controlled steps, maintaining upright posture. Don't lean toward or away from weight. Walk for distance, switch hands.",
+      "cues": "Stay tall, don't lean, controlled steps, grip hard"
+    }
+  },
+  "Dumbbell Skull Crushers": {
+    "description": {
+      "overview": "A lying tricep extension lowering dumbbells to temples. Isolates triceps through full range for arm development.",
+      "setup": "Lie on bench, dumbbells held with arms extended over chest. Palms facing each other, elbows pointed up.",
+      "movement": "Lower dumbbells by bending elbows toward temples. Keep upper arms stationary. Press back up, squeezing triceps.",
+      "cues": "Elbows stationary, lower to temples, squeeze at top, control descent"
+    }
+  },
+  "Dumbbell Squeeze Press": {
+    "description": {
+      "overview": "A chest press variation squeezing dumbbells together throughout movement. Maximizes pec activation through constant inward tension.",
+      "setup": "Lie on bench, dumbbells touching at chest with neutral grip. Press dumbbells together hard throughout exercise.",
+      "movement": "Press dumbbells up while maintaining inward squeezing pressure. Fully extend arms at top. Lower with constant squeeze.",
+      "cues": "Squeeze together constantly, press and squeeze, maintain tension, feel the chest"
+    }
+  },
+  "Incline Bench Dumbbell Row": {
+    "description": {
+      "overview": "A chest-supported row variation using incline bench. Eliminates lower back strain while isolating lats and rhomboids.",
+      "setup": "Lie chest-down on incline bench. Dumbbells hanging below with arms extended. Feet on floor for stability.",
+      "movement": "Row dumbbells to sides of ribcage, squeezing shoulder blades. Lower with control to full extension.",
+      "cues": "Squeeze shoulder blades, pull to ribs, chest stays on bench, control descent"
+    }
+  },
+  "Dumbbell Hip Thrust": {
+    "description": {
+      "overview": "A hip thrust using dumbbell resistance for glute development. Primary glute builder with full hip extension emphasis.",
+      "setup": "Upper back on bench, feet flat on floor hip-width apart. Dumbbell on hip crease, hands securing it.",
+      "movement": "Drive through heels to lift hips until body is straight from shoulders to knees. Squeeze glutes hard at top. Lower with control.",
+      "cues": "Drive through heels, squeeze glutes hard, chin tucked, don't hyperextend"
+    }
+  },
+  "Decline Push-ups": {
+    "description": {
+      "overview": "A push-up variation with feet elevated on box or bench. Increases upper chest and shoulder emphasis while adding difficulty.",
+      "setup": "Hands on floor, feet on box or bench. Body straight from head to heels. Hands slightly wider than shoulders.",
+      "movement": "Lower body toward floor, keeping body rigid. Descend until chest nearly touches floor. Push back up to start.",
+      "cues": "Stay rigid, chest to floor, push through palms, core tight throughout"
+    }
   }
 }

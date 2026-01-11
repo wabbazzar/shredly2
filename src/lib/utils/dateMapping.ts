@@ -5,6 +5,15 @@
  */
 
 /**
+ * Parse YYYY-MM-DD string as local date (not UTC).
+ * This avoids timezone issues where '2026-01-12' becomes Jan 11 in US timezones.
+ */
+function parseLocalDate(dateString: string): Date {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/**
  * Get the actual calendar date for a program day.
  *
  * Day numbering: Program day 1 is the start date.
@@ -17,7 +26,7 @@
  * @returns Date object for this program day
  */
 export function getProgramDayDate(startDate: string, programDayNumber: number, daysPerWeek: number): Date {
-  const start = new Date(startDate);
+  const start = parseLocalDate(startDate);
 
   // Calculate which week this day is in (0-based for calculation)
   const weekIndex = Math.floor((programDayNumber - 1) / daysPerWeek);
@@ -42,7 +51,7 @@ export function getProgramDayDate(startDate: string, programDayNumber: number, d
  * @returns Object with start and end Date objects
  */
 export function getWeekDateRange(startDate: string, weekNumber: number): { start: Date; end: Date } {
-  const start = new Date(startDate);
+  const start = parseLocalDate(startDate);
 
   // Week 1 starts on startDate
   // Week 2 starts 7 days later, etc.
@@ -154,8 +163,7 @@ export function getProgramDayForDate(
   targetDate: Date,
   daysPerWeek: number
 ): number | null {
-  const start = new Date(startDate);
-  start.setHours(0, 0, 0, 0);
+  const start = parseLocalDate(startDate);
 
   const target = new Date(targetDate);
   target.setHours(0, 0, 0, 0);

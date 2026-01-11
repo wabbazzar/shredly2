@@ -175,11 +175,12 @@ export function applyIntensityProfile(
     }
 
     // Get sub_rest_time_seconds from parent's interval profile
+    // NOTE: Do NOT apply experience modifier here - interval work/rest ratios
+    // are part of the training protocol (e.g., 40/20 = 60 sec cycle).
+    // Experience modifiers apply to rest BETWEEN sets, not within interval cycles.
     const subRestTime = parseTimeField(parentProfile, 'sub_rest_time');
     if (subRestTime) {
-      // Apply experience modifier to rest time
-      const calculatedRest = subRestTime.value * experienceModifier.rest_time_multiplier;
-      const roundedRest = roundTimeValue(calculatedRest, subRestTime.unit);
+      const roundedRest = roundTimeValue(subRestTime.value, subRestTime.unit);
       week1.rest_time_minutes = subRestTime.unit === 'seconds' ? roundedRest / 60 : roundedRest;
       week1.rest_time_unit = subRestTime.unit;
     }

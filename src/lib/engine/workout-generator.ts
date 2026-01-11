@@ -5,9 +5,6 @@
  * to transform questionnaire answers into complete workout programs
  */
 
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import type {
   QuestionnaireAnswers,
   LegacyQuestionnaireAnswers,
@@ -26,27 +23,13 @@ import {
 } from './exercise-selector.js';
 import { parameterizeExercise } from './phase2-parameters.js';
 
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Static imports for browser compatibility (Vite handles JSON imports)
+import generationRulesData from '../../data/workout_generation_rules.json';
+import exerciseDatabaseData from '../../data/exercise_database.json';
 
-/**
- * Loads generation rules from JSON file
- */
-function loadGenerationRules(): GenerationRules {
-  const rulesPath = join(__dirname, '../../data/workout_generation_rules.json');
-  const rulesContent = readFileSync(rulesPath, 'utf-8');
-  return JSON.parse(rulesContent) as GenerationRules;
-}
-
-/**
- * Loads exercise database from JSON file
- */
-function loadExerciseDatabase(): ExerciseDatabase {
-  const dbPath = join(__dirname, '../../data/exercise_database.json');
-  const dbContent = readFileSync(dbPath, 'utf-8');
-  return JSON.parse(dbContent) as ExerciseDatabase;
-}
+// Cast to proper types
+const rules = generationRulesData as GenerationRules;
+const exerciseDB = exerciseDatabaseData as ExerciseDatabase;
 
 /**
  * Main entry point: Generates complete workout program from questionnaire
@@ -63,9 +46,7 @@ export function generateWorkout(
   // This will be removed when Phases 2-5 are complete
   const legacyAnswers = mapToLegacyAnswers(answers);
 
-  // Load configuration and data
-  const rules = loadGenerationRules();
-  const exerciseDB = loadExerciseDatabase();
+  // Use pre-loaded configuration and data (static imports for browser compatibility)
   const allExercises = flattenExerciseDatabase(exerciseDB);
 
   // ===== PHASE 1: STRUCTURAL GENERATION =====

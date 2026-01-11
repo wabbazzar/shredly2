@@ -72,30 +72,33 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+		class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3"
 		on:click={handleBackdropClick}
 	>
 		<!-- Modal -->
-		<div class="w-full max-w-sm bg-slate-800 rounded-xl shadow-xl">
+		<div
+			class="w-full max-w-xs bg-slate-800 rounded-xl shadow-xl"
+			on:click|stopPropagation
+		>
 			<!-- Header -->
-			<div class="p-4 border-b border-slate-700">
-				<h3 class="text-lg font-semibold text-white">Apply Change To</h3>
-				<p class="text-sm text-slate-400 mt-1">Choose which weeks to update</p>
+			<div class="px-4 py-3 border-b border-slate-700">
+				<h3 class="text-base font-semibold text-white">Apply Change To</h3>
+				<p class="text-xs text-slate-400 mt-0.5">Choose which weeks to update</p>
 			</div>
 
 			<!-- Options -->
-			<div class="p-4 space-y-2">
+			<div class="px-3 py-2 space-y-1.5">
 				{#each scopeOptions as option}
 					<button
 						on:click={() => (selectedScope = option.value)}
-						class="w-full p-3 rounded-lg text-left transition-colors
+						class="w-full p-2 rounded-md text-left transition-colors
 							   {selectedScope === option.value
 							? 'bg-indigo-600 text-white'
 							: 'bg-slate-700 text-white hover:bg-slate-600'}"
 					>
-						<div class="font-medium">{option.label}</div>
+						<div class="text-sm font-medium">{option.label}</div>
 						<div
-							class="text-sm mt-0.5
+							class="text-xs
 								   {selectedScope === option.value ? 'text-indigo-200' : 'text-slate-400'}"
 						>
 							{option.description}
@@ -105,31 +108,31 @@
 			</div>
 
 			<!-- Remember checkbox -->
-			<div class="px-4 pb-4">
+			<div class="px-3 pb-2">
 				<label class="flex items-center gap-2 cursor-pointer">
 					<input
 						type="checkbox"
 						bind:checked={rememberChoice}
-						class="w-4 h-4 rounded border-slate-500 bg-slate-700 text-indigo-500
+						class="w-3.5 h-3.5 rounded border-slate-500 bg-slate-700 text-indigo-500
 							   focus:ring-indigo-500 focus:ring-offset-0"
 					/>
-					<span class="text-sm text-slate-400">Remember for this session</span>
+					<span class="text-xs text-slate-400">Remember for this session</span>
 				</label>
 			</div>
 
 			<!-- Footer -->
-			<div class="flex gap-3 p-4 border-t border-slate-700">
+			<div class="flex gap-2 px-3 py-3 border-t border-slate-700">
 				<button
 					on:click={handleCancel}
-					class="flex-1 py-2.5 px-4 bg-slate-700 hover:bg-slate-600
-						   text-white font-medium rounded-lg transition-colors"
+					class="flex-1 py-2 px-3 bg-slate-700 hover:bg-slate-600
+						   text-white text-sm font-medium rounded-lg transition-colors"
 				>
 					Cancel
 				</button>
 				<button
 					on:click={handleSelect}
-					class="flex-1 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700
-						   text-white font-medium rounded-lg transition-colors"
+					class="flex-1 py-2 px-3 bg-indigo-600 hover:bg-indigo-700
+						   text-white text-sm font-medium rounded-lg transition-colors"
 				>
 					Apply
 				</button>

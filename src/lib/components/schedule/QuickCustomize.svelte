@@ -67,16 +67,16 @@
 	}
 </script>
 
-<div class="space-y-4">
+<div class="space-y-3">
 	<!-- Goal -->
 	<div>
-		<label class="block text-sm font-medium text-slate-300 mb-2">Goal</label>
-		<div class="grid grid-cols-3 gap-2">
+		<label class="block text-xs font-medium text-slate-400 mb-1.5">Goal</label>
+		<div class="grid grid-cols-3 gap-1.5">
 			{#each goalOptions as option}
 				<button
 					type="button"
 					on:click={() => updateField('goal', option.value)}
-					class="py-2 px-3 text-sm rounded-lg transition-colors
+					class="py-1.5 px-2 text-xs rounded-md transition-colors
 						   {answers.goal === option.value
 						? 'bg-indigo-600 text-white'
 						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
@@ -89,13 +89,13 @@
 
 	<!-- Session Duration -->
 	<div>
-		<label class="block text-sm font-medium text-slate-300 mb-2">Session Duration</label>
-		<div class="grid grid-cols-3 gap-2">
+		<label class="block text-xs font-medium text-slate-400 mb-1.5">Duration</label>
+		<div class="grid grid-cols-3 gap-1.5">
 			{#each durationOptions as option}
 				<button
 					type="button"
 					on:click={() => updateField('session_duration', option.value)}
-					class="py-2 px-3 text-sm rounded-lg transition-colors
+					class="py-1.5 px-2 text-xs rounded-md transition-colors
 						   {answers.session_duration === option.value
 						? 'bg-indigo-600 text-white'
 						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
@@ -108,13 +108,13 @@
 
 	<!-- Experience Level -->
 	<div>
-		<label class="block text-sm font-medium text-slate-300 mb-2">Experience</label>
-		<div class="grid grid-cols-3 gap-2">
+		<label class="block text-xs font-medium text-slate-400 mb-1.5">Experience</label>
+		<div class="grid grid-cols-3 gap-1.5">
 			{#each experienceOptions as option}
 				<button
 					type="button"
 					on:click={() => updateField('experience_level', option.value)}
-					class="py-2 px-3 text-sm rounded-lg transition-colors
+					class="py-1.5 px-2 text-xs rounded-md transition-colors
 						   {answers.experience_level === option.value
 						? 'bg-indigo-600 text-white'
 						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
@@ -127,13 +127,13 @@
 
 	<!-- Equipment -->
 	<div>
-		<label class="block text-sm font-medium text-slate-300 mb-2">Equipment</label>
-		<div class="grid grid-cols-3 gap-2">
+		<label class="block text-xs font-medium text-slate-400 mb-1.5">Equipment</label>
+		<div class="grid grid-cols-3 gap-1.5">
 			{#each equipmentOptions as option}
 				<button
 					type="button"
 					on:click={() => updateField('equipment_access', option.value)}
-					class="py-2 px-3 text-sm rounded-lg transition-colors
+					class="py-1.5 px-2 text-xs rounded-md transition-colors
 						   {answers.equipment_access === option.value
 						? 'bg-indigo-600 text-white'
 						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
@@ -146,13 +146,13 @@
 
 	<!-- Training Frequency -->
 	<div>
-		<label class="block text-sm font-medium text-slate-300 mb-2">Days per Week</label>
-		<div class="grid grid-cols-6 gap-2">
+		<label class="block text-xs font-medium text-slate-400 mb-1.5">Days/Week</label>
+		<div class="grid grid-cols-6 gap-1">
 			{#each frequencyOptions as option}
 				<button
 					type="button"
 					on:click={() => updateField('training_frequency', option.value)}
-					class="py-2 px-2 text-sm rounded-lg transition-colors
+					class="py-1.5 text-xs rounded-md transition-colors
 						   {answers.training_frequency === option.value
 						? 'bg-indigo-600 text-white'
 						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
@@ -165,13 +165,13 @@
 
 	<!-- Program Duration -->
 	<div>
-		<label class="block text-sm font-medium text-slate-300 mb-2">Program Duration</label>
-		<div class="grid grid-cols-3 gap-2">
+		<label class="block text-xs font-medium text-slate-400 mb-1.5">Program</label>
+		<div class="grid grid-cols-3 gap-1.5">
 			{#each programDurationOptions as option}
 				<button
 					type="button"
 					on:click={() => updateField('program_duration', option.value)}
-					class="py-2 px-3 text-sm rounded-lg transition-colors
+					class="py-1.5 px-2 text-xs rounded-md transition-colors
 						   {answers.program_duration === option.value
 						? 'bg-indigo-600 text-white'
 						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
@@ -183,13 +183,13 @@
 	</div>
 
 	<!-- Start Date -->
-	<div>
-		<label class="block text-sm font-medium text-slate-300 mb-2">Start Date</label>
+	<div class="overflow-hidden">
+		<label class="block text-xs font-medium text-slate-400 mb-1.5">Start Date</label>
 		<input
 			type="date"
 			value={startDate}
 			on:change={updateStartDate}
-			class="w-full py-2 px-3 bg-slate-700 border border-slate-600 rounded-lg
+			class="w-full max-w-full py-1.5 px-2 text-sm bg-slate-700 border border-slate-600 rounded-md
 				   text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
 		/>
 	</div>

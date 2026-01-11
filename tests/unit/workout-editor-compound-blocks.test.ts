@@ -444,6 +444,214 @@ describe("WorkoutEditor - updateCompoundBlockName()", () => {
   });
 });
 
+describe("WorkoutEditor - Compound Block Attribute Handling", () => {
+  describe("createCompoundBlock() attributes", () => {
+    it("EMOM blocks should have work_time but NOT sets", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "emom");
+
+      const block = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // EMOM (time-based) should have work_time_minutes
+      expect(block.week1.work_time_minutes).toBeDefined();
+      expect(block.week1.work_time_unit).toBe("minutes");
+
+      // EMOM should NOT have sets at parent level
+      expect(block.week1.sets).toBeUndefined();
+    });
+
+    it("AMRAP blocks should have work_time but NOT sets", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "amrap");
+
+      const block = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // AMRAP (time-based) should have work_time_minutes
+      expect(block.week1.work_time_minutes).toBeDefined();
+      expect(block.week1.work_time_unit).toBe("minutes");
+
+      // AMRAP should NOT have sets at parent level
+      expect(block.week1.sets).toBeUndefined();
+    });
+
+    it("CIRCUIT blocks should have sets but NOT work_time", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "circuit");
+
+      const block = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // CIRCUIT (sets-based) should have sets
+      expect(block.week1.sets).toBeDefined();
+      expect(block.week1.sets).toBeGreaterThan(0);
+
+      // CIRCUIT should NOT have work_time_minutes at parent level
+      expect(block.week1.work_time_minutes).toBeUndefined();
+    });
+
+    it("INTERVAL blocks should have sets but NOT work_time at parent level", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "interval");
+
+      const block = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // INTERVAL (sets-based) should have sets
+      expect(block.week1.sets).toBeDefined();
+      expect(block.week1.sets).toBeGreaterThan(0);
+
+      // INTERVAL should NOT have work_time_minutes at parent level
+      // (work_time goes on sub-exercises, not parent)
+      expect(block.week1.work_time_minutes).toBeUndefined();
+    });
+  });
+
+  describe("setCompoundBlockType() attribute conversion", () => {
+    it("should convert from EMOM (time-based) to INTERVAL (sets-based)", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      // Create EMOM block
+      editor.createCompoundBlock("day1", 0, "emom");
+
+      const beforeConvert = editor.getWorkout().days.day1.exercises[1] as any;
+      expect(beforeConvert.week1.work_time_minutes).toBeDefined();
+      expect(beforeConvert.week1.sets).toBeUndefined();
+
+      // Convert to INTERVAL
+      editor.setCompoundBlockType("day1", 1, "interval");
+
+      const afterConvert = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // Should now have sets
+      expect(afterConvert.week1.sets).toBeDefined();
+      expect(afterConvert.week1.sets).toBeGreaterThan(0);
+
+      // Should NOT have work_time_minutes anymore
+      expect(afterConvert.week1.work_time_minutes).toBeUndefined();
+    });
+
+    it("should convert from EMOM (time-based) to CIRCUIT (sets-based)", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "emom");
+      editor.setCompoundBlockType("day1", 1, "circuit");
+
+      const block = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // Should have sets, NOT work_time_minutes
+      expect(block.week1.sets).toBeDefined();
+      expect(block.week1.work_time_minutes).toBeUndefined();
+    });
+
+    it("should convert from INTERVAL (sets-based) to EMOM (time-based)", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      // Create INTERVAL block
+      editor.createCompoundBlock("day1", 0, "interval");
+
+      const beforeConvert = editor.getWorkout().days.day1.exercises[1] as any;
+      expect(beforeConvert.week1.sets).toBeDefined();
+      expect(beforeConvert.week1.work_time_minutes).toBeUndefined();
+
+      // Convert to EMOM
+      editor.setCompoundBlockType("day1", 1, "emom");
+
+      const afterConvert = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // Should now have work_time_minutes
+      expect(afterConvert.week1.work_time_minutes).toBeDefined();
+      expect(afterConvert.week1.work_time_unit).toBe("minutes");
+
+      // Should NOT have sets anymore
+      expect(afterConvert.week1.sets).toBeUndefined();
+    });
+
+    it("should convert from CIRCUIT (sets-based) to AMRAP (time-based)", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "circuit");
+      editor.setCompoundBlockType("day1", 1, "amrap");
+
+      const block = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // Should have work_time_minutes, NOT sets
+      expect(block.week1.work_time_minutes).toBeDefined();
+      expect(block.week1.sets).toBeUndefined();
+    });
+
+    it("should preserve work_time when converting between time-based types (EMOM to AMRAP)", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "emom");
+
+      const beforeConvert = editor.getWorkout().days.day1.exercises[1] as any;
+      const originalWorkTime = beforeConvert.week1.work_time_minutes;
+
+      editor.setCompoundBlockType("day1", 1, "amrap");
+
+      const afterConvert = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // work_time should be preserved
+      expect(afterConvert.week1.work_time_minutes).toBe(originalWorkTime);
+    });
+
+    it("should preserve sets when converting between sets-based types (CIRCUIT to INTERVAL)", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "circuit");
+
+      const beforeConvert = editor.getWorkout().days.day1.exercises[1] as any;
+      const originalSets = beforeConvert.week1.sets;
+
+      editor.setCompoundBlockType("day1", 1, "interval");
+
+      const afterConvert = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // sets should be preserved
+      expect(afterConvert.week1.sets).toBe(originalSets);
+    });
+
+    it("should undo attribute conversion correctly", () => {
+      const workout = createTestWorkout();
+      const editor = new WorkoutEditor(workout);
+
+      editor.createCompoundBlock("day1", 0, "emom");
+
+      const beforeConvert = editor.getWorkout().days.day1.exercises[1] as any;
+      const originalWorkTime = beforeConvert.week1.work_time_minutes;
+
+      // Convert EMOM -> INTERVAL (time-based to sets-based)
+      editor.setCompoundBlockType("day1", 1, "interval");
+
+      const afterConvert = editor.getWorkout().days.day1.exercises[1] as any;
+      expect(afterConvert.week1.sets).toBeDefined();
+      expect(afterConvert.week1.work_time_minutes).toBeUndefined();
+
+      // Undo the conversion
+      editor.undo();
+
+      const afterUndo = editor.getWorkout().days.day1.exercises[1] as any;
+
+      // Should restore original EMOM attributes
+      expect(afterUndo.category).toBe("emom");
+      expect(afterUndo.week1.work_time_minutes).toBe(originalWorkTime);
+      expect(afterUndo.week1.sets).toBeUndefined();
+    });
+  });
+});
+
 describe("WorkoutEditor - Integration: Compound Block Workflow", () => {
   it("should support full workflow: create -> add sub-exercises -> change type", () => {
     const workout = createTestWorkout();

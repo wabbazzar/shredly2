@@ -3,8 +3,17 @@
 	import { goto } from '$app/navigation';
 	import { TABS, type TabConfig } from '$lib/types/navigation';
 	import { navigationStore } from '$lib/stores/navigation';
+	import { navigateUp } from '$lib/stores/schedule';
 
 	function handleTabClick(tab: TabConfig) {
+		const isCurrentTab = activePath === tab.path || (activePath === '/' && tab.id === 'schedule');
+
+		// If already on schedule tab, navigate up the view hierarchy
+		if (isCurrentTab && tab.id === 'schedule') {
+			navigateUp();
+			return;
+		}
+
 		navigationStore.navigateToTab(tab.id);
 		goto(tab.path);
 	}

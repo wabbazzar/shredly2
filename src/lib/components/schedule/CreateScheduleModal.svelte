@@ -4,8 +4,17 @@
 	import { saveScheduleToDb, setActiveSchedule, navigateToCalendar } from '$lib/stores/schedule';
 	import { generateWorkout } from '$lib/engine/workout-generator';
 	import type { QuestionnaireAnswers } from '$lib/engine/types';
-	import type { StoredSchedule } from '$lib/types/schedule';
+	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
 	import QuickCustomize from './QuickCustomize.svelte';
+
+	// Create default day mapping (consecutive days starting Monday)
+	function createDefaultDayMapping(daysPerWeek: number): DayMapping {
+		const mapping: DayMapping = {};
+		for (let i = 1; i <= daysPerWeek; i++) {
+			mapping[i.toString()] = ((i - 1) % 7) as Weekday;
+		}
+		return mapping;
+	}
 
 	export let isOpen: boolean;
 
@@ -66,7 +75,8 @@
 					createdAt: new Date().toISOString(),
 					updatedAt: new Date().toISOString(),
 					currentWeek: 1,
-					currentDay: 1
+					currentDay: 1,
+					dayMapping: createDefaultDayMapping(workout.daysPerWeek)
 				}
 			};
 
@@ -106,22 +116,22 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 bg-black/60 z-50 flex items-end justify-center"
+		class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3"
 		on:click={handleBackdropClick}
 	>
 		<!-- Modal -->
 		<div
-			class="w-full max-w-lg bg-slate-800 rounded-t-2xl max-h-[90vh] flex flex-col
-				   animate-slide-up"
+			class="w-full max-w-sm bg-slate-800 rounded-xl flex flex-col max-h-[calc(100vh-1.5rem)] max-h-[calc(100dvh-1.5rem)]"
+			on:click|stopPropagation
 		>
 			<!-- Header -->
-			<div class="flex items-center justify-between p-4 border-b border-slate-700">
-				<h2 class="text-lg font-semibold text-white">Create Schedule</h2>
+			<div class="flex items-center justify-between px-4 py-3 border-b border-slate-700 flex-shrink-0">
+				<h2 class="text-base font-semibold text-white">Create Schedule</h2>
 				<button
 					on:click={handleClose}
 					class="p-1 text-slate-400 hover:text-white transition-colors"
 				>
-					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -132,8 +142,8 @@
 				</button>
 			</div>
 
-			<!-- Content -->
-			<div class="flex-1 overflow-y-auto p-4">
+			<!-- Content - scrollable -->
+			<div class="flex-1 overflow-y-auto overscroll-contain px-3 py-2">
 				{#if error}
 					<div class="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg">
 						<p class="text-sm text-red-300">{error}</p>
@@ -148,28 +158,20 @@
 				/>
 			</div>
 
-			<!-- Footer -->
-			<div class="p-4 border-t border-slate-700">
+			<!-- Footer - always visible -->
+			<div class="px-4 py-3 border-t border-slate-700 flex-shrink-0">
 				<button
 					on:click={handleGenerate}
 					disabled={isGenerating}
-					class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700
-						   text-white font-medium rounded-lg transition-colors
+					class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700
+						   text-white text-sm font-medium rounded-lg transition-colors
 						   disabled:opacity-50 disabled:cursor-not-allowed
 						   flex items-center justify-center gap-2"
 				>
 					{#if isGenerating}
-						<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+						<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
 						Generating...
 					{:else}
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M13 10V3L4 14h7v7l9-11h-7z"
-							/>
-						</svg>
 						Generate Schedule
 					{/if}
 				</button>
@@ -178,17 +180,3 @@
 	</div>
 {/if}
 
-<style>
-	@keyframes slide-up {
-		from {
-			transform: translateY(100%);
-		}
-		to {
-			transform: translateY(0);
-		}
-	}
-
-	.animate-slide-up {
-		animation: slide-up 0.3s ease-out;
-	}
-</style>

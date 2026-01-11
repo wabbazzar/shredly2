@@ -4,25 +4,25 @@
 	import {
 		initializeScheduleStore,
 		activeSchedule,
+		setActiveSchedule,
 		viewState,
-		navigateToCalendar,
+		showLibraryView,
+		showDetailView,
 		navigateToWeek,
 		navigateToDay,
-		navigateBack,
-		setActiveSchedule
+		navigateToCalendar
 	} from '$lib/stores/schedule';
 	import type { StoredSchedule } from '$lib/types/schedule';
 	import ScheduleActions from '$lib/components/schedule/ScheduleActions.svelte';
 	import ScheduleLibrary from '$lib/components/schedule/ScheduleLibrary.svelte';
 	import CreateScheduleModal from '$lib/components/schedule/CreateScheduleModal.svelte';
+	import LoadTemplateModal from '$lib/components/schedule/LoadTemplateModal.svelte';
 	import CalendarView from '$lib/components/schedule/CalendarView.svelte';
 	import WeekView from '$lib/components/schedule/WeekView.svelte';
 	import DayView from '$lib/components/schedule/DayView.svelte';
-	import LoadTemplateModal from '$lib/components/schedule/LoadTemplateModal.svelte';
 
 	let showCreateModal = false;
 	let showLoadModal = false;
-	let showLibrary = true; // Show library by default
 
 	onMount(() => {
 		navigationStore.setActiveTab('schedule');
@@ -34,26 +34,22 @@
 	}
 
 	function handleLoadClick() {
-		// Will be implemented in Phase 7
 		showLoadModal = true;
 	}
 
 	function handleViewClick() {
 		if ($activeSchedule) {
-			showLibrary = false;
-			navigateToCalendar();
+			showDetailView();
 		}
 	}
 
 	async function handleScheduleSelect(schedule: StoredSchedule) {
-		// Set as active and view calendar
 		await setActiveSchedule(schedule.id);
-		showLibrary = false;
-		navigateToCalendar();
+		showDetailView();
 	}
 
 	function handleBackToLibrary() {
-		showLibrary = true;
+		showLibraryView();
 	}
 
 	function handleCreateModalClose() {
@@ -62,7 +58,7 @@
 
 	function handleScheduleCreated(e: CustomEvent<StoredSchedule>) {
 		showCreateModal = false;
-		showLibrary = false;
+		showDetailView();
 	}
 
 	function handleLoadModalClose() {
@@ -71,86 +67,143 @@
 
 	function handleScheduleLoaded(e: CustomEvent<StoredSchedule>) {
 		showLoadModal = false;
-		showLibrary = false;
+		showDetailView();
 	}
 
-	function handleWeekSelect(e: CustomEvent<number>) {
-		navigateToWeek(e.detail);
+	function handleWeekClick(e: CustomEvent<{ weekNumber: number }>) {
+		navigateToWeek(e.detail.weekNumber);
 	}
 
-	function handleDaySelect(e: CustomEvent<number>) {
-		navigateToDay(e.detail);
+	function handleDayClick(e: CustomEvent<{ weekNumber: number; dayNumber: number }>) {
+		navigateToDay(e.detail.weekNumber, e.detail.dayNumber);
 	}
 
-	function handleExerciseEdit(e: CustomEvent<{ exerciseIndex: number }>) {
-		// Will be implemented in Phase 6
-		console.log('Edit exercise:', e.detail.exerciseIndex);
+	function handleWeekBack() {
+		navigateToCalendar();
+	}
+
+	function handleDayBack() {
+		navigateToWeek($viewState.selectedWeek);
+	}
+
+	function handleScheduleUpdated(e: CustomEvent<StoredSchedule>) {
+		// The store is already updated by saveScheduleToDb in the child component
+		// The $activeSchedule reactive variable will automatically update
+		// This handler exists for any additional side effects if needed
 	}
 </script>
 
-{#if !showLibrary && $activeSchedule}
-	<!-- Schedule views (Calendar -> Week -> Day drill-down) -->
-	{#if $viewState.viewLevel === 'week'}
-		<WeekView
-			schedule={$activeSchedule}
-			weekNumber={$viewState.selectedWeek}
-			on:daySelect={handleDaySelect}
-			on:back={() => navigateToCalendar()}
-		/>
-	{:else if $viewState.viewLevel === 'day'}
-		<DayView
-			schedule={$activeSchedule}
-			weekNumber={$viewState.selectedWeek}
-			dayNumber={$viewState.selectedDay}
-			on:exerciseEdit={handleExerciseEdit}
-			on:back={navigateBack}
-		/>
-	{:else}
-		<!-- Calendar view -->
-		<div class="flex flex-col h-full bg-slate-900">
-			<!-- Back to library button -->
-			<div class="px-4 pt-4 pb-2">
-				<button
-					on:click={handleBackToLibrary}
-					class="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
-				>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-					</svg>
-					Back to Library
-				</button>
+<div class="h-full overflow-auto bg-slate-900 px-2 py-3 lg:px-8 lg:py-6">
+	<div class="max-w-6xl mx-auto">
+		{#if !$viewState.showLibrary && $activeSchedule}
+			<!-- Schedule Detail View -->
+			{#if $viewState.viewLevel === 'day'}
+				<!-- Day View -->
+				<section class="bg-slate-800 rounded-lg p-2 lg:p-4">
+					<DayView
+						schedule={$activeSchedule}
+						weekNumber={$viewState.selectedWeek}
+						dayNumber={$viewState.selectedDay}
+						on:back={handleDayBack}
+						on:scheduleUpdated={handleScheduleUpdated}
+					/>
+				</section>
+			{:else if $viewState.viewLevel === 'week'}
+				<!-- Week View -->
+				<section class="bg-slate-800 rounded-lg p-2 lg:p-4">
+					<WeekView
+						schedule={$activeSchedule}
+						weekNumber={$viewState.selectedWeek}
+						on:dayClick={handleDayClick}
+						on:back={handleWeekBack}
+						on:scheduleUpdated={handleScheduleUpdated}
+					/>
+				</section>
+			{:else}
+				<!-- Calendar View (default) -->
+				<!-- Header with icon and back button -->
+				<div class="flex items-center justify-between mb-3 lg:mb-8">
+					<div class="flex items-center gap-2 lg:gap-4">
+						<!-- Calendar icon -->
+						<div
+							class="w-10 h-10 lg:w-20 lg:h-20 rounded-full bg-slate-700 flex items-center justify-center"
+						>
+							<svg class="w-5 h-5 lg:w-10 lg:h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+							</svg>
+						</div>
+						<div>
+							<h1 class="text-lg lg:text-3xl font-bold text-white">{$activeSchedule.name}</h1>
+							<p class="text-slate-400 text-xs lg:text-base">
+								{$activeSchedule.weeks} weeks | {$activeSchedule.daysPerWeek} days/week
+							</p>
+						</div>
+					</div>
+
+					<!-- Back button -->
+					<button
+						on:click={handleBackToLibrary}
+						class="px-2 py-1 lg:px-4 lg:py-2 rounded-full text-xs lg:text-sm font-medium transition-colors
+							   bg-slate-700 text-slate-300 hover:bg-slate-600"
+					>
+						All Schedules
+					</button>
+				</div>
+
+				<!-- Calendar View -->
+				<section class="bg-slate-800 rounded-lg p-2 lg:p-4">
+					<CalendarView
+						schedule={$activeSchedule}
+						on:weekClick={handleWeekClick}
+						on:dayClick={handleDayClick}
+						on:scheduleUpdated={handleScheduleUpdated}
+					/>
+				</section>
+			{/if}
+		{:else}
+			<!-- Schedule Library View -->
+			<!-- Header with icon -->
+			<div class="flex items-center justify-between mb-3 lg:mb-8">
+				<div class="flex items-center gap-2 lg:gap-4">
+					<!-- Calendar icon -->
+					<div
+						class="w-10 h-10 lg:w-20 lg:h-20 rounded-full bg-slate-700 flex items-center justify-center"
+					>
+						<svg class="w-5 h-5 lg:w-10 lg:h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+						</svg>
+					</div>
+					<div>
+						<h1 class="text-lg lg:text-3xl font-bold text-white">Schedule</h1>
+						<p class="text-slate-400 text-xs lg:text-base">Manage your workout programs</p>
+					</div>
+				</div>
 			</div>
-			<CalendarView schedule={$activeSchedule} on:weekSelect={handleWeekSelect} />
-		</div>
-	{/if}
-{:else}
-	<!-- Schedule library view (no active schedule or showing library) -->
-	<div class="flex flex-col h-full bg-slate-900">
-		<!-- Header -->
-		<div class="px-4 pt-4 pb-2">
-			<h1 class="text-2xl font-bold text-white">Schedule</h1>
-			<p class="text-sm text-slate-400">Manage your workout programs</p>
-		</div>
 
-		<!-- Actions -->
-		<ScheduleActions
-			onCreateClick={handleCreateClick}
-			onLoadClick={handleLoadClick}
-			onViewClick={handleViewClick}
-		/>
+			<!-- Actions -->
+			<div class="mb-3 lg:mb-6">
+				<ScheduleActions
+					onCreateClick={handleCreateClick}
+					onLoadClick={handleLoadClick}
+					onViewClick={handleViewClick}
+				/>
+			</div>
 
-		<!-- Divider -->
-		<div class="px-4 py-2">
-			<div class="border-t border-slate-700"></div>
-			<p class="text-xs text-slate-500 mt-2">Your Schedules</p>
-		</div>
+			<!-- Schedule Library -->
+			<section class="bg-slate-800 rounded-lg px-3 lg:px-4 divide-y divide-slate-700">
+				<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider py-2 lg:py-3">
+					Your Schedules
+				</h2>
+				<div class="py-1 lg:py-2">
+					<ScheduleLibrary onScheduleSelect={handleScheduleSelect} />
+				</div>
+			</section>
+		{/if}
 
-		<!-- Schedule Library -->
-		<div class="flex-1 overflow-y-auto">
-			<ScheduleLibrary onScheduleSelect={handleScheduleSelect} />
-		</div>
+		<!-- Bottom padding for tab bar -->
+		<div class="h-4"></div>
 	</div>
-{/if}
+</div>
 
 <!-- Create Schedule Modal -->
 <CreateScheduleModal

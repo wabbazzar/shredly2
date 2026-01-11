@@ -11,13 +11,18 @@ const DB_NAME = 'shredly-schedules';
 const DB_VERSION = 1;
 const STORE_NAME = 'schedules';
 
+// Browser check for SSR safety
+const isBrowser = typeof window !== 'undefined' && typeof indexedDB !== 'undefined';
+
 let db: IDBDatabase | null = null;
 
 /**
  * Open the IndexedDB database, creating object stores if needed.
  * Returns cached connection if already open.
+ * Returns null during SSR.
  */
-export async function openDatabase(): Promise<IDBDatabase> {
+export async function openDatabase(): Promise<IDBDatabase | null> {
+  if (!isBrowser) return null;
   if (db) return db;
 
   return new Promise((resolve, reject) => {
@@ -50,6 +55,8 @@ export async function openDatabase(): Promise<IDBDatabase> {
  */
 export async function saveSchedule(schedule: StoredSchedule): Promise<void> {
   const database = await openDatabase();
+  if (!database) return; // SSR - skip
+
   return new Promise((resolve, reject) => {
     const tx = database.transaction(STORE_NAME, 'readwrite');
     const store = tx.objectStore(STORE_NAME);
@@ -61,10 +68,12 @@ export async function saveSchedule(schedule: StoredSchedule): Promise<void> {
 
 /**
  * Get a single schedule by ID.
- * Returns null if not found.
+ * Returns null if not found or during SSR.
  */
 export async function getSchedule(id: string): Promise<StoredSchedule | null> {
   const database = await openDatabase();
+  if (!database) return null; // SSR
+
   return new Promise((resolve, reject) => {
     const tx = database.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
@@ -76,10 +85,12 @@ export async function getSchedule(id: string): Promise<StoredSchedule | null> {
 
 /**
  * Get all saved schedules.
- * Returns empty array if none exist.
+ * Returns empty array if none exist or during SSR.
  */
 export async function getAllSchedules(): Promise<StoredSchedule[]> {
   const database = await openDatabase();
+  if (!database) return []; // SSR
+
   return new Promise((resolve, reject) => {
     const tx = database.transaction(STORE_NAME, 'readonly');
     const store = tx.objectStore(STORE_NAME);
@@ -94,6 +105,8 @@ export async function getAllSchedules(): Promise<StoredSchedule[]> {
  */
 export async function deleteSchedule(id: string): Promise<void> {
   const database = await openDatabase();
+  if (!database) return; // SSR
+
   return new Promise((resolve, reject) => {
     const tx = database.transaction(STORE_NAME, 'readwrite');
     const store = tx.objectStore(STORE_NAME);
@@ -108,6 +121,7 @@ export async function deleteSchedule(id: string): Promise<void> {
  * Also stores the active schedule ID in localStorage for quick access.
  */
 export async function setActiveSchedule(id: string): Promise<void> {
+  if (!isBrowser) return; // SSR
   const schedules = await getAllSchedules();
 
   // Deactivate all, activate selected

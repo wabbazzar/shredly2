@@ -5,7 +5,7 @@
 	import EditableField from '$lib/components/EditableField.svelte';
 	import EditableHeightField from '$lib/components/EditableHeightField.svelte';
 	import EditableSelectField from '$lib/components/EditableSelectField.svelte';
-	import { formatWeight, lbsToKg, kgToLbs, BIG_4_LIFTS } from '$lib/types/user';
+	import { lbsToKg, kgToLbs, BIG_4_LIFTS } from '$lib/types/user';
 
 	onMount(() => {
 		navigationStore.setActiveTab('profile');
@@ -17,6 +17,20 @@
 	$: preferences = userData.preferences;
 	$: oneRepMaxes = userData.oneRepMaxes;
 	$: unitSystem = profile.unitSystem;
+
+	// Reactive display values - explicit dependencies on unitSystem
+	$: displayWeight = unitSystem === 'imperial' ? profile.weightLbs : lbsToKg(profile.weightLbs);
+	$: weightUnit = unitSystem === 'imperial' ? 'lbs' : 'kg';
+
+	// Reactive 1RM display values - map of exercise name to display weight
+	$: oneRepMaxDisplayValues = oneRepMaxes.reduce(
+		(acc, orm) => {
+			acc[orm.exerciseName] =
+				unitSystem === 'imperial' ? orm.weightLbs : lbsToKg(orm.weightLbs);
+			return acc;
+		},
+		{} as Record<string, number>
+	);
 
 	// Preference options from questionnaire
 	const goalOptions = [
@@ -124,15 +138,6 @@
 	function toggleUnits() {
 		userStore.setUnitSystem(unitSystem === 'imperial' ? 'metric' : 'imperial');
 	}
-
-	function getDisplayWeight(lbs: number): number {
-		return unitSystem === 'imperial' ? lbs : lbsToKg(lbs);
-	}
-
-	function getOneRepMaxValue(exerciseName: string): number {
-		const orm = oneRepMaxes.find((o) => o.exerciseName === exerciseName);
-		return orm ? getDisplayWeight(orm.weightLbs) : 0;
-	}
 </script>
 
 <div class="h-full overflow-auto bg-slate-900 px-4 py-6 lg:px-8">
@@ -185,12 +190,12 @@
 				/>
 
 				<EditableField
-					value={getDisplayWeight(profile.weightLbs)}
+					value={displayWeight}
 					label="Weight"
 					type="number"
-					suffix={unitSystem === 'imperial' ? 'lbs' : 'kg'}
-					min={50}
-					max={500}
+					suffix={weightUnit}
+					min={unitSystem === 'imperial' ? 50 : 23}
+					max={unitSystem === 'imperial' ? 500 : 227}
 					on:change={handleWeightChange}
 				/>
 
@@ -213,12 +218,12 @@
 
 				{#each BIG_4_LIFTS as lift}
 					<EditableField
-						value={getOneRepMaxValue(lift)}
+						value={oneRepMaxDisplayValues[lift] ?? 0}
 						label={lift}
 						type="number"
-						suffix={unitSystem === 'imperial' ? 'lbs' : 'kg'}
+						suffix={weightUnit}
 						min={0}
-						max={1000}
+						max={unitSystem === 'imperial' ? 1000 : 454}
 						on:change={(e) => handleOneRepMaxChange(lift, e)}
 					/>
 				{/each}

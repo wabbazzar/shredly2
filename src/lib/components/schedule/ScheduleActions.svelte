@@ -6,14 +6,14 @@
 	export let onViewClick: () => void;
 </script>
 
-<div class="flex gap-3 p-4">
+<div class="flex gap-2 lg:gap-3">
 	<button
 		on:click={onCreateClick}
-		class="flex-1 py-3 px-4 bg-indigo-600 hover:bg-indigo-700
-			   text-white font-medium rounded-lg transition-colors
-			   flex items-center justify-center gap-2"
+		class="flex-1 py-2 px-2 lg:py-3 lg:px-4 bg-indigo-600 hover:bg-indigo-700
+			   text-white text-sm lg:text-base font-medium rounded-lg transition-colors
+			   flex items-center justify-center gap-1 lg:gap-2"
 	>
-		<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<svg class="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<path
 				stroke-linecap="round"
 				stroke-linejoin="round"
@@ -26,11 +26,11 @@
 
 	<button
 		on:click={onLoadClick}
-		class="flex-1 py-3 px-4 bg-slate-700 hover:bg-slate-600
-			   text-white font-medium rounded-lg transition-colors
-			   flex items-center justify-center gap-2"
+		class="flex-1 py-2 px-2 lg:py-3 lg:px-4 bg-slate-700 hover:bg-slate-600
+			   text-white text-sm lg:text-base font-medium rounded-lg transition-colors
+			   flex items-center justify-center gap-1 lg:gap-2"
 	>
-		<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<svg class="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<path
 				stroke-linecap="round"
 				stroke-linejoin="round"
@@ -44,12 +44,12 @@
 	<button
 		on:click={onViewClick}
 		disabled={!$hasActiveSchedule}
-		class="flex-1 py-3 px-4 bg-slate-700 hover:bg-slate-600
-			   text-white font-medium rounded-lg transition-colors
+		class="flex-1 py-2 px-2 lg:py-3 lg:px-4 bg-slate-700 hover:bg-slate-600
+			   text-white text-sm lg:text-base font-medium rounded-lg transition-colors
 			   disabled:opacity-50 disabled:cursor-not-allowed
-			   flex items-center justify-center gap-2"
+			   flex items-center justify-center gap-1 lg:gap-2"
 	>
-		<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<svg class="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<path
 				stroke-linecap="round"
 				stroke-linejoin="round"

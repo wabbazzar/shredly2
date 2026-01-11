@@ -577,7 +577,7 @@
       "default": "liss"
     },
     "interval": {
-      "finisher": "tabata",
+      "finisher": "moderate",
       "tertiary": "heavy",
       "default": "moderate"
     },

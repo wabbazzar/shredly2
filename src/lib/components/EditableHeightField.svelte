@@ -20,6 +20,15 @@
 	let feetInput: HTMLInputElement;
 	let cmInput: HTMLInputElement;
 
+	// Reactive display value - explicitly depends on unitSystem and heightInches
+	$: displayValue = (() => {
+		if (unitSystem === 'imperial') {
+			const parsed = inchesToFeetAndInches(heightInches);
+			return `${parsed.feet}'${parsed.inches}"`;
+		}
+		return `${inchesToCm(heightInches)} cm`;
+	})();
+
 	function startEdit() {
 		if (unitSystem === 'imperial') {
 			const parsed = inchesToFeetAndInches(heightInches);
@@ -57,14 +66,6 @@
 		} else if (e.key === 'Escape') {
 			editing = false;
 		}
-	}
-
-	function formatDisplay(): string {
-		if (unitSystem === 'imperial') {
-			const parsed = inchesToFeetAndInches(heightInches);
-			return `${parsed.feet}'${parsed.inches}"`;
-		}
-		return `${inchesToCm(heightInches)} cm`;
 	}
 </script>
 
@@ -120,7 +121,7 @@
 			class="text-white text-sm hover:text-indigo-400 transition-colors
              flex items-center gap-1 group"
 		>
-			<span>{formatDisplay()}</span>
+			<span>{displayValue}</span>
 			<svg
 				class="w-3 h-3 text-slate-500 group-hover:text-indigo-400 transition-colors"
 				fill="none"

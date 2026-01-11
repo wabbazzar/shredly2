@@ -10,6 +10,10 @@
 	.pt-safe {
 		padding-top: env(safe-area-inset-top, 0px);
 	}
+	/* Bottom nav clearance: nav height (4rem/64px) + safe area */
+	.pb-nav {
+		padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+	}
 }
 
 /* Base styles */

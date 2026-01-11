@@ -48,7 +48,8 @@ const DEFAULT_VIEW_STATE: ScheduleViewState = {
   viewLevel: 'calendar',
   selectedWeek: 1,
   selectedDay: 1,
-  isEditing: false
+  isEditing: false,
+  showLibrary: true
 };
 
 const DEFAULT_EDIT_PREFERENCES: EditPreferences = {
@@ -291,7 +292,8 @@ export async function saveScheduleToDb(schedule: StoredSchedule): Promise<void> 
     scheduleLibrary.set(schedules);
 
     // If this is the active schedule, update that too
-    if (schedule.scheduleMetadata.isActive) {
+    const currentActive = get(activeSchedule);
+    if (schedule.scheduleMetadata.isActive || currentActive?.id === schedule.id) {
       activeSchedule.set(schedule);
     }
   } catch (e) {
@@ -378,16 +380,8 @@ export function navigateToWeek(weekNumber: number): void {
 /**
  * Navigate to day view
  */
-export function navigateToDay(dayNumber: number): void {
-  // Calculate which week this day is in
-  const schedule = get(activeSchedule);
-  if (schedule) {
-    const daysPerWeek = schedule.daysPerWeek;
-    const weekNumber = Math.ceil(dayNumber / daysPerWeek);
-    navigateToView('day', weekNumber, dayNumber);
-  } else {
-    navigateToView('day', undefined, dayNumber);
-  }
+export function navigateToDay(weekNumber: number, dayNumber: number): void {
+  navigateToView('day', weekNumber, dayNumber);
 }
 
 /**
@@ -400,6 +394,31 @@ export function navigateBack(): void {
   } else if (current.viewLevel === 'week') {
     navigateToView('calendar');
   }
+}
+
+/**
+ * Navigate up one level in the view hierarchy
+ * Used when re-tapping the schedule tab
+ * day -> week -> calendar -> library
+ * Returns true if navigation occurred, false if already at top level
+ */
+export function navigateUp(): boolean {
+  const current = get(viewState);
+
+  if (current.viewLevel === 'day') {
+    navigateToView('week');
+    return true;
+  } else if (current.viewLevel === 'week') {
+    navigateToView('calendar');
+    return true;
+  } else if (!current.showLibrary) {
+    // At calendar view, go to library
+    showLibraryView();
+    return true;
+  }
+
+  // Already at library (top level)
+  return false;
 }
 
 /**
@@ -452,4 +471,24 @@ export function closeModal(): void {
 export function getWeekKeyForView(): WeekKey {
   const state = get(viewState);
   return `week${state.selectedWeek}` as WeekKey;
+}
+
+/**
+ * Show library view
+ */
+export function showLibraryView(): void {
+  viewState.update(s => ({
+    ...s,
+    showLibrary: true
+  }));
+}
+
+/**
+ * Show schedule detail view
+ */
+export function showDetailView(): void {
+  viewState.update(s => ({
+    ...s,
+    showLibrary: false
+  }));
 }

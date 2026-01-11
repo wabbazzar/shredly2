@@ -14,6 +14,14 @@
       - need to develop game plan for mobile tooling to make edit easy
       - click answer for questionnaire responses
     - "current" schedule shows current day using system date. start date can be retroactively applied
+4. [INTERVAL] INTERVAL: Wall Sits + Donkey Kicks
+   Sets: Week 1: 8 sets | Week 2: 8 sets | Week 3: 8 sets
+  - Wall Sits:
+     Work Time: Week 1: 0.3333333333333333 seconds | Week 2: 0.4166666666666667 seconds | Week 3: 0.5 seconds
+     Rest Time: Week 1: 0.16666666666666666 seconds | Week 2: 0.08333333333333333 seconds | Week 3: 0.08333333333333333 seconds
+  - Donkey Kicks:
+     Work Time: Week 1: 0.3333333333333333 seconds | Week 2: 0.4166666666666667 seconds | Week 3: 0.5 seconds
+     Rest Time: Week 1: 0.16666666666666666 seconds | Week 2: 0.08333333333333333 seconds | Week 3: 0.08333333333333333 seconds
     - other difference from CLI version is days can be reordered. and days are assigned to days of the week e.g. M/W/F. we will need a GUI specific config for autoassigning standard days of week to numerical ids in the schedule
     - schedule shows completed workouts for the loaded schedule but not past schedules
   - live view

@@ -173,7 +173,7 @@ COMPOUND BLOCKS (can be any of):
 |
 +-- AMRAP     -- as many reps as possible in time window
 +-- EMOM      -- every minute on the minute
-+-- Circuit   -- rotate through exercises with minimal rest
++-- Circuit   -- Complete as Fast as Possible
 +-- Interval  -- work/rest periods
 ```
 

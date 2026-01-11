@@ -21,6 +21,7 @@ import { browseExerciseDatabase } from './exercise-db-browser.js';
 import hotkeysConfig from '../cli_hotkeys.json' with { type: 'json' };
 import exerciseDatabase from '../../src/data/exercise_database.json' with { type: 'json' };
 import exerciseDescriptions from '../../src/data/exercise_descriptions.json' with { type: 'json' };
+import workoutGenerationRules from '../../src/data/workout_generation_rules.json' with { type: 'json' };
 
 type EditorMode = 'view' | 'edit' | 'command' | 'help' | 'info';
 type ViewMode = 'week' | 'day'; // week = all days, day = one day at a time
@@ -205,18 +206,21 @@ export class InteractiveWorkoutEditor {
       }
     }
 
-    // View mode toggle
+    // View mode toggle OR detach sub-exercise
     else if (str === 'd' || str === 'D') {
-      this.state.viewMode = 'day';
-      this.setStatus('Switched to Day view', 'info');
+      // Check if on a sub-exercise - if so, detach it; otherwise toggle day view
+      const field = this.editableFields[this.state.selectedFieldIndex];
+      if (field && field.subExerciseIndex !== undefined) {
+        // Detach sub-exercise from compound block
+        this.detachSubExercise();
+      } else {
+        // Toggle to day view
+        this.state.viewMode = 'day';
+        this.setStatus('Switched to Day view', 'info');
+      }
     } else if (str === 'w' || str === 'W') {
       this.state.viewMode = 'week';
       this.setStatus('Switched to Week view', 'info');
-    }
-
-    // Show exercise information
-    else if (str === 'i' || str === 'I') {
-      this.showExerciseInfo();
     }
 
     // Jump to exercise number (supports multi-digit: 10, 11, 12, etc.)
@@ -263,9 +267,10 @@ export class InteractiveWorkoutEditor {
 
     // Compound block type change (context-sensitive)
     // If on a compound exercise parent, change block type
-    // Otherwise, 'e' opens exercise database
-    else if (str === 'e' || str === 'a' || str === 'c' || str === 'i') {
+    // Otherwise, 'e' opens exercise database, 'i' shows exercise info
+    else if (str === 'e' || str === 'a' || str === 'c' || str === 'i' || str === 'I' || str === 'n' || str === 'N') {
       const field = this.editableFields[this.state.selectedFieldIndex];
+      const lowerStr = str.toLowerCase();
 
       // Check if current field is a compound exercise parent name
       const isCompoundParent = field &&
@@ -279,12 +284,16 @@ export class InteractiveWorkoutEditor {
           'e': 'emom',
           'a': 'amrap',
           'c': 'circuit',
-          'i': 'interval'
+          'i': 'interval',
+          'n': 'interval'  // 'n' is alternative for interval (since 'i' = info normally)
         };
-        this.setCompoundBlockType(typeMap[str]);
-      } else if (str === 'e') {
+        this.setCompoundBlockType(typeMap[lowerStr]);
+      } else if (lowerStr === 'e') {
         // Fallback: 'e' opens exercise database when not on compound parent
         await this.openExerciseDatabase();
+      } else if (lowerStr === 'i') {
+        // Fallback: 'i' shows exercise info when not on compound parent
+        this.showExerciseInfo();
       }
     }
 
@@ -1135,6 +1144,41 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
+   * Detach current sub-exercise from its compound block
+   * Pops it out as a standalone exercise below the block
+   */
+  private detachSubExercise(): void {
+    const field = this.editableFields[this.state.selectedFieldIndex];
+    if (!field || field.subExerciseIndex === undefined) {
+      this.setStatus('Navigate to a sub-exercise field first', 'error');
+      return;
+    }
+
+    const result = this.editor.detachSubExercise(
+      field.dayKey,
+      field.exerciseIndex,
+      field.subExerciseIndex,
+      this.options.experienceLevel || 'intermediate'
+    );
+
+    if (result.success) {
+      this.setStatus(result.message, 'success');
+      this.editableFields = this.editor.getAllEditableFields();
+
+      // Jump to the newly created standalone exercise
+      if (result.newExerciseIndex !== undefined) {
+        const newExerciseLocation = `${field.dayKey}.exercises[${result.newExerciseIndex}].name`;
+        const newFieldIndex = this.editableFields.findIndex(f => f.location === newExerciseLocation);
+        if (newFieldIndex !== -1) {
+          this.state.selectedFieldIndex = newFieldIndex;
+        }
+      }
+    } else {
+      this.setStatus(result.message, 'error');
+    }
+  }
+
+  /**
    * Create a compound exercise block (EMOM/AMRAP/Circuit/Interval)
    */
   private createCompoundBlock(): void {
@@ -1471,6 +1515,7 @@ export class InteractiveWorkoutEditor {
 
   /**
    * Show exercise information from exercise_descriptions.json
+   * For compound blocks, shows block type info from workout_generation_rules.json
    */
   private showExerciseInfo(): void {
     const field = this.editableFields[this.state.selectedFieldIndex];
@@ -1489,6 +1534,16 @@ export class InteractiveWorkoutEditor {
 
     const exercise = day.exercises[field.exerciseIndex];
     if (!exercise) return;
+
+    // Check if this is a compound parent (not on a sub-exercise)
+    const isCompoundParent = exercise.sub_exercises !== undefined &&
+                              field.subExerciseIndex === undefined;
+
+    if (isCompoundParent) {
+      // Show compound block info instead of exercise description
+      this.showCompoundBlockInfo(exercise);
+      return;
+    }
 
     // Get the actual exercise name (parent exercise or sub-exercise)
     let exerciseName: string;
@@ -1562,6 +1617,74 @@ export class InteractiveWorkoutEditor {
   }
 
   /**
+   * Show compound block type information from workout_generation_rules.json
+   */
+  private showCompoundBlockInfo(exercise: any): void {
+    const category = exercise.category?.toLowerCase() || 'compound';
+    const subExerciseCount = exercise.sub_exercises?.length || 0;
+
+    // Get block info from workout_generation_rules.json
+    const compoundConfig = (workoutGenerationRules as any).compound_exercise_construction;
+    const blockInfo = compoundConfig[category];
+
+    // Render compound block info overlay
+    console.clear();
+    console.log(chalk.magenta.bold('='.repeat(60)));
+    console.log(chalk.magenta.bold(`COMPOUND BLOCK: ${category.toUpperCase()}`));
+    console.log(chalk.magenta.bold('='.repeat(60)));
+    console.log('');
+
+    if (blockInfo) {
+      console.log(chalk.yellow.bold('DESCRIPTION:'));
+      console.log(blockInfo.description || 'No description available');
+      console.log('');
+
+      console.log(chalk.yellow.bold('CONFIGURATION:'));
+      console.log(`  Base constituent exercises: ${blockInfo.base_constituent_exercises || 'N/A'}`);
+      console.log(`  Current sub-exercises: ${subExerciseCount}`);
+      console.log('');
+
+      if (blockInfo.exclude_equipment && blockInfo.exclude_equipment.length > 0) {
+        console.log(chalk.yellow.bold('EQUIPMENT RESTRICTIONS:'));
+        console.log(`  Excluded: ${blockInfo.exclude_equipment.join(', ')}`);
+        console.log(`  Reason: ${blockInfo.exclusion_reason || 'Not specified'}`);
+        console.log('');
+      }
+    } else {
+      console.log(chalk.gray('No configuration found for this block type.'));
+      console.log('');
+    }
+
+    // Show sub-exercises if present
+    if (exercise.sub_exercises && exercise.sub_exercises.length > 0) {
+      console.log(chalk.yellow.bold('SUB-EXERCISES:'));
+      exercise.sub_exercises.forEach((sub: any, index: number) => {
+        console.log(`  ${index + 1}. ${sub.name}`);
+      });
+      console.log('');
+    } else {
+      console.log(chalk.gray('No sub-exercises added yet.'));
+      console.log(chalk.gray("Press 'e' to open exercise browser and add sub-exercises."));
+      console.log('');
+    }
+
+    // Show block type quick reference
+    console.log(chalk.cyan.bold('BLOCK TYPE REFERENCE:'));
+    console.log('  EMOM  - Every Minute On the Minute: Perform reps at start of each minute');
+    console.log('  AMRAP - As Many Rounds As Possible: Complete rounds within time limit');
+    console.log('  CIRCUIT - Rotate through exercises with minimal rest between');
+    console.log('  INTERVAL - Work/rest intervals for each exercise');
+    console.log('');
+
+    console.log(chalk.gray('-'.repeat(60)));
+    console.log(chalk.gray('Press any key to return to editor...'));
+    console.log(chalk.gray("Press 'e'/'a'/'c'/'i'/'n' to change block type"));
+
+    // Set mode to 'info' so render() doesn't overwrite this display
+    this.state.mode = 'info';
+  }
+
+  /**
    * Render help screen
    */
   private renderHelp(): void {
@@ -1569,7 +1692,8 @@ export class InteractiveWorkoutEditor {
     console.log(chalk.cyan('=== INTERACTIVE WORKOUT EDITOR HELP ==='));
     console.log('');
     console.log(chalk.yellow('VIEW MODE:'));
-    console.log('  d/w         - Toggle Day/Week view');
+    console.log('  d           - Day view (or detach sub-exercise if on one)');
+    console.log('  w           - Week view');
     console.log('  ← →         - Navigate between days (Day view)');
     console.log('  j/k         - Jump to next/previous exercise');
     console.log('  t/T (or up/down) - Jump to next/previous editable field');
@@ -1588,7 +1712,8 @@ export class InteractiveWorkoutEditor {
     console.log('  q           - Quit (checks for unsaved changes)');
     console.log('');
     console.log(chalk.gray('Note: On <add exercise> markers, r/e/s will add exercises'));
-    console.log(chalk.gray('Note: On compound parent names, e/a/c/i change block type'));
+    console.log(chalk.gray('Note: On compound parent names, e/a/c/i/n change block type'));
+    console.log(chalk.gray('      (e=EMOM, a=AMRAP, c=Circuit, i/n=Interval)'));
     console.log('');
     console.log(chalk.yellow('EDIT MODE:'));
     console.log('  Type        - Enter new value');

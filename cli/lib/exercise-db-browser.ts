@@ -22,14 +22,50 @@ interface ExerciseData {
   external_load: string;
 }
 
+// Movement pattern derived from muscle groups
+type MovementPattern = 'push' | 'pull' | 'legs' | 'core' | 'full_body';
+
 interface FilterState {
   categories: Set<string>;
   muscleGroups: Set<string>;
   equipment: Set<string>;
   difficulty: Set<string>;
+  movementPatterns: Set<MovementPattern>;
 }
 
-type BrowserMode = 'normal' | 'search' | 'filter-category' | 'filter-muscle' | 'filter-equipment';
+type BrowserMode = 'normal' | 'search' | 'filter-category' | 'filter-muscle' | 'filter-equipment' | 'filter-pattern';
+
+// Muscle group to movement pattern mapping
+const PUSH_MUSCLES = ['Chest', 'Shoulders', 'Triceps', 'Front Delts', 'Side Delts', 'Lateral Delts', 'Upper Chest'];
+const PULL_MUSCLES = ['Back', 'Biceps', 'Lats', 'Rhomboids', 'Traps', 'Rear Delts', 'Forearms', 'Upper Back', 'Lower Back'];
+const LEGS_MUSCLES = ['Quadriceps', 'Quads', 'Hamstrings', 'Glutes', 'Calves', 'Adductors'];
+const CORE_MUSCLES = ['Core', 'Abs', 'Obliques'];
+
+/**
+ * Derive movement pattern from exercise muscle groups
+ */
+function deriveMovementPattern(exercise: ExerciseData): MovementPattern {
+  const muscles = exercise.muscle_groups;
+
+  if (muscles.length === 0) return 'full_body';
+
+  // Check for Full Body explicitly in muscle groups
+  if (muscles.includes('Full Body')) return 'full_body';
+
+  const hasPush = muscles.some(m => PUSH_MUSCLES.includes(m));
+  const hasPull = muscles.some(m => PULL_MUSCLES.includes(m));
+  const hasLegs = muscles.some(m => LEGS_MUSCLES.includes(m));
+  const hasCore = muscles.some(m => CORE_MUSCLES.includes(m));
+
+  // Exclusive patterns
+  if (hasLegs && !hasPush && !hasPull) return 'legs';
+  if (hasPush && !hasPull && !hasLegs) return 'push';
+  if (hasPull && !hasPush && !hasLegs) return 'pull';
+  if (hasCore && !hasPush && !hasPull && !hasLegs) return 'core';
+
+  // Mixed patterns default to full_body
+  return 'full_body';
+}
 
 interface BrowserState {
   filters: FilterState;
@@ -77,24 +113,28 @@ function getFilterOptions(allExercises: ExerciseData[]): {
   muscleGroups: string[];
   equipment: string[];
   difficulty: string[];
+  movementPatterns: MovementPattern[];
 } {
   const categories = new Set<string>();
   const muscleGroups = new Set<string>();
   const equipment = new Set<string>();
   const difficulty = new Set<string>();
+  const movementPatterns = new Set<MovementPattern>();
 
   for (const ex of allExercises) {
     categories.add(ex.category);
     ex.muscle_groups.forEach(mg => muscleGroups.add(mg));
     ex.equipment.forEach(eq => equipment.add(eq));
     difficulty.add(ex.difficulty);
+    movementPatterns.add(deriveMovementPattern(ex));
   }
 
   return {
     categories: Array.from(categories).sort(),
     muscleGroups: Array.from(muscleGroups).sort(),
     equipment: Array.from(equipment).sort(),
-    difficulty: Array.from(difficulty).sort()
+    difficulty: Array.from(difficulty).sort(),
+    movementPatterns: Array.from(movementPatterns).sort() as MovementPattern[]
   };
 }
 
@@ -130,6 +170,14 @@ function filterExercises(allExercises: ExerciseData[], filters: FilterState, sea
       return false;
     }
 
+    // Movement pattern filter
+    if (filters.movementPatterns.size > 0) {
+      const pattern = deriveMovementPattern(ex);
+      if (!filters.movementPatterns.has(pattern)) {
+        return false;
+      }
+    }
+
     return true;
   });
 }
@@ -163,6 +211,12 @@ function renderFilters(filters: FilterState, terminalWidth: number): string {
     activeFilters.push(chalk.yellow('Equipment: ') + chalk.green(equip));
   }
 
+  // Show active movement patterns
+  if (filters.movementPatterns.size > 0) {
+    const patterns = Array.from(filters.movementPatterns).join(', ');
+    activeFilters.push(chalk.yellow('Movement: ') + chalk.green(patterns));
+  }
+
   if (activeFilters.length === 0) {
     lines.push(chalk.gray('No active filters'));
   } else {
@@ -192,8 +246,11 @@ function renderModeIndicator(state: BrowserState): string {
   } else if (state.mode === 'filter-equipment') {
     lines.push(chalk.cyan('FILTER EQUIPMENT: ') + chalk.yellow(`e/${state.inputBuffer}`));
     lines.push(chalk.gray('Type to find equipment, Space to toggle, Enter to finish'));
+  } else if (state.mode === 'filter-pattern') {
+    lines.push(chalk.cyan('FILTER MOVEMENT: ') + chalk.yellow(`p/${state.inputBuffer}`));
+    lines.push(chalk.gray('Type to find patterns (push/pull/legs/core), Space to toggle, Enter to finish'));
   } else {
-    lines.push(chalk.gray('/ search | c filter categories | m filter muscles | e filter equipment | i info | r reset'));
+    lines.push(chalk.gray('/ search | c categories | m muscles | e equipment | p push/pull/legs | i info | r reset'));
   }
 
   lines.push('');
@@ -376,7 +433,8 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
       categories: new Set(),
       muscleGroups: new Set(),
       equipment: new Set(),
-      difficulty: new Set()
+      difficulty: new Set(),
+      movementPatterns: new Set()
     },
     selectedIndex: 0,
     filterSectionExpanded: true,
@@ -414,6 +472,9 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
       } else if (state.mode === 'filter-equipment') {
         // Show equipment selection list
         console.log(renderFilterSelection(filterOptions.equipment, state.filters.equipment, state.inputBuffer, state.selectedIndex));
+      } else if (state.mode === 'filter-pattern') {
+        // Show movement pattern selection list
+        console.log(renderFilterSelection(filterOptions.movementPatterns, state.filters.movementPatterns as Set<string>, state.inputBuffer, state.selectedIndex));
       } else {
         // Normal or search mode - show filters and exercises
         const searchQuery = state.mode === 'search' ? state.inputBuffer : '';
@@ -451,7 +512,7 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
         handleNormalMode(str, key);
       } else if (state.mode === 'search') {
         handleSearchMode(str, key);
-      } else if (state.mode === 'filter-category' || state.mode === 'filter-muscle' || state.mode === 'filter-equipment') {
+      } else if (state.mode === 'filter-category' || state.mode === 'filter-muscle' || state.mode === 'filter-equipment' || state.mode === 'filter-pattern') {
         handleFilterMode(str, key);
       }
     };
@@ -514,6 +575,11 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
         state.inputBuffer = '';
         state.selectedIndex = 0;
         render();
+      } else if (str === 'p') {
+        state.mode = 'filter-pattern';
+        state.inputBuffer = '';
+        state.selectedIndex = 0;
+        render();
       }
 
       // Reset all filters
@@ -522,6 +588,7 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
         state.filters.muscleGroups.clear();
         state.filters.equipment.clear();
         state.filters.difficulty.clear();
+        state.filters.movementPatterns.clear();
         state.selectedIndex = 0;
         render();
       }
@@ -588,6 +655,9 @@ export async function browseExerciseDatabase(): Promise<BrowserResult> {
       } else if (state.mode === 'filter-muscle') {
         options = filterOptions.muscleGroups;
         activeFilters = state.filters.muscleGroups;
+      } else if (state.mode === 'filter-pattern') {
+        options = filterOptions.movementPatterns;
+        activeFilters = state.filters.movementPatterns as Set<string>;
       } else {
         options = filterOptions.equipment;
         activeFilters = state.filters.equipment;

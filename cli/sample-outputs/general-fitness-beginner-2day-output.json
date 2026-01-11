@@ -1,5 +1,5 @@
 {
-  "id": "workout_tone_beg_1768027287493",
+  "id": "workout_tone_beg_1768065683795",
   "name": "General Fitness Beginner Program",
   "description": "2 days per week workout program focused on toning and fitness. Each session is 20 minutes.",
   "version": "2.0.0",
@@ -25,7 +25,7 @@
       "focus": "Upper",
       "exercises": [
         {
-          "name": "INTERVAL: Diamond Push-ups + Plank Jacks",
+          "name": "INTERVAL: Pull-ups + Pike Push-ups",
           "week1": {
             "sets": 3
           },
@@ -38,134 +38,65 @@
           "category": "interval",
           "sub_exercises": [
             {
-              "name": "Diamond Push-ups",
-              "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
-              },
-              "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
-              },
-              "week3": {
-                "reps": 9,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
-              }
-            },
-            {
-              "name": "Plank Jacks",
-              "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
-              },
-              "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
-              },
-              "week3": {
-                "reps": 9,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
-              }
-            }
-          ]
-        },
-        {
-          "name": "CIRCUIT: Side Plank + Single-Leg Stands + Plank Hold + Pull-ups",
-          "week1": {
-            "sets": 4
-          },
-          "week2": {
-            "sets": 4
-          },
-          "week3": {
-            "sets": 4
-          },
-          "category": "circuit",
-          "sub_exercises": [
-            {
-              "name": "Side Plank",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 5
-              },
-              "week3": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Single-Leg Stands",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 5
-              },
-              "week3": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Plank Hold",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 5
-              },
-              "week3": {
-                "reps": 5
-              }
-            },
-            {
               "name": "Pull-ups",
               "week1": {
-                "reps": 4
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.4166666666666667,
+                "rest_time_unit": "seconds"
               },
               "week2": {
-                "reps": 5
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
               },
               "week3": {
-                "reps": 5
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
+              }
+            },
+            {
+              "name": "Pike Push-ups",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.4166666666666667,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
               }
             }
           ]
         },
         {
-          "name": "AMRAP: Bodyweight Chin/Pull-Ups + Mountain Climbers + Dead Bug",
+          "name": "AMRAP: Mountain Climbers + Flutter Kicks + Bodyweight Chin/Pull-Ups",
           "week1": {
-            "work_time_minutes": 6,
+            "work_time_minutes": 10,
             "work_time_unit": "minutes"
           },
           "week2": {
-            "work_time_minutes": 6,
+            "work_time_minutes": 10,
             "work_time_unit": "minutes"
           },
           "week3": {
-            "work_time_minutes": 6,
+            "work_time_minutes": 10,
             "work_time_unit": "minutes"
           },
           "category": "amrap",
           "sub_exercises": [
-            {
-              "name": "Bodyweight Chin/Pull-Ups",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 5
-              },
-              "week3": {
-                "reps": 5
-              }
-            },
             {
               "name": "Mountain Climbers",
               "week1": {
@@ -179,7 +110,61 @@
               }
             },
             {
-              "name": "Dead Bug",
+              "name": "Flutter Kicks",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Bodyweight Chin/Pull-Ups",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            }
+          ]
+        },
+        {
+          "name": "EMOM: Pike Toe Touch + Scapular Retractions",
+          "week1": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Pike Toe Touch",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Scapular Retractions",
               "week1": {
                 "reps": 4
               },
@@ -200,7 +185,7 @@
       "focus": "Lower",
       "exercises": [
         {
-          "name": "INTERVAL: Squat to Calf Raise + Single-leg Glute Bridges",
+          "name": "INTERVAL: Bicycle Crunches + Squat Pulse",
           "week1": {
             "sets": 3
           },
@@ -213,67 +198,64 @@
           "category": "interval",
           "sub_exercises": [
             {
-              "name": "Squat to Calf Raise",
+              "name": "Bicycle Crunches",
               "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.4166666666666667,
+                "rest_time_unit": "seconds"
               },
               "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
               },
               "week3": {
-                "reps": 9,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
               }
             },
             {
-              "name": "Single-leg Glute Bridges",
+              "name": "Squat Pulse",
               "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.4166666666666667,
+                "rest_time_unit": "seconds"
               },
               "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
               },
               "week3": {
-                "reps": 9,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
               }
             }
           ]
         },
         {
-          "name": "AMRAP: Dead Bug + Pike Toe Touch + Side Plank",
+          "name": "CIRCUIT: Box Jumps + Wall Sits + Squat Jumps + Prone Superman",
           "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
+            "sets": 4
           },
           "week2": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
+            "sets": 4
           },
           "week3": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
+            "sets": 4
           },
-          "category": "amrap",
+          "category": "circuit",
           "sub_exercises": [
             {
-              "name": "Dead Bug",
+              "name": "Box Jumps",
               "week1": {
                 "reps": 4
               },
@@ -284,82 +266,103 @@
                 "reps": 5
               }
             },
-            {
-              "name": "Pike Toe Touch",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 5
-              },
-              "week3": {
-                "reps": 5
-              }
-            },
-            {
-              "name": "Side Plank",
-              "week1": {
-                "reps": 4
-              },
-              "week2": {
-                "reps": 5
-              },
-              "week3": {
-                "reps": 5
-              }
-            }
-          ]
-        },
-        {
-          "name": "INTERVAL: Wall Sits + Single Leg Glute Bridge",
-          "week1": {
-            "sets": 7
-          },
-          "week2": {
-            "sets": 7
-          },
-          "week3": {
-            "sets": 7
-          },
-          "category": "interval",
-          "sub_exercises": [
             {
               "name": "Wall Sits",
               "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
+                "reps": 4
               },
               "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
+                "reps": 5
               },
               "week3": {
-                "reps": 9,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
+                "reps": 5
               }
             },
             {
-              "name": "Single Leg Glute Bridge",
+              "name": "Squat Jumps",
               "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "reps": 4
               },
               "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "reps": 5
               },
               "week3": {
-                "reps": 9,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes",
-                "weight": "moderate"
+                "reps": 5
+              }
+            },
+            {
+              "name": "Prone Superman",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            }
+          ]
+        },
+        {
+          "name": "CIRCUIT: Frog Pumps + Jump Squats + Broad Jump + Flutter Kicks",
+          "week1": {
+            "sets": 4
+          },
+          "week2": {
+            "sets": 4
+          },
+          "week3": {
+            "sets": 4
+          },
+          "category": "circuit",
+          "sub_exercises": [
+            {
+              "name": "Frog Pumps",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Jump Squats",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Broad Jump",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Flutter Kicks",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
               }
             }
           ]

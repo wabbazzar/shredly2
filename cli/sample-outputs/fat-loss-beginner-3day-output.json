@@ -1,5 +1,5 @@
 {
-  "id": "workout_lose_beg_1768027287492",
+  "id": "workout_lose_beg_1768065683793",
   "name": "Fat Loss Beginner Program",
   "description": "3 days per week workout program focused on losing weight. Each session is 30 minutes.",
   "version": "2.0.0",
@@ -25,129 +25,131 @@
       "focus": "Push-HIIT",
       "exercises": [
         {
-          "name": "INTERVAL: Mountain Climbers + Diamond Push-ups",
+          "name": "CIRCUIT: Pike Push-ups + Plank Hold + Bear Crawl + Crab Walk",
           "week1": {
-            "sets": 7
+            "sets": 4
           },
           "week2": {
-            "sets": 7
+            "sets": 4
           },
           "week3": {
-            "sets": 7
+            "sets": 4
           },
           "week4": {
-            "sets": 7
+            "sets": 4
           },
-          "category": "interval",
-          "sub_exercises": [
-            {
-              "name": "Mountain Climbers",
-              "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
-              },
-              "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
-              },
-              "week3": {
-                "reps": 8,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
-              },
-              "week4": {
-                "reps": 9,
-                "rest_time_minutes": 0.94,
-                "rest_time_unit": "minutes"
-              }
-            },
-            {
-              "name": "Diamond Push-ups",
-              "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
-              },
-              "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
-              },
-              "week3": {
-                "reps": 8,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
-              },
-              "week4": {
-                "reps": 9,
-                "rest_time_minutes": 0.94,
-                "rest_time_unit": "minutes"
-              }
-            }
-          ]
-        },
-        {
-          "name": "INTERVAL: Pike Push-ups + Plank Hold",
-          "week1": {
-            "sets": 7
-          },
-          "week2": {
-            "sets": 7
-          },
-          "week3": {
-            "sets": 7
-          },
-          "week4": {
-            "sets": 7
-          },
-          "category": "interval",
+          "category": "circuit",
           "sub_exercises": [
             {
               "name": "Pike Push-ups",
               "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
+                "reps": 4
               },
               "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
+                "reps": 4
               },
               "week3": {
-                "reps": 8,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
+                "reps": 5
               },
               "week4": {
-                "reps": 9,
-                "rest_time_minutes": 0.94,
-                "rest_time_unit": "minutes"
+                "reps": 5
               }
             },
             {
               "name": "Plank Hold",
               "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
+                "reps": 4
               },
               "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
+                "reps": 4
               },
               "week3": {
-                "reps": 8,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
+                "reps": 5
               },
               "week4": {
-                "reps": 9,
-                "rest_time_minutes": 0.94,
-                "rest_time_unit": "minutes"
+                "reps": 5
+              }
+            },
+            {
+              "name": "Bear Crawl",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Crab Walk",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            }
+          ]
+        },
+        {
+          "name": "EMOM: Push-ups + Wide Push-ups",
+          "week1": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week4": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Push-ups",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Wide Push-ups",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
               }
             }
           ]
@@ -160,7 +162,7 @@
       "focus": "Pull-HIIT",
       "exercises": [
         {
-          "name": "INTERVAL: Bodyweight Chin/Pull-Ups + Pull-ups",
+          "name": "INTERVAL: Bodyweight Chin/Pull-Ups + Inverted Row",
           "week1": {
             "sets": 7
           },
@@ -178,60 +180,61 @@
             {
               "name": "Bodyweight Chin/Pull-Ups",
               "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
+                "work_time_minutes": 0.3333333333333333,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.16666666666666666,
+                "rest_time_unit": "seconds"
               },
               "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
+                "work_time_minutes": 0.4166666666666667,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.08333333333333333,
+                "rest_time_unit": "seconds"
               },
               "week3": {
-                "reps": 8,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
+                "work_time_minutes": 0.5,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.08333333333333333,
+                "rest_time_unit": "seconds"
               },
               "week4": {
-                "reps": 9,
-                "rest_time_minutes": 0.94,
-                "rest_time_unit": "minutes"
+                "work_time_minutes": 0.5833333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.08333333333333333,
+                "rest_time_unit": "seconds"
               }
             },
             {
-              "name": "Pull-ups",
+              "name": "Inverted Row",
               "week1": {
-                "reps": 7,
-                "rest_time_minutes": 1,
-                "rest_time_unit": "minutes"
+                "work_time_minutes": 0.3333333333333333,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.16666666666666666,
+                "rest_time_unit": "seconds"
               },
               "week2": {
-                "reps": 8,
-                "rest_time_minutes": 0.98,
-                "rest_time_unit": "minutes"
+                "work_time_minutes": 0.4166666666666667,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.08333333333333333,
+                "rest_time_unit": "seconds"
               },
               "week3": {
-                "reps": 8,
-                "rest_time_minutes": 0.96,
-                "rest_time_unit": "minutes"
+                "work_time_minutes": 0.5,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.08333333333333333,
+                "rest_time_unit": "seconds"
               },
               "week4": {
-                "reps": 9,
-                "rest_time_minutes": 0.94,
-                "rest_time_unit": "minutes"
+                "work_time_minutes": 0.5833333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.08333333333333333,
+                "rest_time_unit": "seconds"
               }
             }
           ]
-        }
-      ]
-    },
-    "3": {
-      "dayNumber": 3,
-      "type": "outdoor",
-      "focus": "Legs-HIIT",
-      "exercises": [
+        },
         {
-          "name": "CIRCUIT: Glute Bridges + Box Jumps + Single-leg Glute Bridges + Squat Pulses",
+          "name": "CIRCUIT: Scapular Retractions + Prone I-Raise + Prone Superman + Prone Y-Raise",
           "week1": {
             "sets": 4
           },
@@ -247,7 +250,7 @@
           "category": "circuit",
           "sub_exercises": [
             {
-              "name": "Glute Bridges",
+              "name": "Scapular Retractions",
               "week1": {
                 "reps": 4
               },
@@ -262,7 +265,7 @@
               }
             },
             {
-              "name": "Box Jumps",
+              "name": "Prone I-Raise",
               "week1": {
                 "reps": 4
               },
@@ -277,67 +280,62 @@
               }
             },
             {
-              "name": "Single-leg Glute Bridges",
+              "name": "Prone Superman",
               "week1": {
-                "reps": 4,
-                "weight": "heavy"
+                "reps": 4
               },
               "week2": {
-                "reps": 4,
-                "weight": "heavy"
+                "reps": 4
               },
               "week3": {
-                "reps": 5,
-                "weight": "heavy"
+                "reps": 5
               },
               "week4": {
-                "reps": 5,
-                "weight": "heavy"
+                "reps": 5
               }
             },
             {
-              "name": "Squat Pulses",
+              "name": "Prone Y-Raise",
               "week1": {
-                "reps": 4,
-                "weight": "heavy"
+                "reps": 4
               },
               "week2": {
-                "reps": 4,
-                "weight": "heavy"
+                "reps": 4
               },
               "week3": {
-                "reps": 5,
-                "weight": "heavy"
+                "reps": 5
               },
               "week4": {
-                "reps": 5,
-                "weight": "heavy"
+                "reps": 5
               }
             }
           ]
-        },
+        }
+      ]
+    },
+    "3": {
+      "dayNumber": 3,
+      "type": "outdoor",
+      "focus": "Legs-HIIT",
+      "exercises": [
         {
-          "name": "AMRAP: Side Plank + Wall Sit + strength Squats",
+          "name": "CIRCUIT: Butterfly Sit-ups + Frog Pumps + Wall Sits + strength Squats",
           "week1": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
+            "sets": 4
           },
           "week2": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
+            "sets": 4
           },
           "week3": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
+            "sets": 4
           },
           "week4": {
-            "work_time_minutes": 6,
-            "work_time_unit": "minutes"
+            "sets": 4
           },
-          "category": "amrap",
+          "category": "circuit",
           "sub_exercises": [
             {
-              "name": "Side Plank",
+              "name": "Butterfly Sit-ups",
               "week1": {
                 "reps": 4
               },
@@ -352,22 +350,33 @@
               }
             },
             {
-              "name": "Wall Sit",
+              "name": "Frog Pumps",
               "week1": {
-                "reps": 4,
-                "weight": "heavy"
+                "reps": 4
               },
               "week2": {
-                "reps": 4,
-                "weight": "heavy"
+                "reps": 4
               },
               "week3": {
-                "reps": 5,
-                "weight": "heavy"
+                "reps": 5
               },
               "week4": {
-                "reps": 5,
-                "weight": "heavy"
+                "reps": 5
+              }
+            },
+            {
+              "name": "Wall Sits",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
               }
             },
             {
@@ -387,6 +396,58 @@
               "week4": {
                 "reps": 5,
                 "weight": "heavy"
+              }
+            }
+          ]
+        },
+        {
+          "name": "EMOM: Floor Back Extension + Bicycle Crunches",
+          "week1": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week4": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Floor Back Extension",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Bicycle Crunches",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 4
+              },
+              "week3": {
+                "reps": 5
+              },
+              "week4": {
+                "reps": 5
               }
             }
           ]

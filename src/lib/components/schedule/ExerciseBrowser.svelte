@@ -267,16 +267,19 @@
 			<!-- Current Selection Section -->
 			{#if selectedExercise}
 				<div class="p-2.5 md:p-4 bg-slate-800 border-b border-slate-700 md:max-h-[40vh] md:overflow-y-auto">
-					<div class="flex items-center justify-between gap-2">
-						<div class="flex items-center gap-2 flex-1 min-w-0">
-							<!-- Info icon (mobile only) -->
+					<div class="flex items-center justify-between gap-1.5">
+						<p class="text-base md:text-lg font-semibold text-white truncate flex-1 min-w-0">{selectedExercise.name}</p>
+						<div class="flex items-center gap-1.5 flex-shrink-0">
+							<!-- Info button (mobile only) - matches shuffle button style -->
 							{#if exerciseDescriptions[selectedExercise.name]?.description}
 								<button
 									on:click={() => (showDescriptionModal = true)}
-									class="md:hidden p-1 text-indigo-400 hover:text-indigo-300 transition-colors flex-shrink-0"
+									class="md:hidden px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+									       transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed
+									       whitespace-nowrap min-h-[44px]"
 									aria-label="View exercise description"
 								>
-									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path
 											stroke-linecap="round"
 											stroke-linejoin="round"
@@ -286,13 +289,12 @@
 									</svg>
 								</button>
 							{/if}
-							<p class="text-base md:text-lg font-semibold text-white truncate">{selectedExercise.name}</p>
+							{#if selectedExercise.name !== currentExerciseName}
+								<span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
+									Changed
+								</span>
+							{/if}
 						</div>
-						{#if selectedExercise.name !== currentExerciseName}
-							<span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full flex-shrink-0">
-								Changed
-							</span>
-						{/if}
 					</div>
 
 					<!-- Description (desktop only) -->
@@ -465,8 +467,7 @@
 
 			<!-- Footer with confirmation buttons -->
 			<div
-				class="sticky bottom-0 p-2.5 md:p-4 mb-16 bg-slate-800 border-t border-slate-700 flex gap-2"
-				style="padding-bottom: env(safe-area-inset-bottom, 0px)"
+				class="sticky bottom-16 p-2.5 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
 			>
 				<button
 					on:click={handleCancel}

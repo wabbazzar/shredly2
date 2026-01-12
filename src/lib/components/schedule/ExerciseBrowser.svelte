@@ -178,12 +178,27 @@
 		}
 	}
 
-	function clearFilters() {
+	function removeFilter(type: 'category' | 'muscle' | 'equipment', value: string) {
+		if (type === 'category') {
+			selectedCategories = selectedCategories.filter((c) => c !== value);
+		} else if (type === 'muscle') {
+			selectedMuscleGroups = selectedMuscleGroups.filter((mg) => mg !== value);
+		} else if (type === 'equipment') {
+			selectedEquipment = selectedEquipment.filter((eq) => eq !== value);
+		}
+		syncFilterChips();
+	}
+
+	function clearAllFilters() {
 		searchQuery = '';
 		selectedCategories = [];
 		selectedMuscleGroups = [];
 		selectedEquipment = [];
 		syncFilterChips();
+	}
+
+	function clearFilters() {
+		clearAllFilters();
 	}
 </script>
 
@@ -242,57 +257,99 @@
 				</div>
 			</div>
 
+			<!-- Filter Chips Display -->
+			{#if activeFilters.length > 0}
+				<div class="flex flex-wrap gap-1.5 px-4 py-2 border-b border-slate-700">
+					{#each activeFilters as filter}
+						<button
+							on:click={() => removeFilter(filter.type, filter.value)}
+							class="flex items-center gap-1 px-2 py-1 bg-indigo-600 text-white text-xs rounded-full
+							       hover:bg-indigo-700 transition-colors min-h-[28px]"
+							aria-label="Remove {filter.value} filter"
+						>
+							<span>{filter.value}</span>
+							<svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+						</button>
+					{/each}
+					<button
+						on:click={clearAllFilters}
+						class="px-2 py-1 text-slate-400 hover:text-white text-xs transition-colors min-h-[28px]"
+						aria-label="Clear all filters"
+					>
+						Clear all
+					</button>
+				</div>
+			{/if}
+
 			<!-- Filters -->
 			<div class="flex gap-1.5 px-3 py-3 border-b border-slate-700 lg:px-4">
 				<select
-					value={selectedCategories[0] || ''}
 					on:change={(e) => {
 						const val = e.currentTarget.value;
-						selectedCategories = val ? [val] : [];
-						syncFilterChips();
+						if (val && !selectedCategories.includes(val)) {
+							selectedCategories = [...selectedCategories, val];
+							syncFilterChips();
+						}
+						e.currentTarget.value = ''; // Reset to placeholder
 					}}
-					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white"
+					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white min-h-[44px]"
+					aria-label="Add category filter"
 				>
-					<option value="">Category</option>
+					<option value="">+ Category</option>
 					{#each categories as category}
-						<option value={category}>{category}</option>
+						{#if !selectedCategories.includes(category)}
+							<option value={category}>{category}</option>
+						{/if}
 					{/each}
 				</select>
 
 				<select
-					value={selectedMuscleGroups[0] || ''}
 					on:change={(e) => {
 						const val = e.currentTarget.value;
-						selectedMuscleGroups = val ? [val] : [];
-						syncFilterChips();
+						if (val && !selectedMuscleGroups.includes(val)) {
+							selectedMuscleGroups = [...selectedMuscleGroups, val];
+							syncFilterChips();
+						}
+						e.currentTarget.value = ''; // Reset to placeholder
 					}}
-					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white"
+					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white min-h-[44px]"
+					aria-label="Add muscle group filter"
 				>
-					<option value="">Muscle</option>
+					<option value="">+ Muscle</option>
 					{#each muscleGroups as muscle}
-						<option value={muscle}>{muscle}</option>
+						{#if !selectedMuscleGroups.includes(muscle)}
+							<option value={muscle}>{muscle}</option>
+						{/if}
 					{/each}
 				</select>
 
 				<select
-					value={selectedEquipment[0] || ''}
 					on:change={(e) => {
 						const val = e.currentTarget.value;
-						selectedEquipment = val ? [val] : [];
-						syncFilterChips();
+						if (val && !selectedEquipment.includes(val)) {
+							selectedEquipment = [...selectedEquipment, val];
+							syncFilterChips();
+						}
+						e.currentTarget.value = ''; // Reset to placeholder
 					}}
-					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white"
+					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white min-h-[44px]"
+					aria-label="Add equipment filter"
 				>
-					<option value="">Equipment</option>
+					<option value="">+ Equipment</option>
 					{#each equipmentOptions as equip}
-						<option value={equip}>{equip}</option>
+						{#if !selectedEquipment.includes(equip)}
+							<option value={equip}>{equip}</option>
+						{/if}
 					{/each}
 				</select>
 
 				{#if searchQuery || selectedCategories.length > 0 || selectedMuscleGroups.length > 0 || selectedEquipment.length > 0}
 					<button
 						on:click={clearFilters}
-						class="flex-shrink-0 px-2 py-1.5 text-xs lg:text-sm text-indigo-400 hover:text-indigo-300"
+						class="flex-shrink-0 px-2 py-1.5 text-xs lg:text-sm text-indigo-400 hover:text-indigo-300 min-h-[44px]"
+						aria-label="Clear all filters"
 					>
 						Clear
 					</button>

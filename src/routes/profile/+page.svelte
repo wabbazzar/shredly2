@@ -140,7 +140,7 @@
 	}
 </script>
 
-<div class="h-full overflow-auto bg-slate-900 px-4 py-6 lg:px-8">
+<div class="overflow-auto bg-slate-900 px-4 py-6 pb-20 lg:px-8" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
 	<div class="max-w-6xl mx-auto">
 		<!-- Header with name and unit toggle -->
 		<div class="flex items-center justify-between mb-6 lg:mb-8">
@@ -278,8 +278,5 @@
 				/>
 			</section>
 		</div>
-
-		<!-- Bottom padding for tab bar -->
-		<div class="h-4"></div>
 	</div>
 </div>

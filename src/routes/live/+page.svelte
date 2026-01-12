@@ -18,7 +18,10 @@
 		getTodaysWorkout,
 		getWorkoutForDay,
 		updateTimerState,
-		logCompletedSet
+		logCompletedSet,
+		skipToExercise,
+		getExerciseLog,
+		updateExerciseLogs
 	} from '$lib/stores/liveSession';
 	import { activeSchedule, initializeScheduleStore } from '$lib/stores/schedule';
 	import { logSessionToHistory } from '$lib/stores/history';
@@ -34,6 +37,8 @@
 	import ExerciseList from '$lib/components/live/ExerciseList.svelte';
 	import DataEntryModal from '$lib/components/live/DataEntryModal.svelte';
 	import ExerciseInfoModal from '$lib/components/live/ExerciseInfoModal.svelte';
+	import SetReviewModal from '$lib/components/live/SetReviewModal.svelte';
+	import type { ExerciseLog } from '$lib/engine/types';
 
 	let timerEngine: TimerEngine;
 	let unsubscribeTimer: (() => void) | null = null;
@@ -50,6 +55,25 @@
 	let dataEntrySetNumber = 1;
 	let showExerciseInfo = false;
 	let exerciseInfoExercise: LiveExercise | null = null;
+
+	// Review modal state (for viewing/editing completed exercises)
+	let showReviewModal = false;
+	let reviewExercise: LiveExercise | null = null;
+	let reviewExerciseIndex: number | null = null;
+	let reviewExistingLog: ExerciseLog | null = null;
+
+	// Build exercise logs map for ExerciseList
+	$: exerciseLogs = buildExerciseLogsMap($liveSession);
+
+	function buildExerciseLogsMap(session: typeof $liveSession): Map<number, ExerciseLog> {
+		const map = new Map<number, ExerciseLog>();
+		if (!session) return map;
+
+		for (const log of session.logs) {
+			map.set(log.exerciseOrder, log);
+		}
+		return map;
+	}
 
 	onMount(async () => {
 		navigationStore.setActiveTab('live');
@@ -112,8 +136,28 @@
 				audioManager.playMinuteMarker();
 				break;
 
+			case 'work_phase_complete':
+				// Play work phase completion chime (for interval work->rest transitions)
+				audioManager.playMinuteMarker();
+				break;
+
 			case 'exercise_complete':
 				audioManager.playExerciseComplete();
+				// Auto-advance to next exercise
+				const hasMoreExercises = advanceToNextExercise();
+				if (hasMoreExercises && $currentExercise) {
+					// Initialize timer for next exercise and auto-start
+					timerEngine.initializeForExercise($currentExercise);
+					timerState = timerEngine.getState();
+					// Small delay before starting next exercise
+					setTimeout(() => {
+						timerEngine.start();
+					}, 500);
+				} else {
+					// Workout complete
+					audioManager.playSessionComplete();
+					handleStop();
+				}
 				break;
 
 			case 'phase_change':
@@ -217,16 +261,55 @@
 		showExerciseInfo = true;
 	}
 
-	// Data entry modal handlers
+	// Handle clicking on a future exercise to skip to it
+	function handleExerciseSelect(event: CustomEvent<{ exercise: LiveExercise; index: number }>) {
+		const { exercise, index } = event.detail;
+
+		// Stop the current timer
+		timerEngine.stop();
+
+		// Skip to the selected exercise
+		const skipped = skipToExercise(index);
+
+		if (skipped && $currentExercise) {
+			// Initialize timer for the new current exercise
+			timerEngine.initializeForExercise($currentExercise);
+			timerState = timerEngine.getState();
+		}
+	}
+
+	// Handle clicking on a completed/skipped exercise to review/edit data
+	function handleExerciseReview(event: CustomEvent<{ exercise: LiveExercise; index: number }>) {
+		const { exercise, index } = event.detail;
+
+		// Get existing log data
+		const existingLog = getExerciseLog(index);
+
+		reviewExercise = exercise;
+		reviewExerciseIndex = index;
+		reviewExistingLog = existingLog;
+		showReviewModal = true;
+	}
+
+	// Data entry modal handlers (for live timer flow)
 	function handleDataEntrySubmit(event: CustomEvent<{ setLog: SetLog; totalRounds?: number; totalTime?: number }>) {
 		const { setLog, totalRounds, totalTime } = event.detail;
 
 		if (dataEntryExercise) {
-			// Log the completed set
+			// Normal logging for current exercise during timer flow
 			logCompletedSet(setLog, totalRounds, totalTime);
-		}
 
-		// Close modal and continue
+			// Close modal and continue
+			showDataEntry = false;
+			dataEntryExercise = null;
+
+			// Tell timer engine to exit data entry mode
+			timerEngine.exitDataEntry();
+		}
+	}
+
+	function handleDataEntryCancel() {
+		// Skip logging, just close modal
 		showDataEntry = false;
 		dataEntryExercise = null;
 
@@ -234,11 +317,25 @@
 		timerEngine.exitDataEntry();
 	}
 
-	function handleDataEntryCancel() {
-		// Skip logging, just close modal
-		showDataEntry = false;
-		dataEntryExercise = null;
-		timerEngine.exitDataEntry();
+	// Review modal handlers (for viewing/editing any exercise)
+	function handleReviewSave(event: CustomEvent<{ sets: SetLog[]; totalRounds?: number; totalTime?: number }>) {
+		const { sets, totalRounds, totalTime } = event.detail;
+
+		if (reviewExerciseIndex !== null) {
+			updateExerciseLogs(reviewExerciseIndex, sets, totalRounds, totalTime);
+		}
+
+		showReviewModal = false;
+		reviewExercise = null;
+		reviewExerciseIndex = null;
+		reviewExistingLog = null;
+	}
+
+	function handleReviewClose() {
+		showReviewModal = false;
+		reviewExercise = null;
+		reviewExerciseIndex = null;
+		reviewExistingLog = null;
 	}
 
 	function handleExerciseInfoClose() {
@@ -253,26 +350,17 @@
 </script>
 
 {#if $hasActiveSession && $liveSession}
-	<!-- Active workout view -->
-	<div class="flex flex-col h-full bg-slate-900">
-		<!-- Timer Display (top half) -->
-		<div class="flex-1 min-h-0" style="flex-basis: 50%;">
-			<TimerDisplay
-				{timerState}
-				currentExercise={$currentExercise}
-			/>
-		</div>
-
-		<!-- Exercise List (bottom half) -->
+	<!-- Active workout view - calc height accounts for 4rem nav bar + safe area -->
+	<div class="flex flex-col bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
+		<!-- Timer Display + Controls (top half) -->
 		<div class="flex-1 min-h-0 flex flex-col" style="flex-basis: 50%;">
-			<ExerciseList
-				exercises={$liveSession.exercises}
-				currentIndex={$liveSession.currentExerciseIndex}
-				currentSubExerciseIndex={timerState.currentSubExercise}
-				on:info={handleExerciseInfo}
-			/>
-
-			<!-- Timer Controls -->
+			<div class="flex-1 min-h-0">
+				<TimerDisplay
+					{timerState}
+					currentExercise={$currentExercise}
+				/>
+			</div>
+			<!-- Timer Controls (inside timer section) -->
 			<TimerControls
 				phase={timerState.phase}
 				{hasNextExercise}
@@ -283,11 +371,24 @@
 				on:stop={handleStop}
 			/>
 		</div>
+
+		<!-- Exercise List (bottom half) -->
+		<div class="flex-1 min-h-0 flex flex-col" style="flex-basis: 50%;">
+			<ExerciseList
+				exercises={$liveSession.exercises}
+				currentIndex={$liveSession.currentExerciseIndex}
+				currentSubExerciseIndex={timerState.currentSubExercise}
+				{exerciseLogs}
+				on:info={handleExerciseInfo}
+				on:select={handleExerciseSelect}
+				on:review={handleExerciseReview}
+			/>
+		</div>
 	</div>
 
 {:else if showStartPrompt}
-	<!-- Start workout prompt -->
-	<div class="flex flex-col items-center justify-center h-full bg-slate-900 p-6">
+	<!-- Start workout prompt - calc height accounts for nav bar -->
+	<div class="flex flex-col items-center justify-center bg-slate-900 p-6" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
 		<svg
 			class="w-20 h-20 mb-6 text-green-400"
 			fill="none"
@@ -337,8 +438,8 @@
 	</div>
 
 {:else}
-	<!-- No workout / empty state -->
-	<div class="flex flex-col items-center justify-center h-full bg-slate-900">
+	<!-- No workout / empty state - calc height accounts for nav bar -->
+	<div class="flex flex-col items-center justify-center bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
 		<svg
 			class="w-24 h-24 mb-6 text-indigo-400"
 			fill="none"
@@ -390,5 +491,16 @@
 	<ExerciseInfoModal
 		exercise={exerciseInfoExercise}
 		on:close={handleExerciseInfoClose}
+	/>
+{/if}
+
+<!-- Set Review Modal (for viewing/editing logged data) -->
+{#if showReviewModal && reviewExercise && reviewExerciseIndex !== null}
+	<SetReviewModal
+		exercise={reviewExercise}
+		exerciseIndex={reviewExerciseIndex}
+		existingLog={reviewExistingLog}
+		on:save={handleReviewSave}
+		on:close={handleReviewClose}
 	/>
 {/if}

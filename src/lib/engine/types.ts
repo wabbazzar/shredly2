@@ -677,6 +677,8 @@ export interface TimerConfig {
   logTiming: 'after_each_set' | 'after_block';
   minuteMarkers: boolean;
   countdownAtMinuteEnd?: boolean;
+  workCompleteChime?: boolean;
+  countdownBeforeWork?: boolean;
 }
 
 /**
@@ -723,6 +725,29 @@ export interface LiveWorkoutSession {
 }
 
 /**
+ * Weight prescription types for display
+ * - qualitative: "light", "moderate", "heavy" (beginner workouts)
+ * - percent_tm: percentage of Training Max (intermediate/advanced)
+ * - absolute: specific weight value
+ */
+export interface WeightPrescription {
+  type: 'qualitative' | 'percent_tm' | 'absolute';
+  value: string | number;  // "heavy" or 80 (for 80%) or 135 (lbs)
+  unit?: 'lbs' | 'kg';     // Only for absolute type
+}
+
+/**
+ * Previous week's performance data for weight guidance
+ */
+export interface PreviousWeekPerformance {
+  weight: number | null;
+  weightUnit: 'lbs' | 'kg' | null;
+  rpe: number | null;
+  reps: number | null;
+  weekNumber: number;
+}
+
+/**
  * An exercise as it appears in a live workout
  */
 export interface LiveExercise {
@@ -738,9 +763,14 @@ export interface LiveExercise {
     workTimeSeconds: number | null;
     restTimeSeconds: number | null;
     tempo: string | null;
+    // NEW: Weight prescription info for display
+    weightPrescription: WeightPrescription | null;
+    // NEW: Previous week's performance (for week > 1)
+    previousWeek: PreviousWeekPerformance | null;
   };
   completed: boolean;
   completedSets: number;
+  skipped: boolean;  // True if user skipped past this exercise without logging data
 }
 
 /**
@@ -783,6 +813,7 @@ export type TimerEventType =
   | 'exercise_complete'
   | 'minute_marker'
   | 'countdown_tick'
+  | 'work_phase_complete'
   | 'workout_complete';
 
 /**

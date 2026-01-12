@@ -32,6 +32,8 @@ interface TimerBehaviorConfig {
   work_calculation: string;
   countdown_before: string | null;
   countdown_at_minute_end?: boolean;
+  work_complete_chime?: boolean;
+  countdown_before_work?: boolean;
   log_timing: string;
   minute_markers: boolean;
 }
@@ -93,7 +95,9 @@ export function getTimerConfigForExercise(exerciseType: TimerExerciseType): Time
       workCalculation: defaultBehavior.work_calculation as 'tempo_based' | 'fixed' | 'from_prescription',
       countdownBefore: defaultBehavior.countdown_before as 'work' | 'rest' | null,
       logTiming: defaultBehavior.log_timing as 'after_each_set' | 'after_block',
-      minuteMarkers: defaultBehavior.minute_markers
+      minuteMarkers: defaultBehavior.minute_markers,
+      workCompleteChime: defaultBehavior.work_complete_chime,
+      countdownBeforeWork: defaultBehavior.countdown_before_work
     };
   }
 
@@ -105,7 +109,9 @@ export function getTimerConfigForExercise(exerciseType: TimerExerciseType): Time
     countdownBefore: behavior.countdown_before as 'work' | 'rest' | null,
     countdownAtMinuteEnd: behavior.countdown_at_minute_end,
     logTiming: behavior.log_timing as 'after_each_set' | 'after_block',
-    minuteMarkers: behavior.minute_markers
+    minuteMarkers: behavior.minute_markers,
+    workCompleteChime: behavior.work_complete_chime,
+    countdownBeforeWork: behavior.countdown_before_work
   };
 }
 
@@ -322,13 +328,35 @@ export class TimerEngine {
   }
 
   /**
+   * Get current sub-exercise (for Interval blocks)
+   */
+  private getCurrentSubExercise(): LiveExercise | null {
+    if (!this.exercise || !this.exercise.subExercises || this.exercise.subExercises.length === 0) {
+      return null;
+    }
+    return this.exercise.subExercises[this.state.currentSubExercise] || null;
+  }
+
+  /**
    * Start work phase
    */
   startWork(): void {
     if (!this.exercise) return;
 
     const previousPhase = this.state.phase;
-    const workDuration = calculateWorkDuration(this.exercise, this.config);
+
+    // For Interval, use sub-exercise work time
+    let workDuration: number;
+    if (this.state.exerciseType === 'interval') {
+      const subExercise = this.getCurrentSubExercise();
+      if (subExercise?.prescription.workTimeSeconds) {
+        workDuration = subExercise.prescription.workTimeSeconds;
+      } else {
+        workDuration = calculateWorkDuration(this.exercise, this.config);
+      }
+    } else {
+      workDuration = calculateWorkDuration(this.exercise, this.config);
+    }
 
     this.state = {
       ...this.state,
@@ -351,7 +379,19 @@ export class TimerEngine {
     if (!this.exercise) return;
 
     const previousPhase = this.state.phase;
-    const restDuration = calculateRestDuration(this.exercise);
+
+    // For Interval, use sub-exercise rest time
+    let restDuration: number;
+    if (this.state.exerciseType === 'interval') {
+      const subExercise = this.getCurrentSubExercise();
+      if (subExercise?.prescription.restTimeSeconds) {
+        restDuration = subExercise.prescription.restTimeSeconds;
+      } else {
+        restDuration = calculateRestDuration(this.exercise);
+      }
+    } else {
+      restDuration = calculateRestDuration(this.exercise);
+    }
 
     this.state = {
       ...this.state,
@@ -532,22 +572,35 @@ export class TimerEngine {
       return;
     }
 
-    const previousPhase = 'entry' as TimerPhase;
-    const returnPhase = (this.state as any)._entryFrom;
-
     delete (this.state as any)._entryFrom;
 
-    // After data entry, typically move to next set or complete
-    if (this.state.currentSet >= this.state.totalSets) {
-      this.completeExercise();
-    } else {
-      // Start countdown for next set
-      if (this.config.countdownBefore === 'work') {
-        this.startCountdown('work');
-      } else {
-        this.startWork();
+    // For strength/bodyweight: DATA ENTRY -> REST -> next WORK
+    // After logging, start rest period (unless it's the last set)
+    if (this.config.logTiming === 'after_each_set') {
+      // Check if this was the last set
+      if (this.state.currentSet >= this.state.totalSets) {
+        this.completeExercise();
+        return;
       }
+
+      // Start rest period - set advances after rest completes
+      if (this.config.phases.includes('rest')) {
+        this.startRest();
+      } else {
+        // No rest phase - advance set and start next work
+        this.state.currentSet++;
+        if (this.config.countdownBefore === 'work') {
+          this.startCountdown('work');
+        } else {
+          this.startWork();
+        }
+      }
+      return;
     }
+
+    // For compound blocks (after_block logging):
+    // Data entry happens at the end, so complete the exercise
+    this.completeExercise();
   }
 
   // --------------------------------------------------------------------------
@@ -584,8 +637,12 @@ export class TimerEngine {
   private tick(): void {
     const now = Date.now();
 
-    if (this.config.mode === 'count_up') {
-      // Count up mode (circuit)
+    // Count-up mode only applies during work phase, not countdown phase
+    // Countdown phase always counts down (3, 2, 1)
+    const useCountUp = this.config.mode === 'count_up' && this.state.phase === 'work';
+
+    if (useCountUp) {
+      // Count up mode (circuit work phase)
       const elapsed = (now - this.state.targetTimestamp) / 1000;
       this.state.remainingSeconds = elapsed;
 
@@ -611,9 +668,20 @@ export class TimerEngine {
       if (currentSecond !== this.lastTickSecond) {
         this.lastTickSecond = currentSecond;
 
-        // Countdown audio cues (3, 2, 1)
+        // Countdown audio cues (3, 2, 1) - phase-specific behavior
         if (COUNTDOWN_SECONDS.includes(currentSecond)) {
-          this.emit('countdown_tick', undefined, currentSecond);
+          // Always play countdown during countdown phase (pre-work)
+          if (this.state.phase === 'countdown') {
+            this.emit('countdown_tick', undefined, currentSecond);
+          }
+          // For intervals with countdownBeforeWork: play countdown during rest phase
+          else if (this.state.phase === 'rest' && this.config.countdownBeforeWork) {
+            this.emit('countdown_tick', undefined, currentSecond);
+          }
+          // For non-interval exercises in work phase (strength/bodyweight): play countdown
+          else if (this.state.phase === 'work' && !this.config.countdownBeforeWork) {
+            this.emit('countdown_tick', undefined, currentSecond);
+          }
         }
 
         // Minute marker check for EMOM/AMRAP
@@ -680,38 +748,89 @@ export class TimerEngine {
   }
 
   private handleWorkComplete(): void {
-    this.emit('set_complete');
-
-    // For strength/bodyweight: enter data entry after each set
+    // For strength/bodyweight (after_each_set): WORK -> DATA ENTRY -> REST flow
+    // Show data entry immediately after work so user can log while fresh
     if (this.config.logTiming === 'after_each_set') {
+      this.emit('set_complete');
       this.enterDataEntry();
       return;
     }
 
-    // For compound blocks: check if more sets/we're done
-    if (this.state.currentSet < this.state.totalSets) {
-      // More sets to go - start rest if applicable
-      if (this.config.phases.includes('rest')) {
-        if (this.config.countdownBefore === 'rest') {
-          this.startCountdown('rest');
-        } else {
-          this.startRest();
-        }
-      } else {
-        this.advanceSet();
-        this.startWork();
+    // For compound blocks (after_block): EMOM/AMRAP/Circuit/Interval
+    // These run continuously - when work phase ends, the ENTIRE block is done
+    // (The work phase IS the whole block for continuous phases)
+
+    // For Interval with work/rest phases: handle sub-exercise cycling
+    if (this.state.exerciseType === 'interval' && this.config.phases.includes('rest')) {
+      // Emit work phase complete chime if configured (for intervals)
+      if (this.config.workCompleteChime) {
+        this.emit('work_phase_complete');
       }
-    } else {
-      // All sets done
-      if (this.config.logTiming === 'after_block') {
-        this.enterDataEntry();
+
+      // Interval: cycle through work/rest for each sub-exercise
+      const totalSubExercises = this.state.totalSubExercises || 1;
+      const currentSubIdx = this.state.currentSubExercise;
+
+      // Move to next sub-exercise or next set
+      if (currentSubIdx < totalSubExercises - 1) {
+        // More sub-exercises in this set - start rest then next sub-exercise work
+        this.state.currentSubExercise++;
+        this.startRest();
+        return;
       } else {
-        this.completeExercise();
+        // Completed all sub-exercises for this set
+        if (this.state.currentSet < this.state.totalSets) {
+          // More sets to go
+          this.state.currentSubExercise = 0;
+          this.state.currentSet++;
+          this.startRest();
+          return;
+        }
+        // All sets done - fall through to enter data entry
       }
     }
+
+    // Block complete - emit set_complete and enter data entry
+    this.emit('set_complete');
+    this.enterDataEntry();
   }
 
   private handleRestComplete(): void {
+    // For strength/bodyweight: REST completes -> advance set -> start next work
+    if (this.config.logTiming === 'after_each_set') {
+      this.state.currentSet++;
+
+      // Check if all sets done
+      if (this.state.currentSet > this.state.totalSets) {
+        this.completeExercise();
+        return;
+      }
+
+      // Start countdown for next work phase
+      if (this.config.countdownBefore === 'work') {
+        this.startCountdown('work');
+      } else {
+        this.startWork();
+      }
+      return;
+    }
+
+    // For Interval: after rest, start next work phase (for current sub-exercise)
+    // Note: When countdownBeforeWork is true, the countdown already played during rest phase,
+    // so we skip the separate countdown phase and go directly to work
+    if (this.state.exerciseType === 'interval') {
+      if (this.config.countdownBeforeWork) {
+        // Countdown already played at end of rest - go directly to work
+        this.startWork();
+      } else if (this.config.countdownBefore === 'work') {
+        this.startCountdown('work');
+      } else {
+        this.startWork();
+      }
+      return;
+    }
+
+    // For other compound blocks (shouldn't normally have rest phases)
     this.advanceSet();
 
     // Start next set

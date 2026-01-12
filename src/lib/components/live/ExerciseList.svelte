@@ -1,14 +1,39 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { LiveExercise } from '$lib/engine/types';
+	import type { LiveExercise, ExerciseLog } from '$lib/engine/types';
+	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
 
 	export let exercises: LiveExercise[];
 	export let currentIndex: number;
 	export let currentSubExerciseIndex: number = 0;
+	export let exerciseLogs: Map<number, ExerciseLog> = new Map();
 
 	const dispatch = createEventDispatcher<{
 		info: { exercise: LiveExercise; index: number };
+		select: { exercise: LiveExercise; index: number };
+		review: { exercise: LiveExercise; index: number };
 	}>();
+
+	// Handle clicking on an exercise row
+	function handleExerciseClick(exercise: LiveExercise, index: number) {
+		// Skip to future exercises
+		if (index > currentIndex && !exercise.completed) {
+			dispatch('select', { exercise, index });
+		}
+		// Review completed/skipped exercises
+		else if (exercise.completed || exercise.skipped) {
+			dispatch('review', { exercise, index });
+		}
+	}
+
+	// Handle clicking on the status icon
+	function handleStatusIconClick(event: MouseEvent, exercise: LiveExercise, index: number) {
+		event.stopPropagation();
+		// Open review modal for completed or skipped exercises
+		if (exercise.completed || exercise.skipped) {
+			dispatch('review', { exercise, index });
+		}
+	}
 
 	// Get exercise type badge color
 	function getTypeBadgeClass(type: string): string {
@@ -63,11 +88,106 @@
 
 	// Get progress indicator
 	function getProgressText(exercise: LiveExercise): string {
-		if (exercise.completed) return 'Done';
+		if (exercise.completed && !exercise.skipped) return 'Done';
 		if (exercise.completedSets > 0) {
 			return `${exercise.completedSets}/${exercise.prescription.sets}`;
 		}
 		return '';
+	}
+
+	// Format logged data summary for display
+	function formatLoggedData(exerciseIndex: number, exercise: LiveExercise): string {
+		const log = exerciseLogs.get(exerciseIndex);
+		if (!log) return '';
+
+		// AMRAP - show rounds
+		if (exercise.exerciseType === 'amrap' && log.totalRounds !== undefined) {
+			return `${log.totalRounds} rounds`;
+		}
+
+		// Circuit - show time
+		if (exercise.exerciseType === 'circuit' && log.totalTime !== undefined) {
+			const mins = Math.floor(log.totalTime / 60);
+			const secs = log.totalTime % 60;
+			return `${mins}:${secs.toString().padStart(2, '0')}`;
+		}
+
+		// Regular sets - show weight x reps for each set
+		if (log.sets.length === 0) return '';
+
+		const showWeight = shouldShowWeightField(exercise.exerciseName, null);
+
+		// Group identical sets together
+		const repsList = log.sets.map(s => s.reps ?? 0);
+		const weights = log.sets.map(s => s.weight);
+		const unit = log.sets[0]?.weightUnit ?? 'lbs';
+
+		// Check if all weights are the same
+		const allSameWeight = weights.every(w => w === weights[0]);
+
+		if (showWeight && allSameWeight && weights[0]) {
+			// Format: "135 lbs x 8,8,8,7"
+			return `${weights[0]} ${unit} x ${repsList.join(',')}`;
+		} else if (showWeight) {
+			// Format: "135x8, 145x8, 155x6"
+			return log.sets.map(s => {
+				if (s.weight) {
+					return `${s.weight}x${s.reps ?? '?'}`;
+				}
+				return `${s.reps ?? '?'}`;
+			}).join(', ');
+		} else {
+			// No weight - just show reps: "8,8,8,7 reps"
+			return `${repsList.join(',')} reps`;
+		}
+	}
+
+	// Format sub-exercise prescription for display (includes weight when applicable)
+	function formatSubExercisePrescription(subEx: LiveExercise): string {
+		const parts: string[] = [];
+
+		// Add reps if present
+		if (subEx.prescription.reps) {
+			parts.push(`${subEx.prescription.reps} reps`);
+		}
+
+		// Add work time if present (for interval sub-exercises)
+		if (subEx.prescription.workTimeSeconds && !subEx.prescription.reps) {
+			const secs = subEx.prescription.workTimeSeconds;
+			if (secs >= 60) {
+				const mins = Math.floor(secs / 60);
+				const remainingSecs = secs % 60;
+				if (remainingSecs > 0) {
+					parts.push(`${mins}:${remainingSecs.toString().padStart(2, '0')}`);
+				} else {
+					parts.push(`${mins} min`);
+				}
+			} else {
+				parts.push(`${secs}s`);
+			}
+		}
+
+		// Add weight if applicable (use metadata to determine visibility)
+		const showWeight = shouldShowWeightField(subEx.exerciseName, subEx.prescription.weight);
+		if (showWeight) {
+			// Priority: calculated weight > weight prescription fallback
+			if (subEx.prescription.weight) {
+				// Calculated weight available (from % TM with 1RM)
+				parts.push(`${subEx.prescription.weight} ${subEx.prescription.weightUnit || 'lbs'}`);
+			} else if (subEx.prescription.weightPrescription) {
+				// Fallback to prescription display (% TM or qualitative)
+				const wp = subEx.prescription.weightPrescription;
+				if (wp.type === 'qualitative') {
+					parts.push(String(wp.value));
+				} else if (wp.type === 'percent_tm') {
+					parts.push(`${wp.value}% TM`);
+				} else if (wp.type === 'absolute') {
+					parts.push(`${wp.value} ${wp.unit || 'lbs'}`);
+				}
+			}
+		}
+
+		return parts.join(' @ ');
 	}
 </script>
 
@@ -79,23 +199,37 @@
 	<div class="flex-1 overflow-y-auto">
 		{#each exercises as exercise, index}
 			{@const isCurrent = index === currentIndex}
-			{@const isPast = exercise.completed}
+			{@const isPast = exercise.completed && !exercise.skipped}
+			{@const isSkipped = exercise.skipped}
 			{@const isFuture = index > currentIndex && !exercise.completed}
+			{@const isClickable = isFuture || isPast || isSkipped}
+			{@const loggedData = formatLoggedData(index, exercise)}
 
 			<div
 				class="flex items-start p-3 border-b border-slate-700/50 transition-colors
 				{isCurrent ? 'bg-slate-800' : ''}
-				{isPast ? 'opacity-50' : ''}
-				{isFuture ? 'opacity-70' : ''}"
+				{isPast ? 'hover:bg-slate-800/30 cursor-pointer' : ''}
+				{isSkipped ? 'bg-yellow-900/20 hover:bg-yellow-900/30 cursor-pointer' : ''}
+				{isFuture ? 'opacity-70 cursor-pointer hover:bg-slate-800/50' : ''}"
+				on:click={() => handleExerciseClick(exercise, index)}
+				on:keydown={(e) => e.key === 'Enter' && handleExerciseClick(exercise, index)}
+				role={isClickable ? 'button' : undefined}
+				tabindex={isClickable ? 0 : undefined}
 			>
 				<!-- Status indicator -->
-				<div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3
+				<button
+					class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 transition-colors
 					{isCurrent ? 'bg-green-600' : ''}
-					{isPast ? 'bg-slate-600' : ''}
+					{isPast ? 'bg-green-600/80 hover:bg-green-500' : ''}
+					{isSkipped ? 'bg-yellow-500 hover:bg-yellow-400' : ''}
 					{isFuture ? 'bg-slate-700' : ''}"
+					on:click={(e) => handleStatusIconClick(e, exercise, index)}
+					aria-label={isPast || isSkipped ? 'View/edit logged data' : undefined}
 				>
-					{#if isPast}
-						<svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 24 24">
+					{#if isSkipped}
+						<span class="text-black font-bold text-sm">!</span>
+					{:else if isPast}
+						<svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
 							<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
 						</svg>
 					{:else if isCurrent}
@@ -103,14 +237,16 @@
 					{:else}
 						<span class="text-slate-400 text-sm">{index + 1}</span>
 					{/if}
-				</div>
+				</button>
 
 				<!-- Exercise info -->
 				<div class="flex-1 min-w-0">
 					<div class="flex items-center gap-2 mb-1">
 						<span
-							class="text-white font-medium truncate
-							{isPast ? 'line-through text-slate-400' : ''}"
+							class="font-medium truncate
+							{isPast ? 'line-through text-slate-400' : ''}
+							{isSkipped ? 'text-yellow-400' : ''}
+							{!isPast && !isSkipped ? 'text-white' : ''}"
 						>
 							{exercise.exerciseName}
 						</span>
@@ -134,21 +270,36 @@
 						<div class="mt-2 pl-2 border-l-2 border-slate-600">
 							{#each exercise.subExercises as subEx, subIdx}
 								{@const isCurrentSub = isCurrent && subIdx === currentSubExerciseIndex}
+								{@const subPrescription = formatSubExercisePrescription(subEx)}
 								<div class="text-xs py-0.5 {isCurrentSub ? 'text-white font-medium' : 'text-slate-500'}">
 									{#if isCurrentSub}
 										<span class="text-green-400 mr-1">▸</span>
 									{/if}
 									{subEx.exerciseName}
-									{#if subEx.prescription.reps}
-										<span class="{isCurrentSub ? 'text-slate-300' : 'text-slate-600'}">({subEx.prescription.reps} reps)</span>
+									{#if subPrescription}
+										<span class="{isCurrentSub ? 'text-slate-300' : 'text-slate-600'}">({subPrescription})</span>
 									{/if}
 								</div>
 							{/each}
 						</div>
 					{/if}
 
-					<!-- Progress indicator -->
-					{#if getProgressText(exercise)}
+					<!-- Progress indicator / Logged data -->
+					{#if isSkipped}
+						<div class="mt-1 text-xs text-yellow-400">
+							{#if loggedData}
+								{loggedData} - tap to edit
+							{:else if exercise.completedSets > 0}
+								{exercise.completedSets}/{exercise.prescription.sets} sets - tap to continue
+							{:else}
+								Skipped - tap to log
+							{/if}
+						</div>
+					{:else if isPast && loggedData}
+						<div class="mt-1 text-xs text-green-400">
+							{loggedData}
+						</div>
+					{:else if getProgressText(exercise)}
 						<div class="mt-1 text-xs {isPast ? 'text-green-400' : 'text-slate-500'}">
 							{getProgressText(exercise)}
 						</div>
@@ -158,7 +309,7 @@
 				<!-- Info button -->
 				<button
 					class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-colors ml-2"
-					on:click={() => dispatch('info', { exercise, index })}
+					on:click|stopPropagation={() => dispatch('info', { exercise, index })}
 					aria-label="Exercise info"
 				>
 					<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

@@ -21,7 +21,7 @@
       "mode": "countdown",
       "phases": ["continuous"],
       "work_calculation": "from_prescription",
-      "countdown_before": null,
+      "countdown_before": "work",
       "countdown_at_minute_end": true,
       "log_timing": "after_block",
       "minute_markers": true
@@ -30,8 +30,7 @@
       "mode": "countdown",
       "phases": ["continuous"],
       "work_calculation": "from_prescription",
-      "countdown_before": null,
-      "countdown_at_minute_end": true,
+      "countdown_before": "work",
       "log_timing": "after_block",
       "minute_markers": true
     },
@@ -40,6 +39,8 @@
       "phases": ["work", "rest"],
       "work_calculation": "from_prescription",
       "countdown_before": "work",
+      "work_complete_chime": true,
+      "countdown_before_work": true,
       "log_timing": "after_block",
       "minute_markers": false
     },
@@ -47,7 +48,7 @@
       "mode": "count_up",
       "phases": ["continuous"],
       "work_calculation": "fixed",
-      "countdown_before": null,
+      "countdown_before": "work",
       "log_timing": "after_block",
       "minute_markers": true
     }
@@ -78,5 +79,15 @@
     "countdown_duration_seconds": 3,
     "default_work_seconds": 30,
     "default_rest_seconds": 60
+  },
+  "weight_calculation": {
+    "training_max_percentage": 90,
+    "rounding": {
+      "barbell_increment_lbs": 5,
+      "dumbbell_increment_lbs": 5,
+      "cable_increment_lbs": 5,
+      "machine_increment_lbs": 10,
+      "default_increment_lbs": 5
+    }
   }
 }

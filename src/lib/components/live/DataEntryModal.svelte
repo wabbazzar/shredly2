@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { LiveExercise, SetLog } from '$lib/engine/types';
-	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
+	import { shouldShowWeightField, getExerciseMetadata } from '$lib/engine/exercise-metadata';
+	import { keyboardAware } from '$lib/actions/keyboardAware';
 
 	export let exercise: LiveExercise;
 	export let setNumber: number;
@@ -9,8 +10,16 @@
 	export let totalRounds: number | null = null;
 	export let totalTime: number | null = null;
 
+	// Sub-exercise weight entry type
+	interface SubExerciseWeight {
+		name: string;
+		weight: string;
+		weightUnit: 'lbs' | 'kg';
+		showWeight: boolean;
+	}
+
 	const dispatch = createEventDispatcher<{
-		submit: { setLog: SetLog; totalRounds?: number; totalTime?: number };
+		submit: { setLog: SetLog; totalRounds?: number; totalTime?: number; subExerciseWeights?: SubExerciseWeight[] };
 		cancel: void;
 	}>();
 
@@ -22,6 +31,26 @@
 	let notes: string = '';
 	let roundsInput: string = totalRounds?.toString() ?? '';
 	let timeInput: string = totalTime ? formatTimeInput(totalTime) : '';
+
+	// Sub-exercise weight state (for compound blocks with weighted sub-exercises)
+	let subExerciseWeights: SubExerciseWeight[] = [];
+
+	// Initialize sub-exercise weights if this is a compound block
+	$: if (isCompoundBlock && exercise.subExercises.length > 0) {
+		subExerciseWeights = exercise.subExercises.map(subEx => {
+			const metadata = getExerciseMetadata(subEx.exerciseName);
+			const showSubWeight = metadata?.external_load !== 'never';
+			return {
+				name: subEx.exerciseName,
+				weight: subEx.prescription.weight?.toString() ?? '',
+				weightUnit: subEx.prescription.weightUnit ?? 'lbs',
+				showWeight: showSubWeight
+			};
+		});
+	}
+
+	// Check if any sub-exercises have weight fields to show
+	$: hasSubExerciseWeights = isCompoundBlock && subExerciseWeights.some(s => s.showWeight);
 
 	// Determine which fields to show
 	$: showWeight = shouldShowWeightField(exercise.exerciseName, null);
@@ -63,10 +92,16 @@
 			timestamp: new Date().toISOString()
 		};
 
+		// Include sub-exercise weights if present
+		const weightedSubExercises = hasSubExerciseWeights
+			? subExerciseWeights.filter(s => s.showWeight && s.weight)
+			: undefined;
+
 		dispatch('submit', {
 			setLog,
 			totalRounds: showRounds && roundsInput ? parseFloat(roundsInput) : undefined,
-			totalTime: showTime ? parseTimeInput(timeInput) ?? undefined : undefined
+			totalTime: showTime ? parseTimeInput(timeInput) ?? undefined : undefined,
+			subExerciseWeights: weightedSubExercises
 		});
 	}
 
@@ -78,8 +113,8 @@
 	const rpeOptions = [6, 7, 8, 9, 10];
 </script>
 
-<div class="fixed inset-0 z-50 flex items-end justify-center bg-black/60" on:click|self={handleCancel}>
-	<div class="w-full max-w-lg bg-slate-800 rounded-t-2xl shadow-xl animate-slide-up">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" on:click|self={handleCancel}>
+	<div class="w-full max-w-lg bg-slate-800 rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto" use:keyboardAware>
 		<!-- Header -->
 		<div class="flex items-center justify-between p-4 border-b border-slate-700">
 			<div>
@@ -105,17 +140,18 @@
 
 		<!-- Form -->
 		<div class="p-4 space-y-4">
-			<!-- Reps & Weight Row -->
+			<!-- Reps & Weight Row - use flex to handle variable items -->
 			{#if showReps || showWeight}
-				<div class="grid grid-cols-2 gap-4">
+				<div class="flex gap-4">
 					{#if showReps && !showRounds}
-						<div>
+						<div class="flex-1">
 							<label for="reps" class="block text-sm font-medium text-slate-300 mb-1">Reps</label>
 							<input
 								id="reps"
 								type="number"
 								inputmode="numeric"
 								bind:value={reps}
+								on:focus={(e) => e.currentTarget.select()}
 								class="w-full px-3 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
 								placeholder={exercise.prescription.reps?.toString() ?? '10'}
 							/>
@@ -123,7 +159,7 @@
 					{/if}
 
 					{#if showWeight}
-						<div>
+						<div class="flex-1">
 							<label for="weight" class="block text-sm font-medium text-slate-300 mb-1">Weight</label>
 							<div class="flex gap-2">
 								<input
@@ -132,6 +168,7 @@
 									inputmode="decimal"
 									step="2.5"
 									bind:value={weight}
+									on:focus={(e) => e.currentTarget.select()}
 									class="flex-1 px-3 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
 									placeholder={exercise.prescription.weight?.toString() ?? '0'}
 								/>
@@ -158,6 +195,7 @@
 						inputmode="decimal"
 						step="0.5"
 						bind:value={roundsInput}
+						on:focus={(e) => e.currentTarget.select()}
 						class="w-full px-3 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
 						placeholder="e.g., 5.5"
 					/>
@@ -173,10 +211,43 @@
 						id="time"
 						type="text"
 						bind:value={timeInput}
+						on:focus={(e) => e.currentTarget.select()}
 						class="w-full px-3 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
 						placeholder="5:30"
 					/>
 					<p class="mt-1 text-xs text-slate-400">Format: MM:SS or seconds</p>
+				</div>
+			{/if}
+
+			<!-- Sub-exercise weights (for compound blocks) -->
+			{#if hasSubExerciseWeights}
+				<div>
+					<label class="block text-sm font-medium text-slate-300 mb-2">Weights Used</label>
+					<div class="space-y-2">
+						{#each subExerciseWeights as subEx, idx}
+							{#if subEx.showWeight}
+								<div class="flex items-center gap-2 bg-slate-700/50 rounded-lg p-2">
+									<span class="flex-1 text-sm text-slate-300 truncate">{subEx.name}</span>
+									<input
+										type="number"
+										inputmode="decimal"
+										step="2.5"
+										bind:value={subEx.weight}
+										on:focus={(e) => e.currentTarget.select()}
+										class="w-20 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+										placeholder={exercise.subExercises[idx]?.prescription.weight?.toString() ?? '0'}
+									/>
+									<select
+										bind:value={subEx.weightUnit}
+										class="px-1 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+									>
+										<option value="lbs">lbs</option>
+										<option value="kg">kg</option>
+									</select>
+								</div>
+							{/if}
+						{/each}
+					</div>
 				</div>
 			{/if}
 
@@ -209,6 +280,7 @@
 					id="notes"
 					type="text"
 					bind:value={notes}
+					on:focus={(e) => e.currentTarget.select()}
 					class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
 					placeholder="e.g., felt strong, grip fatigued"
 				/>
@@ -235,19 +307,3 @@
 	</div>
 </div>
 
-<style>
-	@keyframes slide-up {
-		from {
-			transform: translateY(100%);
-			opacity: 0;
-		}
-		to {
-			transform: translateY(0);
-			opacity: 1;
-		}
-	}
-
-	.animate-slide-up {
-		animation: slide-up 0.2s ease-out;
-	}
-</style>

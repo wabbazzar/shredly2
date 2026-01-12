@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { LiveExercise } from '$lib/engine/types';
+	import type { LiveExercise, WeightPrescription, PreviousWeekPerformance } from '$lib/engine/types';
 	import { getExerciseMetadata } from '$lib/engine/exercise-metadata';
 	import { getPersonalRecords, getLastPerformance, type PersonalRecord } from '$lib/stores/history';
+	import { userStore } from '$lib/stores/user';
 
 	export let exercise: LiveExercise;
 
@@ -15,6 +16,16 @@
 	$: personalRecords = getPersonalRecords(exercise.exerciseName);
 	$: lastPerformance = getLastPerformance(exercise.exerciseName);
 
+	// Weight guidance data
+	$: weightPrescription = exercise.prescription.weightPrescription;
+	$: previousWeek = exercise.prescription.previousWeek;
+	$: hasWeightGuidance = weightPrescription !== null || previousWeek !== null;
+
+	// Get 1RM and calculate TM for % TM prescriptions
+	$: oneRepMax = userStore.getOneRepMax(exercise.exerciseName);
+	$: trainingMax = oneRepMax && oneRepMax.weightLbs > 0 ? Math.round(oneRepMax.weightLbs * 0.9) : null;
+	$: isPercentTMPrescription = weightPrescription?.type === 'percent_tm';
+
 	function handleClose() {
 		dispatch('close');
 	}
@@ -24,6 +35,33 @@
 		const date = new Date(dateStr);
 		return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 	}
+
+	// Format weight prescription for detailed display
+	function formatWeightPrescriptionDetailed(prescription: WeightPrescription | null): { type: string; value: string } | null {
+		if (!prescription) return null;
+
+		switch (prescription.type) {
+			case 'qualitative':
+				return {
+					type: 'Intensity',
+					value: String(prescription.value).charAt(0).toUpperCase() + String(prescription.value).slice(1)
+				};
+			case 'percent_tm':
+				return {
+					type: '% of Training Max',
+					value: `${prescription.value}%`
+				};
+			case 'absolute':
+				return {
+					type: 'Target Weight',
+					value: `${prescription.value} ${prescription.unit || 'lbs'}`
+				};
+			default:
+				return null;
+		}
+	}
+
+	$: prescriptionFormatted = formatWeightPrescriptionDetailed(weightPrescription);
 </script>
 
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" on:click|self={handleClose}>
@@ -97,6 +135,76 @@
 				</div>
 			{/if}
 
+			<!-- Weight Guidance (NEW) -->
+			{#if hasWeightGuidance || isPercentTMPrescription}
+				<div>
+					<h3 class="text-sm font-medium text-slate-400 mb-2">Weight Guidance</h3>
+					<div class="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 rounded-lg p-3 border border-indigo-500/30">
+						<div class="space-y-2">
+							<!-- Prescription -->
+							{#if prescriptionFormatted}
+								<div class="flex justify-between items-center">
+									<span class="text-slate-300 text-sm">{prescriptionFormatted.type}:</span>
+									<span class="text-white font-semibold text-lg">{prescriptionFormatted.value}</span>
+								</div>
+							{/if}
+
+							<!-- 1RM and TM breakdown for % TM prescriptions -->
+							{#if isPercentTMPrescription && oneRepMax}
+								<div class="pt-2 mt-2 border-t border-slate-600/50 space-y-1">
+									<div class="flex justify-between items-center text-sm">
+										<span class="text-slate-400">Your 1RM:</span>
+										<span class="text-slate-200">{oneRepMax.weightLbs} lbs</span>
+									</div>
+									{#if trainingMax}
+										<div class="flex justify-between items-center text-sm">
+											<span class="text-slate-400">Training Max (90%):</span>
+											<span class="text-slate-200">{trainingMax} lbs</span>
+										</div>
+									{/if}
+								</div>
+							{:else if isPercentTMPrescription && !oneRepMax}
+								<div class="pt-2 mt-2 border-t border-slate-600/50">
+									<p class="text-amber-400 text-xs">
+										No 1RM recorded for this exercise. Add it in Profile to see calculated weight.
+									</p>
+								</div>
+							{/if}
+
+							<!-- Calculated Target Weight -->
+							{#if exercise.prescription.weight}
+								<div class="flex justify-between items-center pt-2 mt-2 border-t border-slate-600/50">
+									<span class="text-slate-300 text-sm">Target Weight:</span>
+									<span class="text-green-400 font-bold text-lg">
+										{exercise.prescription.weight} {exercise.prescription.weightUnit || 'lbs'}
+									</span>
+								</div>
+							{/if}
+
+							<!-- Previous Week Performance -->
+							{#if previousWeek && previousWeek.weight !== null}
+								<div class="pt-2 mt-2 border-t border-slate-600/50">
+									<div class="flex justify-between items-center">
+										<span class="text-slate-400 text-sm">
+											Week {previousWeek.weekNumber}:
+										</span>
+										<span class="text-slate-200">
+											{previousWeek.weight} {previousWeek.weightUnit || 'lbs'}
+											{#if previousWeek.reps}
+												<span class="text-slate-400">x{previousWeek.reps}</span>
+											{/if}
+											{#if previousWeek.rpe}
+												<span class="text-amber-400 ml-1">@RPE {previousWeek.rpe}</span>
+											{/if}
+										</span>
+									</div>
+								</div>
+							{/if}
+						</div>
+					</div>
+				</div>
+			{/if}
+
 			<!-- Today's Prescription -->
 			<div>
 				<h3 class="text-sm font-medium text-slate-400 mb-2">Today's Prescription</h3>
@@ -119,6 +227,18 @@
 								<span class="text-slate-400">Weight:</span>
 								<span class="text-white ml-2">
 									{exercise.prescription.weight} {exercise.prescription.weightUnit || 'lbs'}
+								</span>
+							</div>
+						{/if}
+						{#if exercise.prescription.weightPrescription && !exercise.prescription.weight}
+							<div>
+								<span class="text-slate-400">Intensity:</span>
+								<span class="text-white ml-2">
+									{#if exercise.prescription.weightPrescription.type === 'qualitative'}
+										{String(exercise.prescription.weightPrescription.value).charAt(0).toUpperCase() + String(exercise.prescription.weightPrescription.value).slice(1)}
+									{:else if exercise.prescription.weightPrescription.type === 'percent_tm'}
+										{exercise.prescription.weightPrescription.value}% TM
+									{/if}
 								</span>
 							</div>
 						{/if}
@@ -215,14 +335,43 @@
 					<h3 class="text-sm font-medium text-slate-400 mb-2">Sub-exercises</h3>
 					<div class="space-y-2">
 						{#each exercise.subExercises as subEx}
+							{@const subMetadata = getExerciseMetadata(subEx.exerciseName)}
+							{@const showSubWeight = subMetadata?.external_load !== 'never' && (subEx.prescription.weight || subEx.prescription.weightPrescription)}
 							<div class="bg-slate-700/50 rounded-lg p-3">
 								<div class="font-medium text-white">{subEx.exerciseName}</div>
 								<div class="text-sm text-slate-400">
-									{#if subEx.prescription.reps}
-										{subEx.prescription.reps} reps
+									{#if exercise.exerciseType === 'interval'}
+										<!-- Interval: show work/rest times -->
+										{#if subEx.prescription.workTimeSeconds}
+											{subEx.prescription.workTimeSeconds}s work
+										{/if}
+										{#if subEx.prescription.restTimeSeconds}
+											<span class="mx-1">/</span>
+											{subEx.prescription.restTimeSeconds}s rest
+										{/if}
+									{:else}
+										<!-- EMOM/AMRAP/Circuit: show reps or work time -->
+										{#if subEx.prescription.reps}
+											{subEx.prescription.reps} reps
+										{/if}
+										{#if subEx.prescription.workTimeSeconds}
+											{subEx.prescription.workTimeSeconds}s work
+										{/if}
 									{/if}
-									{#if subEx.prescription.workTimeSeconds}
-										{subEx.prescription.workTimeSeconds}s work
+									<!-- Weight prescription for sub-exercises -->
+									{#if showSubWeight}
+										<span class="mx-1">@</span>
+										{#if subEx.prescription.weight}
+											{subEx.prescription.weight} {subEx.prescription.weightUnit || 'lbs'}
+										{:else if subEx.prescription.weightPrescription}
+											{#if subEx.prescription.weightPrescription.type === 'qualitative'}
+												{String(subEx.prescription.weightPrescription.value)}
+											{:else if subEx.prescription.weightPrescription.type === 'percent_tm'}
+												{subEx.prescription.weightPrescription.value}% TM
+											{:else if subEx.prescription.weightPrescription.type === 'absolute'}
+												{subEx.prescription.weightPrescription.value} {subEx.prescription.weightPrescription.unit || 'lbs'}
+											{/if}
+										{/if}
 									{/if}
 								</div>
 							</div>

@@ -92,24 +92,34 @@ export class AudioManager {
   }
 
   /**
-   * Play countdown beep (3-2-1 countdown)
-   * Different pitch for each second:
-   * - 3: lower pitch
-   * - 2: medium pitch
-   * - 1: higher pitch
+   * Play countdown chime (3-2-1 countdown)
+   * Pleasant ascending chimes with increasing urgency:
+   * - 3: gentle two-note chime (low register)
+   * - 2: medium two-note chime (mid register)
+   * - 1: prominent three-note chime (high register)
    */
   playCountdown(secondsRemaining: number): void {
     if (!this.isAvailable() || !this.config.countdownEnabled) return;
     if (secondsRemaining < 1 || secondsRemaining > 3) return;
 
-    // Pitch increases as countdown progresses
-    const frequencies: Record<number, number> = {
-      3: 440,   // A4
-      2: 554,   // C#5
-      1: 659    // E5
-    };
-
-    this.playTone(frequencies[secondsRemaining], 100, 'sine');
+    switch (secondsRemaining) {
+      case 3:
+        // Gentle two-note chime: G4 -> B4 (major third, soft)
+        this.playTone(392, 80, 'sine', 0);    // G4
+        this.playTone(494, 100, 'sine', 70);  // B4
+        break;
+      case 2:
+        // Medium two-note chime: A4 -> C#5 (major third, mid)
+        this.playTone(440, 80, 'sine', 0);    // A4
+        this.playTone(554, 100, 'sine', 70);  // C#5
+        break;
+      case 1:
+        // Prominent three-note chime: B4 -> D#5 -> F#5 (major chord, bright)
+        this.playTone(494, 60, 'sine', 0);    // B4
+        this.playTone(622, 60, 'sine', 50);   // D#5
+        this.playTone(740, 120, 'sine', 100); // F#5 (longer final note)
+        break;
+    }
   }
 
   /**
@@ -138,14 +148,16 @@ export class AudioManager {
   }
 
   /**
-   * Play minute marker beep (for EMOM/AMRAP)
-   * Single short beep
+   * Play minute marker (for EMOM/AMRAP)
+   * Pleasant upward trill - three ascending notes
    */
   playMinuteMarker(): void {
     if (!this.isAvailable() || !this.config.minuteMarkerEnabled) return;
 
-    // A4 beep
-    this.playTone(440, 80, 'square');
+    // Pleasant upward trill: C5 -> E5 -> G5 (major chord ascending)
+    this.playTone(523, 80, 'sine', 0);    // C5
+    this.playTone(659, 80, 'sine', 80);   // E5
+    this.playTone(784, 120, 'sine', 160); // G5 (slightly longer)
   }
 
   /**

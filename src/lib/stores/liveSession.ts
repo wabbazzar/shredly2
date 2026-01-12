@@ -16,13 +16,107 @@ import type {
   SetLog,
   TimerState,
   AudioConfig,
-  TimerExerciseType
+  TimerExerciseType,
+  WeightPrescription,
+  PreviousWeekPerformance
 } from '$lib/engine/types';
 import { DEFAULT_AUDIO_CONFIG } from '$lib/engine/types';
 import type { StoredSchedule, ParameterizedExercise, ParameterizedDay } from '$lib/types/schedule';
 import { createInitialTimerState, getTimerExerciseType } from '$lib/engine/timer-engine';
 import { getExerciseMetadata } from '$lib/engine/exercise-metadata';
 import { activeSchedule } from './schedule';
+import { getWeekPerformance } from './history';
+import { userStore } from './user';
+import timerConfig from '$lib/../data/timer_config.json';
+
+// ============================================================================
+// WEIGHT CALCULATION UTILITIES
+// ============================================================================
+
+/**
+ * Weight calculation config from timer_config.json
+ */
+const weightConfig = timerConfig.weight_calculation;
+
+/**
+ * Get Training Max percentage from config (default: 90%)
+ */
+function getTrainingMaxPercentage(): number {
+  return (weightConfig?.training_max_percentage ?? 90) / 100;
+}
+
+/**
+ * Get weight rounding increment based on equipment type
+ * Falls back to default_increment_lbs if equipment not specified
+ */
+function getWeightIncrement(equipmentType?: string): number {
+  const rounding = weightConfig?.rounding;
+  if (!rounding) return 5; // Safe default
+
+  switch (equipmentType?.toLowerCase()) {
+    case 'barbell':
+      return rounding.barbell_increment_lbs ?? 5;
+    case 'dumbbell':
+    case 'dumbbells':
+      return rounding.dumbbell_increment_lbs ?? 5;
+    case 'cable':
+      return rounding.cable_increment_lbs ?? 5;
+    case 'machine':
+      return rounding.machine_increment_lbs ?? 10;
+    default:
+      return rounding.default_increment_lbs ?? 5;
+  }
+}
+
+/**
+ * Round weight to nearest standard increment
+ * Uses config-driven increment based on equipment type
+ */
+function roundToIncrement(weight: number, equipmentType?: string): number {
+  const increment = getWeightIncrement(equipmentType);
+  return Math.round(weight / increment) * increment;
+}
+
+/**
+ * Get Training Max for an exercise from user's 1RM
+ * TM = 1RM * (training_max_percentage from config)
+ */
+function getTrainingMax(exerciseName: string): number | null {
+  const oneRepMax = userStore.getOneRepMax(exerciseName);
+  if (!oneRepMax || oneRepMax.weightLbs <= 0) {
+    return null;
+  }
+  return oneRepMax.weightLbs * getTrainingMaxPercentage();
+}
+
+/**
+ * Calculate actual weight from a percentage of Training Max
+ * Returns rounded weight in lbs, or null if no 1RM available
+ */
+function calculateWeightFromPercentTM(
+  exerciseName: string,
+  percentTM: number
+): { weight: number; unit: 'lbs' | 'kg' } | null {
+  const trainingMax = getTrainingMax(exerciseName);
+  if (trainingMax === null) {
+    return null;
+  }
+
+  // Calculate weight: TM * (percent / 100)
+  const rawWeight = trainingMax * (percentTM / 100);
+
+  // Get equipment type from exercise metadata for rounding
+  const metadata = getExerciseMetadata(exerciseName);
+  const equipmentType = metadata?.equipment?.[0]; // Use primary equipment
+
+  // Round to config-driven increment
+  const roundedWeight = roundToIncrement(rawWeight, equipmentType);
+
+  return {
+    weight: roundedWeight,
+    unit: 'lbs' // Always stored internally as lbs
+  };
+}
 
 // ============================================================================
 // CONSTANTS
@@ -132,53 +226,107 @@ function determineExerciseType(exercise: ParameterizedExercise): TimerExerciseTy
 }
 
 /**
+ * Parse weight prescription from workout data
+ * Handles both qualitative ("heavy") and object ({ type: "percent_tm", value: 80 }) formats
+ */
+function parseWeightPrescription(weightData: any): WeightPrescription | null {
+  if (!weightData) return null;
+
+  // Qualitative weight (beginner programs): "light", "moderate", "heavy"
+  if (typeof weightData === 'string') {
+    return {
+      type: 'qualitative',
+      value: weightData
+    };
+  }
+
+  // Object format (intermediate/advanced programs)
+  if (typeof weightData === 'object') {
+    if (weightData.type === 'percent_tm') {
+      return {
+        type: 'percent_tm',
+        value: weightData.value
+      };
+    }
+    if (weightData.type === 'absolute') {
+      return {
+        type: 'absolute',
+        value: weightData.value,
+        unit: weightData.unit
+      };
+    }
+  }
+
+  return null;
+}
+
+/**
  * Convert ParameterizedExercise to LiveExercise
  */
 function convertToLiveExercise(
   exercise: ParameterizedExercise,
-  weekNumber: number
+  weekNumber: number,
+  workoutProgramId: string
 ): LiveExercise {
   const weekKey = `week${weekNumber}` as keyof ParameterizedExercise;
   const weekParams = exercise[weekKey] as any;
 
   // Parse rest time
+  // Note: *_time_minutes fields store values converted to minutes, so multiply by 60
   let restTimeSeconds: number | null = null;
-  if (weekParams?.rest_time_minutes !== undefined) {
-    // Legacy format: rest_time_minutes with optional unit
-    restTimeSeconds = weekParams.rest_time_minutes * 60;
-    if (weekParams.rest_time_unit === 'seconds') {
-      restTimeSeconds = weekParams.rest_time_minutes;
-    }
-  }
   if (weekParams?.rest_time_seconds !== undefined) {
     restTimeSeconds = weekParams.rest_time_seconds;
+  } else if (weekParams?.rest_time_minutes !== undefined) {
+    restTimeSeconds = weekParams.rest_time_minutes * 60;
   }
 
   // Parse work time
   let workTimeSeconds: number | null = null;
-  if (weekParams?.work_time_minutes !== undefined) {
-    workTimeSeconds = weekParams.work_time_minutes * 60;
-    if (weekParams.work_time_unit === 'seconds') {
-      workTimeSeconds = weekParams.work_time_minutes;
-    }
-  }
   if (weekParams?.work_time_seconds !== undefined) {
     workTimeSeconds = weekParams.work_time_seconds;
+  } else if (weekParams?.work_time_minutes !== undefined) {
+    workTimeSeconds = weekParams.work_time_minutes * 60;
   }
   // For EMOM/AMRAP, block_time_minutes is the total duration
   if (weekParams?.block_time_minutes !== undefined) {
     workTimeSeconds = weekParams.block_time_minutes * 60;
   }
 
-  // Parse weight
+  // Parse weight and calculate from % TM if applicable
   let weight: number | null = null;
   let weightUnit: 'lbs' | 'kg' | null = null;
   if (weekParams?.weight) {
-    if (typeof weekParams.weight === 'object' && weekParams.weight.type === 'absolute') {
-      weight = weekParams.weight.value;
-      weightUnit = weekParams.weight.unit;
+    if (typeof weekParams.weight === 'object') {
+      if (weekParams.weight.type === 'absolute') {
+        weight = weekParams.weight.value;
+        weightUnit = weekParams.weight.unit;
+      } else if (weekParams.weight.type === 'percent_tm') {
+        // Calculate actual weight from % TM using user's 1RM
+        const calculated = calculateWeightFromPercentTM(exercise.name, weekParams.weight.value);
+        if (calculated) {
+          weight = calculated.weight;
+          weightUnit = calculated.unit;
+        }
+      }
     }
-    // For percent_tm or percent_bw, we'd need user's maxes - leave null for now
+  }
+
+  // Parse weight prescription for display
+  const weightPrescription = parseWeightPrescription(weekParams?.weight);
+
+  // Get previous week's performance (if week > 1)
+  let previousWeek: PreviousWeekPerformance | null = null;
+  if (weekNumber > 1) {
+    const prevWeekData = getWeekPerformance(exercise.name, workoutProgramId, weekNumber - 1);
+    if (prevWeekData) {
+      previousWeek = {
+        weight: prevWeekData.weight,
+        weightUnit: prevWeekData.weightUnit as 'lbs' | 'kg' | null,
+        rpe: prevWeekData.rpe,
+        reps: prevWeekData.reps,
+        weekNumber: prevWeekData.weekNumber
+      };
+    }
   }
 
   const exerciseType = determineExerciseType(exercise);
@@ -188,15 +336,63 @@ function convertToLiveExercise(
   const subExercises: LiveExercise[] = [];
   if (exercise.sub_exercises) {
     for (const subEx of exercise.sub_exercises) {
-      const subWeekParams = subEx[weekKey] as any;
-      let subRestTime: number | null = null;
-      let subWorkTime: number | null = null;
+      const subWeekParams = (subEx as any)[weekKey] as any;
 
+      // Parse sub-exercise rest time
+      // Note: work_time_minutes always stores the value converted to minutes,
+      // regardless of the original unit. So we always multiply by 60 to get seconds.
+      let subRestTime: number | null = null;
       if (subWeekParams?.rest_time_seconds !== undefined) {
         subRestTime = subWeekParams.rest_time_seconds;
+      } else if (subWeekParams?.rest_time_minutes !== undefined) {
+        // Value is stored in minutes - convert to seconds
+        subRestTime = subWeekParams.rest_time_minutes * 60;
       }
+
+      // Parse sub-exercise work time
+      let subWorkTime: number | null = null;
       if (subWeekParams?.work_time_seconds !== undefined) {
         subWorkTime = subWeekParams.work_time_seconds;
+      } else if (subWeekParams?.work_time_minutes !== undefined) {
+        // Value is stored in minutes - convert to seconds
+        subWorkTime = subWeekParams.work_time_minutes * 60;
+      }
+
+      // Parse sub-exercise weight and calculate from % TM if applicable
+      let subWeight: number | null = null;
+      let subWeightUnit: 'lbs' | 'kg' | null = null;
+      if (subWeekParams?.weight) {
+        if (typeof subWeekParams.weight === 'object') {
+          if (subWeekParams.weight.type === 'absolute') {
+            subWeight = subWeekParams.weight.value;
+            subWeightUnit = subWeekParams.weight.unit;
+          } else if (subWeekParams.weight.type === 'percent_tm') {
+            // Calculate actual weight from % TM using user's 1RM
+            const subCalculated = calculateWeightFromPercentTM(subEx.name, subWeekParams.weight.value);
+            if (subCalculated) {
+              subWeight = subCalculated.weight;
+              subWeightUnit = subCalculated.unit;
+            }
+          }
+        }
+      }
+
+      // Parse sub-exercise weight prescription
+      const subWeightPrescription = parseWeightPrescription(subWeekParams?.weight);
+
+      // Get previous week's performance for sub-exercise
+      let subPreviousWeek: PreviousWeekPerformance | null = null;
+      if (weekNumber > 1) {
+        const subPrevWeekData = getWeekPerformance(subEx.name, workoutProgramId, weekNumber - 1);
+        if (subPrevWeekData) {
+          subPreviousWeek = {
+            weight: subPrevWeekData.weight,
+            weightUnit: subPrevWeekData.weightUnit as 'lbs' | 'kg' | null,
+            rpe: subPrevWeekData.rpe,
+            reps: subPrevWeekData.reps,
+            weekNumber: subPrevWeekData.weekNumber
+          };
+        }
       }
 
       subExercises.push({
@@ -207,14 +403,17 @@ function convertToLiveExercise(
         prescription: {
           sets: subWeekParams?.sets ?? 1,
           reps: subWeekParams?.reps ?? null,
-          weight: null,
-          weightUnit: null,
+          weight: subWeight,
+          weightUnit: subWeightUnit,
           workTimeSeconds: subWorkTime,
           restTimeSeconds: subRestTime,
-          tempo: subWeekParams?.tempo ?? null
+          tempo: subWeekParams?.tempo ?? null,
+          weightPrescription: subWeightPrescription,
+          previousWeek: subPreviousWeek
         },
         completed: false,
-        completedSets: 0
+        completedSets: 0,
+        skipped: false
       });
     }
   }
@@ -231,10 +430,13 @@ function convertToLiveExercise(
       weightUnit,
       workTimeSeconds,
       restTimeSeconds,
-      tempo: weekParams?.tempo ?? null
+      tempo: weekParams?.tempo ?? null,
+      weightPrescription,
+      previousWeek
     },
     completed: false,
-    completedSets: 0
+    completedSets: 0,
+    skipped: false
   };
 }
 
@@ -243,14 +445,64 @@ function convertToLiveExercise(
  */
 function convertDayToLiveExercises(
   day: ParameterizedDay,
-  weekNumber: number
+  weekNumber: number,
+  workoutProgramId: string
 ): LiveExercise[] {
-  return day.exercises.map(ex => convertToLiveExercise(ex, weekNumber));
+  return day.exercises.map(ex => convertToLiveExercise(ex, weekNumber, workoutProgramId));
+}
+
+/**
+ * Get the Monday of the week containing a date
+ * This matches the CalendarView logic for week alignment
+ */
+function getMondayOfWeek(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getDay();
+  // JavaScript: 0=Sunday, 1=Monday, ... 6=Saturday
+  // We want Monday as the start of the week
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+/**
+ * Get effective day mapping for a specific week
+ * Merges global dayMapping with week-specific overrides (matches CalendarView logic)
+ */
+function getEffectiveDayMapping(
+  scheduleMetadata: StoredSchedule['scheduleMetadata'],
+  weekNumber: number,
+  daysPerWeek: number
+): Record<string, number> {
+  // Get global mapping (default if not set)
+  let globalMapping: Record<string, number> = {};
+  if (scheduleMetadata.dayMapping) {
+    globalMapping = { ...scheduleMetadata.dayMapping };
+  } else {
+    // Default: days 1, 2, 3... map to Mon(0), Tue(1), Wed(2)...
+    for (let i = 1; i <= daysPerWeek; i++) {
+      globalMapping[i.toString()] = (i - 1) % 7;
+    }
+  }
+
+  // Check for week-specific overrides (stored in scheduleMetadata.weekOverrides)
+  const weekOverrides = (scheduleMetadata as any).weekOverrides as Record<string, Record<string, number>> | undefined;
+  if (weekOverrides && weekOverrides[weekNumber.toString()]) {
+    return { ...globalMapping, ...weekOverrides[weekNumber.toString()] };
+  }
+
+  return globalMapping;
 }
 
 /**
  * Get today's workout from active schedule
  * Returns the day that matches today based on schedule metadata
+ *
+ * Week alignment logic matches CalendarView:
+ * - Week 1 starts from the Monday of the week containing startDate
+ * - Workouts are placed on weekdays according to dayMapping
+ * - Week-specific overrides are considered
  */
 export function getTodaysWorkout(schedule: StoredSchedule): {
   weekNumber: number;
@@ -258,7 +510,7 @@ export function getTodaysWorkout(schedule: StoredSchedule): {
   day: ParameterizedDay;
 } | null {
   const { scheduleMetadata, days, daysPerWeek, weeks } = schedule;
-  const { startDate, dayMapping } = scheduleMetadata;
+  const { startDate } = scheduleMetadata;
 
   if (!startDate) return null;
 
@@ -270,16 +522,19 @@ export function getTodaysWorkout(schedule: StoredSchedule): {
   const start = new Date(year, month - 1, dayOfMonth);
   start.setHours(0, 0, 0, 0);
 
-  // Calculate days since start
-  const daysSinceStart = Math.floor((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  // Get the Monday of the week containing startDate (matches CalendarView logic)
+  const weekStart = getMondayOfWeek(start);
 
-  if (daysSinceStart < 0) {
-    // Program hasn't started yet
+  // Calculate days since the Monday of week 1
+  const daysSinceWeekStart = Math.floor((today.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (daysSinceWeekStart < 0) {
+    // We're before the first week's Monday
     return null;
   }
 
-  // Calculate current week (0-indexed) based on calendar weeks since start
-  const currentWeekIndex = Math.floor(daysSinceStart / 7);
+  // Calculate current week (0-indexed) based on calendar weeks since weekStart
+  const currentWeekIndex = Math.floor(daysSinceWeekStart / 7);
   const weekNumber = currentWeekIndex + 1;
 
   if (weekNumber > weeks) {
@@ -287,25 +542,26 @@ export function getTodaysWorkout(schedule: StoredSchedule): {
     return null;
   }
 
-  // Get today's day of week (0=Sunday, adjust to 0=Monday)
+  // Get today's day of week (0=Monday, 6=Sunday to match dayMapping)
   let todayWeekday = today.getDay() - 1;
   if (todayWeekday < 0) todayWeekday = 6; // Sunday becomes 6
 
-  // Find which workout day (if any) is scheduled for today
-  if (dayMapping) {
-    for (const [dayNum, weekday] of Object.entries(dayMapping)) {
-      if (weekday === todayWeekday) {
-        // This workout day is scheduled for today
-        const globalDayNumber = (currentWeekIndex * daysPerWeek) + parseInt(dayNum);
-        const day = days[globalDayNumber.toString()];
+  // Get effective day mapping for this week (considers week-specific overrides)
+  const effectiveMapping = getEffectiveDayMapping(scheduleMetadata, weekNumber, daysPerWeek);
 
-        if (day) {
-          return {
-            weekNumber,
-            dayNumber: globalDayNumber,
-            day
-          };
-        }
+  // Find which workout day (if any) is scheduled for today
+  for (const [dayNum, weekday] of Object.entries(effectiveMapping)) {
+    if (weekday === todayWeekday) {
+      // This workout day is scheduled for today
+      const globalDayNumber = (currentWeekIndex * daysPerWeek) + parseInt(dayNum);
+      const day = days[globalDayNumber.toString()];
+
+      if (day) {
+        return {
+          weekNumber,
+          dayNumber: globalDayNumber,
+          day
+        };
       }
     }
   }
@@ -414,7 +670,7 @@ export function startWorkout(
   dayNumber: number,
   day: ParameterizedDay
 ): void {
-  const exercises = convertDayToLiveExercises(day, weekNumber);
+  const exercises = convertDayToLiveExercises(day, weekNumber, schedule.id);
   const config = get(audioConfig);
 
   const session: LiveWorkoutSession = {
@@ -561,6 +817,103 @@ export function advanceToNextSet(): boolean {
   });
 
   return advanced;
+}
+
+/**
+ * Skip forward to a specific exercise
+ * Marks all exercises between current and target as skipped (incomplete data)
+ * Returns true if skip was successful
+ */
+export function skipToExercise(targetIndex: number): boolean {
+  let skipped = false;
+
+  liveSession.update(session => {
+    if (!session) return session;
+    if (targetIndex <= session.currentExerciseIndex) return session;
+    if (targetIndex >= session.exercises.length) return session;
+
+    const exercises = [...session.exercises];
+
+    // Mark all exercises between current and target as skipped
+    for (let i = session.currentExerciseIndex; i < targetIndex; i++) {
+      exercises[i] = {
+        ...exercises[i],
+        skipped: true,
+        completed: true  // Mark as "done" so we can move past it
+      };
+    }
+
+    skipped = true;
+    return {
+      ...session,
+      exercises,
+      currentExerciseIndex: targetIndex,
+      timerState: createInitialTimerState()
+    };
+  });
+
+  return skipped;
+}
+
+/**
+ * Mark a skipped exercise as logged (user retroactively filled in data)
+ * Clears the skipped flag so the warning indicator is removed
+ */
+export function markExerciseLogged(exerciseIndex: number): void {
+  liveSession.update(session => {
+    if (!session) return session;
+    if (exerciseIndex < 0 || exerciseIndex >= session.exercises.length) return session;
+
+    const exercises = [...session.exercises];
+    exercises[exerciseIndex] = {
+      ...exercises[exerciseIndex],
+      skipped: false
+    };
+
+    return { ...session, exercises };
+  });
+}
+
+/**
+ * Log a completed set for a specific exercise (for retroactive logging)
+ * Also increments completedSets counter
+ */
+export function logSetForExercise(
+  exerciseIndex: number,
+  setLog: SetLog,
+  totalRounds?: number,
+  totalTime?: number
+): void {
+  const session = get(liveSession);
+  if (!session) return;
+
+  const exercise = session.exercises[exerciseIndex];
+  if (!exercise) return;
+
+  if (exercise.isCompoundParent && (totalRounds !== undefined || totalTime !== undefined)) {
+    logCompoundBlock(exerciseIndex, totalRounds, totalTime);
+    // For compound blocks, mark as fully logged after single entry
+    markExerciseLogged(exerciseIndex);
+  } else {
+    logSet(exerciseIndex, setLog);
+
+    // Increment completedSets for the exercise
+    liveSession.update(s => {
+      if (!s) return s;
+      const exercises = [...s.exercises];
+      const ex = exercises[exerciseIndex];
+      if (ex) {
+        const newCompletedSets = ex.completedSets + 1;
+        exercises[exerciseIndex] = {
+          ...ex,
+          completedSets: newCompletedSets,
+          // Clear skipped flag only when all sets are logged
+          skipped: newCompletedSets >= ex.prescription.sets ? false : ex.skipped
+        };
+      }
+      return { ...s, exercises };
+    });
+  }
 }
 
 /**
@@ -739,5 +1092,77 @@ export function updateAudioConfig(updates: Partial<AudioConfig>): void {
         ...updates
       }
     };
+  });
+}
+
+/**
+ * Get the exercise log for a specific exercise by index
+ * Returns the log data if it exists, null otherwise
+ */
+export function getExerciseLog(exerciseIndex: number): ExerciseLog | null {
+  const session = get(liveSession);
+  if (!session) return null;
+
+  const exercise = session.exercises[exerciseIndex];
+  if (!exercise) return null;
+
+  return session.logs.find(
+    l => l.exerciseName === exercise.exerciseName && l.exerciseOrder === exerciseIndex
+  ) ?? null;
+}
+
+/**
+ * Update all sets for an exercise at once
+ * Used for bulk editing from the multi-set review modal
+ */
+export function updateExerciseLogs(
+  exerciseIndex: number,
+  sets: SetLog[],
+  totalRounds?: number,
+  totalTime?: number
+): void {
+  liveSession.update(session => {
+    if (!session) return session;
+
+    const exercise = session.exercises[exerciseIndex];
+    if (!exercise) return session;
+
+    const logs = [...session.logs];
+
+    // Find existing log or create new one
+    const existingIndex = logs.findIndex(
+      l => l.exerciseName === exercise.exerciseName && l.exerciseOrder === exerciseIndex
+    );
+
+    const exerciseLog: ExerciseLog = {
+      exerciseName: exercise.exerciseName,
+      exerciseOrder: exerciseIndex,
+      isCompoundParent: exercise.isCompoundParent,
+      compoundParentName: null,
+      sets,
+      totalRounds,
+      totalTime,
+      timestamp: new Date().toISOString()
+    };
+
+    if (existingIndex >= 0) {
+      logs[existingIndex] = exerciseLog;
+    } else {
+      logs.push(exerciseLog);
+    }
+
+    // Update exercise state
+    const exercises = [...session.exercises];
+    const completedSets = sets.filter(s => s.completed).length;
+    exercises[exerciseIndex] = {
+      ...exercise,
+      completedSets,
+      // Clear skipped flag if any data was logged
+      skipped: sets.length > 0 ? false : exercise.skipped,
+      // Mark as completed if all sets are done
+      completed: completedSets >= exercise.prescription.sets || exercise.completed
+    };
+
+    return { ...session, logs, exercises };
   });
 }

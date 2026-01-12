@@ -3,12 +3,21 @@
 	import BottomTabBar from '$lib/components/BottomTabBar.svelte';
 	import SwipeContainer from '$lib/components/SwipeContainer.svelte';
 	import { navigationStore } from '$lib/stores/navigation';
-	import { page } from '$app/stores';
+	import { initializeScheduleStore } from '$lib/stores/schedule';
 	import { onMount } from 'svelte';
 
 	// Track transition state
 	let transitionDirection: 'left' | 'right' | null = null;
 	let isTransitioning = false;
+	let animationClass = '';
+
+	// Handle animation completion
+	function handleAnimationEnd() {
+		isTransitioning = false;
+		transitionDirection = null;
+		animationClass = '';
+		navigationStore.clearTransition();
+	}
 
 	// Subscribe to navigation store for transition direction
 	$: navState = $navigationStore;
@@ -16,33 +25,32 @@
 		if (navState.transitionDirection && !isTransitioning) {
 			transitionDirection = navState.transitionDirection;
 			isTransitioning = true;
+			animationClass =
+				transitionDirection === 'left' ? 'animate-slide-from-right' : 'animate-slide-from-left';
 
-			// Clear transition after animation
+			// Fallback timeout in case animationend doesn't fire
 			setTimeout(() => {
-				isTransitioning = false;
-				transitionDirection = null;
-				navigationStore.clearTransition();
-			}, 300);
+				if (isTransitioning) handleAnimationEnd();
+			}, 400);
 		}
 	}
 
-	// Unique key for page transitions based on pathname
-	$: pageKey = $page.url.pathname;
+	// Initialize stores once at app startup
+	onMount(() => {
+		initializeScheduleStore();
+	});
 </script>
 
 <div class="h-screen flex flex-col bg-slate-900 overflow-hidden">
 	<!-- Main content area with swipe handling -->
 	<SwipeContainer>
 		<main class="h-full overflow-auto pb-nav">
-			{#key pageKey}
-				<div
-					class="h-full transition-transform duration-300 ease-out
-                   {isTransitioning && transitionDirection === 'left' ? 'animate-slide-from-right' : ''}
-                   {isTransitioning && transitionDirection === 'right' ? 'animate-slide-from-left' : ''}"
-				>
-					<slot />
-				</div>
-			{/key}
+			<div
+				class="h-full will-change-transform {animationClass}"
+				on:animationend={handleAnimationEnd}
+			>
+				<slot />
+			</div>
 		</main>
 	</SwipeContainer>
 

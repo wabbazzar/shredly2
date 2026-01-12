@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { navigationStore } from '$lib/stores/navigation';
 	import {
-		initializeScheduleStore,
 		activeSchedule,
 		setActiveSchedule,
 		viewState,
@@ -29,7 +28,6 @@
 
 	onMount(() => {
 		navigationStore.setActiveTab('schedule');
-		initializeScheduleStore();
 	});
 
 	function handleCreateClick() {

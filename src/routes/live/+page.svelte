@@ -23,7 +23,7 @@
 		getExerciseLog,
 		updateExerciseLogs
 	} from '$lib/stores/liveSession';
-	import { activeSchedule, initializeScheduleStore } from '$lib/stores/schedule';
+	import { activeSchedule } from '$lib/stores/schedule';
 	import { logSessionToHistory } from '$lib/stores/history';
 	import {
 		TimerEngine,
@@ -42,12 +42,13 @@
 
 	let timerEngine: TimerEngine;
 	let unsubscribeTimer: (() => void) | null = null;
-	let audioManager = getAudioManager();
+	let audioManager: ReturnType<typeof getAudioManager>;
 
 	// Local reactive state
 	let timerState = createInitialTimerState();
 	let showStartPrompt = false;
 	let noScheduleMessage = '';
+	let isReady = false; // Defers heavy work until after first paint
 
 	// Modal state
 	let showDataEntry = false;
@@ -75,37 +76,46 @@
 		return map;
 	}
 
-	onMount(async () => {
+	onMount(() => {
 		navigationStore.setActiveTab('live');
 
-		// Initialize timer engine
-		timerEngine = getTimerEngine();
-		unsubscribeTimer = timerEngine.subscribe(handleTimerEvent);
+		// Defer heavy initialization until after first paint for smoother transitions
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				// Initialize audio manager
+				audioManager = getAudioManager();
 
-		// Initialize schedule store if needed
-		await initializeScheduleStore();
+				// Initialize timer engine
+				timerEngine = getTimerEngine();
+				unsubscribeTimer = timerEngine.subscribe(handleTimerEvent);
 
-		// Check for existing session
-		if ($hasActiveSession && $currentExercise) {
-			// Resume existing session
-			timerEngine.initializeForExercise($currentExercise);
-			timerState = timerEngine.getState();
-		} else if ($activeSchedule) {
-			// Check for today's workout
-			const todaysWorkout = getTodaysWorkout($activeSchedule);
-			if (todaysWorkout) {
-				showStartPrompt = true;
-			} else {
-				noScheduleMessage = 'No workout scheduled for today';
-			}
-		} else {
-			noScheduleMessage = 'No active schedule. Create one in the Schedule tab.';
-		}
+				// Check for existing session
+				if ($hasActiveSession && $currentExercise) {
+					// Resume existing session
+					timerEngine.initializeForExercise($currentExercise);
+					timerState = timerEngine.getState();
+				} else if ($activeSchedule) {
+					// Check for today's workout
+					const todaysWorkout = getTodaysWorkout($activeSchedule);
+					if (todaysWorkout) {
+						showStartPrompt = true;
+					} else {
+						noScheduleMessage = 'No workout scheduled for today';
+					}
+				} else {
+					noScheduleMessage = 'No active schedule. Create one in the Schedule tab.';
+				}
+
+				isReady = true;
+			});
+		});
 	});
 
 	// Initialize audio on first user interaction
 	async function initializeAudio() {
-		await audioManager.initialize();
+		if (audioManager) {
+			await audioManager.initialize();
+		}
 	}
 
 	onDestroy(() => {
@@ -123,26 +133,26 @@
 			case 'countdown_tick':
 				// Play countdown beep
 				if (event.countdownValue) {
-					audioManager.playCountdown(event.countdownValue);
+					audioManager?.playCountdown(event.countdownValue);
 				}
 				break;
 
 			case 'set_complete':
 				advanceToNextSet();
-				audioManager.playWorkComplete();
+				audioManager?.playWorkComplete();
 				break;
 
 			case 'minute_marker':
-				audioManager.playMinuteMarker();
+				audioManager?.playMinuteMarker();
 				break;
 
 			case 'work_phase_complete':
 				// Play work phase completion chime (for interval work->rest transitions)
-				audioManager.playMinuteMarker();
+				audioManager?.playMinuteMarker();
 				break;
 
 			case 'exercise_complete':
-				audioManager.playExerciseComplete();
+				audioManager?.playExerciseComplete();
 				// Auto-advance to next exercise
 				const hasMoreExercises = advanceToNextExercise();
 				if (hasMoreExercises && $currentExercise) {
@@ -155,7 +165,7 @@
 					}, 500);
 				} else {
 					// Workout complete
-					audioManager.playSessionComplete();
+					audioManager?.playSessionComplete();
 					handleStop();
 				}
 				break;
@@ -238,7 +248,7 @@
 				$liveSession.dayNumber,
 				result.logs
 			);
-			audioManager.playSessionComplete();
+			audioManager?.playSessionComplete();
 		}
 
 		showStartPrompt = false;

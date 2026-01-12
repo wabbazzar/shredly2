@@ -160,6 +160,12 @@ export const modalState = writable<ScheduleModalState>(DEFAULT_MODAL_STATE);
  */
 export const isLoading = writable<boolean>(false);
 
+/**
+ * Initialization state - prevents duplicate IndexedDB queries
+ */
+let isInitialized = false;
+let initializationPromise: Promise<void> | null = null;
+
 // ============================================================================
 // DERIVED STORES
 // ============================================================================
@@ -233,23 +239,35 @@ export const scheduleCount = derived(
 
 /**
  * Initialize stores from IndexedDB
- * Call this on app startup
+ * Call this on app startup - uses guard pattern to prevent duplicate queries
  */
 export async function initializeScheduleStore(): Promise<void> {
-  isLoading.set(true);
-  try {
-    const [schedules, active] = await Promise.all([
-      getAllSchedules(),
-      getActiveSchedule()
-    ]);
+  // Skip if already initialized
+  if (isInitialized) return;
 
-    scheduleLibrary.set(schedules);
-    activeSchedule.set(active);
-  } catch (e) {
-    console.error('Failed to initialize schedule store:', e);
-  } finally {
-    isLoading.set(false);
-  }
+  // Return existing promise if initialization is in progress
+  if (initializationPromise) return initializationPromise;
+
+  initializationPromise = (async () => {
+    isLoading.set(true);
+    try {
+      const [schedules, active] = await Promise.all([
+        getAllSchedules(),
+        getActiveSchedule()
+      ]);
+
+      scheduleLibrary.set(schedules);
+      activeSchedule.set(active);
+      isInitialized = true;
+    } catch (e) {
+      console.error('Failed to initialize schedule store:', e);
+    } finally {
+      isLoading.set(false);
+      initializationPromise = null;
+    }
+  })();
+
+  return initializationPromise;
 }
 
 /**

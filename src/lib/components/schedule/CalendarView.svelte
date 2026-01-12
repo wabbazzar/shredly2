@@ -27,6 +27,16 @@
 		return new Date(year, month - 1, day);
 	}
 
+	// Check if a date is today
+	function isToday(date: Date): boolean {
+		const today = new Date();
+		return (
+			date.getFullYear() === today.getFullYear() &&
+			date.getMonth() === today.getMonth() &&
+			date.getDate() === today.getDate()
+		);
+	}
+
 	// Get Monday of the week containing a date
 	function getMondayOfWeek(date: Date): Date {
 		const d = new Date(date);
@@ -97,6 +107,7 @@
 		date: Date;
 		dayOfMonth: number;
 		isCurrentMonth: boolean;
+		isToday: boolean;
 		workoutDay: number | null; // Workout day number if this date has one
 		weekday: Weekday;
 	}
@@ -151,6 +162,7 @@
 					date,
 					dayOfMonth: date.getDate(),
 					isCurrentMonth: date.getMonth() === mondayMonth,
+					isToday: isToday(date),
 					workoutDay,
 					weekday: dayOfWeek as Weekday
 				});
@@ -316,12 +328,13 @@
 							class:has-workout={calDate.workoutDay !== null}
 							class:dragging={draggedDay === calDate.workoutDay}
 							class:other-month={!calDate.isCurrentMonth}
+							class:is-today={calDate.isToday}
 							on:dragover={(e) => handleDragOver(e, i as Weekday)}
 							on:dragleave={handleDragLeave}
 							on:drop={(e) => handleDrop(e, i as Weekday)}
 							on:click|stopPropagation={() => calDate.workoutDay && handleDayClick(week.weekNumber, calDate.workoutDay)}
 						>
-							<span class="date-num" class:muted={!calDate.isCurrentMonth}>{calDate.dayOfMonth}</span>
+							<span class="date-num" class:muted={!calDate.isCurrentMonth} class:today={calDate.isToday}>{calDate.dayOfMonth}</span>
 
 							{#if calDate.workoutDay !== null}
 								{@const dayInfo = getWorkoutDayInfo(calDate.workoutDay)}
@@ -468,6 +481,22 @@
 
 	.date-num.muted {
 		color: rgb(71 85 105); /* slate-600 */
+	}
+
+	.date-num.today {
+		color: white;
+		font-weight: 600;
+	}
+
+	.day-cell.is-today {
+		outline: 2px solid rgb(165 180 252); /* indigo-300 */
+		outline-offset: -2px;
+		background-color: rgba(165, 180, 252, 0.15); /* indigo-300/15 */
+	}
+
+	.day-cell.is-today.has-workout {
+		outline: 2px solid rgb(165 180 252); /* indigo-300 */
+		background-color: rgba(165, 180, 252, 0.2); /* indigo-300/20 */
 	}
 
 	.workout-badge {

@@ -10,7 +10,8 @@
 		showDetailView,
 		navigateToWeek,
 		navigateToDay,
-		navigateToCalendar
+		navigateToCalendar,
+		saveScheduleToDb
 	} from '$lib/stores/schedule';
 	import type { StoredSchedule } from '$lib/types/schedule';
 	import ScheduleActions from '$lib/components/schedule/ScheduleActions.svelte';
@@ -20,9 +21,11 @@
 	import CalendarView from '$lib/components/schedule/CalendarView.svelte';
 	import WeekView from '$lib/components/schedule/WeekView.svelte';
 	import DayView from '$lib/components/schedule/DayView.svelte';
+	import StartDateModal from '$lib/components/schedule/StartDateModal.svelte';
 
 	let showCreateModal = false;
 	let showLoadModal = false;
+	let showStartDateModal = false;
 
 	onMount(() => {
 		navigationStore.setActiveTab('schedule');
@@ -91,9 +94,32 @@
 		// The $activeSchedule reactive variable will automatically update
 		// This handler exists for any additional side effects if needed
 	}
+
+	function handleSetStartDate() {
+		showStartDateModal = true;
+	}
+
+	function handleStartDateModalClose() {
+		showStartDateModal = false;
+	}
+
+	async function handleStartDateSaved(e: CustomEvent<string>) {
+		showStartDateModal = false;
+		if ($activeSchedule) {
+			const updatedSchedule: StoredSchedule = {
+				...$activeSchedule,
+				scheduleMetadata: {
+					...$activeSchedule.scheduleMetadata,
+					startDate: e.detail,
+					updatedAt: new Date().toISOString()
+				}
+			};
+			await saveScheduleToDb(updatedSchedule);
+		}
+	}
 </script>
 
-<div class="h-full overflow-auto bg-slate-900 px-2 py-3 lg:px-8 lg:py-6">
+<div class="overflow-auto bg-slate-900 px-2 py-3 pb-20 lg:px-8 lg:py-6" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
 	<div class="max-w-6xl mx-auto">
 		{#if !$viewState.showLibrary && $activeSchedule}
 			<!-- Schedule Detail View -->
@@ -140,14 +166,23 @@
 						</div>
 					</div>
 
-					<!-- Back button -->
-					<button
-						on:click={handleBackToLibrary}
-						class="px-2 py-1 lg:px-4 lg:py-2 rounded-full text-xs lg:text-sm font-medium transition-colors
-							   bg-slate-700 text-slate-300 hover:bg-slate-600"
-					>
-						All Schedules
-					</button>
+					<!-- Action buttons - stacked on mobile, row on desktop -->
+					<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1 sm:gap-2">
+						<button
+							on:click={handleSetStartDate}
+							class="px-2 py-1 lg:px-3 lg:py-2 rounded-full text-xs lg:text-sm font-medium transition-colors
+								   bg-slate-700 text-slate-300 hover:bg-slate-600 whitespace-nowrap text-center"
+						>
+							Reset Start Date
+						</button>
+						<button
+							on:click={handleBackToLibrary}
+							class="px-2 py-1 lg:px-3 lg:py-2 rounded-full text-xs lg:text-sm font-medium transition-colors
+								   bg-slate-700 text-slate-300 hover:bg-slate-600 whitespace-nowrap text-center"
+						>
+							All Schedules
+						</button>
+					</div>
 				</div>
 
 				<!-- Calendar View -->
@@ -199,9 +234,6 @@
 				</div>
 			</section>
 		{/if}
-
-		<!-- Bottom padding for tab bar -->
-		<div class="h-4"></div>
 	</div>
 </div>
 
@@ -218,3 +250,13 @@
 	on:close={handleLoadModalClose}
 	on:loaded={handleScheduleLoaded}
 />
+
+<!-- Start Date Modal -->
+{#if $activeSchedule}
+	<StartDateModal
+		isOpen={showStartDateModal}
+		currentStartDate={$activeSchedule.scheduleMetadata.startDate}
+		on:close={handleStartDateModalClose}
+		on:save={handleStartDateSaved}
+	/>
+{/if}

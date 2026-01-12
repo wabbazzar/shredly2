@@ -23,6 +23,9 @@ body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	/* Disable pinch-to-zoom and prevent edge swipe gestures */
+	touch-action: pan-x pan-y;
+	-ms-touch-action: pan-x pan-y;
 }
 
 body {
@@ -41,8 +44,8 @@ body {
 		sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	/* Prevent pull-to-refresh on mobile */
-	overscroll-behavior-y: contain;
+	/* Prevent pull-to-refresh and edge swipe gestures on mobile */
+	overscroll-behavior: contain;
 }
 
 /* Prevent text selection during swipe */

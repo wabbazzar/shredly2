@@ -17,8 +17,11 @@
 	function startEdit() {
 		inputValue = value;
 		editing = true;
-		// Focus input after Svelte updates the DOM
-		setTimeout(() => inputEl?.focus(), 0);
+		// Focus and select input after Svelte updates the DOM
+		requestAnimationFrame(() => {
+			inputEl?.focus();
+			inputEl?.select();
+		});
 	}
 
 	function save() {

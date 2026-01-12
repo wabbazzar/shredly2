@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, tick } from 'svelte';
 	import {
 		inchesToFeetAndInches,
 		feetAndInchesToInches,
@@ -18,7 +18,9 @@
 	let inches: number;
 	let cm: number;
 	let feetInput: HTMLInputElement;
+	let inchesInput: HTMLInputElement;
 	let cmInput: HTMLInputElement;
+	let editContainer: HTMLDivElement;
 
 	// Reactive display value - explicitly depends on unitSystem and heightInches
 	$: displayValue = (() => {
@@ -29,7 +31,7 @@
 		return `${inchesToCm(heightInches)} cm`;
 	})();
 
-	function startEdit() {
+	async function startEdit() {
 		if (unitSystem === 'imperial') {
 			const parsed = inchesToFeetAndInches(heightInches);
 			feet = parsed.feet;
@@ -38,13 +40,17 @@
 			cm = inchesToCm(heightInches);
 		}
 		editing = true;
-		setTimeout(() => {
+		await tick();
+		// Use requestAnimationFrame for better mobile keyboard triggering
+		requestAnimationFrame(() => {
 			if (unitSystem === 'imperial') {
 				feetInput?.focus();
+				feetInput?.select();
 			} else {
 				cmInput?.focus();
+				cmInput?.select();
 			}
-		}, 0);
+		});
 	}
 
 	function save() {
@@ -58,6 +64,17 @@
 		if (newInches !== heightInches) {
 			dispatch('change', newInches);
 		}
+	}
+
+	function handleBlur(e: FocusEvent) {
+		// Check if focus is moving to another element within our edit container
+		const relatedTarget = e.relatedTarget as HTMLElement | null;
+		if (relatedTarget && editContainer?.contains(relatedTarget)) {
+			// Focus is moving within our edit area, don't save yet
+			return;
+		}
+		// Focus left the edit area entirely, save now
+		save();
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -74,25 +91,30 @@
 
 	{#if editing}
 		{#if unitSystem === 'imperial'}
-			<div class="flex items-center gap-1">
+			<div bind:this={editContainer} class="flex items-center gap-1">
 				<input
 					bind:this={feetInput}
 					bind:value={feet}
 					type="number"
+					inputmode="numeric"
+					pattern="[0-9]*"
 					min="3"
 					max="8"
-					onblur={save}
+					onblur={handleBlur}
 					onkeydown={handleKeydown}
 					class="w-12 bg-slate-700 text-white text-right rounded px-2 py-1 text-sm
                  border border-indigo-500 outline-none focus:ring-1 focus:ring-indigo-400"
 				/>
 				<span class="text-slate-400 text-sm">ft</span>
 				<input
+					bind:this={inchesInput}
 					bind:value={inches}
 					type="number"
+					inputmode="numeric"
+					pattern="[0-9]*"
 					min="0"
 					max="11"
-					onblur={save}
+					onblur={handleBlur}
 					onkeydown={handleKeydown}
 					class="w-12 bg-slate-700 text-white text-right rounded px-2 py-1 text-sm
                  border border-indigo-500 outline-none focus:ring-1 focus:ring-indigo-400"
@@ -100,14 +122,16 @@
 				<span class="text-slate-400 text-sm">in</span>
 			</div>
 		{:else}
-			<div class="flex items-center gap-1">
+			<div bind:this={editContainer} class="flex items-center gap-1">
 				<input
 					bind:this={cmInput}
 					bind:value={cm}
 					type="number"
+					inputmode="numeric"
+					pattern="[0-9]*"
 					min="100"
 					max="250"
-					onblur={save}
+					onblur={handleBlur}
 					onkeydown={handleKeydown}
 					class="w-16 bg-slate-700 text-white text-right rounded px-2 py-1 text-sm
                  border border-indigo-500 outline-none focus:ring-1 focus:ring-indigo-400"

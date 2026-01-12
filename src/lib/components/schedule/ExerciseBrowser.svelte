@@ -220,14 +220,39 @@
 			class="flex flex-col h-full w-full lg:h-auto lg:max-h-[85vh] lg:max-w-6xl lg:bg-slate-900 lg:rounded-xl lg:overflow-hidden"
 			on:click|stopPropagation
 		>
-			<!-- Header -->
-			<div class="flex items-center justify-end gap-2 p-3 md:p-4 border-b border-slate-700">
+			<!-- Search with inline Shuffle -->
+			<div class="p-3 md:p-4 border-b border-slate-700">
+				<div class="flex items-center gap-2">
+					<div class="relative flex-1">
+						<svg
+							class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+							/>
+						</svg>
+						<input
+							type="text"
+							bind:value={searchQuery}
+							on:focus={(e) => e.currentTarget.select()}
+							placeholder="Search exercises..."
+							class="w-full pl-10 pr-4 py-2 md:py-2.5 bg-slate-800 border border-slate-600 rounded-lg
+								   text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+						/>
+					</div>
 					<!-- Shuffle button -->
 					<button
 						on:click={handleShuffle}
 						disabled={filteredExercises.length === 0}
 						class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
-						       transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+						       transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed
+						       whitespace-nowrap min-h-[44px]"
 						aria-label="Shuffle exercise"
 					>
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,44 +263,8 @@
 								d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 							/>
 						</svg>
-						<span class="text-sm">Shuffle</span>
+						<span class="text-sm hidden sm:inline">Shuffle</span>
 					</button>
-					<!-- Close button -->
-					<button
-						on:click={handleCancel}
-						class="p-1 text-slate-400 hover:text-white transition-colors"
-						aria-label="Close modal"
-					>
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</button>
-			</div>
-
-			<!-- Search -->
-			<div class="p-3 md:p-4 border-b border-slate-700">
-				<div class="relative">
-					<svg
-						class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-						/>
-					</svg>
-					<input
-						type="text"
-						bind:value={searchQuery}
-						on:focus={(e) => e.currentTarget.select()}
-						placeholder="Search exercises..."
-						class="w-full pl-10 pr-4 py-2 md:py-2.5 bg-slate-800 border border-slate-600 rounded-lg
-							   text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-					/>
 				</div>
 			</div>
 
@@ -491,7 +480,7 @@
 			<!-- Footer with confirmation buttons -->
 			<div
 				class="sticky bottom-0 p-3 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
-				style="padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px))"
+				style="margin-bottom: 4rem; padding-bottom: env(safe-area-inset-bottom, 0px)"
 			>
 				<button
 					on:click={handleCancel}

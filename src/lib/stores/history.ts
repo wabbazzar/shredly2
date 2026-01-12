@@ -545,6 +545,61 @@ export function getLastPerformance(exerciseName: string): HistoryRow | null {
 }
 
 /**
+ * Get performance from a specific week in a workout program
+ * Used to show "what you did last week" for progressive overload guidance
+ */
+export function getWeekPerformance(
+  exerciseName: string,
+  workoutProgramId: string,
+  weekNumber: number
+): {
+  weight: number | null;
+  weightUnit: string | null;
+  rpe: number | null;
+  reps: number | null;
+  weekNumber: number;
+} | null {
+  const history = get(exerciseHistory);
+
+  // Find rows for this exercise in the specified week of this program
+  const weekRows = history.filter(
+    r => r.exercise_name === exerciseName &&
+      r.workout_program_id === workoutProgramId &&
+      r.week_number === weekNumber &&
+      !r.is_compound_parent &&
+      r.completed
+  );
+
+  if (weekRows.length === 0) return null;
+
+  // Get the heaviest weight used (typical "working set" approach)
+  // If multiple sets, take the one with highest weight, or highest reps if same weight
+  const sortedRows = weekRows.sort((a, b) => {
+    // Sort by weight desc, then reps desc
+    if ((b.weight ?? 0) !== (a.weight ?? 0)) {
+      return (b.weight ?? 0) - (a.weight ?? 0);
+    }
+    return (b.reps ?? 0) - (a.reps ?? 0);
+  });
+
+  const bestSet = sortedRows[0];
+
+  // Also get average RPE if multiple sets logged RPE
+  const rpeValues = weekRows.filter(r => r.rpe !== null).map(r => r.rpe!);
+  const avgRpe = rpeValues.length > 0
+    ? Math.round(rpeValues.reduce((a, b) => a + b, 0) / rpeValues.length)
+    : bestSet.rpe;
+
+  return {
+    weight: bestSet.weight,
+    weightUnit: bestSet.weight_unit,
+    rpe: avgRpe,
+    reps: bestSet.reps,
+    weekNumber
+  };
+}
+
+/**
  * Export history as CSV string
  */
 export function exportHistoryCsv(): string {

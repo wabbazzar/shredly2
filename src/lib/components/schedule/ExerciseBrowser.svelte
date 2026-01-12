@@ -221,9 +221,7 @@
 			on:click|stopPropagation
 		>
 			<!-- Header -->
-			<div class="flex items-center justify-between p-4 border-b border-slate-700">
-				<h2 class="text-lg font-semibold text-white">Select Exercise</h2>
-				<div class="flex items-center gap-2">
+			<div class="flex items-center justify-end gap-2 p-3 md:p-4 border-b border-slate-700">
 					<!-- Shuffle button -->
 					<button
 						on:click={handleShuffle}
@@ -252,11 +250,10 @@
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</button>
-				</div>
 			</div>
 
 			<!-- Search -->
-			<div class="p-4 border-b border-slate-700">
+			<div class="p-3 md:p-4 border-b border-slate-700">
 				<div class="relative">
 					<svg
 						class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
@@ -276,7 +273,7 @@
 						bind:value={searchQuery}
 						on:focus={(e) => e.currentTarget.select()}
 						placeholder="Search exercises..."
-						class="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-600 rounded-lg
+						class="w-full pl-10 pr-4 py-2 md:py-2.5 bg-slate-800 border border-slate-600 rounded-lg
 							   text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
 					/>
 				</div>
@@ -284,15 +281,14 @@
 
 			<!-- Current Selection Section -->
 			{#if selectedExercise}
-				<div class="p-4 bg-slate-800 border-b border-slate-700 md:max-h-[40vh] md:overflow-y-auto">
-					<div class="flex items-center justify-between mb-2">
-						<div class="flex items-center gap-2">
-							<h3 class="text-sm font-medium text-indigo-400">Current Selection</h3>
+				<div class="p-3 md:p-4 bg-slate-800 border-b border-slate-700 md:max-h-[40vh] md:overflow-y-auto">
+					<div class="flex items-center justify-between gap-2">
+						<div class="flex items-center gap-2 flex-1 min-w-0">
 							<!-- Info icon (mobile only) -->
 							{#if exerciseDescriptions[selectedExercise.name]?.description}
 								<button
 									on:click={() => (showDescriptionModal = true)}
-									class="md:hidden p-1 text-indigo-400 hover:text-indigo-300 transition-colors"
+									class="md:hidden p-1 text-indigo-400 hover:text-indigo-300 transition-colors flex-shrink-0"
 									aria-label="View exercise description"
 								>
 									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,19 +301,19 @@
 									</svg>
 								</button>
 							{/if}
+							<p class="text-base md:text-lg font-semibold text-white truncate">{selectedExercise.name}</p>
 						</div>
 						{#if selectedExercise.name !== currentExerciseName}
-							<span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
+							<span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full flex-shrink-0">
 								Changed
 							</span>
 						{/if}
 					</div>
-					<p class="text-lg font-semibold text-white mb-3">{selectedExercise.name}</p>
 
 					<!-- Description (desktop only) -->
 					{#if exerciseDescriptions[selectedExercise.name]?.description}
 						{@const desc = exerciseDescriptions[selectedExercise.name].description}
-						<div class="hidden md:block space-y-3 text-sm">
+						<div class="hidden md:block space-y-3 text-sm mt-3">
 							<div>
 								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
 									Overview
@@ -351,7 +347,7 @@
 
 			<!-- Filter Chips Display -->
 			{#if activeFilters.length > 0}
-				<div class="flex flex-wrap gap-1.5 px-4 py-2 border-b border-slate-700">
+				<div class="flex flex-wrap gap-1.5 px-3 py-2 border-b border-slate-700">
 					{#each activeFilters as filter}
 						<button
 							on:click={() => removeFilter(filter.type, filter.value)}
@@ -376,7 +372,7 @@
 			{/if}
 
 			<!-- Filters -->
-			<div class="flex gap-1.5 px-3 py-3 border-b border-slate-700 lg:px-4">
+			<div class="flex gap-1.5 px-3 py-2 md:py-3 border-b border-slate-700">
 				<select
 					on:change={(e) => {
 						const val = e.currentTarget.value;
@@ -463,23 +459,23 @@
 						<p>No exercises match your filters</p>
 					</div>
 				{:else}
-					<div class="p-4 pb-safe space-y-2">
-						<p class="text-xs text-slate-500 mb-2">
+					<div class="p-3 md:p-4 pb-safe space-y-1.5">
+						<p class="text-xs text-slate-500 mb-1">
 							{filteredExercises.length} exercises
 						</p>
 						{#each filteredExercises as exercise}
 							<button
 								on:click={() => handleExerciseClick(exercise)}
-								class="w-full p-3 rounded-lg text-left transition-colors
+								class="w-full p-2.5 md:p-3 rounded-lg text-left transition-colors
 									   {selectedExercise?.name === exercise.name
 									? 'bg-indigo-600 text-white'
 									: exercise.name === currentExerciseName
 										? 'bg-slate-700 text-white ring-1 ring-indigo-500'
 										: 'bg-slate-800 text-white hover:bg-slate-700'}"
 							>
-								<div class="font-medium">{exercise.name}</div>
+								<div class="font-medium text-sm md:text-base">{exercise.name}</div>
 								<div
-									class="text-sm mt-0.5 flex items-center gap-2
+									class="text-xs md:text-sm mt-0.5 flex items-center gap-2
 										   {selectedExercise?.name === exercise.name ? 'text-indigo-200' : 'text-slate-400'}"
 								>
 									<span>{exercise.category}</span>
@@ -494,7 +490,7 @@
 
 			<!-- Footer with confirmation buttons -->
 			<div
-				class="sticky bottom-0 p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
+				class="sticky bottom-0 p-3 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
 				style="padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px))"
 			>
 				<button

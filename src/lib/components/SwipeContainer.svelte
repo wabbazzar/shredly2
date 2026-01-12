@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { base } from '$app/paths';
 	import { navigationStore } from '$lib/stores/navigation';
-	import { TAB_ORDER, TABS, type TabId } from '$lib/types/navigation';
+	import { TAB_ORDER, getTabs, type TabId } from '$lib/types/navigation';
 
 	const SWIPE_THRESHOLD = 50; // Minimum px to trigger swipe
 	const VELOCITY_THRESHOLD = 0.3; // Minimum velocity (px/ms)
@@ -14,13 +15,15 @@
 	let isHorizontal: boolean | null = null;
 
 	function getTabPath(tabId: TabId): string {
-		const tab = TABS.find((t) => t.id === tabId);
-		return tab?.path ?? '/schedule';
+		const tabs = getTabs();
+		const tab = tabs.find((t) => t.id === tabId);
+		return tab?.path ?? `${base}/schedule`;
 	}
 
 	function getCurrentTabId(): TabId {
 		const path = $page.url.pathname;
-		const tab = TABS.find((t) => t.path === path);
+		const tabs = getTabs();
+		const tab = tabs.find((t) => t.path === path);
 		return tab?.id ?? 'schedule';
 	}
 

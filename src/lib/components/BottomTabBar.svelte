@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { TABS, type TabConfig } from '$lib/types/navigation';
+	import { base } from '$app/paths';
+	import { getTabs, type TabConfig } from '$lib/types/navigation';
 	import { navigationStore } from '$lib/stores/navigation';
 	import { navigateUp } from '$lib/stores/schedule';
 
+	// Get tabs with base path
+	$: tabs = getTabs();
+
 	function handleTabClick(tab: TabConfig) {
-		const isCurrentTab = activePath === tab.path || (activePath === '/' && tab.id === 'schedule');
+		const isCurrentTab = activePath === tab.path || (activePath === base || activePath === `${base}/`) && tab.id === 'schedule';
 
 		// If already on schedule tab, navigate up the view hierarchy
 		if (isCurrentTab && tab.id === 'schedule') {
@@ -28,8 +32,8 @@
 	aria-label="Main navigation"
 >
 	<div class="flex justify-around items-center h-16 max-w-md mx-auto">
-		{#each TABS as tab}
-			{@const isActive = activePath === tab.path || (activePath === '/' && tab.id === 'schedule')}
+		{#each tabs as tab}
+			{@const isActive = activePath === tab.path || ((activePath === base || activePath === `${base}/`) && tab.id === 'schedule')}
 			<button
 				onclick={() => handleTabClick(tab)}
 				class="relative flex flex-col items-center justify-center w-full h-full

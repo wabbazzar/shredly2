@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import exerciseDatabase from '../../../data/exercise_database.json';
+	import exerciseDescriptions from '../../../data/exercise_descriptions.json';
 	import type { Exercise } from '$lib/engine/types';
 
 	export let isOpen: boolean;
@@ -134,17 +135,19 @@
 	let lastTapTime = 0;
 
 	function handleExerciseClick(exercise: FlatExercise) {
+		// Update selected exercise for preview (don't dispatch event yet)
+		selectedExercise = exercise;
+
+		// Keep double-tap logic for convenience
 		const now = Date.now();
 		const isDoubleTap =
 			lastTappedExercise === exercise.name && now - lastTapTime < 400;
 
 		if (isDoubleTap) {
 			// Double-tap: confirm selection immediately
-			selectedExercise = exercise;
 			handleConfirm();
 		} else {
-			// Single tap: select for preview
-			selectedExercise = exercise;
+			// Single tap: update preview
 			lastTappedExercise = exercise.name;
 			lastTapTime = now;
 		}
@@ -256,6 +259,53 @@
 					/>
 				</div>
 			</div>
+
+			<!-- Current Selection Section -->
+			{#if selectedExercise}
+				<div class="p-4 bg-slate-800 border-b border-slate-700 max-h-[40vh] overflow-y-auto">
+					<div class="flex items-center justify-between mb-2">
+						<h3 class="text-sm font-medium text-indigo-400">Current Selection</h3>
+						{#if selectedExercise.name !== currentExerciseName}
+							<span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
+								Changed
+							</span>
+						{/if}
+					</div>
+					<p class="text-lg font-semibold text-white mb-3">{selectedExercise.name}</p>
+
+					{#if exerciseDescriptions[selectedExercise.name]?.description}
+						{@const desc = exerciseDescriptions[selectedExercise.name].description}
+						<div class="space-y-3 text-sm">
+							<div>
+								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
+									Overview
+								</h4>
+								<p class="text-slate-300 leading-relaxed">{desc.overview}</p>
+							</div>
+							<div>
+								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
+									Setup
+								</h4>
+								<p class="text-slate-300 leading-relaxed">{desc.setup}</p>
+							</div>
+							<div>
+								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
+									Movement
+								</h4>
+								<p class="text-slate-300 leading-relaxed">{desc.movement}</p>
+							</div>
+							<div>
+								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
+									Cues
+								</h4>
+								<p class="text-slate-300 leading-relaxed italic">{desc.cues}</p>
+							</div>
+						</div>
+					{:else}
+						<p class="text-sm text-slate-400 italic">No description available</p>
+					{/if}
+				</div>
+			{/if}
 
 			<!-- Filter Chips Display -->
 			{#if activeFilters.length > 0}

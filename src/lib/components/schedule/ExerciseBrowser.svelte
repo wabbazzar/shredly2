@@ -495,7 +495,7 @@
 			<!-- Footer with confirmation buttons -->
 			<div
 				class="sticky bottom-0 p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
-				style="padding-bottom: calc(1rem + 4rem + env(safe-area-inset-bottom, 0px))"
+				style="padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px))"
 			>
 				<button
 					on:click={handleCancel}

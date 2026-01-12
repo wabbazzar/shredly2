@@ -32,16 +32,59 @@
 
 	// Search and filter state
 	let searchQuery = '';
-	let selectedCategory = '';
-	let selectedMuscleGroup = '';
-	let selectedEquipment = '';
+	let selectedCategories: string[] = [];
+	let selectedMuscleGroups: string[] = [];
+	let selectedEquipment: string[] = [];
 
-	// Reset filters when modal opens
+	// Active filter chips for display
+	type FilterChip = {
+		type: 'category' | 'muscle' | 'equipment';
+		value: string;
+	};
+	let activeFilters: FilterChip[] = [];
+
+	// Current exercise for reference
+	let currentExercise: FlatExercise | null = null;
+
+	// Sync filter chips from filter arrays
+	function syncFilterChips() {
+		activeFilters = [
+			...selectedCategories.map((cat) => ({ type: 'category' as const, value: cat })),
+			...selectedMuscleGroups.map((mg) => ({ type: 'muscle' as const, value: mg })),
+			...selectedEquipment.map((eq) => ({ type: 'equipment' as const, value: eq }))
+		];
+	}
+
+	// Auto-apply filters when modal opens
 	$: if (isOpen) {
-		searchQuery = '';
-		selectedCategory = '';
-		selectedMuscleGroup = '';
-		selectedEquipment = '';
+		// Auto-apply filters based on current exercise
+		if (autoFilterCategory) {
+			selectedCategories = [autoFilterCategory];
+		} else {
+			selectedCategories = [];
+		}
+
+		if (autoFilterMuscleGroups.length > 0) {
+			selectedMuscleGroups = [...autoFilterMuscleGroups];
+		} else {
+			selectedMuscleGroups = [];
+		}
+
+		if (autoFilterEquipment.length > 0) {
+			selectedEquipment = [...autoFilterEquipment];
+		} else {
+			selectedEquipment = [];
+		}
+
+		// Find current exercise and set as selected
+		const current = allExercises.find((ex) => ex.name === currentExerciseName);
+		if (current) {
+			currentExercise = current;
+			selectedExercise = current;
+		}
+
+		// Sync active filter chips
+		syncFilterChips();
 	}
 
 	// Get unique filter options
@@ -51,7 +94,7 @@
 	].sort();
 	$: equipmentOptions = [...new Set(allExercises.flatMap((e) => e.equipment))].sort();
 
-	// Filter exercises
+	// Filter exercises with multi-select AND logic
 	$: filteredExercises = allExercises.filter((exercise) => {
 		// Search query
 		if (searchQuery) {
@@ -61,19 +104,23 @@
 			}
 		}
 
-		// Category filter
-		if (selectedCategory && exercise.category !== selectedCategory) {
+		// Categories filter (OR logic - if multiple selected, match any)
+		if (selectedCategories.length > 0 && !selectedCategories.includes(exercise.category)) {
 			return false;
 		}
 
-		// Muscle group filter
-		if (selectedMuscleGroup && !exercise.muscle_groups.includes(selectedMuscleGroup)) {
-			return false;
+		// Muscle groups filter (AND logic - exercise must have ALL selected muscle groups)
+		if (selectedMuscleGroups.length > 0) {
+			const hasAll = selectedMuscleGroups.every((mg) =>
+				exercise.muscle_groups.includes(mg)
+			);
+			if (!hasAll) return false;
 		}
 
-		// Equipment filter
-		if (selectedEquipment && !exercise.equipment.includes(selectedEquipment)) {
-			return false;
+		// Equipment filter (AND logic - exercise must have ALL selected equipment)
+		if (selectedEquipment.length > 0) {
+			const hasAll = selectedEquipment.every((eq) => exercise.equipment.includes(eq));
+			if (!hasAll) return false;
 		}
 
 		return true;
@@ -133,9 +180,10 @@
 
 	function clearFilters() {
 		searchQuery = '';
-		selectedCategory = '';
-		selectedMuscleGroup = '';
-		selectedEquipment = '';
+		selectedCategories = [];
+		selectedMuscleGroups = [];
+		selectedEquipment = [];
+		syncFilterChips();
 	}
 </script>
 
@@ -197,7 +245,12 @@
 			<!-- Filters -->
 			<div class="flex gap-1.5 px-3 py-3 border-b border-slate-700 lg:px-4">
 				<select
-					bind:value={selectedCategory}
+					value={selectedCategories[0] || ''}
+					on:change={(e) => {
+						const val = e.currentTarget.value;
+						selectedCategories = val ? [val] : [];
+						syncFilterChips();
+					}}
 					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white"
 				>
 					<option value="">Category</option>
@@ -207,7 +260,12 @@
 				</select>
 
 				<select
-					bind:value={selectedMuscleGroup}
+					value={selectedMuscleGroups[0] || ''}
+					on:change={(e) => {
+						const val = e.currentTarget.value;
+						selectedMuscleGroups = val ? [val] : [];
+						syncFilterChips();
+					}}
 					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white"
 				>
 					<option value="">Muscle</option>
@@ -217,7 +275,12 @@
 				</select>
 
 				<select
-					bind:value={selectedEquipment}
+					value={selectedEquipment[0] || ''}
+					on:change={(e) => {
+						const val = e.currentTarget.value;
+						selectedEquipment = val ? [val] : [];
+						syncFilterChips();
+					}}
 					class="flex-1 min-w-0 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-xs lg:text-sm text-white"
 				>
 					<option value="">Equipment</option>
@@ -226,7 +289,7 @@
 					{/each}
 				</select>
 
-				{#if searchQuery || selectedCategory || selectedMuscleGroup || selectedEquipment}
+				{#if searchQuery || selectedCategories.length > 0 || selectedMuscleGroups.length > 0 || selectedEquipment.length > 0}
 					<button
 						on:click={clearFilters}
 						class="flex-shrink-0 px-2 py-1.5 text-xs lg:text-sm text-indigo-400 hover:text-indigo-300"

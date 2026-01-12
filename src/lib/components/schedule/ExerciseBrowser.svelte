@@ -183,6 +183,7 @@
 					<input
 						type="text"
 						bind:value={searchQuery}
+						on:focus={(e) => e.currentTarget.select()}
 						placeholder="Search exercises..."
 						class="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-600 rounded-lg
 							   text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"

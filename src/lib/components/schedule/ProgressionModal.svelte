@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { ParameterizedExercise, ParameterizedSubExercise, WeekParameters } from '$lib/engine/types';
 	import type { EditScope } from '$lib/types/schedule';
+	import { keyboardAware } from '$lib/actions/keyboardAware';
 
 	export let isOpen: boolean;
 	export let exercise: ParameterizedExercise;
@@ -30,9 +31,14 @@
 		? exercise.sub_exercises[subExerciseIndex]?.name ?? exercise.name
 		: exercise.name;
 
-	// Edit values for each week
+	// Edit values for each week (stored in seconds for time fields)
 	let weekValues: Record<string, number> = {};
 	let selectedScope: EditScope = 'this_week_and_remaining';
+
+	// Track the display mode for each week - locked when modal opens to prevent mid-typing mode switches
+	let displayModes: Record<string, 'seconds' | 'minutes'> = {};
+	// Track local input values to prevent mid-typing conversions
+	let localInputs: Record<string, string> = {};
 
 	// Get field display info
 	function getFieldInfo(f: string): { label: string; isTime: boolean } {
@@ -50,20 +56,24 @@
 		}
 	}
 
-	// Get suffix based on value - under 90s shows 's', otherwise 'min'
-	function getTimeSuffix(seconds: number): string {
-		return seconds < 90 ? 's' : 'min';
+	// Get suffix based on display mode
+	function getTimeSuffix(mode: 'seconds' | 'minutes'): string {
+		return mode === 'seconds' ? 's' : 'min';
 	}
 
-	// Format display value - under 90s shows seconds, otherwise minutes
-	function formatTimeValue(seconds: number): number {
-		return seconds < 90 ? seconds : Math.round(seconds / 60 * 10) / 10;
+	// Format display value based on mode
+	function formatTimeValue(seconds: number, mode: 'seconds' | 'minutes'): number {
+		return mode === 'seconds' ? seconds : Math.round(seconds / 60 * 10) / 10;
 	}
 
-	// Parse input value back to seconds
-	function parseTimeInput(value: number, currentSeconds: number): number {
-		// If currently displaying as minutes (>= 90s), input is in minutes
-		if (currentSeconds >= 90) {
+	// Determine initial display mode based on value (only called when modal opens)
+	function determineDisplayMode(seconds: number): 'seconds' | 'minutes' {
+		return seconds < 90 ? 'seconds' : 'minutes';
+	}
+
+	// Parse input value back to seconds based on locked display mode
+	function parseTimeInput(value: number, mode: 'seconds' | 'minutes'): number {
+		if (mode === 'minutes') {
 			return Math.round(value * 60);
 		}
 		return value;
@@ -74,12 +84,14 @@
 	// Initialize week values when modal opens
 	$: if (isOpen && exercise && targetExercise) {
 		weekValues = {};
+		displayModes = {};
+		localInputs = {};
 		for (let w = 1; w <= totalWeeks; w++) {
 			const weekKey = `week${w}`;
 			const params = targetExercise[weekKey as keyof typeof targetExercise] as WeekParameters | undefined;
 			if (params) {
 				let value = (params as Record<string, unknown>)[field];
-				// Convert minutes to seconds for display if it's a time field
+				// Convert minutes to seconds for internal storage if it's a time field
 				if (fieldInfo.isTime && typeof value === 'number') {
 					const unit = (params as Record<string, unknown>)[field.replace('_minutes', '_unit')];
 					if (unit === 'seconds') {
@@ -88,7 +100,15 @@
 						value = Math.round(value * 60); // Convert minutes to seconds for editing
 					}
 				}
-				weekValues[weekKey] = typeof value === 'number' ? value : 0;
+				const seconds = typeof value === 'number' ? value : 0;
+				weekValues[weekKey] = seconds;
+				// Lock the display mode based on initial value - won't change during editing
+				if (fieldInfo.isTime) {
+					displayModes[weekKey] = determineDisplayMode(seconds);
+					localInputs[weekKey] = String(formatTimeValue(seconds, displayModes[weekKey]));
+				} else {
+					localInputs[weekKey] = String(seconds);
+				}
 			}
 		}
 	}
@@ -105,14 +125,32 @@
 		}
 	}
 
-	// Handle value change
-	function handleValueChange(weekKey: string, value: string) {
-		weekValues[weekKey] = parseInt(value) || 0;
+	// Handle local input change (during typing - no conversion)
+	function handleLocalInput(weekKey: string, value: string) {
+		localInputs[weekKey] = value;
+		localInputs = localInputs; // Trigger reactivity
+	}
+
+	// Commit value on blur - convert to seconds using locked display mode
+	function commitValue(weekKey: string) {
+		const inputVal = parseFloat(localInputs[weekKey]) || 0;
+		const mode = displayModes[weekKey] || 'seconds';
+
+		if (fieldInfo.isTime) {
+			weekValues[weekKey] = parseTimeInput(inputVal, mode);
+		} else {
+			weekValues[weekKey] = inputVal;
+		}
 		weekValues = weekValues; // Trigger reactivity
 	}
 
 	// Handle save
 	function handleSave() {
+		// Commit all local inputs first (in case user clicks Save without blurring)
+		for (const weekKey of Object.keys(localInputs)) {
+			commitValue(weekKey);
+		}
+
 		// Convert seconds back to minutes for time fields
 		const finalValues: Record<string, number> = {};
 		for (const [weekKey, value] of Object.entries(weekValues)) {
@@ -168,6 +206,7 @@
 		<!-- Modal -->
 		<div
 			class="w-full max-w-md bg-slate-800 rounded-xl shadow-xl max-h-[85vh] overflow-hidden flex flex-col"
+			use:keyboardAware
 			on:click|stopPropagation
 		>
 			<!-- Header -->
@@ -212,9 +251,8 @@
 						{@const weekKey = `week${weekNum}`}
 						{@const isEditable = isWeekEditable(weekNum)}
 						{@const isCurrent = weekNum === currentWeek}
-						{@const rawValue = weekValues[weekKey] ?? 0}
-						{@const displayValue = fieldInfo.isTime ? formatTimeValue(rawValue) : rawValue}
-						{@const suffix = fieldInfo.isTime ? getTimeSuffix(rawValue) : ''}
+						{@const mode = displayModes[weekKey] || 'seconds'}
+						{@const suffix = fieldInfo.isTime ? getTimeSuffix(mode) : ''}
 
 						<div
 							class="flex items-center justify-between py-2 px-3 rounded-lg transition-colors
@@ -230,15 +268,13 @@
 							<div class="flex items-center gap-1">
 								<input
 									type="number"
-									value={displayValue}
-									on:input={(e) => {
-										const inputVal = parseFloat(e.currentTarget.value) || 0;
-										const newValue = fieldInfo.isTime ? parseTimeInput(inputVal, rawValue) : inputVal;
-										handleValueChange(weekKey, String(newValue));
-									}}
+									value={localInputs[weekKey] ?? '0'}
+									on:input={(e) => handleLocalInput(weekKey, e.currentTarget.value)}
+									on:blur={() => commitValue(weekKey)}
+									on:focus={(e) => e.currentTarget.select()}
 									disabled={!isEditable}
 									min="0"
-									step={fieldInfo.isTime && rawValue >= 90 ? '0.5' : '1'}
+									step={fieldInfo.isTime && mode === 'minutes' ? '0.5' : '1'}
 									class="w-16 bg-slate-700 text-white text-right rounded px-2 py-1 text-sm
 										   border border-slate-600 focus:border-indigo-500 focus:outline-none
 										   disabled:opacity-50 disabled:cursor-not-allowed"

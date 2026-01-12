@@ -199,10 +199,6 @@
 		selectedEquipment = [];
 		syncFilterChips();
 	}
-
-	function clearFilters() {
-		clearAllFilters();
-	}
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -221,8 +217,8 @@
 			on:click|stopPropagation
 		>
 			<!-- Search with inline Shuffle -->
-			<div class="p-3 md:p-4 border-b border-slate-700">
-				<div class="flex items-center gap-2">
+			<div class="p-2.5 md:p-4 border-b border-slate-700">
+				<div class="flex items-center gap-1.5">
 					<div class="relative flex-1">
 						<svg
 							class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
@@ -270,7 +266,7 @@
 
 			<!-- Current Selection Section -->
 			{#if selectedExercise}
-				<div class="p-3 md:p-4 bg-slate-800 border-b border-slate-700 md:max-h-[40vh] md:overflow-y-auto">
+				<div class="p-2.5 md:p-4 bg-slate-800 border-b border-slate-700 md:max-h-[40vh] md:overflow-y-auto">
 					<div class="flex items-center justify-between gap-2">
 						<div class="flex items-center gap-2 flex-1 min-w-0">
 							<!-- Info icon (mobile only) -->
@@ -336,7 +332,7 @@
 
 			<!-- Filter Chips Display -->
 			{#if activeFilters.length > 0}
-				<div class="flex flex-wrap gap-1.5 px-3 py-2 border-b border-slate-700">
+				<div class="flex flex-wrap gap-1.5 px-2.5 py-2 md:px-4 border-b border-slate-700">
 					{#each activeFilters as filter}
 						<button
 							on:click={() => removeFilter(filter.type, filter.value)}
@@ -361,7 +357,7 @@
 			{/if}
 
 			<!-- Filters -->
-			<div class="flex gap-1.5 px-3 py-2 md:py-3 border-b border-slate-700">
+			<div class="flex gap-1.5 px-2.5 py-2 md:px-4 md:py-3 border-b border-slate-700">
 				<select
 					on:change={(e) => {
 						const val = e.currentTarget.value;
@@ -421,16 +417,6 @@
 						{/if}
 					{/each}
 				</select>
-
-				{#if searchQuery || selectedCategories.length > 0 || selectedMuscleGroups.length > 0 || selectedEquipment.length > 0}
-					<button
-						on:click={clearFilters}
-						class="flex-shrink-0 px-2 py-1.5 text-xs lg:text-sm text-indigo-400 hover:text-indigo-300 min-h-[44px]"
-						aria-label="Clear all filters"
-					>
-						Clear
-					</button>
-				{/if}
 			</div>
 
 			<!-- Exercise List -->
@@ -445,10 +431,10 @@
 								d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 							/>
 						</svg>
-						<p>No exercises match your filters</p>
+						<p>No matches</p>
 					</div>
 				{:else}
-					<div class="p-3 md:p-4 pb-safe space-y-1.5">
+					<div class="p-2.5 md:p-4 pb-safe space-y-1.5">
 						<p class="text-xs text-slate-500 mb-1">
 							{filteredExercises.length} exercises
 						</p>
@@ -479,8 +465,8 @@
 
 			<!-- Footer with confirmation buttons -->
 			<div
-				class="sticky bottom-0 p-3 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
-				style="margin-bottom: 4rem; padding-bottom: env(safe-area-inset-bottom, 0px)"
+				class="sticky bottom-0 p-2.5 md:p-4 mb-16 bg-slate-800 border-t border-slate-700 flex gap-2"
+				style="padding-bottom: env(safe-area-inset-bottom, 0px)"
 			>
 				<button
 					on:click={handleCancel}
@@ -508,7 +494,7 @@
 {#if showDescriptionModal && selectedExercise && exerciseDescriptions[selectedExercise.name]?.description}
 	{@const desc = exerciseDescriptions[selectedExercise.name].description}
 	<div
-		class="md:hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4"
+		class="md:hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-3"
 		on:click={() => (showDescriptionModal = false)}
 		on:keydown={(e) => e.key === 'Escape' && (showDescriptionModal = false)}
 		role="button"
@@ -522,8 +508,8 @@
 			aria-labelledby="description-title"
 		>
 			<!-- Header -->
-			<div class="sticky top-0 bg-slate-800 border-b border-slate-700 p-4 flex items-center justify-between">
-				<h2 id="description-title" class="text-lg font-semibold text-white">
+			<div class="sticky top-0 bg-slate-800 border-b border-slate-700 p-3 flex items-center justify-between">
+				<h2 id="description-title" class="text-base font-semibold text-white">
 					{selectedExercise.name}
 				</h2>
 				<button
@@ -531,7 +517,7 @@
 					class="p-1 text-slate-400 hover:text-white transition-colors"
 					aria-label="Close description"
 				>
-					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -543,27 +529,27 @@
 			</div>
 
 			<!-- Description Content -->
-			<div class="p-4 space-y-4 text-sm">
+			<div class="p-3 space-y-3 text-sm">
 				<div>
-					<h3 class="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Overview</h3>
+					<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Overview</h3>
 					<p class="text-slate-300 leading-relaxed">{desc.overview}</p>
 				</div>
 				<div>
-					<h3 class="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Setup</h3>
+					<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Setup</h3>
 					<p class="text-slate-300 leading-relaxed">{desc.setup}</p>
 				</div>
 				<div>
-					<h3 class="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Movement</h3>
+					<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Movement</h3>
 					<p class="text-slate-300 leading-relaxed">{desc.movement}</p>
 				</div>
 				<div>
-					<h3 class="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Cues</h3>
+					<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Cues</h3>
 					<p class="text-slate-300 leading-relaxed italic">{desc.cues}</p>
 				</div>
 			</div>
 
 			<!-- Close Button -->
-			<div class="sticky bottom-0 p-4 bg-slate-800 border-t border-slate-700">
+			<div class="sticky bottom-0 p-3 bg-slate-800 border-t border-slate-700">
 				<button
 					on:click={() => (showDescriptionModal = false)}
 					class="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg

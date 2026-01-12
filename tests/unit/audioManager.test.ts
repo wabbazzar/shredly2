@@ -255,7 +255,8 @@ describe('AudioManager', () => {
 
       manager.playMinuteMarker();
 
-      expect(ctx.createOscillator).toHaveBeenCalledTimes(1);
+      // Minute marker plays 3 notes (C5 -> E5 -> G5 ascending chord)
+      expect(ctx.createOscillator).toHaveBeenCalledTimes(3);
     });
 
     it('should play session complete sound', async () => {

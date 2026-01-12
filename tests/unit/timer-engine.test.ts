@@ -717,8 +717,9 @@ describe('TimerEngine', () => {
       expect(engine.getState().phase).toBe('entry');
 
       engine.exitDataEntry();
-      // After data entry on first set (not last), should start next set
-      expect(engine.getState().phase).toBe('countdown');
+      // After data entry on first set (not last), should start rest phase
+      // (strength exercises have work -> rest -> countdown -> work cycle)
+      expect(engine.getState().phase).toBe('rest');
     });
 
     it('should complete exercise when exiting data entry on last set', () => {
@@ -821,13 +822,23 @@ describe('TimerEngine', () => {
       engine.initializeForExercise(exercise);
       engine.start();
 
-      expect(engine.getState().remainingSeconds).toBe(0);
+      // Circuit has countdown_before: "work", so starts in countdown phase
+      expect(engine.getState().phase).toBe('countdown');
+      expect(engine.getState().remainingSeconds).toBe(3); // countdown duration
 
-      // After some time, remaining should increase (count-up)
+      // Advance past countdown into work phase
+      vi.advanceTimersByTime(3500);
+      expect(engine.getState().phase).toBe('work');
+
+      // In count-up mode during work, remainingSeconds tracks elapsed time
+      const stateAfterCountdown = engine.getState();
+      const elapsedAfterCountdown = stateAfterCountdown.remainingSeconds;
+
+      // After more time, remaining should increase (count-up)
       vi.advanceTimersByTime(1000);
       const state = engine.getState();
       // In count-up mode, remainingSeconds becomes elapsed time
-      expect(state.remainingSeconds).toBeGreaterThan(0);
+      expect(state.remainingSeconds).toBeGreaterThan(elapsedAfterCountdown);
     });
   });
 });

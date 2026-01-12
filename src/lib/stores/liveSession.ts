@@ -522,6 +522,11 @@ export function getTodaysWorkout(schedule: StoredSchedule): {
   const start = new Date(year, month - 1, dayOfMonth);
   start.setHours(0, 0, 0, 0);
 
+  // Check if program hasn't started yet
+  if (today < start) {
+    return null;
+  }
+
   // Get the Monday of the week containing startDate (matches CalendarView logic)
   const weekStart = getMondayOfWeek(start);
 

@@ -113,8 +113,8 @@
 	const rpeOptions = [6, 7, 8, 9, 10];
 </script>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" on:click|self={handleCancel}>
-	<div class="w-full max-w-lg bg-slate-800 rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto" use:keyboardAware>
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4" on:click|self={handleCancel}>
+	<div class="w-full max-w-sm sm:max-w-lg bg-slate-800 rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto" use:keyboardAware>
 		<!-- Header -->
 		<div class="flex items-center justify-between p-4 border-b border-slate-700">
 			<div>
@@ -142,9 +142,9 @@
 		<div class="p-4 space-y-4">
 			<!-- Reps & Weight Row - use flex to handle variable items -->
 			{#if showReps || showWeight}
-				<div class="flex gap-4">
+				<div class="flex gap-3">
 					{#if showReps && !showRounds}
-						<div class="flex-1">
+						<div class="flex-1 min-w-0">
 							<label for="reps" class="block text-sm font-medium text-slate-300 mb-1">Reps</label>
 							<input
 								id="reps"
@@ -152,16 +152,16 @@
 								inputmode="numeric"
 								bind:value={reps}
 								on:focus={(e) => e.currentTarget.select()}
-								class="w-full px-3 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+								class="w-full px-2 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
 								placeholder={exercise.prescription.reps?.toString() ?? '10'}
 							/>
 						</div>
 					{/if}
 
 					{#if showWeight}
-						<div class="flex-1">
+						<div class="flex-1 min-w-0">
 							<label for="weight" class="block text-sm font-medium text-slate-300 mb-1">Weight</label>
-							<div class="flex gap-2">
+							<div class="flex gap-1.5">
 								<input
 									id="weight"
 									type="number"
@@ -169,12 +169,12 @@
 									step="2.5"
 									bind:value={weight}
 									on:focus={(e) => e.currentTarget.select()}
-									class="flex-1 px-3 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+									class="flex-1 min-w-0 px-2 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
 									placeholder={exercise.prescription.weight?.toString() ?? '0'}
 								/>
 								<select
 									bind:value={weightUnit}
-									class="px-2 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+									class="w-14 flex-shrink-0 px-1 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
 								>
 									<option value="lbs">lbs</option>
 									<option value="kg">kg</option>

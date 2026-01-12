@@ -1,0 +1,536 @@
+{
+  "id": "workout_buil_beg_1768153639066",
+  "name": "Muscle Building Beginner Program",
+  "description": "3 days per week workout program focused on building muscle. Each session is 30 minutes.",
+  "version": "2.0.0",
+  "weeks": 3,
+  "daysPerWeek": 3,
+  "metadata": {
+    "difficulty": "Beginner",
+    "equipment": [
+      "commercial_gym"
+    ],
+    "estimatedDuration": "30-45",
+    "tags": [
+      "build_muscle",
+      "beginner",
+      "3_days_week",
+      "full_gym"
+    ]
+  },
+  "days": {
+    "1": {
+      "dayNumber": 1,
+      "type": "gym",
+      "focus": "Push",
+      "exercises": [
+        {
+          "name": "Thrusters",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          }
+        },
+        {
+          "name": "Dumbbell Tricep Kickback",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          }
+        },
+        {
+          "name": "INTERVAL: Pike Push-ups + Lateral Raise",
+          "week1": {
+            "sets": 3
+          },
+          "week2": {
+            "sets": 3
+          },
+          "week3": {
+            "sets": 3
+          },
+          "category": "interval",
+          "sub_exercises": [
+            {
+              "name": "Pike Push-ups",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.16666666666666666,
+                "rest_time_unit": "seconds"
+              }
+            },
+            {
+              "name": "Lateral Raise",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.16666666666666666,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              }
+            }
+          ]
+        },
+        {
+          "name": "AMRAP: Plank Hold + Kettlebell Windmill + Band Lateral Raise",
+          "week1": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "category": "amrap",
+          "sub_exercises": [
+            {
+              "name": "Plank Hold",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Kettlebell Windmill",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            },
+            {
+              "name": "Band Lateral Raise",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "2": {
+      "dayNumber": 2,
+      "type": "gym",
+      "focus": "Pull",
+      "exercises": [
+        {
+          "name": "Barbell Good Morning",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          }
+        },
+        {
+          "name": "Bent-Over Rear Delt Fly",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          }
+        },
+        {
+          "name": "EMOM: Band Pull-Apart + Band High Pull",
+          "week1": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 12,
+            "work_time_unit": "minutes"
+          },
+          "category": "emom",
+          "sub_exercises": [
+            {
+              "name": "Band Pull-Apart",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            },
+            {
+              "name": "Band High Pull",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            }
+          ]
+        },
+        {
+          "name": "AMRAP: Single-Arm Farmers Carry + Band Standing Row + Hammer Curls",
+          "week1": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "category": "amrap",
+          "sub_exercises": [
+            {
+              "name": "Single-Arm Farmers Carry",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            },
+            {
+              "name": "Band Standing Row",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            },
+            {
+              "name": "Hammer Curls",
+              "week1": {
+                "reps": 4,
+                "weight": "heavy"
+              },
+              "week2": {
+                "reps": 5,
+                "weight": "heavy"
+              },
+              "week3": {
+                "reps": 5,
+                "weight": "heavy"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "3": {
+      "dayNumber": 3,
+      "type": "gym",
+      "focus": "Legs",
+      "exercises": [
+        {
+          "name": "Barbell Good Morning",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          }
+        },
+        {
+          "name": "Goblet Squats",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week2": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+          "week3": {
+            "sets": 3,
+            "reps": 3,
+            "rest_time_minutes": 2,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          }
+        },
+        {
+          "name": "AMRAP: Single-Leg Stands + Box Jump + Donkey Kicks",
+          "week1": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week2": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "week3": {
+            "work_time_minutes": 10,
+            "work_time_unit": "minutes"
+          },
+          "category": "amrap",
+          "sub_exercises": [
+            {
+              "name": "Single-Leg Stands",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Box Jump",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            },
+            {
+              "name": "Donkey Kicks",
+              "week1": {
+                "reps": 4
+              },
+              "week2": {
+                "reps": 5
+              },
+              "week3": {
+                "reps": 5
+              }
+            }
+          ]
+        },
+        {
+          "name": "INTERVAL: Dumbbell Romanian Deadlift + Band Lateral Walk",
+          "week1": {
+            "sets": 3
+          },
+          "week2": {
+            "sets": 3
+          },
+          "week3": {
+            "sets": 3
+          },
+          "category": "interval",
+          "sub_exercises": [
+            {
+              "name": "Dumbbell Romanian Deadlift",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.16666666666666666,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              }
+            },
+            {
+              "name": "Band Lateral Walk",
+              "week1": {
+                "work_time_minutes": 0.6666666666666666,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.3333333333333333,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              },
+              "week2": {
+                "work_time_minutes": 0.75,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.25,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              },
+              "week3": {
+                "work_time_minutes": 0.8333333333333334,
+                "work_time_unit": "seconds",
+                "rest_time_minutes": 0.16666666666666666,
+                "rest_time_unit": "seconds",
+                "weight": "moderate"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

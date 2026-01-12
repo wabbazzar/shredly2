@@ -130,6 +130,9 @@
 	// Selected exercise for preview
 	let selectedExercise: FlatExercise | null = null;
 
+	// Description modal state (mobile only)
+	let showDescriptionModal = false;
+
 	function handleExerciseClick(exercise: FlatExercise) {
 		// Update selected exercise for preview (don't dispatch event yet)
 		selectedExercise = exercise;
@@ -281,9 +284,28 @@
 
 			<!-- Current Selection Section -->
 			{#if selectedExercise}
-				<div class="p-4 bg-slate-800 border-b border-slate-700 max-h-[40vh] overflow-y-auto">
+				<div class="p-4 bg-slate-800 border-b border-slate-700 md:max-h-[40vh] md:overflow-y-auto">
 					<div class="flex items-center justify-between mb-2">
-						<h3 class="text-sm font-medium text-indigo-400">Current Selection</h3>
+						<div class="flex items-center gap-2">
+							<h3 class="text-sm font-medium text-indigo-400">Current Selection</h3>
+							<!-- Info icon (mobile only) -->
+							{#if exerciseDescriptions[selectedExercise.name]?.description}
+								<button
+									on:click={() => (showDescriptionModal = true)}
+									class="md:hidden p-1 text-indigo-400 hover:text-indigo-300 transition-colors"
+									aria-label="View exercise description"
+								>
+									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+										/>
+									</svg>
+								</button>
+							{/if}
+						</div>
 						{#if selectedExercise.name !== currentExerciseName}
 							<span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
 								Changed
@@ -292,9 +314,10 @@
 					</div>
 					<p class="text-lg font-semibold text-white mb-3">{selectedExercise.name}</p>
 
+					<!-- Description (desktop only) -->
 					{#if exerciseDescriptions[selectedExercise.name]?.description}
 						{@const desc = exerciseDescriptions[selectedExercise.name].description}
-						<div class="space-y-3 text-sm">
+						<div class="hidden md:block space-y-3 text-sm">
 							<div>
 								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
 									Overview
@@ -321,7 +344,7 @@
 							</div>
 						</div>
 					{:else}
-						<p class="text-sm text-slate-400 italic">No description available</p>
+						<p class="hidden md:block text-sm text-slate-400 italic">No description available</p>
 					{/if}
 				</div>
 			{/if}
@@ -470,7 +493,10 @@
 			</div>
 
 			<!-- Footer with confirmation buttons -->
-			<div class="sticky bottom-0 p-4 pb-safe bg-slate-800 border-t border-slate-700 flex gap-2">
+			<div
+				class="sticky bottom-0 p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
+				style="padding-bottom: calc(1rem + 4rem + env(safe-area-inset-bottom, 0px))"
+			>
 				<button
 					on:click={handleCancel}
 					class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg
@@ -487,6 +513,78 @@
 					aria-label="Confirm selection"
 				>
 					Confirm
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- Exercise Description Modal (Mobile Only) -->
+{#if showDescriptionModal && selectedExercise && exerciseDescriptions[selectedExercise.name]?.description}
+	{@const desc = exerciseDescriptions[selectedExercise.name].description}
+	<div
+		class="md:hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4"
+		on:click={() => (showDescriptionModal = false)}
+		on:keydown={(e) => e.key === 'Escape' && (showDescriptionModal = false)}
+		role="button"
+		tabindex="-1"
+	>
+		<div
+			class="bg-slate-800 rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto"
+			on:click={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="description-title"
+		>
+			<!-- Header -->
+			<div class="sticky top-0 bg-slate-800 border-b border-slate-700 p-4 flex items-center justify-between">
+				<h2 id="description-title" class="text-lg font-semibold text-white">
+					{selectedExercise.name}
+				</h2>
+				<button
+					on:click={() => (showDescriptionModal = false)}
+					class="p-1 text-slate-400 hover:text-white transition-colors"
+					aria-label="Close description"
+				>
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
+						/>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Description Content -->
+			<div class="p-4 space-y-4 text-sm">
+				<div>
+					<h3 class="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Overview</h3>
+					<p class="text-slate-300 leading-relaxed">{desc.overview}</p>
+				</div>
+				<div>
+					<h3 class="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Setup</h3>
+					<p class="text-slate-300 leading-relaxed">{desc.setup}</p>
+				</div>
+				<div>
+					<h3 class="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Movement</h3>
+					<p class="text-slate-300 leading-relaxed">{desc.movement}</p>
+				</div>
+				<div>
+					<h3 class="text-xs font-medium text-slate-400 mb-2 uppercase tracking-wide">Cues</h3>
+					<p class="text-slate-300 leading-relaxed italic">{desc.cues}</p>
+				</div>
+			</div>
+
+			<!-- Close Button -->
+			<div class="sticky bottom-0 p-4 bg-slate-800 border-t border-slate-700">
+				<button
+					on:click={() => (showDescriptionModal = false)}
+					class="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+					       transition-colors font-medium min-h-[44px]"
+				>
+					Close
 				</button>
 			</div>
 		</div>

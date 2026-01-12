@@ -130,35 +130,32 @@
 	// Selected exercise for preview
 	let selectedExercise: FlatExercise | null = null;
 
-	// Track for double-tap on mobile
-	let lastTappedExercise: string | null = null;
-	let lastTapTime = 0;
-
 	function handleExerciseClick(exercise: FlatExercise) {
 		// Update selected exercise for preview (don't dispatch event yet)
 		selectedExercise = exercise;
+	}
 
-		// Keep double-tap logic for convenience
-		const now = Date.now();
-		const isDoubleTap =
-			lastTappedExercise === exercise.name && now - lastTapTime < 400;
+	function handleShuffle() {
+		if (filteredExercises.length === 0) return;
 
-		if (isDoubleTap) {
-			// Double-tap: confirm selection immediately
-			handleConfirm();
-		} else {
-			// Single tap: update preview
-			lastTappedExercise = exercise.name;
-			lastTapTime = now;
-		}
+		// Exclude current selection from shuffle pool
+		const shufflePool = filteredExercises.filter((ex) => ex.name !== selectedExercise?.name);
+		if (shufflePool.length === 0) return;
+
+		// Random selection
+		const randomIndex = Math.floor(Math.random() * shufflePool.length);
+		selectedExercise = shufflePool[randomIndex];
 	}
 
 	function handleConfirm() {
-		if (selectedExercise) {
+		if (selectedExercise && selectedExercise.name !== currentExerciseName) {
 			dispatch('select', {
 				name: selectedExercise.name,
 				exercise: selectedExercise
 			});
+		} else {
+			// No change, just close
+			handleCancel();
 		}
 	}
 
@@ -223,14 +220,36 @@
 			<!-- Header -->
 			<div class="flex items-center justify-between p-4 border-b border-slate-700">
 				<h2 class="text-lg font-semibold text-white">Select Exercise</h2>
-				<button
-					on:click={handleCancel}
-					class="p-1 text-slate-400 hover:text-white transition-colors"
-				>
-					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-					</svg>
-				</button>
+				<div class="flex items-center gap-2">
+					<!-- Shuffle button -->
+					<button
+						on:click={handleShuffle}
+						disabled={filteredExercises.length === 0}
+						class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+						       transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+						aria-label="Shuffle exercise"
+					>
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+							/>
+						</svg>
+						<span class="text-sm">Shuffle</span>
+					</button>
+					<!-- Close button -->
+					<button
+						on:click={handleCancel}
+						class="p-1 text-slate-400 hover:text-white transition-colors"
+						aria-label="Close modal"
+					>
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
 			</div>
 
 			<!-- Search -->
@@ -450,40 +469,26 @@
 				{/if}
 			</div>
 
-			<!-- Selected Exercise Preview -->
-			{#if selectedExercise}
-				<div class="border-t border-slate-700 p-4 pb-safe bg-slate-800 lg:rounded-b-xl">
-					<div class="flex items-start justify-between mb-2">
-						<div>
-							<h3 class="font-semibold text-white">{selectedExercise.name}</h3>
-							<p class="text-sm text-slate-400">
-								{selectedExercise.category} | {selectedExercise.difficulty}
-							</p>
-						</div>
-					</div>
-					<div class="flex flex-wrap gap-1 mb-3">
-						{#each selectedExercise.muscle_groups as muscle}
-							<span class="px-2 py-0.5 bg-slate-700 text-slate-300 text-xs rounded">
-								{muscle}
-							</span>
-						{/each}
-					</div>
-					<div class="flex flex-wrap gap-1 mb-4">
-						{#each selectedExercise.equipment as equip}
-							<span class="px-2 py-0.5 bg-slate-600 text-slate-300 text-xs rounded">
-								{equip}
-							</span>
-						{/each}
-					</div>
-					<button
-						on:click={handleConfirm}
-						class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700
-							   text-white font-medium rounded-lg transition-colors"
-					>
-						Select {selectedExercise.name}
-					</button>
-				</div>
-			{/if}
+			<!-- Footer with confirmation buttons -->
+			<div class="sticky bottom-0 p-4 pb-safe bg-slate-800 border-t border-slate-700 flex gap-2">
+				<button
+					on:click={handleCancel}
+					class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg
+					       transition-colors font-medium min-h-[44px]"
+					aria-label="Cancel"
+				>
+					Cancel
+				</button>
+				<button
+					on:click={handleConfirm}
+					disabled={!selectedExercise}
+					class="flex-1 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+					       transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+					aria-label="Confirm selection"
+				>
+					Confirm
+				</button>
+			</div>
 		</div>
 	</div>
 {/if}

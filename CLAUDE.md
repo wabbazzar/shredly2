@@ -40,6 +40,26 @@ Shredly 2.0 is a **complete rewrite** with a modern stack and simplified archite
 - Port validated logic to SvelteKit UI
 - Test generation engine independently before touching UI
 
+### Hosting (Temporary: GitHub Pages)
+
+**Current**: GitHub Pages at `https://wabbazzar.github.io/shredly2/`
+**Future**: AWS hosting at `https://shredly.me` (migrating from Shredly v1)
+
+GitHub Pages is a temporary development hosting solution. When ready to migrate to shredly.me:
+
+**Revert GitHub Pages Setup**:
+1. Delete `.github/workflows/deploy.yml`
+2. Delete `src/routes/+layout.ts` (prerender config)
+3. Delete `static/.nojekyll`
+4. Remove `paths.base` and `GITHUB_PAGES` env check from `svelte.config.js`
+5. Configure AWS hosting (cannibalize from ../shredly/ infrastructure)
+
+**Files Added for GitHub Pages**:
+- `.github/workflows/deploy.yml` - Auto-deploy on push to master
+- `src/routes/+layout.ts` - Static prerendering config
+- `static/.nojekyll` - Prevents Jekyll processing
+- `svelte.config.js` - Modified with conditional base path
+
 ---
 
 ## 🚨 CRITICAL COMMIT STRATEGY 🚨

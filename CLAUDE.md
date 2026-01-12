@@ -142,6 +142,27 @@ chore(deps): update SvelteKit to latest stable
 - **Only use emojis if explicitly requested**
 - **AVOID UNICODE**: Stick to ASCII in all code and markdown files
 
+### UI Component Guidelines
+
+- **Modals must be vertically centered**: Always use `items-center` for modal containers. Example:
+  ```html
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+  ```
+- **Modal inner div**: Use `rounded-2xl` (not `rounded-t-2xl`), `max-h-[90vh] overflow-y-auto` for scroll handling
+- **Avoid bottom-sheet patterns**: Unless explicitly requested, modals should be centered, not anchored to bottom
+- **CRITICAL: Mobile button/element overflow**: Buttons and interactive elements MUST NOT hang off screen edges on mobile. Common fixes:
+  - Use `whitespace-nowrap` on buttons to prevent text wrapping
+  - Reduce horizontal padding on mobile (`px-2` instead of `px-4`)
+  - Use `gap-1.5` instead of `gap-2` for tighter button groups
+  - Set explicit `max-w-[280px]` or similar for modals to prevent overflow
+  - Use `p-2` instead of `p-4` for modal backdrop padding on mobile
+  - Reduce font sizes (`text-xs` instead of `text-sm`) for compact UIs
+- **CRITICAL: Account for bottom nav bar on mobile**: The bottom tab bar is 4rem (64px) + safe-area-inset-bottom. Never use `h-full` for full-page content - it will be cut off by the nav bar. Instead use:
+  ```html
+  <div style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
+  ```
+  Or use the `pb-nav` utility class for scrollable content.
+
 ### Ticket Management
 
 - **Location**: All tickets are stored in `docs/tickets/`

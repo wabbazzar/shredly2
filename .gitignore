@@ -35,3 +35,11 @@ temp/
 # Logs
 logs/
 *.log
+
+# CLI test output files
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!src/**/*.json
+!static/**/*.json

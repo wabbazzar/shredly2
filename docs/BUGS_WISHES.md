@@ -1,40 +1,32 @@
 # GUI
 
-- 3 main views - profile/schedule/live
-  - profile view 
-    - are your detials age/weight/height. answers to the questionnare (worded as preferences e.g. prefers 3 week workouts)
-    - used to auto-generate additional workout templates
-    - place to record 1 rep maxes (used as training max) 
-    - as user uses app manual entries for 1rm are replaced by PRs from workout history. any exercise from the exercise db is a candidate
-    - achievements are presented here. total workouts this week. PRs. standard exersion levels (do research here)
-    - can see all past workout history here table and graph views (to develop at a later time)
-  - schedule view
-    - can cycle through past schedules. shows current schedule. can edit schedules. can re-fill questionnare to generate new schedule
-    - questionnaire and edit capabilities should be drafted from CLI version (tools, capabilities, structure, etc.) but mobile version will make use of long press/drag and desktop click/drag
-      - need to develop game plan for mobile tooling to make edit easy
-      - click answer for questionnaire responses
-    - "current" schedule shows current day using system date. start date can be retroactively applied
-4. [INTERVAL] INTERVAL: Wall Sits + Donkey Kicks
-   Sets: Week 1: 8 sets | Week 2: 8 sets | Week 3: 8 sets
-  - Wall Sits:
-     Work Time: Week 1: 0.3333333333333333 seconds | Week 2: 0.4166666666666667 seconds | Week 3: 0.5 seconds
-     Rest Time: Week 1: 0.16666666666666666 seconds | Week 2: 0.08333333333333333 seconds | Week 3: 0.08333333333333333 seconds
-  - Donkey Kicks:
-     Work Time: Week 1: 0.3333333333333333 seconds | Week 2: 0.4166666666666667 seconds | Week 3: 0.5 seconds
-     Rest Time: Week 1: 0.16666666666666666 seconds | Week 2: 0.08333333333333333 seconds | Week 3: 0.08333333333333333 seconds
-    - other difference from CLI version is days can be reordered. and days are assigned to days of the week e.g. M/W/F. we will need a GUI specific config for autoassigning standard days of week to numerical ids in the schedule
-    - schedule shows completed workouts for the loaded schedule but not past schedules
-  - live view
-    - live view is like watching a peloton class. it guides you through your workout
-    - standard on the live view is a timer. takes up top half of screen on mobile
-    - underneath is the current exercise details. 
-      - compound exercises
-        - displays work/rest time auto progresses to next set in the compound
-        - user fills in completed reps/RPE/time (whichever is applicable, dont let claude assume what this is)
-      - strength exercises
-        - displays set/rep and buttons to track rest time (timer)
-        - user fills in completed weight/reps/RPE
-    - results are immediately tracked in workout history
+- feat(adding weight) beginner workouts show weight: light/medium/heavy intermeddiate/advanced workouts show: % TM e.g.       "exercises": [
+        {
+          "name": "Thrusters",
+          "week1": {
+            "sets": 3,
+            "reps": 4,
+            "rest_time_minutes": 2.5,
+            "rest_time_unit": "minutes",
+            "weight": "heavy"
+          },
+versus
+ 26       "exercises": [
+ 27         {
+ 28           "name": "Bench Press",
+ 29           "week1": {
+ 30             "sets": 4,
+ 31             "reps": 5,
+ 32             "rest_time_minutes": 2,
+ 33             "rest_time_unit": "minutes",
+ 34             "weight": {
+ 35               "type": "percent_tm",
+ 36               "value": 80
+ 37             }
+ 38           },
+see @beginner.json and @intermediate.json and @advanced.json
+we need to show on the timer somewhere the %/rating perscription; the actual weight if %TM is avialable (these will be a separate ticket to estimate based on use rhistory) AND we need to show the work down IN THE PREVIOUS weeek if this is week > week1. give me optoins on where to display this inofrmation and how to display
+
 
 # Database Improvements
 

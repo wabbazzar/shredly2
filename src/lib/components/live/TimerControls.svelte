@@ -23,8 +23,7 @@
 </script>
 
 <div
-	class="flex items-center justify-center gap-3 py-2 px-3 transition-colors duration-300"
-	style="background-color: {phaseColorHex}"
+	class="flex items-center justify-center gap-3 py-2 px-3"
 >
 	<!-- Stop Button -->
 	<button

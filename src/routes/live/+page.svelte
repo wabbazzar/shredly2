@@ -367,23 +367,23 @@
 	<div class="flex flex-col lg:flex-row bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
 		<!-- Timer Side (left on desktop, top on mobile) -->
 		<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
-			<!-- Timer + Controls: centered vertically -->
-			<div class="flex-1 min-h-0 flex flex-col">
-				<div class="flex-1 min-h-0">
-					<TimerDisplay
-						{timerState}
-						currentExercise={$currentExercise}
+			<!-- Timer + Controls: centered vertically together -->
+			<div class="flex-1 min-h-0 flex flex-col items-center justify-center" style="background-color: {getPhaseColor(timerState.phase)}">
+				<TimerDisplay
+					{timerState}
+					currentExercise={$currentExercise}
+				/>
+				<div class="mt-4">
+					<TimerControls
+						phase={timerState.phase}
+						{hasNextExercise}
+						on:start={handleStart}
+						on:pause={handlePause}
+						on:resume={handleResume}
+						on:skip={handleSkip}
+						on:stop={handleStop}
 					/>
 				</div>
-				<TimerControls
-					phase={timerState.phase}
-					{hasNextExercise}
-					on:start={handleStart}
-					on:pause={handlePause}
-					on:resume={handleResume}
-					on:skip={handleSkip}
-					on:stop={handleStop}
-				/>
 			</div>
 			<!-- Exercise Description (desktop only, anchored to bottom) -->
 			<div class="hidden lg:block flex-shrink-0">

@@ -106,8 +106,7 @@
 </script>
 
 <div
-	class="flex flex-col items-center justify-center h-full px-3 py-2 {phaseColor} transition-colors duration-300"
-	style="background-color: {phaseColorHex}"
+	class="flex flex-col items-center justify-center px-3 py-2"
 >
 	<!-- Phase Label -->
 	<div class="text-white/80 text-sm font-medium tracking-wider mb-1">

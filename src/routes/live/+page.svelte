@@ -28,13 +28,15 @@
 	import {
 		TimerEngine,
 		getTimerEngine,
-		createInitialTimerState
+		createInitialTimerState,
+		getPhaseColor
 	} from '$lib/engine/timer-engine';
 	import { getAudioManager } from '$lib/utils/audioManager';
 	import type { TimerEvent, LiveExercise, SetLog } from '$lib/engine/types';
 	import TimerDisplay from '$lib/components/live/TimerDisplay.svelte';
 	import TimerControls from '$lib/components/live/TimerControls.svelte';
 	import ExerciseList from '$lib/components/live/ExerciseList.svelte';
+	import ExerciseDescription from '$lib/components/live/ExerciseDescription.svelte';
 	import DataEntryModal from '$lib/components/live/DataEntryModal.svelte';
 	import ExerciseInfoModal from '$lib/components/live/ExerciseInfoModal.svelte';
 	import SetReviewModal from '$lib/components/live/SetReviewModal.svelte';
@@ -361,29 +363,40 @@
 
 {#if $hasActiveSession && $liveSession}
 	<!-- Active workout view - calc height accounts for 4rem nav bar + safe area -->
-	<div class="flex flex-col bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
-		<!-- Timer Display + Controls (top half) -->
-		<div class="flex-1 min-h-0 flex flex-col" style="flex-basis: 50%;">
-			<div class="flex-1 min-h-0">
-				<TimerDisplay
-					{timerState}
-					currentExercise={$currentExercise}
+	<!-- Mobile: stacked (col), Desktop: side-by-side (row) -->
+	<div class="flex flex-col lg:flex-row bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
+		<!-- Timer Side (left on desktop, top on mobile) -->
+		<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
+			<!-- Timer + Controls: centered vertically -->
+			<div class="flex-1 min-h-0 flex flex-col">
+				<div class="flex-1 min-h-0">
+					<TimerDisplay
+						{timerState}
+						currentExercise={$currentExercise}
+					/>
+				</div>
+				<TimerControls
+					phase={timerState.phase}
+					{hasNextExercise}
+					on:start={handleStart}
+					on:pause={handlePause}
+					on:resume={handleResume}
+					on:skip={handleSkip}
+					on:stop={handleStop}
 				/>
 			</div>
-			<!-- Timer Controls (inside timer section) -->
-			<TimerControls
-				phase={timerState.phase}
-				{hasNextExercise}
-				on:start={handleStart}
-				on:pause={handlePause}
-				on:resume={handleResume}
-				on:skip={handleSkip}
-				on:stop={handleStop}
-			/>
+			<!-- Exercise Description (desktop only, anchored to bottom) -->
+			<div class="hidden lg:block flex-shrink-0">
+				<ExerciseDescription
+					currentExercise={$currentExercise}
+					{timerState}
+					phaseColor={getPhaseColor(timerState.phase)}
+				/>
+			</div>
 		</div>
 
-		<!-- Exercise List (bottom half) -->
-		<div class="flex-1 min-h-0 flex flex-col" style="flex-basis: 50%;">
+		<!-- Exercise List (right on desktop, bottom on mobile) -->
+		<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
 			<ExerciseList
 				exercises={$liveSession.exercises}
 				currentIndex={$liveSession.currentExerciseIndex}

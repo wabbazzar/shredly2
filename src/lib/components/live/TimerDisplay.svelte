@@ -142,13 +142,32 @@
 
 	<!-- EMOM/Interval: Show current sub-exercise prominently -->
 	{#if currentSubExercise && (timerState.exerciseType === 'emom' || timerState.exerciseType === 'interval')}
+		{@const subWeightText = formatWeightPrescription(currentSubExercise.prescription.weightPrescription ?? null)}
+		{@const subPrevText = formatPreviousWeek(currentSubExercise.prescription.previousWeek ?? null)}
 		<div class="bg-white/20 rounded-lg px-3 py-1.5 mb-1 max-w-full">
 			<div class="text-white font-medium text-base truncate">
 				{currentSubExercise.exerciseName}
 			</div>
-			{#if currentSubExercise.prescription.reps}
-				<div class="text-white/80 text-xs">
-					{currentSubExercise.prescription.reps} reps
+			<!-- Reps and weight info -->
+			<div class="flex items-center gap-1.5 text-white/80 text-xs flex-wrap justify-center">
+				{#if currentSubExercise.prescription.reps}
+					<span>{currentSubExercise.prescription.reps} reps</span>
+				{/if}
+				{#if subWeightText}
+					<span class="px-1 py-0.5 bg-white/20 rounded font-medium">{subWeightText}</span>
+				{/if}
+				{#if currentSubExercise.prescription.weight}
+					<span class="text-white/60">
+						({currentSubExercise.prescription.weight}{currentSubExercise.prescription.weightUnit || 'lbs'})
+					</span>
+				{/if}
+			</div>
+			{#if subPrevText}
+				<div class="text-white/50 text-[10px] flex items-center justify-center gap-1 mt-0.5">
+					<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+					<span>Last: {subPrevText}</span>
 				</div>
 			{/if}
 		</div>
@@ -159,12 +178,21 @@
 		<div class="bg-white/10 rounded-lg px-3 py-1.5 mt-1 w-full max-w-xs">
 			<div class="text-white/60 text-[10px] font-medium uppercase mb-0.5">Sub-exercises</div>
 			{#each allSubExercises as subEx, idx}
+				{@const subWeightText = formatWeightPrescription(subEx.prescription.weightPrescription ?? null)}
+				{@const subWeight = subEx.prescription.weight}
+				{@const subUnit = subEx.prescription.weightUnit || 'lbs'}
 				<!-- Circuit: show all equal (self-paced), AMRAP: highlight current -->
-				<div class="text-white text-xs leading-tight py-px truncate {timerState.exerciseType === 'circuit' ? '' : (idx === timerState.currentSubExercise ? 'font-semibold' : 'opacity-70')}">
-					{subEx.exerciseName}
-					{#if subEx.prescription.reps}
-						<span class="text-white/60 ml-1">x{subEx.prescription.reps}</span>
-					{/if}
+				<div class="text-white text-xs leading-tight py-0.5 {timerState.exerciseType === 'circuit' ? '' : (idx === timerState.currentSubExercise ? 'font-semibold' : 'opacity-70')}">
+					<span class="truncate">{subEx.exerciseName}</span>
+					<span class="text-white/60 ml-1">
+						{#if subEx.prescription.reps}x{subEx.prescription.reps}{/if}
+						{#if subWeightText}
+							<span class="ml-1 px-1 py-0.5 bg-white/20 rounded">{subWeightText}</span>
+						{/if}
+						{#if subWeight}
+							<span class="ml-1">({subWeight}{subUnit})</span>
+						{/if}
+					</span>
 				</div>
 			{/each}
 		</div>

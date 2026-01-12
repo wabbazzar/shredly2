@@ -5,6 +5,9 @@
 
 	export let isOpen: boolean;
 	export let currentExerciseName = '';
+	export let autoFilterCategory = '';
+	export let autoFilterMuscleGroups: string[] = [];
+	export let autoFilterEquipment: string[] = [];
 
 	const dispatch = createEventDispatcher<{
 		select: { name: string; exercise: Exercise };

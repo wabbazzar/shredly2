@@ -8,7 +8,6 @@
 	import ProgressionModal from './ProgressionModal.svelte';
 	import ExerciseBrowser from './ExerciseBrowser.svelte';
 	import exerciseDatabase from '../../../data/exercise_database.json';
-	import exerciseDescriptions from '../../../data/exercise_descriptions.json';
 
 	export let schedule: StoredSchedule;
 	export let weekNumber: number;
@@ -47,21 +46,13 @@
 	let replacingExerciseIndex: number = -1;
 	let replacingSubExerciseIndex: number = -1;
 	let replacingExerciseName: string = '';
+	let autoFilterCategory: string = '';
+	let autoFilterMuscleGroups: string[] = [];
+	let autoFilterEquipment: string[] = [];
 
 	// Compound type switcher state
 	let showCompoundTypeSwitcher = false;
 	let compoundSwitcherExerciseIndex: number = -1;
-
-	// Exercise info modal state
-	let showInfoModal = false;
-	let infoExerciseName: string = '';
-	type ExerciseDescription = {
-		overview: string;
-		setup: string;
-		movement: string;
-		cues: string;
-	};
-	let infoDescription: ExerciseDescription | null = null;
 
 	// Compound types configuration
 	const compoundTypes = [
@@ -229,6 +220,13 @@
 		replacingExerciseIndex = exerciseIndex;
 		replacingSubExerciseIndex = -1; // Reset sub-exercise index
 		replacingExerciseName = exerciseName;
+
+		// Lookup exercise metadata and set auto-filters
+		const exerciseData = findExerciseInDatabase(exerciseName);
+		autoFilterCategory = exerciseData?.category || '';
+		autoFilterMuscleGroups = exerciseData?.muscle_groups || [];
+		autoFilterEquipment = exerciseData?.equipment || [];
+
 		showExerciseBrowser = true;
 	}
 
@@ -529,97 +527,16 @@
 		replacingExerciseIndex = exerciseIndex;
 		replacingSubExerciseIndex = subExerciseIndex;
 		replacingExerciseName = subExerciseName;
+
+		// Lookup exercise metadata and set auto-filters
+		const exerciseData = findExerciseInDatabase(subExerciseName);
+		autoFilterCategory = exerciseData?.category || '';
+		autoFilterMuscleGroups = exerciseData?.muscle_groups || [];
+		autoFilterEquipment = exerciseData?.equipment || [];
+
 		showExerciseBrowser = true;
 	}
 
-	// Handle shuffle click for exercise (random replacement from same muscle group)
-	async function handleShuffleClick(exerciseIndex: number, event: MouseEvent) {
-		event.stopPropagation();
-		if (!dayData) return;
-
-		const exercise = dayData.exercises[exerciseIndex];
-		const currentName = exercise.name;
-
-		// Find current exercise in database to get muscle groups
-		const exerciseData = findExerciseInDatabase(currentName);
-		if (!exerciseData) return;
-
-		// Filter matching exercises
-		const matchingExercises = filterExercisesByCategory(exerciseData.category, exerciseData.muscle_groups);
-		const filtered = matchingExercises.filter(name => name !== currentName);
-
-		if (filtered.length === 0) return;
-
-		// Pick random exercise
-		const randomExercise = filtered[Math.floor(Math.random() * filtered.length)];
-
-		// Apply the change
-		const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule)) as StoredSchedule;
-		updatedSchedule.days[dayNumber.toString()].exercises[exerciseIndex].name = randomExercise;
-		updatedSchedule.scheduleMetadata.updatedAt = new Date().toISOString();
-
-		await saveScheduleToDb(updatedSchedule);
-		dispatch('scheduleUpdated', updatedSchedule);
-	}
-
-	// Handle shuffle click for sub-exercise
-	async function handleSubExerciseShuffleClick(exerciseIndex: number, subExerciseIndex: number, event: MouseEvent) {
-		event.stopPropagation();
-		if (!dayData) return;
-
-		const exercise = dayData.exercises[exerciseIndex];
-		const subEx = exercise.sub_exercises?.[subExerciseIndex];
-		if (!subEx) return;
-
-		const currentName = subEx.name;
-
-		// Find current exercise in database to get category and muscle groups
-		const exerciseData = findExerciseInDatabase(currentName);
-		if (!exerciseData) return;
-
-		// Filter matching exercises
-		const matchingExercises = filterExercisesByCategory(exerciseData.category, exerciseData.muscle_groups);
-		const filtered = matchingExercises.filter(name => name !== currentName);
-
-		if (filtered.length === 0) return;
-
-		// Pick random exercise
-		const randomExercise = filtered[Math.floor(Math.random() * filtered.length)];
-
-		// Apply the change
-		const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule)) as StoredSchedule;
-		const targetExercise = updatedSchedule.days[dayNumber.toString()].exercises[exerciseIndex];
-		if (targetExercise.sub_exercises) {
-			targetExercise.sub_exercises[subExerciseIndex].name = randomExercise;
-
-			// Regenerate parent block name to reflect new sub-exercise
-			if (targetExercise.category) {
-				targetExercise.name = generateCompoundBlockName(targetExercise.category, targetExercise.sub_exercises);
-			}
-		}
-		updatedSchedule.scheduleMetadata.updatedAt = new Date().toISOString();
-
-		await saveScheduleToDb(updatedSchedule);
-		dispatch('scheduleUpdated', updatedSchedule);
-	}
-
-	// Handle info button click - shows exercise description modal
-	function handleInfoClick(exerciseName: string, event: MouseEvent) {
-		event.stopPropagation();
-		const descriptions = exerciseDescriptions as Record<string, { description: ExerciseDescription }>;
-		const descData = descriptions[exerciseName];
-		if (descData?.description) {
-			infoExerciseName = exerciseName;
-			infoDescription = descData.description;
-			showInfoModal = true;
-		}
-	}
-
-	// Check if exercise has description available
-	function hasDescription(exerciseName: string): boolean {
-		const descriptions = exerciseDescriptions as Record<string, { description: ExerciseDescription }>;
-		return !!descriptions[exerciseName]?.description;
-	}
 </script>
 
 <div class="day-container">
@@ -699,46 +616,18 @@
 								</button>
 							</div>
 						{:else}
-							<!-- Regular exercise - icons on left as action bullets -->
-							<div class="flex items-center gap-2">
-								<!-- Action icons on left - fixed position -->
-								<div class="flex items-center gap-1 flex-shrink-0">
-									<!-- Shuffle button for random replacement -->
-									<button
-										class="p-1 rounded bg-slate-700 hover:bg-indigo-600 text-slate-400 hover:text-white transition-colors"
-										on:click={(e) => handleShuffleClick(i, e)}
-										title="Shuffle - random replacement from same muscle group"
-									>
-										<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-										</svg>
-									</button>
-									<!-- Info button for exercise description -->
-									{#if hasDescription(exercise.name)}
-										<button
-											class="p-1 rounded bg-slate-700 hover:bg-indigo-600 text-slate-400 hover:text-white transition-colors"
-											on:click={(e) => handleInfoClick(exercise.name, e)}
-											title="View exercise description"
-										>
-											<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-											</svg>
-										</button>
-									{/if}
-								</div>
-								<!-- Exercise name - clickable to replace -->
-								<button
-									class="text-left group flex-1 min-w-0"
-									on:click={() => handleExerciseNameClick(i, exercise.name)}
-								>
-									<h3 class="text-sm lg:text-base font-semibold text-white group-hover:text-indigo-400 transition-colors flex items-center gap-1 truncate">
-										{exercise.name}
-										<svg class="w-3 h-3 text-slate-500 group-hover:text-indigo-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-										</svg>
-									</h3>
-								</button>
-							</div>
+							<!-- Regular exercise - clickable name to open EDB -->
+							<button
+								class="text-left group w-full"
+								on:click={() => handleExerciseNameClick(i, exercise.name)}
+							>
+								<h3 class="text-sm lg:text-base font-semibold text-white group-hover:text-indigo-400 transition-colors flex items-center gap-1 truncate">
+									{exercise.name}
+									<svg class="w-3 h-3 text-slate-500 group-hover:text-indigo-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+									</svg>
+								</h3>
+							</button>
 						{/if}
 					</div>
 
@@ -811,44 +700,16 @@
 							<div class="divide-y divide-slate-700/50">
 								{#each exercise.sub_exercises as subEx, subIndex}
 									<div class="py-2 flex items-center justify-between gap-2">
-										<!-- Left side: icons + name -->
-										<div class="flex items-center gap-2 flex-1 min-w-0">
-											<!-- Action icons on left - fixed position -->
-											<div class="flex items-center gap-1 flex-shrink-0">
-												<!-- Shuffle button for sub-exercise -->
-												<button
-													class="p-1 rounded bg-slate-700 hover:bg-indigo-600 text-slate-400 hover:text-white transition-colors"
-													on:click={(e) => handleSubExerciseShuffleClick(i, subIndex, e)}
-													title="Shuffle - random replacement from same muscle group"
-												>
-													<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-													</svg>
-												</button>
-												<!-- Info button for sub-exercise description -->
-												{#if hasDescription(subEx.name)}
-													<button
-														class="p-1 rounded bg-slate-700 hover:bg-indigo-600 text-slate-400 hover:text-white transition-colors"
-														on:click={(e) => handleInfoClick(subEx.name, e)}
-														title="View exercise description"
-													>
-														<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-														</svg>
-													</button>
-												{/if}
-											</div>
-											<!-- Sub-exercise name - clickable to replace -->
-											<button
-												class="text-sm text-slate-300 hover:text-indigo-400 transition-colors truncate text-left flex items-center gap-1 flex-1 min-w-0"
-												on:click={() => handleSubExerciseNameClick(i, subIndex, subEx.name)}
-											>
-												{subEx.name}
-												<svg class="w-3 h-3 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-												</svg>
-											</button>
-										</div>
+										<!-- Sub-exercise name - clickable to replace -->
+										<button
+											class="text-sm text-slate-300 hover:text-indigo-400 transition-colors truncate text-left flex items-center gap-1 flex-1 min-w-0"
+											on:click={() => handleSubExerciseNameClick(i, subIndex, subEx.name)}
+										>
+											{subEx.name}
+											<svg class="w-3 h-3 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+											</svg>
+										</button>
 										<!-- Parameters display - block-type aware, clickable to edit -->
 										<button
 											class="text-sm font-medium text-white hover:text-indigo-400 flex-shrink-0 transition-colors flex items-center gap-1 group"
@@ -870,7 +731,7 @@
 
 		<!-- Hint -->
 		<p class="text-center text-xs text-slate-500 mt-6">
-			Tap name to replace | Tap values to edit | Tap shuffle for random
+			Tap exercise name to browse replacements | Tap values to edit progression
 		</p>
 	{:else}
 		<div class="text-center py-12 text-slate-400">
@@ -909,6 +770,9 @@
 <ExerciseBrowser
 	isOpen={showExerciseBrowser}
 	currentExerciseName={replacingExerciseName}
+	autoFilterCategory={autoFilterCategory}
+	autoFilterMuscleGroups={autoFilterMuscleGroups}
+	autoFilterEquipment={autoFilterEquipment}
 	on:select={handleExerciseSelect}
 	on:cancel={() => { showExerciseBrowser = false; replacingExerciseIndex = -1; replacingSubExerciseIndex = -1; }}
 />
@@ -958,61 +822,6 @@
 	</div>
 {/if}
 
-<!-- Exercise Info Modal -->
-{#if showInfoModal && infoDescription}
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div
-		class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
-		on:click={() => { showInfoModal = false; infoExerciseName = ''; infoDescription = null; }}
-	>
-		<div
-			class="bg-slate-800 w-full max-w-lg rounded-xl max-h-[85vh] overflow-y-auto"
-			on:click|stopPropagation
-		>
-			<!-- Header -->
-			<div class="sticky top-0 bg-slate-800 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
-				<h3 class="text-lg font-semibold text-white">{infoExerciseName}</h3>
-				<button
-					class="p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
-					on:click={() => { showInfoModal = false; infoExerciseName = ''; infoDescription = null; }}
-					aria-label="Close"
-				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-					</svg>
-				</button>
-			</div>
-
-			<!-- Content -->
-			<div class="p-4 space-y-4">
-				<!-- Overview -->
-				<div>
-					<h4 class="text-sm font-medium text-indigo-400 mb-1.5">Overview</h4>
-					<p class="text-sm text-slate-300 leading-relaxed">{infoDescription.overview}</p>
-				</div>
-
-				<!-- Setup -->
-				<div>
-					<h4 class="text-sm font-medium text-indigo-400 mb-1.5">Setup</h4>
-					<p class="text-sm text-slate-300 leading-relaxed">{infoDescription.setup}</p>
-				</div>
-
-				<!-- Movement -->
-				<div>
-					<h4 class="text-sm font-medium text-indigo-400 mb-1.5">Movement</h4>
-					<p class="text-sm text-slate-300 leading-relaxed">{infoDescription.movement}</p>
-				</div>
-
-				<!-- Cues -->
-				<div>
-					<h4 class="text-sm font-medium text-indigo-400 mb-1.5">Key Cues</h4>
-					<p class="text-sm text-slate-300 leading-relaxed italic">{infoDescription.cues}</p>
-				</div>
-			</div>
-		</div>
-	</div>
-{/if}
 
 <style>
 	.day-container {

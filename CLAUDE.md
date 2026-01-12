@@ -473,6 +473,36 @@ These should be answered in the CLI prototype phase.
 - **Test coverage**: 96 passing unit tests (29 for compound blocks)
 
 **Recent Completions**:
+- ✅ Ticket #020 (2026-01-12): Enhanced Exercise Browser Modal with Smart Filtering (COMPLETE)
+  * **Phase 1 - DayView Updates**: Made exercise names directly clickable
+    - Removed small shuffle/info buttons from exercise rows
+    - Exercise name clicks now open Exercise Database modal
+    - Pass auto-filter context (category, muscle groups, equipment) to modal
+    - Improved mobile usability with larger touch targets
+  * **Phase 2 - Auto-Filter Logic**: Auto-apply filters when modal opens
+    - Convert single-select to multi-select filter arrays
+    - Apply category/muscle/equipment filters based on current exercise
+    - Use AND logic for muscle groups and equipment (exercise must have ALL)
+    - Pre-select current exercise in modal
+  * **Phase 3 - Filter Chips UI**: Multi-select filters with visual chips
+    - Display active filters as removable chips with indigo theme
+    - Click X on chip to remove individual filter
+    - "Clear all" button removes all filters and search query
+    - Multi-select dropdowns allow adding multiple filters
+    - All touch targets meet 44px minimum for mobile
+  * **Phase 4 - Current Selection Preview**: Show exercise description
+    - Display selected exercise with full description (overview, setup, movement, cues)
+    - "Changed" badge when selection differs from original
+    - Graceful fallback for missing descriptions
+    - Scrollable section for long content
+  * **Phase 5 - Shuffle + Confirmation**: Explicit user confirmation required
+    - Shuffle button randomly selects from filtered list
+    - Cancel/Confirm footer buttons for explicit action
+    - Modal no longer auto-closes on selection
+    - Keyboard support (Enter = confirm, Escape = cancel)
+  * **Impact**: Major mobile UX improvement - replaced tiny buttons with full-width clickable names
+  * **Testing**: All 566 tests passing, verified on desktop and mobile viewports
+  * **Files Modified**: DayView.svelte, ExerciseBrowser.svelte
 - ✅ Ticket #016 (2026-01-10): Time Unit Configuration Overhaul (COMPLETE)
   * **Self-Documenting Field Names**: Replaced confusing _minutes + _unit pairs with unit suffixes
     - `rest_time_seconds: 30` instead of `base_rest_time_minutes: 0.5, base_rest_time_unit: "seconds"`

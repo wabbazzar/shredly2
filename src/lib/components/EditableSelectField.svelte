@@ -15,7 +15,10 @@
 	let editing = false;
 	let selectEl: HTMLSelectElement;
 
-	function startEdit() {
+	function startEdit(e?: Event) {
+		// Prevent any default behavior including focus on the trigger
+		e?.preventDefault();
+		e?.stopPropagation();
 		editing = true;
 		// Focus synchronously for iOS keyboard support
 		selectEl?.focus();
@@ -61,12 +64,14 @@
 		{/each}
 	</select>
 
-	<!-- Always render button, toggle visibility with CSS -->
-	<button
-		type="button"
-		onclick={startEdit}
+	<!-- Always render clickable display, toggle visibility with CSS -->
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<div
+		onpointerdown={startEdit}
+		role="button"
 		tabindex="-1"
-		style="touch-action: manipulation;"
+		style="-webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none;"
 		class="text-white text-sm hover:text-indigo-400 transition-colors
              flex items-center gap-1 group cursor-pointer"
 		class:hidden={editing}
@@ -85,5 +90,5 @@
 				d="M19 9l-7 7-7-7"
 			/>
 		</svg>
-	</button>
+	</div>
 </div>

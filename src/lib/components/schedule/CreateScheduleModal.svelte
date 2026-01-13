@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { userStore } from '$lib/stores/user';
-	import { saveScheduleToDb, setActiveSchedule, navigateToCalendar } from '$lib/stores/schedule';
+	import { saveScheduleToDb, setActiveSchedule, navigateToWeek } from '$lib/stores/schedule';
 	import { generateWorkout } from '$lib/engine/workout-generator';
 	import type { QuestionnaireAnswers } from '$lib/engine/types';
 	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
@@ -87,7 +87,7 @@
 			// Notify parent and navigate
 			dispatch('created', storedSchedule);
 			dispatch('close');
-			navigateToCalendar();
+			navigateToWeek(1);
 		} catch (e) {
 			console.error('Failed to generate workout:', e);
 			error = e instanceof Error ? e.message : 'Failed to generate workout. Please try again.';

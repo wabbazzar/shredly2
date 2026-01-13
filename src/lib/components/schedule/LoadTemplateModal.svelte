@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { saveScheduleToDb, setActiveSchedule, navigateToCalendar } from '$lib/stores/schedule';
+	import { saveScheduleToDb, setActiveSchedule, navigateToWeek } from '$lib/stores/schedule';
 	import type { ParameterizedWorkout } from '$lib/engine/types';
 	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
 	import DatePicker from './DatePicker.svelte';
@@ -139,7 +139,7 @@
 			// Notify parent and navigate
 			dispatch('loaded', storedSchedule);
 			dispatch('close');
-			navigateToCalendar();
+			navigateToWeek(1);
 		} catch (e) {
 			console.error('Failed to load template:', e);
 			error = e instanceof Error ? e.message : 'Failed to load template';

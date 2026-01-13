@@ -45,7 +45,7 @@ const VIEW_STATE_KEY = 'shredly_view_state';
 // ============================================================================
 
 const DEFAULT_VIEW_STATE: ScheduleViewState = {
-  viewLevel: 'calendar',
+  viewLevel: 'week',
   selectedWeek: 1,
   selectedDay: 1,
   isEditing: false,
@@ -286,7 +286,7 @@ export async function setActiveSchedule(id: string): Promise<void> {
     // Reset view to calendar
     viewState.update(s => ({
       ...s,
-      viewLevel: 'calendar',
+      viewLevel: 'week',
       selectedWeek: 1,
       selectedDay: 1
     }));

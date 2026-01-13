@@ -485,6 +485,23 @@ These should be answered in the CLI prototype phase.
 - **Test coverage**: 96 passing unit tests (29 for compound blocks)
 
 **Recent Completions**:
+- ✅ Ticket #022 (2026-01-13): iOS Keyboard Double-Click Bug (COMPLETE)
+  * **Phase 1 - EditableField**: Fixed text/number fields (Name, Weight, Age, 1RM)
+    - Removed requestAnimationFrame() async focus call
+    - Always render input with CSS visibility toggle (class:hidden={!editing})
+    - Focus called synchronously within click handler
+  * **Phase 2 - EditableSelectField**: Fixed dropdown fields (Goal, Duration, Equipment)
+    - Removed setTimeout() async focus call
+    - Always render select with CSS visibility toggle
+    - Focus called synchronously within click handler
+  * **Phase 3 - EditableHeightField**: Fixed multi-input height field
+    - Removed tick() and requestAnimationFrame() async focus calls
+    - Always render both imperial (ft/in) and metric (cm) inputs
+    - Focus called synchronously based on unit system
+  * **Root Cause**: iOS Safari requires focus() to happen synchronously within click handler to trigger keyboard
+  * **Impact**: Profile tab fields now open keyboard on single tap (iOS)
+  * **Testing**: Production build succeeds, dev server runs without errors
+  * **Files Modified**: EditableField.svelte, EditableSelectField.svelte, EditableHeightField.svelte
 - ✅ Ticket #019 (2026-01-13): Live View Timer (COMPLETE)
   * **Phase 1 - Timer Engine Core**: Complete timer state machine (884 lines)
     - TimerEngine class with phase transitions (idle/work/rest/countdown/complete/paused/entry)

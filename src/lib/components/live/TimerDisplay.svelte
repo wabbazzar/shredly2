@@ -127,13 +127,13 @@
 
 	<!-- Exercise Name with Type Badge -->
 	{#if exerciseName}
-		<div class="flex items-center gap-1.5 mb-1 max-w-full px-2">
+		<div class="flex flex-wrap items-center justify-center gap-1.5 mb-1 max-w-full px-2">
 			{#if exerciseTypeColor}
 				<span class="px-1.5 py-0.5 {exerciseTypeColor} text-white text-[10px] font-medium rounded uppercase flex-shrink-0">
 					{timerState.exerciseType}
 				</span>
 			{/if}
-			<span class="text-white text-lg font-semibold text-center truncate">
+			<span class="text-white text-lg font-semibold text-center break-words">
 				{exerciseName}
 			</span>
 		</div>

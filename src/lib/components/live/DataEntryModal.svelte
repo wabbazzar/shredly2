@@ -28,12 +28,14 @@
 	let weight: string = exercise.prescription.weight?.toString() ?? '';
 	let weightUnit: 'lbs' | 'kg' = exercise.prescription.weightUnit ?? 'lbs';
 	let rpe: string = '';
-	let notes: string = '';
 	let roundsInput: string = totalRounds?.toString() ?? '';
 	let timeInput: string = totalTime ? formatTimeInput(totalTime) : '';
 
 	// Sub-exercise weight state (for compound blocks with weighted sub-exercises)
 	let subExerciseWeights: SubExerciseWeight[] = [];
+
+	// Expandable sections
+	let showRpeSection = false;
 
 	// Initialize sub-exercise weights if this is a compound block
 	$: if (isCompoundBlock && exercise.subExercises.length > 0) {
@@ -53,7 +55,8 @@
 	$: hasSubExerciseWeights = isCompoundBlock && subExerciseWeights.some(s => s.showWeight);
 
 	// Determine which fields to show
-	$: showWeight = shouldShowWeightField(exercise.exerciseName, null);
+	// Compound blocks don't have their own weight - only sub-exercises do
+	$: showWeight = !isCompoundBlock && shouldShowWeightField(exercise.exerciseName, null);
 	$: showReps = !isCompoundBlock || exercise.exerciseType !== 'circuit';
 	$: showRounds = isCompoundBlock && exercise.exerciseType === 'amrap';
 	$: showTime = isCompoundBlock && exercise.exerciseType === 'circuit';
@@ -88,7 +91,7 @@
 			rpe: rpe ? parseInt(rpe) : null,
 			rir: null,
 			completed: true,
-			notes: notes.trim() || null,
+			notes: null,
 			timestamp: new Date().toISOString()
 		};
 
@@ -109,58 +112,57 @@
 		dispatch('cancel');
 	}
 
-	// RPE buttons
-	const rpeOptions = [6, 7, 8, 9, 10];
+	// RPE buttons - compact range
+	const rpeOptions = [7, 8, 9, 10];
 </script>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4" on:click|self={handleCancel}>
-	<div class="w-full max-w-sm sm:max-w-lg bg-slate-800 rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto" use:keyboardAware>
-		<!-- Header -->
-		<div class="flex items-center justify-between p-4 border-b border-slate-700">
-			<div>
-				<h2 class="text-lg font-semibold text-white">
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3" on:click={handleCancel}>
+	<div
+		class="w-full max-w-xs bg-slate-800 rounded-xl shadow-xl overflow-hidden"
+		on:click|stopPropagation
+		use:keyboardAware
+	>
+		<!-- Compact Header -->
+		<div class="px-4 py-3 bg-slate-700/50">
+			<div class="flex items-center justify-between">
+				<h2 class="text-base font-semibold text-white truncate">
 					{#if isCompoundBlock}
-						Log {exercise.exerciseName}
+						{exercise.exerciseName}
 					{:else}
 						Set {setNumber}
 					{/if}
 				</h2>
-				<p class="text-sm text-slate-400">{exercise.exerciseName}</p>
+				{#if !isCompoundBlock}
+					<span class="text-xs text-slate-400 truncate ml-2 max-w-[140px]">{exercise.exerciseName}</span>
+				{/if}
 			</div>
-			<button
-				class="p-2 text-slate-400 hover:text-white transition-colors"
-				on:click={handleCancel}
-				aria-label="Close"
-			>
-				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-				</svg>
-			</button>
 		</div>
 
-		<!-- Form -->
-		<div class="p-4 space-y-4">
-			<!-- Reps & Weight Row - use flex to handle variable items -->
+		<!-- Form - Compact -->
+		<div class="px-4 py-3 space-y-3">
+			<!-- Primary inputs: Reps & Weight side by side -->
 			{#if showReps || showWeight}
-				<div class="flex gap-3">
+				<div class="flex gap-2">
 					{#if showReps && !showRounds}
-						<div class="flex-1 min-w-0">
-							<label for="reps" class="block text-sm font-medium text-slate-300 mb-1">Reps</label>
+						<div class="flex-1">
+							<label for="reps" class="text-xs text-slate-400 mb-1 block">Reps</label>
 							<input
 								id="reps"
 								type="number"
 								inputmode="numeric"
 								bind:value={reps}
 								on:focus={(e) => e.currentTarget.select()}
-								class="w-full px-2 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-								placeholder={exercise.prescription.reps?.toString() ?? '10'}
+								class="w-full px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+								placeholder={exercise.prescription.reps?.toString() ?? '-'}
 							/>
 						</div>
 					{/if}
 
 					{#if showWeight}
-						<div class="flex-1 min-w-0">
-							<label for="weight" class="block text-sm font-medium text-slate-300 mb-1">Weight ({weightUnit})</label>
+						<div class="flex-1">
+							<label for="weight" class="text-xs text-slate-400 mb-1 block">{weightUnit}</label>
 							<input
 								id="weight"
 								type="number"
@@ -168,8 +170,8 @@
 								step="2.5"
 								bind:value={weight}
 								on:focus={(e) => e.currentTarget.select()}
-								class="w-full px-2 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-								placeholder={exercise.prescription.weight?.toString() ?? '0'}
+								class="w-full px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+								placeholder={exercise.prescription.weight?.toString() ?? '-'}
 							/>
 						</div>
 					{/if}
@@ -179,7 +181,7 @@
 			<!-- Rounds (AMRAP) -->
 			{#if showRounds}
 				<div>
-					<label for="rounds" class="block text-sm font-medium text-slate-300 mb-1">Total Rounds</label>
+					<label for="rounds" class="text-xs text-slate-400 mb-1 block">Rounds completed</label>
 					<input
 						id="rounds"
 						type="number"
@@ -187,108 +189,104 @@
 						step="0.5"
 						bind:value={roundsInput}
 						on:focus={(e) => e.currentTarget.select()}
-						class="w-full px-3 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+						class="w-full px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
 						placeholder="e.g., 5.5"
 					/>
-					<p class="mt-1 text-xs text-slate-400">Decimal rounds allowed (e.g., 3.5 = 3 full + half)</p>
 				</div>
 			{/if}
 
 			<!-- Time (Circuit) -->
 			{#if showTime}
 				<div>
-					<label for="time" class="block text-sm font-medium text-slate-300 mb-1">Total Time</label>
+					<label for="time" class="text-xs text-slate-400 mb-1 block">Time (MM:SS)</label>
 					<input
 						id="time"
 						type="text"
 						bind:value={timeInput}
 						on:focus={(e) => e.currentTarget.select()}
-						class="w-full px-3 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+						class="w-full px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
 						placeholder="5:30"
 					/>
-					<p class="mt-1 text-xs text-slate-400">Format: MM:SS or seconds</p>
 				</div>
 			{/if}
 
-			<!-- Sub-exercise weights (for compound blocks) -->
+			<!-- Sub-exercise weights (compact) -->
 			{#if hasSubExerciseWeights}
-				<div>
-					<label class="block text-sm font-medium text-slate-300 mb-2">Weights Used</label>
-					<div class="space-y-2">
-						{#each subExerciseWeights as subEx, idx}
-							{#if subEx.showWeight}
-								<div class="flex items-center gap-2 bg-slate-700/50 rounded-lg p-2">
-									<span class="flex-1 text-sm text-slate-300 truncate">{subEx.name}</span>
-									<div class="flex items-center gap-1">
-										<input
-											type="number"
-											inputmode="decimal"
-											step="2.5"
-											bind:value={subEx.weight}
-											on:focus={(e) => e.currentTarget.select()}
-											class="w-20 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-											placeholder={exercise.subExercises[idx]?.prescription.weight?.toString() ?? '0'}
-										/>
-										<span class="text-xs text-slate-400">{subEx.weightUnit}</span>
-									</div>
-								</div>
-							{/if}
-						{/each}
-					</div>
-				</div>
-			{/if}
-
-			<!-- RPE -->
-			<div>
-				<label class="block text-sm font-medium text-slate-300 mb-2">RPE (Optional)</label>
-				<div class="flex gap-2">
-					{#each rpeOptions as option}
-						<button
-							type="button"
-							class="flex-1 py-2 rounded-lg text-sm font-medium transition-colors
-								{rpe === option.toString()
-									? 'bg-indigo-600 text-white'
-									: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
-							on:click={() => (rpe = rpe === option.toString() ? '' : option.toString())}
-						>
-							{option}
-						</button>
+				<div class="space-y-1.5">
+					{#each subExerciseWeights as subEx, idx}
+						{#if subEx.showWeight}
+							<div class="flex items-center gap-2">
+								<span class="flex-1 text-xs text-slate-400 truncate">{subEx.name}</span>
+								<input
+									type="number"
+									inputmode="decimal"
+									step="2.5"
+									bind:value={subEx.weight}
+									on:focus={(e) => e.currentTarget.select()}
+									class="w-16 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+									placeholder={exercise.subExercises[idx]?.prescription.weight?.toString() ?? '-'}
+								/>
+								<span class="text-xs text-slate-500 w-6">{subEx.weightUnit}</span>
+							</div>
+						{/if}
 					{/each}
 				</div>
-				<p class="mt-1 text-xs text-slate-400">
-					6=Easy, 8=Hard, 10=Max
-				</p>
-			</div>
+			{/if}
 
-			<!-- Notes -->
+			<!-- RPE - Collapsible -->
 			<div>
-				<label for="notes" class="block text-sm font-medium text-slate-300 mb-1">Notes (Optional)</label>
-				<input
-					id="notes"
-					type="text"
-					bind:value={notes}
-					on:focus={(e) => e.currentTarget.select()}
-					class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-					placeholder="e.g., felt strong, grip fatigued"
-				/>
+				<button
+					type="button"
+					class="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-300 transition-colors"
+					on:click={() => showRpeSection = !showRpeSection}
+				>
+					{#if showRpeSection}
+						<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+						</svg>
+						Hide RPE {rpe ? `(${rpe})` : ''}
+					{:else}
+						<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+						</svg>
+						Add RPE {rpe ? `(${rpe})` : ''}
+					{/if}
+				</button>
+				{#if showRpeSection}
+					<div class="flex gap-1.5 mt-2">
+						{#each rpeOptions as option}
+							<button
+								type="button"
+								class="flex-1 py-1.5 rounded text-xs font-medium transition-colors
+									{rpe === option.toString()
+										? 'bg-indigo-600 text-white'
+										: 'bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-white'}"
+								on:click={() => (rpe = rpe === option.toString() ? '' : option.toString())}
+							>
+								{option}
+							</button>
+						{/each}
+					</div>
+				{/if}
 			</div>
 		</div>
 
-		<!-- Actions -->
-		<div class="flex gap-3 p-4 border-t border-slate-700">
+		<!-- Actions - Compact -->
+		<div class="flex border-t border-slate-700">
 			<button
 				type="button"
-				class="flex-1 py-3 px-4 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition-colors"
+				class="flex-1 py-3 text-slate-400 font-medium hover:bg-slate-700/50 transition-colors"
 				on:click={handleCancel}
 			>
 				Skip
 			</button>
+			<div class="w-px bg-slate-700"></div>
 			<button
 				type="button"
-				class="flex-1 py-3 px-4 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-500 transition-colors"
+				class="flex-1 py-3 text-indigo-400 font-medium hover:bg-indigo-600/20 transition-colors"
 				on:click={handleSubmit}
 			>
-				Log Set
+				Done
 			</button>
 		</div>
 	</div>

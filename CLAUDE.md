@@ -499,10 +499,12 @@ These should be answered in the CLI prototype phase.
     - Always render both imperial (ft/in) and metric (cm) inputs
     - Focus called synchronously based on unit system
   * **Phase 4 - iOS Focus Ring Fix**: Eliminated double-tap focus behavior
-    - Added tabindex="-1" to buttons to prevent focus ring (purple box)
-    - Added touch-action: manipulation to eliminate iOS 300ms tap delay
-    - Added cursor-pointer class and type="button" attribute
-  * **Root Cause**: iOS Safari requires focus() to happen synchronously within click handler + buttons were capturing focus on first tap
+    - Replaced `onclick` with `onpointerdown` to intercept tap before focus
+    - Replaced `<button>` with `<div role="button">` to avoid button focus behavior
+    - Added preventDefault + stopPropagation to prevent focus on trigger element
+    - Added -webkit-tap-highlight-color: transparent and user-select: none
+  * **Root Cause**: iOS focuses clickable elements first (purple ring), THEN fires click event. Pointerdown fires before focus.
+  * **Solution Inspired By**: ProgressionModal (schedule view) which works correctly - inputs always visible, no intermediate button
   * **Impact**: Profile tab fields now open keyboard on single tap (iOS), no purple focus ring step
   * **Testing**: Production build succeeds, height field focuses first input (feet or cm) on click
   * **Files Modified**: EditableField.svelte, EditableSelectField.svelte, EditableHeightField.svelte

@@ -160,26 +160,17 @@
 
 					{#if showWeight}
 						<div class="flex-1 min-w-0">
-							<label for="weight" class="block text-sm font-medium text-slate-300 mb-1">Weight</label>
-							<div class="flex gap-1.5">
-								<input
-									id="weight"
-									type="number"
-									inputmode="decimal"
-									step="2.5"
-									bind:value={weight}
-									on:focus={(e) => e.currentTarget.select()}
-									class="flex-1 min-w-0 px-2 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-									placeholder={exercise.prescription.weight?.toString() ?? '0'}
-								/>
-								<select
-									bind:value={weightUnit}
-									class="w-14 flex-shrink-0 px-1 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-								>
-									<option value="lbs">lbs</option>
-									<option value="kg">kg</option>
-								</select>
-							</div>
+							<label for="weight" class="block text-sm font-medium text-slate-300 mb-1">Weight ({weightUnit})</label>
+							<input
+								id="weight"
+								type="number"
+								inputmode="decimal"
+								step="2.5"
+								bind:value={weight}
+								on:focus={(e) => e.currentTarget.select()}
+								class="w-full px-2 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+								placeholder={exercise.prescription.weight?.toString() ?? '0'}
+							/>
 						</div>
 					{/if}
 				</div>
@@ -228,22 +219,18 @@
 							{#if subEx.showWeight}
 								<div class="flex items-center gap-2 bg-slate-700/50 rounded-lg p-2">
 									<span class="flex-1 text-sm text-slate-300 truncate">{subEx.name}</span>
-									<input
-										type="number"
-										inputmode="decimal"
-										step="2.5"
-										bind:value={subEx.weight}
-										on:focus={(e) => e.currentTarget.select()}
-										class="w-20 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-										placeholder={exercise.subExercises[idx]?.prescription.weight?.toString() ?? '0'}
-									/>
-									<select
-										bind:value={subEx.weightUnit}
-										class="px-1 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-									>
-										<option value="lbs">lbs</option>
-										<option value="kg">kg</option>
-									</select>
+									<div class="flex items-center gap-1">
+										<input
+											type="number"
+											inputmode="decimal"
+											step="2.5"
+											bind:value={subEx.weight}
+											on:focus={(e) => e.currentTarget.select()}
+											class="w-20 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+											placeholder={exercise.subExercises[idx]?.prescription.weight?.toString() ?? '0'}
+										/>
+										<span class="text-xs text-slate-400">{subEx.weightUnit}</span>
+									</div>
 								</div>
 							{/if}
 						{/each}

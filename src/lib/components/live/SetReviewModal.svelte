@@ -247,19 +247,6 @@
 					</div>
 				{/each}
 
-				<!-- Weight unit selector (shown once for all sets) -->
-				{#if showWeight}
-					<div class="flex items-center justify-end gap-2 pt-2">
-						<span class="text-xs text-slate-400">Unit:</span>
-						<select
-							bind:value={weightUnit}
-							class="px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-						>
-							<option value="lbs">lbs</option>
-							<option value="kg">kg</option>
-						</select>
-					</div>
-				{/if}
 			{/if}
 		</div>
 

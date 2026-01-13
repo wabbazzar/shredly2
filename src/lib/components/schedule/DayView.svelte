@@ -54,6 +54,13 @@
 	let showCompoundTypeSwitcher = false;
 	let compoundSwitcherExerciseIndex: number = -1;
 
+	// Drag state for exercise reordering
+	let draggedExerciseIndex: number | null = null;
+	let highlightedExerciseIndex: number | null = null;
+
+	// State for adding sub-exercises
+	let addingSubExerciseToIndex: number = -1;
+
 	// Compound types configuration
 	const compoundTypes = [
 		{ value: 'emom', label: 'EMOM', description: 'Every Minute On the Minute', color: 'bg-amber-600' },
@@ -537,6 +544,217 @@
 		showExerciseBrowser = true;
 	}
 
+	// ==================== DRAG TO REORDER ====================
+
+	function handleDragStart(e: DragEvent, exerciseIndex: number) {
+		draggedExerciseIndex = exerciseIndex;
+		if (e.dataTransfer) {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text/plain', exerciseIndex.toString());
+		}
+	}
+
+	function handleDragEnd() {
+		draggedExerciseIndex = null;
+		highlightedExerciseIndex = null;
+	}
+
+	function handleDragOver(e: DragEvent, exerciseIndex: number) {
+		e.preventDefault();
+		if (e.dataTransfer) {
+			e.dataTransfer.dropEffect = 'move';
+		}
+		highlightedExerciseIndex = exerciseIndex;
+	}
+
+	function handleDragLeave() {
+		// Highlight will be updated by dragover on other elements
+	}
+
+	async function handleDrop(e: DragEvent, targetIndex: number) {
+		e.preventDefault();
+		highlightedExerciseIndex = null;
+
+		if (draggedExerciseIndex === null || draggedExerciseIndex === targetIndex) {
+			draggedExerciseIndex = null;
+			return;
+		}
+
+		// Reorder exercises
+		const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule)) as StoredSchedule;
+		const exercises = updatedSchedule.days[dayNumber.toString()].exercises;
+
+		// Remove from old position and insert at new position
+		const [movedExercise] = exercises.splice(draggedExerciseIndex, 1);
+		exercises.splice(targetIndex, 0, movedExercise);
+
+		updatedSchedule.scheduleMetadata.updatedAt = new Date().toISOString();
+		await saveScheduleToDb(updatedSchedule);
+		dispatch('scheduleUpdated', updatedSchedule);
+		draggedExerciseIndex = null;
+	}
+
+	// ==================== DELETE EXERCISE ====================
+
+	async function handleDeleteExercise(exerciseIndex: number) {
+		const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule)) as StoredSchedule;
+		const exercises = updatedSchedule.days[dayNumber.toString()].exercises;
+
+		// Remove the exercise
+		exercises.splice(exerciseIndex, 1);
+
+		updatedSchedule.scheduleMetadata.updatedAt = new Date().toISOString();
+		await saveScheduleToDb(updatedSchedule);
+		dispatch('scheduleUpdated', updatedSchedule);
+	}
+
+	// ==================== ADD EXERCISE / BLOCK ====================
+
+	// State for adding new exercises
+	let isAddingExercise = false;
+
+	function handleAddExercise() {
+		// Open exercise browser in "add" mode
+		replacingExerciseIndex = -1; // -1 indicates adding, not replacing
+		replacingSubExerciseIndex = -1;
+		replacingExerciseName = '';
+		autoFilterCategory = '';
+		autoFilterMuscleGroups = [];
+		autoFilterEquipment = [];
+		isAddingExercise = true;
+		showExerciseBrowser = true;
+	}
+
+	async function handleAddBlock() {
+		// Create empty compound block
+		const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule)) as StoredSchedule;
+		const exercises = updatedSchedule.days[dayNumber.toString()].exercises;
+
+		// Create new EMOM block by default (user can change type)
+		const newBlock: ParameterizedExercise = {
+			name: 'EMOM Block',
+			category: 'emom',
+			sub_exercises: [],
+			week1: { work_time_minutes: 10, work_time_unit: 'minutes' },
+			week2: { work_time_minutes: 10, work_time_unit: 'minutes' },
+			week3: { work_time_minutes: 12, work_time_unit: 'minutes' },
+			week4: { work_time_minutes: 12, work_time_unit: 'minutes' }
+		};
+
+		exercises.push(newBlock);
+
+		updatedSchedule.scheduleMetadata.updatedAt = new Date().toISOString();
+		await saveScheduleToDb(updatedSchedule);
+		dispatch('scheduleUpdated', updatedSchedule);
+
+		// Open compound type switcher for the new block
+		compoundSwitcherExerciseIndex = exercises.length - 1;
+		showCompoundTypeSwitcher = true;
+	}
+
+	// Handle adding sub-exercise to a compound block
+	function handleAddSubExercise(exerciseIndex: number) {
+		addingSubExerciseToIndex = exerciseIndex;
+		replacingExerciseIndex = -1;
+		replacingSubExerciseIndex = -1;
+		replacingExerciseName = '';
+		autoFilterCategory = '';
+		autoFilterMuscleGroups = [];
+		autoFilterEquipment = [];
+		showExerciseBrowser = true;
+	}
+
+	// Modified exercise select handler to support adding exercises and sub-exercises
+	async function handleExerciseSelectForAdd(e: CustomEvent<{ name: string; exercise: Exercise }>) {
+		// Handle adding sub-exercise to compound block
+		if (addingSubExerciseToIndex >= 0) {
+			await handleAddSubExerciseSelect(e);
+			return;
+		}
+
+		if (!isAddingExercise) {
+			// Use existing replacement logic
+			await handleExerciseSelect(e);
+			return;
+		}
+
+		showExerciseBrowser = false;
+		isAddingExercise = false;
+
+		if (!dayData) return;
+
+		const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule)) as StoredSchedule;
+		const exercises = updatedSchedule.days[dayNumber.toString()].exercises;
+
+		// Look up exercise in database for default parameters
+		const exerciseData = findExerciseInDatabase(e.detail.name);
+
+		// Create new exercise with default parameters
+		const newExercise: ParameterizedExercise = {
+			name: e.detail.name,
+			category: exerciseData?.category || 'strength',
+			week1: { sets: 3, reps: 10, rest_time_minutes: 1.5, rest_time_unit: 'minutes' },
+			week2: { sets: 3, reps: 10, rest_time_minutes: 1.5, rest_time_unit: 'minutes' },
+			week3: { sets: 4, reps: 10, rest_time_minutes: 1.5, rest_time_unit: 'minutes' },
+			week4: { sets: 4, reps: 10, rest_time_minutes: 1.5, rest_time_unit: 'minutes' }
+		};
+
+		exercises.push(newExercise);
+
+		updatedSchedule.scheduleMetadata.updatedAt = new Date().toISOString();
+		await saveScheduleToDb(updatedSchedule);
+		dispatch('scheduleUpdated', updatedSchedule);
+	}
+
+	// Handle selection when adding sub-exercise
+	async function handleAddSubExerciseSelect(e: CustomEvent<{ name: string; exercise: Exercise }>) {
+		showExerciseBrowser = false;
+
+		if (addingSubExerciseToIndex < 0 || !dayData) {
+			addingSubExerciseToIndex = -1;
+			return;
+		}
+
+		const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule)) as StoredSchedule;
+		const exercise = updatedSchedule.days[dayNumber.toString()].exercises[addingSubExerciseToIndex];
+
+		// Initialize sub_exercises array if needed
+		if (!exercise.sub_exercises) {
+			exercise.sub_exercises = [];
+		}
+
+		// Determine parameters based on parent block type
+		const isInterval = exercise.category === 'interval';
+
+		// Create new sub-exercise with appropriate parameters
+		const newSubExercise: ParameterizedSubExercise = {
+			name: e.detail.name,
+			week1: isInterval
+				? { work_time_minutes: 0.5, work_time_unit: 'seconds', rest_time_minutes: 0.5, rest_time_unit: 'seconds' }
+				: { reps: 10 },
+			week2: isInterval
+				? { work_time_minutes: 0.5, work_time_unit: 'seconds', rest_time_minutes: 0.5, rest_time_unit: 'seconds' }
+				: { reps: 10 },
+			week3: isInterval
+				? { work_time_minutes: 0.583, work_time_unit: 'seconds', rest_time_minutes: 0.417, rest_time_unit: 'seconds' }
+				: { reps: 12 },
+			week4: isInterval
+				? { work_time_minutes: 0.667, work_time_unit: 'seconds', rest_time_minutes: 0.333, rest_time_unit: 'seconds' }
+				: { reps: 12 }
+		};
+
+		exercise.sub_exercises.push(newSubExercise);
+
+		// Regenerate parent block name
+		exercise.name = generateCompoundBlockName(exercise.category, exercise.sub_exercises);
+
+		updatedSchedule.scheduleMetadata.updatedAt = new Date().toISOString();
+		await saveScheduleToDb(updatedSchedule);
+		dispatch('scheduleUpdated', updatedSchedule);
+
+		addingSubExerciseToIndex = -1;
+	}
+
 </script>
 
 <div class="day-container">
@@ -581,32 +799,54 @@
 			{#each dayData.exercises as exercise, i}
 				{@const params = formatParams(exercise, weekNumber)}
 				{@const isCompound = isCompoundBlock(exercise)}
+				{@const isDragging = draggedExerciseIndex === i}
+				{@const isHighlighted = highlightedExerciseIndex === i}
 
-				<section class="bg-slate-800 rounded-lg divide-y divide-slate-700 overflow-hidden">
+				<div class="exercise-wrapper">
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<section
+						class="exercise-card bg-slate-800 rounded-lg divide-y divide-slate-700 overflow-hidden"
+						class:dragging={isDragging}
+						class:highlighted={isHighlighted}
+						draggable="true"
+						on:dragstart={(e) => handleDragStart(e, i)}
+						on:dragend={handleDragEnd}
+						on:dragover={(e) => handleDragOver(e, i)}
+						on:dragleave={handleDragLeave}
+						on:drop={(e) => handleDrop(e, i)}
+					>
 					<!-- Exercise Header -->
-					<div class="px-4 py-3">
-						<div class="flex items-center gap-2 mb-1">
-							{#if exercise.category}
-								<!-- Clickable compound type badge -->
+					{#if isCompound}
+						<!-- Compound block header: two rows -->
+						<div class="compound-header">
+							<!-- Row 1: Badge + delete -->
+							<div class="compound-header-top">
 								<button
-									class="text-xs font-medium px-2 py-0.5 rounded {getCategoryColor(exercise.category)} hover:opacity-80 transition-opacity flex items-center gap-1"
+									class="text-xs font-medium px-1.5 py-0.5 rounded {getCategoryColor(exercise.category)} hover:opacity-80 transition-opacity inline-flex items-center gap-0.5"
 									on:click={() => handleCompoundTypeBadgeClick(i)}
 								>
 									{getCategoryLabel(exercise.category)}
-									<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
 									</svg>
 								</button>
-							{/if}
-						</div>
-						{#if isCompound}
-							<!-- Compound block - show name and block parameter (editable) -->
-							<div class="flex items-center justify-between gap-2">
-								<h3 class="text-sm lg:text-base font-semibold text-white truncate">
+								<button
+									class="delete-btn"
+									on:click|stopPropagation={() => handleDeleteExercise(i)}
+									aria-label="Delete exercise"
+								>
+									<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+									</svg>
+								</button>
+							</div>
+							<!-- Row 2: Name + duration/rounds -->
+							<div class="compound-header-bottom">
+								<h3 class="text-sm lg:text-base font-semibold text-white truncate flex-1">
 									{exercise.name}
 								</h3>
 								<button
-									class="text-sm font-medium text-white hover:text-indigo-400 whitespace-nowrap transition-colors flex items-center gap-1 group"
+									class="text-sm font-medium text-white hover:text-indigo-400 whitespace-nowrap transition-colors flex items-center gap-1 group flex-shrink-0"
 									on:click={() => handleProgressionClick(i, getCompoundBlockEditField(exercise.category))}
 								>
 									{getCompoundBlockDisplay(exercise, weekNumber)}
@@ -615,10 +855,12 @@
 									</svg>
 								</button>
 							</div>
-						{:else}
-							<!-- Regular exercise - clickable name to open EDB -->
+						</div>
+					{:else}
+						<!-- Regular exercise header: single row -->
+						<div class="exercise-header">
 							<button
-								class="text-left group w-full"
+								class="text-left group flex-1 min-w-0"
 								on:click={() => handleExerciseNameClick(i, exercise.name)}
 							>
 								<h3 class="text-sm lg:text-base font-semibold text-white group-hover:text-indigo-400 transition-colors flex items-center gap-1 truncate">
@@ -628,11 +870,20 @@
 									</svg>
 								</h3>
 							</button>
-						{/if}
-					</div>
+							<button
+								class="delete-btn"
+								on:click|stopPropagation={() => handleDeleteExercise(i)}
+								aria-label="Delete exercise"
+							>
+								<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						</div>
+					{/if}
 
 					<!-- Exercise Fields (hide sets/work_time for compound blocks - shown in header) -->
-					<div class="px-4 divide-y divide-slate-700">
+					<div class="fields-container">
 						{#if params.sets !== undefined && !isCompound}
 							<button
 								class="field-row"
@@ -694,44 +945,64 @@
 					</div>
 
 					<!-- Sub-exercises for compound blocks -->
-					{#if isCompound && exercise.sub_exercises && exercise.sub_exercises.length > 0}
-						<div class="px-4 py-3 bg-slate-900/50">
-							<p class="text-xs text-slate-500 uppercase tracking-wider mb-2">Sub-exercises</p>
-							<div class="divide-y divide-slate-700/50">
+					{#if isCompound}
+						<div class="sub-exercises-section">
+							{#if exercise.sub_exercises && exercise.sub_exercises.length > 0}
 								{#each exercise.sub_exercises as subEx, subIndex}
-									<div class="py-2 flex items-center justify-between gap-2">
+									<div class="sub-exercise-row">
 										<!-- Sub-exercise name - clickable to replace -->
 										<button
 											class="text-sm text-slate-300 hover:text-indigo-400 transition-colors truncate text-left flex items-center gap-1 flex-1 min-w-0"
 											on:click={() => handleSubExerciseNameClick(i, subIndex, subEx.name)}
 										>
 											{subEx.name}
-											<svg class="w-3 h-3 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<svg class="w-2.5 h-2.5 text-slate-500 flex-shrink-0 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
 											</svg>
 										</button>
-										<!-- Parameters display - block-type aware, clickable to edit -->
+										<!-- Parameters display -->
 										<button
-											class="text-sm font-medium text-white hover:text-indigo-400 flex-shrink-0 transition-colors flex items-center gap-1 group"
+											class="text-xs font-medium text-slate-400 hover:text-indigo-400 flex-shrink-0 transition-colors"
 											on:click={() => handleProgressionClick(i, getSubExerciseEditField(exercise.category), subIndex)}
 										>
 											{getSubExerciseDisplay(subEx, exercise.category, weekNumber)}
-											<svg class="w-3 h-3 text-slate-500 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-											</svg>
 										</button>
 									</div>
 								{/each}
-							</div>
+							{/if}
+							<!-- Subtle add link -->
+							<button
+								class="add-sub-link"
+								on:click={() => handleAddSubExercise(i)}
+							>
+								+ add
+							</button>
 						</div>
 					{/if}
 				</section>
+				</div>
 			{/each}
+		</div>
+
+		<!-- Add Exercise / Block Row -->
+		<div class="add-row">
+			<button class="add-btn" on:click={handleAddExercise}>
+				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+				</svg>
+				Exercise
+			</button>
+			<button class="add-btn" on:click={handleAddBlock}>
+				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+				</svg>
+				Block
+			</button>
 		</div>
 
 		<!-- Hint -->
 		<p class="text-center text-xs text-slate-500 mt-6">
-			Tap exercise name to browse replacements | Tap values to edit progression
+			Tap name to replace | Tap values to edit | Hold and drag to reorder
 		</p>
 	{:else}
 		<div class="text-center py-12 text-slate-400">
@@ -773,8 +1044,8 @@
 	autoFilterCategory={autoFilterCategory}
 	autoFilterMuscleGroups={autoFilterMuscleGroups}
 	autoFilterEquipment={autoFilterEquipment}
-	on:select={handleExerciseSelect}
-	on:cancel={() => { showExerciseBrowser = false; replacingExerciseIndex = -1; replacingSubExerciseIndex = -1; }}
+	on:select={handleExerciseSelectForAdd}
+	on:cancel={() => { showExerciseBrowser = false; replacingExerciseIndex = -1; replacingSubExerciseIndex = -1; isAddingExercise = false; addingSubExerciseToIndex = -1; }}
 />
 
 <!-- Compound Type Switcher Modal -->
@@ -822,6 +1093,13 @@
 	</div>
 {/if}
 
+<!-- Drag hint -->
+{#if draggedExerciseIndex !== null && highlightedExerciseIndex !== null}
+	<div class="drag-hint">
+		Reordering exercises
+	</div>
+{/if}
+
 
 <style>
 	.day-container {
@@ -848,24 +1126,33 @@
 		color: white;
 	}
 
+	.fields-container {
+		padding: 0 0.75rem;
+	}
+
 	.field-row {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		width: 100%;
-		padding: 0.75rem 0;
+		padding: 0.5rem 0;
 		border: none;
+		border-bottom: 1px solid rgb(51 65 85);
 		background: transparent;
 		cursor: pointer;
 		transition: background 0.15s;
 	}
 
+	.field-row:last-child {
+		border-bottom: none;
+	}
+
 	.field-row:hover {
 		background: rgba(99, 102, 241, 0.1);
-		margin: 0 -1rem;
-		padding-left: 1rem;
-		padding-right: 1rem;
-		width: calc(100% + 2rem);
+		margin: 0 -0.75rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+		width: calc(100% + 1.5rem);
 	}
 
 	.field-label {
@@ -891,5 +1178,187 @@
 
 	.field-row:hover .field-edit-icon {
 		color: rgb(129 140 248);
+	}
+
+	/* ==================== DRAG TO REORDER ==================== */
+
+	.exercise-wrapper {
+		position: relative;
+		overflow: hidden;
+		border-radius: 0.5rem;
+	}
+
+	.exercise-card {
+		position: relative;
+		transition: transform 0.15s ease-out, opacity 0.15s, outline 0.15s;
+		cursor: grab;
+		user-select: none;
+	}
+
+	.exercise-card:active {
+		cursor: grabbing;
+	}
+
+	.exercise-card.dragging {
+		opacity: 0.5;
+	}
+
+	.exercise-card.highlighted {
+		outline: 2px solid rgb(99 102 241);
+		outline-offset: 2px;
+		background: rgba(99, 102, 241, 0.1);
+	}
+
+	/* ==================== EXERCISE HEADER ==================== */
+
+	.exercise-header {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.625rem 0.75rem;
+	}
+
+	/* ==================== COMPOUND BLOCK HEADER ==================== */
+
+	.compound-header {
+		padding: 0.5rem 0.75rem;
+	}
+
+	.compound-header-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.25rem;
+	}
+
+	.compound-header-bottom {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	/* ==================== DELETE BUTTON ==================== */
+
+	.delete-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		background: transparent;
+		border: none;
+		border-radius: 0.25rem;
+		color: rgb(71 85 105);
+		cursor: pointer;
+		transition: all 0.15s;
+		flex-shrink: 0;
+	}
+
+	.exercise-header .delete-btn {
+		margin-left: 0.5rem;
+	}
+
+	.delete-btn:hover {
+		background: rgb(220 38 38);
+		color: white;
+	}
+
+	.delete-btn:active {
+		transform: scale(0.95);
+	}
+
+	/* ==================== SUB-EXERCISES ==================== */
+
+	.sub-exercises-section {
+		padding: 0.5rem 0.75rem;
+		background: rgb(15 23 42 / 0.5);
+	}
+
+	.sub-exercise-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding: 0.25rem 0;
+	}
+
+	.add-sub-link {
+		display: inline-block;
+		padding: 0.25rem 0;
+		margin-top: 0.25rem;
+		background: transparent;
+		border: none;
+		color: rgb(100 116 139);
+		font-size: 0.75rem;
+		cursor: pointer;
+		transition: color 0.15s;
+	}
+
+	.add-sub-link:hover {
+		color: rgb(129 140 248);
+	}
+
+	/* ==================== ADD ROW ==================== */
+
+	.add-row {
+		display: flex;
+		gap: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	.add-btn {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.875rem 1rem;
+		background: transparent;
+		border: 2px dashed rgb(71 85 105);
+		border-radius: 0.5rem;
+		color: rgb(148 163 184);
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.15s;
+	}
+
+	.add-btn:hover {
+		border-color: rgb(99 102 241);
+		color: rgb(129 140 248);
+		background: rgba(99, 102, 241, 0.1);
+	}
+
+	.add-btn:active {
+		transform: scale(0.98);
+	}
+
+	/* ==================== DRAG HINT ==================== */
+
+	.drag-hint {
+		position: fixed;
+		bottom: 5rem;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: rgb(30 41 59);
+		border: 1px solid rgb(99 102 241);
+		border-radius: 0.5rem;
+		padding: 0.5rem 1rem;
+		font-size: 0.875rem;
+		color: white;
+		z-index: 50;
+		white-space: nowrap;
+	}
+
+	/* Desktop adjustments */
+	@media (min-width: 1024px) {
+		.add-row {
+			max-width: 24rem;
+		}
+
+		.add-btn {
+			padding: 1rem 1.25rem;
+			font-size: 1rem;
+		}
 	}
 </style>

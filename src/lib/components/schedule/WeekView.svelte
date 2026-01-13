@@ -2,24 +2,59 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
 	import type { ParameterizedDay, ParameterizedExercise, WeekParameters } from '$lib/engine/types';
-	import { saveScheduleToDb, activeSchedule } from '$lib/stores/schedule';
+	import { activeSchedule, saveScheduleToDb } from '$lib/stores/schedule';
 
 	export let schedule: StoredSchedule;
-	export let weekNumber: number;
 
 	const dispatch = createEventDispatcher<{
 		dayClick: { weekNumber: number; dayNumber: number };
 		back: void;
 		scheduleUpdated: StoredSchedule;
+		setStartDate: void;
+		allSchedules: void;
 	}>();
 
 	// Use reactive schedule from store if available, otherwise use prop
 	$: currentSchedule = $activeSchedule ?? schedule;
 
-	const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
-	const WEEKDAYS_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+	// Total weeks in program
+	$: totalWeeks = currentSchedule.weeks || 4;
+	$: allWeekNumbers = Array.from({ length: totalWeeks }, (_, i) => i + 1);
 
-	// Drag state
+	// Currently selected week
+	let selectedWeek = 1;
+
+	const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
+
+	// Expanded state for accordion - keyed by weekday number
+	let expandedDays: Set<number> = new Set();
+
+	// Expanded state for compound blocks - keyed by "weekday-exerciseIndex"
+	let expandedCompounds: Set<string> = new Set();
+
+	// Check if any day is expanded (for scroll control)
+	$: hasExpandedDay = expandedDays.size > 0;
+
+	function toggleExpanded(weekday: number) {
+		if (expandedDays.has(weekday)) {
+			expandedDays.delete(weekday);
+		} else {
+			expandedDays.add(weekday);
+		}
+		expandedDays = expandedDays; // trigger reactivity
+	}
+
+	function toggleCompoundExpanded(weekday: number, exerciseIndex: number) {
+		const key = `${weekday}-${exerciseIndex}`;
+		if (expandedCompounds.has(key)) {
+			expandedCompounds.delete(key);
+		} else {
+			expandedCompounds.add(key);
+		}
+		expandedCompounds = expandedCompounds; // trigger reactivity
+	}
+
+	// Drag state for day reordering
 	let draggedWeekday: Weekday | null = null;
 	let highlightedWeekday: Weekday | null = null;
 
@@ -74,52 +109,44 @@
 		return globalMapping;
 	}
 
-	$: dayMapping = getEffectiveDayMapping(currentSchedule, weekNumber);
-
-	// Parse start date (as local date) and get the Monday of the week for this specific week
+	// Parse start date and get program start Monday
 	$: startDate = parseLocalDate(currentSchedule.scheduleMetadata.startDate);
 	$: programStart = getMondayOfWeek(startDate);
-	$: weekStartDate = (() => {
-		const d = new Date(programStart);
-		d.setDate(d.getDate() + (weekNumber - 1) * 7);
-		return d;
-	})();
 
-	// Workout day numbers are always 1 to daysPerWeek
-	// (the schedule has days["1"], days["2"], etc. - same structure for all weeks)
-	// Week number affects which week parameters are shown (week1, week2, etc.), not day keys
-	$: workoutDaysInWeek = (() => {
-		const daysPerWeek = currentSchedule.daysPerWeek;
+	// Get workout day numbers (1 to daysPerWeek)
+	$: workoutDayNumbers = (() => {
 		const days: number[] = [];
-		for (let i = 1; i <= daysPerWeek; i++) {
+		for (let i = 1; i <= currentSchedule.daysPerWeek; i++) {
 			days.push(i);
 		}
 		return days;
 	})();
 
-	// Build reverse mapping: weekday index -> workout day number for this week
-	$: weekdayToWorkoutDay = (() => {
-		const mapping: { [key: number]: number } = {};
-		for (const [dayNum, weekday] of Object.entries(dayMapping)) {
-			const dayNumber = parseInt(dayNum);
-			if (workoutDaysInWeek.includes(dayNumber)) {
-				mapping[weekday] = dayNumber;
-			}
-		}
-		return mapping;
-	})();
-
-	// Generate 7 days for display (Mon-Sun)
+	// Generate 7 days for a specific week
 	interface WeekDay {
 		weekday: Weekday;
-		weekdayName: string;
 		weekdayShort: string;
 		date: Date;
 		workoutDay: number | null;
 		dayData: ParameterizedDay | null;
 	}
 
-	$: weekDays = (() => {
+	function getWeekDays(weekNum: number): WeekDay[] {
+		const dayMapping = getEffectiveDayMapping(currentSchedule, weekNum);
+
+		// Build reverse mapping: weekday index -> workout day number
+		const weekdayToWorkoutDay: { [key: number]: number } = {};
+		for (const [dayNum, weekday] of Object.entries(dayMapping)) {
+			const dayNumber = parseInt(dayNum);
+			if (workoutDayNumbers.includes(dayNumber)) {
+				weekdayToWorkoutDay[weekday] = dayNumber;
+			}
+		}
+
+		// Get week start date
+		const weekStartDate = new Date(programStart);
+		weekStartDate.setDate(programStart.getDate() + (weekNum - 1) * 7);
+
 		const days: WeekDay[] = [];
 		for (let i = 0; i < 7; i++) {
 			const date = new Date(weekStartDate);
@@ -130,7 +157,6 @@
 
 			days.push({
 				weekday: i as Weekday,
-				weekdayName: WEEKDAYS_FULL[i],
 				weekdayShort: WEEKDAYS[i],
 				date,
 				workoutDay: workoutDayNum,
@@ -138,6 +164,23 @@
 			});
 		}
 		return days;
+	}
+
+	// Build all weeks data
+	interface WeekData {
+		weekNumber: number;
+		days: WeekDay[];
+		dateRange: string;
+	}
+
+	// Get current week data (include currentSchedule as dependency to trigger re-render on schedule changes)
+	$: currentWeekDays = currentSchedule ? getWeekDays(selectedWeek) : [];
+	$: currentWeekDateRange = (() => {
+		const days = currentWeekDays;
+		const startD = days[0].date;
+		const endD = days[6].date;
+		const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+		return `${startD.toLocaleDateString('en-US', opts)} - ${endD.toLocaleDateString('en-US', opts)}`;
 	})();
 
 	// Format date for display
@@ -151,17 +194,30 @@
 		return day.exercises.map(ex => ex.name);
 	}
 
+	// Check if exercise is a compound block parent
+	function isCompoundBlock(exercise: ParameterizedExercise): boolean {
+		return ['emom', 'amrap', 'circuit', 'interval'].includes(exercise.category);
+	}
+
+	// Get display name for compound blocks
+	function getCompoundBlockLabel(exercise: ParameterizedExercise): string {
+		const labels: Record<string, string> = {
+			emom: 'EMOM',
+			amrap: 'AMRAP',
+			circuit: 'Circuit',
+			interval: 'Interval'
+		};
+		return labels[exercise.category] || exercise.category;
+	}
+
 	// Format exercise parameters for display (high-level)
 	function formatExerciseParams(exercise: ParameterizedExercise, week: number): string {
 		const weekKey = `week${week}` as keyof ParameterizedExercise;
 		const params = exercise[weekKey] as WeekParameters | undefined;
 		if (!params) return '';
 
-		// Circuit/Interval: show rounds count
-		if (exercise.category === 'circuit' || exercise.category === 'interval') {
-			if (params.sets) {
-				return `${params.sets}r`;
-			}
+		// Compound blocks: no params shown (just the type label)
+		if (isCompoundBlock(exercise)) {
 			return '';
 		}
 
@@ -178,7 +234,20 @@
 		return parts.join(' ');
 	}
 
-	// Drag handlers for week-specific swapping
+	// Build weekday to workout day mapping for current week (needed for drag)
+	$: currentWeekdayToWorkoutDay = (() => {
+		const dayMapping = getEffectiveDayMapping(currentSchedule, selectedWeek);
+		const mapping: { [key: number]: number } = {};
+		for (const [dayNum, weekday] of Object.entries(dayMapping)) {
+			const dayNumber = parseInt(dayNum);
+			if (workoutDayNumbers.includes(dayNumber)) {
+				mapping[weekday] = dayNumber;
+			}
+		}
+		return mapping;
+	})();
+
+	// Drag handlers
 	function handleDragStart(e: DragEvent, weekday: Weekday) {
 		draggedWeekday = weekday;
 		if (e.dataTransfer) {
@@ -201,7 +270,7 @@
 	}
 
 	function handleDragLeave() {
-		// Column highlight will be updated by dragover on other cells
+		// Highlight will be updated by dragover on other cells
 	}
 
 	async function handleDrop(e: DragEvent, targetWeekday: Weekday) {
@@ -216,11 +285,11 @@
 		// Get current week's effective mapping
 		const globalMapping = getGlobalDayMapping(currentSchedule);
 		const weekOverrides = getWeekOverrides(currentSchedule);
-		const currentWeekMapping = { ...globalMapping, ...(weekOverrides[weekNumber.toString()] || {}) };
+		const currentWeekMapping = { ...globalMapping, ...(weekOverrides[selectedWeek.toString()] || {}) };
 
 		// Find workout days at source and target weekdays
-		const sourceWorkoutDay = weekdayToWorkoutDay[draggedWeekday];
-		const targetWorkoutDay = weekdayToWorkoutDay[targetWeekday];
+		const sourceWorkoutDay = currentWeekdayToWorkoutDay[draggedWeekday];
+		const targetWorkoutDay = currentWeekdayToWorkoutDay[targetWeekday];
 
 		// Build new week override
 		const newWeekMapping: DayMapping = { ...currentWeekMapping };
@@ -237,7 +306,7 @@
 
 		// Save week-specific override
 		const updatedWeekOverrides: WeekOverrides = { ...weekOverrides };
-		updatedWeekOverrides[weekNumber.toString()] = newWeekMapping;
+		updatedWeekOverrides[selectedWeek.toString()] = newWeekMapping;
 
 		const updatedSchedule: StoredSchedule = {
 			...currentSchedule,
@@ -254,48 +323,67 @@
 	}
 
 	// Click handlers
-	function handleDayClick(workoutDay: number) {
-		dispatch('dayClick', { weekNumber, dayNumber: workoutDay });
+	function handleDayClick(weekNum: number, workoutDay: number) {
+		dispatch('dayClick', { weekNumber: weekNum, dayNumber: workoutDay });
 	}
 
 	function handleBackClick() {
 		dispatch('back');
 	}
 
-	// Format week date range
-	$: weekDateRange = (() => {
-		const endDate = new Date(weekStartDate);
-		endDate.setDate(endDate.getDate() + 6);
-		const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
-		return `${weekStartDate.toLocaleDateString('en-US', opts)} - ${endDate.toLocaleDateString('en-US', opts)}`;
-	})();
+	function handleSetStartDate() {
+		dispatch('setStartDate');
+	}
+
+	function handleAllSchedules() {
+		dispatch('allSchedules');
+	}
 </script>
 
-<div class="week-container">
-	<!-- Header -->
-	<div class="week-header">
-		<button class="back-button" on:click={handleBackClick}>
+<div class="week-container" class:scrollable={hasExpandedDay}>
+	<!-- Header row -->
+	<div class="header-row">
+		<button class="back-button" on:click={handleAllSchedules} aria-label="All schedules">
 			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 			</svg>
-			<span>Calendar</span>
 		</button>
-		<div class="week-title">
-			<span class="week-num">Week {weekNumber}</span>
-			<span class="week-range">{weekDateRange}</span>
-		</div>
+		<button class="calendar-btn" on:click={handleSetStartDate} aria-label="Set start date">
+			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+			</svg>
+		</button>
 	</div>
 
-	<!-- Days grid - responsive layout -->
+	<!-- Week selector with date range -->
+	<div class="week-row">
+		<div class="week-selector">
+			<span class="week-label">Week</span>
+			{#each allWeekNumbers as weekNum}
+				<button
+					class="week-btn"
+					class:active={selectedWeek === weekNum}
+					on:click={() => selectedWeek = weekNum}
+				>
+					{weekNum}
+				</button>
+			{/each}
+		</div>
+		<span class="date-range">{currentWeekDateRange}</span>
+	</div>
+
+	<!-- Days list for selected week -->
 	<div class="days-container">
-		{#each weekDays as day}
+		{#each currentWeekDays as day}
 			{@const isRest = day.workoutDay === null}
+			{@const dayExpanded = expandedDays.has(day.weekday)}
 			{@const isDragging = draggedWeekday === day.weekday}
 			{@const isHighlighted = highlightedWeekday === day.weekday}
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
 				class="day-card"
 				class:rest={isRest}
+				class:expanded={dayExpanded}
 				class:dragging={isDragging}
 				class:highlighted={isHighlighted}
 				draggable={!isRest}
@@ -304,53 +392,98 @@
 				on:dragover={(e) => handleDragOver(e, day.weekday)}
 				on:dragleave={handleDragLeave}
 				on:drop={(e) => handleDrop(e, day.weekday)}
-				on:click={() => day.workoutDay && handleDayClick(day.workoutDay)}
 			>
-				<!-- Left/Top info section -->
-				<div class="day-info">
-					<div class="date-weekday">
-						<span class="weekday-name">{day.weekdayShort}</span>
-						<span class="date">{formatDate(day.date)}</span>
-					</div>
-					<div class="workout-title">
-						{#if isRest}
-							<span class="rest-label">Rest</span>
-						{:else if day.dayData}
-							<span class="focus-label">{day.dayData.focus}</span>
-							<span class="day-type">({day.dayData.type})</span>
-						{/if}
-					</div>
-				</div>
-
-				<!-- Right/Bottom exercises section -->
-				<div class="exercises-section">
+				<!-- Header row -->
+				<button
+					class="day-header"
+					on:click={() => {
+						if (!isRest && day.workoutDay) {
+							handleDayClick(selectedWeek, day.workoutDay);
+						}
+					}}
+				>
+					<span class="weekday-name">{day.weekdayShort}</span>
+					<span class="date">{formatDate(day.date)}</span>
 					{#if isRest}
-						<div class="rest-content">
-							<span class="rest-icon">
-								<svg class="w-6 h-6 lg:w-8 lg:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-								</svg>
-							</span>
-						</div>
+						<span class="rest-label">Rest</span>
 					{:else if day.dayData}
+						<span class="focus-label">{day.dayData.focus}</span>
+					{/if}
+					<!-- Expand/collapse button -->
+					{#if !isRest && day.dayData}
+						<button
+							class="expand-btn"
+							on:click|stopPropagation={() => toggleExpanded(day.weekday)}
+							aria-label={dayExpanded ? 'Collapse exercises' : 'Expand exercises'}
+						>
+							<svg
+								class="w-5 h-5 transition-transform"
+								class:rotate-180={dayExpanded}
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+							</svg>
+						</button>
+					{/if}
+				</button>
+
+				<!-- Expandable exercises section -->
+				{#if dayExpanded && !isRest && day.dayData}
+					<div class="exercises-section">
 						<ul class="exercise-list">
-							{#each day.dayData.exercises.slice(0, 6) as exercise, i}
-								{@const params = formatExerciseParams(exercise, weekNumber)}
-								<li class="exercise-item">
-									<span class="exercise-name">{exercise.name}</span>
-									{#if params}
-										<span class="exercise-params">{params}</span>
+							{#each day.dayData.exercises as exercise, exIndex}
+								{@const params = formatExerciseParams(exercise, selectedWeek)}
+								{@const isCompound = isCompoundBlock(exercise)}
+								{@const hasSubs = isCompound && exercise.sub_exercises && exercise.sub_exercises.length > 0}
+								<li class="exercise-item" class:compound={isCompound}>
+									<div class="exercise-row">
+										<span class="exercise-name">
+											{#if isCompound}
+												{getCompoundBlockLabel(exercise)}
+											{:else}
+												{exercise.name}
+											{/if}
+										</span>
+										<div class="exercise-actions">
+											{#if params}
+												<span class="exercise-params">{params}</span>
+											{/if}
+											{#if hasSubs}
+												<button
+													class="compound-expand-btn"
+													on:click|stopPropagation={() => toggleCompoundExpanded(day.weekday, exIndex)}
+													aria-label={expandedCompounds.has(`${day.weekday}-${exIndex}`) ? 'Collapse sub-exercises' : 'Expand sub-exercises'}
+												>
+													<svg
+														class="w-4 h-4 transition-transform"
+														class:rotate-180={expandedCompounds.has(`${day.weekday}-${exIndex}`)}
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+													</svg>
+												</button>
+											{/if}
+										</div>
+									</div>
+									<!-- Sub-exercises -->
+									{#if expandedCompounds.has(`${day.weekday}-${exIndex}`) && exercise.sub_exercises}
+										<ul class="sub-exercise-list">
+											{#each exercise.sub_exercises as subEx}
+												<li class="sub-exercise-item">
+													<span class="sub-exercise-name">{subEx.name}</span>
+												</li>
+											{/each}
+										</ul>
 									{/if}
 								</li>
 							{/each}
-							{#if day.dayData.exercises.length > 6}
-								<li class="exercise-overflow">
-									+{day.dayData.exercises.length - 6} more...
-								</li>
-							{/if}
 						</ul>
-					{/if}
-				</div>
+					</div>
+				{/if}
 			</div>
 		{/each}
 	</div>
@@ -358,7 +491,7 @@
 	<!-- Drag indicator -->
 	{#if draggedWeekday !== null && highlightedWeekday !== null}
 		<div class="drag-hint">
-			Swap days for Week {weekNumber} only
+			Swap days for Week {selectedWeek}
 		</div>
 	{/if}
 </div>
@@ -368,29 +501,37 @@
 		width: 100%;
 		min-height: 100%;
 		user-select: none;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
 	}
 
-	.week-header {
+	.week-container.scrollable {
+		overflow-y: auto;
+	}
+
+	/* Header row */
+	.header-row {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
-		padding: 0.5rem 0 1rem;
-		border-bottom: 1px solid rgb(51 65 85); /* slate-700 */
-		margin-bottom: 1rem;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
 	}
 
 	.back-button {
 		display: flex;
 		align-items: center;
-		gap: 0.25rem;
-		padding: 0.375rem 0.75rem;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
 		background: rgb(51 65 85);
 		border: none;
 		border-radius: 0.5rem;
 		color: rgb(148 163 184);
-		font-size: 0.875rem;
 		cursor: pointer;
 		transition: all 0.15s;
+		flex-shrink: 0;
 	}
 
 	.back-button:hover {
@@ -398,48 +539,103 @@
 		color: white;
 	}
 
-	.week-title {
+	.calendar-btn {
 		display: flex;
-		flex-direction: column;
-		gap: 0.125rem;
+		align-items: center;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		background: rgb(51 65 85);
+		border: none;
+		border-radius: 0.5rem;
+		color: rgb(99 102 241);
+		cursor: pointer;
+		transition: all 0.15s;
+		flex-shrink: 0;
 	}
 
-	.week-num {
-		font-size: 1.125rem;
+	.calendar-btn:hover {
+		background: rgb(71 85 105);
+		color: rgb(129 140 248);
+	}
+
+	/* Week row with selector and date range */
+	.week-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.date-range {
+		font-size: 0.75rem;
+		color: rgb(100 116 139);
+		flex-shrink: 0;
+	}
+
+	/* Week selector */
+	.week-selector {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		flex-wrap: wrap;
+	}
+
+	.week-label {
+		font-size: 0.875rem;
 		font-weight: 600;
+		color: white;
+		margin-right: 0.125rem;
+	}
+
+	.week-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.25rem;
+		height: 2.25rem;
+		padding: 0.375rem;
+		background: rgb(51 65 85);
+		border: 2px solid transparent;
+		border-radius: 0.5rem;
+		color: rgb(148 163 184);
+		font-size: 0.875rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.15s;
+	}
+
+	.week-btn:hover {
+		background: rgb(71 85 105);
 		color: white;
 	}
 
-	.week-range {
-		font-size: 0.75rem;
-		color: rgb(148 163 184);
+	.week-btn.active {
+		background: rgb(99 102 241);
+		border-color: rgb(129 140 248);
+		color: white;
 	}
 
-	/* Mobile: vertical stack */
+	/* Days list */
 	.days-container {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+		flex: 1;
 	}
 
 	.day-card {
 		display: flex;
-		flex-direction: row;
-		background: rgb(30 41 59); /* slate-800 */
+		flex-direction: column;
+		background: rgb(30 41 59);
 		border-radius: 0.5rem;
 		overflow: hidden;
-		cursor: pointer;
 		transition: all 0.15s;
-		min-height: 5rem;
-	}
-
-	.day-card:hover:not(.rest) {
-		background: rgb(51 65 85);
 	}
 
 	.day-card.rest {
-		cursor: default;
-		background: rgb(15 23 42); /* slate-900 */
+		background: rgb(15 23 42);
 	}
 
 	.day-card.dragging {
@@ -451,75 +647,89 @@
 		outline: 2px solid rgb(99 102 241);
 	}
 
-	/* Left info section (mobile) */
-	.day-info {
+	/* Header row */
+	.day-header {
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		padding: 0.75rem;
-		background: rgb(51 65 85);
-		min-width: 6rem;
-		max-width: 6rem;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.875rem 1rem;
+		background: transparent;
+		border: none;
+		width: 100%;
+		text-align: left;
+		cursor: pointer;
+		transition: background 0.15s;
+		min-height: 3.5rem;
 	}
 
-	.day-card.rest .day-info {
-		background: rgb(30 41 59);
+	/* Only apply hover on devices that support it (not touch) */
+	@media (hover: hover) {
+		.day-card:not(.rest) .day-header:hover {
+			background: rgb(51 65 85);
+		}
 	}
 
-	.date-weekday {
-		display: flex;
-		flex-direction: column;
-		gap: 0;
+	.day-card.rest .day-header {
+		cursor: default;
 	}
 
 	.weekday-name {
-		font-size: 0.875rem;
+		font-size: 1rem;
 		font-weight: 600;
 		color: white;
+		min-width: 2.5rem;
 	}
 
 	.date {
-		font-size: 0.625rem;
+		font-size: 0.875rem;
 		color: rgb(148 163 184);
-	}
-
-	.workout-title {
-		margin-top: 0.375rem;
+		min-width: 4rem;
 	}
 
 	.focus-label {
-		font-size: 0.75rem;
+		font-size: 1rem;
 		font-weight: 500;
-		color: rgb(129 140 248); /* indigo-400 */
-	}
-
-	.day-type {
-		font-size: 0.625rem;
-		color: rgb(100 116 139);
-		display: block;
+		color: rgb(129 140 248);
+		flex: 1;
 	}
 
 	.rest-label {
-		font-size: 0.875rem;
+		font-size: 1rem;
 		font-weight: 500;
 		color: rgb(100 116 139);
-	}
-
-	/* Right exercises section (mobile) */
-	.exercises-section {
 		flex: 1;
-		padding: 0.5rem 0.75rem;
-		overflow: hidden;
-		display: flex;
-		align-items: center;
 	}
 
-	.rest-content {
+	.expand-btn {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 100%;
-		color: rgb(71 85 105);
+		padding: 0.5rem;
+		background: transparent;
+		border: none;
+		color: rgb(148 163 184);
+		cursor: pointer;
+		border-radius: 0.375rem;
+		transition: all 0.15s;
+		min-width: 44px;
+		min-height: 44px;
+	}
+
+	.expand-btn:hover {
+		background: rgb(51 65 85);
+		color: white;
+	}
+
+	.rotate-180 {
+		transform: rotate(180deg);
+	}
+
+	/* Expandable exercises section */
+	.exercises-section {
+		padding: 0.75rem 1rem;
+		padding-left: 3rem;
+		background: rgb(15 23 42);
+		border-top: 1px solid rgb(51 65 85);
 	}
 
 	.exercise-list {
@@ -531,40 +741,86 @@
 
 	.exercise-item {
 		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		padding: 0.125rem 0;
-		font-size: 0.75rem;
+		flex-direction: column;
+		padding: 0.375rem 0;
+		font-size: 0.9375rem;
 		color: rgb(203 213 225);
-		gap: 0.5rem;
+	}
+
+	.exercise-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 0.75rem;
+		width: 100%;
 	}
 
 	.exercise-name {
 		flex: 1;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		line-height: 1.3;
+		line-height: 1.4;
+	}
+
+	.exercise-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex-shrink: 0;
+	}
+
+	.exercise-item.compound .exercise-name {
+		color: rgb(129 140 248);
+		font-weight: 500;
+		font-size: 0.8125rem;
+		text-transform: uppercase;
+		letter-spacing: 0.025em;
+	}
+
+	.compound-expand-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.25rem;
+		background: transparent;
+		border: none;
+		color: rgb(129 140 248);
+		cursor: pointer;
+		border-radius: 0.25rem;
+		transition: all 0.15s;
+	}
+
+	.compound-expand-btn:hover {
+		background: rgb(51 65 85);
+		color: rgb(165 180 252);
+	}
+
+	.sub-exercise-list {
+		list-style: none;
+		margin: 0.5rem 0 0 0;
+		padding: 0 0 0 1rem;
+		border-left: 2px solid rgb(99 102 241 / 0.3);
+	}
+
+	.sub-exercise-item {
+		padding: 0.25rem 0;
+		font-size: 0.8125rem;
+		color: rgb(148 163 184);
+	}
+
+	.sub-exercise-name {
+		line-height: 1.4;
 	}
 
 	.exercise-params {
 		flex-shrink: 0;
-		min-width: 3.5rem;
-		text-align: center;
-		font-size: 0.625rem;
-		color: rgb(100 116 139);
-		background: rgb(51 65 85);
-		padding: 0.125rem 0.375rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: rgb(199 210 254);
+		background: rgb(67 56 202 / 0.3);
+		padding: 0.25rem 0.5rem;
 		border-radius: 0.25rem;
 	}
 
-	.exercise-overflow {
-		font-size: 0.625rem;
-		color: rgb(100 116 139);
-		padding-top: 0.25rem;
-	}
-
+	/* Drag hint */
 	.drag-hint {
 		position: fixed;
 		bottom: 5rem;
@@ -574,81 +830,79 @@
 		border: 1px solid rgb(99 102 241);
 		border-radius: 0.5rem;
 		padding: 0.5rem 1rem;
-		font-size: 0.75rem;
+		font-size: 0.875rem;
 		color: white;
 		z-index: 50;
 		white-space: nowrap;
 	}
 
-	/* Desktop: horizontal grid */
+	/* Desktop */
 	@media (min-width: 1024px) {
-		.week-header {
-			padding: 0.75rem 0 1.5rem;
+		.header-row {
+			margin-bottom: 1rem;
 		}
 
-		.week-num {
-			font-size: 1.5rem;
+		.week-row {
+			margin-bottom: 1rem;
 		}
 
-		.week-range {
+		.date-range {
 			font-size: 0.875rem;
 		}
 
-		.days-container {
-			display: grid;
-			grid-template-columns: repeat(7, 1fr);
-			gap: 0.75rem;
+		.week-selector {
+			gap: 0.5rem;
 		}
 
-		.day-card {
-			flex-direction: column;
-			min-height: 20rem;
-		}
-
-		/* Top info section (desktop) */
-		.day-info {
-			min-width: unset;
-			max-width: unset;
-			padding: 0.75rem 1rem;
-			min-height: 4rem;
-		}
-
-		.weekday-name {
+		.week-label {
 			font-size: 1rem;
 		}
 
+		.week-btn {
+			min-width: 2.75rem;
+			height: 2.75rem;
+			font-size: 1rem;
+		}
+
+		.days-container {
+			gap: 0.625rem;
+		}
+
+		.day-header {
+			padding: 1rem 1.25rem;
+			gap: 1rem;
+		}
+
+		.weekday-name {
+			font-size: 1.125rem;
+			min-width: 3rem;
+		}
+
 		.date {
-			font-size: 0.75rem;
+			font-size: 1rem;
+			min-width: 5rem;
 		}
 
 		.focus-label {
-			font-size: 0.875rem;
+			font-size: 1.125rem;
 		}
 
-		.day-type {
-			font-size: 0.75rem;
-		}
-
-		/* Bottom exercises section (desktop) */
 		.exercises-section {
-			flex: 1;
-			padding: 0.75rem 1rem;
-			align-items: flex-start;
+			padding: 1rem 1.25rem;
+			padding-left: 4rem;
 		}
 
 		.exercise-item {
-			font-size: 0.8125rem;
-			padding: 0.25rem 0;
+			font-size: 1rem;
+			padding: 0.5rem 0;
+		}
+
+		.exercise-item.compound .exercise-name {
+			font-size: 0.875rem;
 		}
 
 		.exercise-params {
-			font-size: 0.6875rem;
-		}
-
-		.rest-content {
-			justify-content: center;
-			align-items: center;
-			height: 100%;
+			font-size: 0.875rem;
 		}
 	}
 </style>

@@ -216,51 +216,30 @@
 			class="flex flex-col h-full w-full lg:h-auto lg:max-h-[85vh] lg:max-w-6xl lg:bg-slate-900 lg:rounded-xl lg:overflow-hidden"
 			on:click|stopPropagation
 		>
-			<!-- Search with inline Shuffle -->
+			<!-- Search -->
 			<div class="p-2.5 md:p-4 border-b border-slate-700">
-				<div class="flex items-center gap-1.5">
-					<div class="relative flex-1">
-						<svg
-							class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-							/>
-						</svg>
-						<input
-							type="text"
-							bind:value={searchQuery}
-							on:focus={(e) => e.currentTarget.select()}
-							placeholder="Search exercises..."
-							class="w-full pl-10 pr-4 py-2 md:py-2.5 bg-slate-800 border border-slate-600 rounded-lg
-								   text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-						/>
-					</div>
-					<!-- Shuffle button -->
-					<button
-						on:click={handleShuffle}
-						disabled={filteredExercises.length === 0}
-						class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
-						       transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed
-						       whitespace-nowrap min-h-[44px]"
-						aria-label="Shuffle exercise"
+				<div class="relative">
+					<svg
+						class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
 					>
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-							/>
-						</svg>
-						<span class="text-sm hidden sm:inline">Shuffle</span>
-					</button>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+						/>
+					</svg>
+					<input
+						type="text"
+						bind:value={searchQuery}
+						on:focus={(e) => e.currentTarget.select()}
+						placeholder="Search exercises..."
+						class="w-full pl-10 pr-4 py-2 md:py-2.5 bg-slate-800 border border-slate-600 rounded-lg
+							   text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+					/>
 				</div>
 			</div>
 
@@ -270,7 +249,7 @@
 					<div class="flex items-center justify-between gap-1.5">
 						<p class="text-base md:text-lg font-semibold text-white truncate flex-1 min-w-0">{selectedExercise.name}</p>
 						<div class="flex items-center gap-1.5 flex-shrink-0">
-							<!-- Info button (mobile only) - matches shuffle button style -->
+							<!-- Info button (mobile only) -->
 							{#if exerciseDescriptions[selectedExercise.name]?.description}
 								<button
 									on:click={() => (showDescriptionModal = true)}
@@ -289,6 +268,25 @@
 									</svg>
 								</button>
 							{/if}
+							<!-- Shuffle button -->
+							<button
+								on:click={handleShuffle}
+								disabled={filteredExercises.length === 0}
+								class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+								       transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed
+								       whitespace-nowrap min-h-[44px]"
+								aria-label="Shuffle exercise"
+							>
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+									/>
+								</svg>
+								<span class="text-sm hidden sm:inline">Shuffle</span>
+							</button>
 							{#if selectedExercise.name !== currentExerciseName}
 								<span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
 									Changed
@@ -467,7 +465,7 @@
 
 			<!-- Footer with confirmation buttons -->
 			<div
-				class="sticky bottom-16 p-2.5 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
+				class="sticky bottom-20 p-2.5 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
 			>
 				<button
 					on:click={handleCancel}

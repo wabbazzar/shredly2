@@ -216,6 +216,29 @@
 			class="flex flex-col h-full w-full lg:h-auto lg:max-h-[85vh] lg:max-w-6xl lg:bg-slate-900 lg:rounded-xl lg:overflow-hidden"
 			on:click|stopPropagation
 		>
+			<!-- Header with actions -->
+			<div class="flex items-center justify-between p-2.5 md:p-4 bg-slate-800 border-b border-slate-700">
+				<button
+					on:click={handleCancel}
+					class="p-2 text-slate-400 hover:text-white transition-colors rounded-lg"
+					aria-label="Close"
+				>
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
+				<h2 class="text-lg font-semibold text-white">Select Exercise</h2>
+				<button
+					on:click={handleConfirm}
+					disabled={!selectedExercise || selectedExercise.name === currentExerciseName}
+					class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+					       transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+					aria-label="Confirm selection"
+				>
+					Confirm
+				</button>
+			</div>
+
 			<!-- Search -->
 			<div class="p-2.5 md:p-4 border-b border-slate-700">
 				<div class="relative">
@@ -287,11 +310,6 @@
 								</svg>
 								<span class="text-sm hidden sm:inline">Shuffle</span>
 							</button>
-							{#if selectedExercise.name !== currentExerciseName}
-								<span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full">
-									Changed
-								</span>
-							{/if}
 						</div>
 					</div>
 
@@ -332,7 +350,7 @@
 
 			<!-- Filter Chips Display -->
 			{#if activeFilters.length > 0}
-				<div class="flex flex-wrap gap-1.5 px-2.5 py-2 md:px-4 border-b border-slate-700">
+				<div class="flex flex-wrap gap-1.5 p-2.5 md:p-4 border-b border-slate-700">
 					{#each activeFilters as filter}
 						<button
 							on:click={() => removeFilter(filter.type, filter.value)}
@@ -357,7 +375,7 @@
 			{/if}
 
 			<!-- Filters -->
-			<div class="flex gap-1.5 px-2.5 py-2 md:px-4 md:py-3 border-b border-slate-700">
+			<div class="flex gap-1.5 p-2.5 md:p-4 border-b border-slate-700">
 				<select
 					on:change={(e) => {
 						const val = e.currentTarget.value;
@@ -463,28 +481,6 @@
 				{/if}
 			</div>
 
-			<!-- Footer with confirmation buttons -->
-			<div
-				class="sticky bottom-17 p-2.5 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
-			>
-				<button
-					on:click={handleCancel}
-					class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg
-					       transition-colors font-medium min-h-[44px]"
-					aria-label="Cancel"
-				>
-					Cancel
-				</button>
-				<button
-					on:click={handleConfirm}
-					disabled={!selectedExercise}
-					class="flex-1 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
-					       transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
-					aria-label="Confirm selection"
-				>
-					Confirm
-				</button>
-			</div>
 		</div>
 	</div>
 {/if}

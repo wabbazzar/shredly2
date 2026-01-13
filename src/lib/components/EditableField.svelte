@@ -62,9 +62,12 @@
 
 	<!-- Always render button, toggle visibility with CSS -->
 	<button
+		type="button"
 		onclick={startEdit}
+		tabindex="-1"
+		style="touch-action: manipulation;"
 		class="text-white text-sm hover:text-indigo-400 transition-colors
-             flex items-center gap-1 group"
+             flex items-center gap-1 group cursor-pointer"
 		class:hidden={editing}
 	>
 		<span>{value}{suffix ? ` ${suffix}` : ''}</span>

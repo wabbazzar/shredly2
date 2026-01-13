@@ -465,7 +465,7 @@
 
 			<!-- Footer with confirmation buttons -->
 			<div
-				class="sticky bottom-20 p-2.5 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
+				class="sticky bottom-22 p-2.5 md:p-4 bg-slate-800 border-t border-slate-700 flex gap-2"
 			>
 				<button
 					on:click={handleCancel}

@@ -498,9 +498,13 @@ These should be answered in the CLI prototype phase.
     - Removed tick() and requestAnimationFrame() async focus calls
     - Always render both imperial (ft/in) and metric (cm) inputs
     - Focus called synchronously based on unit system
-  * **Root Cause**: iOS Safari requires focus() to happen synchronously within click handler to trigger keyboard
-  * **Impact**: Profile tab fields now open keyboard on single tap (iOS)
-  * **Testing**: Production build succeeds, dev server runs without errors
+  * **Phase 4 - iOS Focus Ring Fix**: Eliminated double-tap focus behavior
+    - Added tabindex="-1" to buttons to prevent focus ring (purple box)
+    - Added touch-action: manipulation to eliminate iOS 300ms tap delay
+    - Added cursor-pointer class and type="button" attribute
+  * **Root Cause**: iOS Safari requires focus() to happen synchronously within click handler + buttons were capturing focus on first tap
+  * **Impact**: Profile tab fields now open keyboard on single tap (iOS), no purple focus ring step
+  * **Testing**: Production build succeeds, height field focuses first input (feet or cm) on click
   * **Files Modified**: EditableField.svelte, EditableSelectField.svelte, EditableHeightField.svelte
 - ✅ Ticket #019 (2026-01-13): Live View Timer (COMPLETE)
   * **Phase 1 - Timer Engine Core**: Complete timer state machine (884 lines)

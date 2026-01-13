@@ -40,25 +40,37 @@ Shredly 2.0 is a **complete rewrite** with a modern stack and simplified archite
 - Port validated logic to SvelteKit UI
 - Test generation engine independently before touching UI
 
-### Hosting (Temporary: GitHub Pages)
+### Hosting: AWS (Production)
 
-**Current**: GitHub Pages at `https://wabbazzar.github.io/shredly2/`
-**Future**: AWS hosting at `https://shredly.me` (migrating from Shredly v1)
+**Live**: https://shredly.me (production)
 
-GitHub Pages is a temporary development hosting solution. When ready to migrate to shredly.me:
+Shredly v2 uses the **existing v1 AWS infrastructure** (no new resources created):
+- **S3 Bucket**: `shredly-pwa-hosting` (reused from v1)
+- **CloudFront Distribution**: `E1L03188E8WX2V` (reused from v1)
+- **Domain**: shredly.me + www.shredly.me (Route 53 DNS)
 
-**Revert GitHub Pages Setup**:
-1. Delete `.github/workflows/deploy.yml`
-2. Delete `src/routes/+layout.ts` (prerender config)
-3. Delete `static/.nojekyll`
-4. Remove `paths.base` and `GITHUB_PAGES` env check from `svelte.config.js`
-5. Configure AWS hosting (cannibalize from ../shredly/ infrastructure)
+**Deployment Process**:
+```bash
+# 1. Build the app
+npm run build
 
-**Files Added for GitHub Pages**:
-- `.github/workflows/deploy.yml` - Auto-deploy on push to master
-- `src/routes/+layout.ts` - Static prerendering config
-- `static/.nojekyll` - Prevents Jekyll processing
-- `svelte.config.js` - Modified with conditional base path
+# 2. Upload to S3 (assets with long cache)
+aws s3 sync build/ s3://shredly-pwa-hosting/ --delete \
+  --cache-control "public, max-age=31536000, immutable" \
+  --exclude "*.html" --profile personal
+
+# 3. Upload HTML files (short cache for SPA routing)
+aws s3 sync build/ s3://shredly-pwa-hosting/ \
+  --cache-control "public, max-age=0, must-revalidate" \
+  --exclude "*" --include "*.html" --profile personal
+
+# 4. Invalidate CloudFront cache
+aws cloudfront create-invalidation \
+  --distribution-id E1L03188E8WX2V \
+  --paths "/*" --profile personal
+```
+
+**Note**: GitHub Pages deployment was removed. The CDK infrastructure code in `infrastructure/` was kept for reference but is not used (we reuse v1 resources instead of creating new ones).
 
 ---
 

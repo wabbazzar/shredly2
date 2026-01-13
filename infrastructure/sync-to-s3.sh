@@ -7,7 +7,6 @@ set -e
 
 ENVIRONMENT=${1:-dev}
 AWS_PROFILE=${AWS_PROFILE:-personal}
-BUCKET_NAME="shredly-v2-web-${ENVIRONMENT}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
@@ -15,16 +14,19 @@ echo "🚀 Syncing Shredly v2 to S3"
 echo "Environment: $ENVIRONMENT"
 echo "AWS Profile: $AWS_PROFILE"
 
-# Get CloudFront distribution ID from stack outputs
-echo "📡 Getting CloudFront distribution ID..."
-DISTRIBUTION_ID=$(aws cloudformation describe-stacks \
+# Get stack outputs (bucket name and distribution ID)
+echo "📡 Getting stack outputs..."
+STACK_OUTPUTS=$(aws cloudformation describe-stacks \
     --stack-name "ShreldyV2InfrastructureStack-${ENVIRONMENT}" \
-    --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
-    --output text \
+    --query "Stacks[0].Outputs" \
+    --output json \
     --profile $AWS_PROFILE)
 
-if [ -z "$DISTRIBUTION_ID" ]; then
-    echo "❌ Error: Could not retrieve CloudFront distribution ID"
+BUCKET_NAME=$(echo "$STACK_OUTPUTS" | jq -r '.[] | select(.OutputKey=="BucketName") | .OutputValue')
+DISTRIBUTION_ID=$(echo "$STACK_OUTPUTS" | jq -r '.[] | select(.OutputKey=="DistributionId") | .OutputValue')
+
+if [ -z "$BUCKET_NAME" ] || [ -z "$DISTRIBUTION_ID" ]; then
+    echo "❌ Error: Could not retrieve stack outputs"
     echo "Make sure the CDK stack is deployed first: ./infrastructure/deploy.sh $ENVIRONMENT deploy"
     exit 1
 fi

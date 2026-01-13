@@ -17,11 +17,9 @@
 	function startEdit() {
 		inputValue = value;
 		editing = true;
-		// Focus and select input after Svelte updates the DOM
-		requestAnimationFrame(() => {
-			inputEl?.focus();
-			inputEl?.select();
-		});
+		// Focus synchronously for iOS keyboard support
+		inputEl?.focus();
+		inputEl?.select();
 	}
 
 	function save() {
@@ -44,43 +42,44 @@
 <div class="flex items-center justify-between py-3">
 	<span class="text-slate-400 text-sm">{label}</span>
 
-	{#if editing}
-		<div class="flex items-center gap-1">
-			<input
-				bind:this={inputEl}
-				bind:value={inputValue}
-				{type}
-				{min}
-				{max}
-				onblur={save}
-				onkeydown={handleKeydown}
-				class="w-24 bg-slate-700 text-white text-right rounded px-2 py-1 text-sm
+	<!-- Always render input, toggle visibility with CSS for synchronous focus -->
+	<div class="flex items-center gap-1" class:hidden={!editing}>
+		<input
+			bind:this={inputEl}
+			bind:value={inputValue}
+			{type}
+			{min}
+			{max}
+			onblur={save}
+			onkeydown={handleKeydown}
+			class="w-24 bg-slate-700 text-white text-right rounded px-2 py-1 text-sm
                border border-indigo-500 outline-none focus:ring-1 focus:ring-indigo-400"
-			/>
-			{#if suffix}
-				<span class="text-slate-400 text-sm">{suffix}</span>
-			{/if}
-		</div>
-	{:else}
-		<button
-			onclick={startEdit}
-			class="text-white text-sm hover:text-indigo-400 transition-colors
+		/>
+		{#if suffix}
+			<span class="text-slate-400 text-sm">{suffix}</span>
+		{/if}
+	</div>
+
+	<!-- Always render button, toggle visibility with CSS -->
+	<button
+		onclick={startEdit}
+		class="text-white text-sm hover:text-indigo-400 transition-colors
              flex items-center gap-1 group"
+		class:hidden={editing}
+	>
+		<span>{value}{suffix ? ` ${suffix}` : ''}</span>
+		<svg
+			class="w-3 h-3 text-slate-500 group-hover:text-indigo-400 transition-colors"
+			fill="none"
+			stroke="currentColor"
+			viewBox="0 0 24 24"
 		>
-			<span>{value}{suffix ? ` ${suffix}` : ''}</span>
-			<svg
-				class="w-3 h-3 text-slate-500 group-hover:text-indigo-400 transition-colors"
-				fill="none"
-				stroke="currentColor"
-				viewBox="0 0 24 24"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-				/>
-			</svg>
-		</button>
-	{/if}
+			<path
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				stroke-width="2"
+				d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+			/>
+		</svg>
+	</button>
 </div>

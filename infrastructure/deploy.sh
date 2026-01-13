@@ -29,23 +29,23 @@ npm run build
 case $ACTION in
     "bootstrap")
         echo "🌱 Bootstrapping CDK environment..."
-        npx cdk bootstrap --context environment=$ENVIRONMENT
+        npx cdk bootstrap --profile personal --context environment=$ENVIRONMENT
         ;;
     "synth")
         echo "🔍 Synthesizing CloudFormation template..."
-        npx cdk synth --context environment=$ENVIRONMENT
+        npx cdk synth --profile personal --context environment=$ENVIRONMENT
         ;;
     "deploy")
         echo "🚀 Deploying infrastructure..."
-        npx cdk deploy --context environment=$ENVIRONMENT --require-approval never
+        npx cdk deploy --profile personal --context environment=$ENVIRONMENT --require-approval never
         ;;
     "destroy")
         echo "💥 Destroying infrastructure..."
-        npx cdk destroy --context environment=$ENVIRONMENT --force
+        npx cdk destroy --profile personal --context environment=$ENVIRONMENT --force
         ;;
     "diff")
         echo "📊 Showing deployment diff..."
-        npx cdk diff --context environment=$ENVIRONMENT
+        npx cdk diff --profile personal --context environment=$ENVIRONMENT
         ;;
     *)
         echo "❌ Unknown action: $ACTION"

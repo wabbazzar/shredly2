@@ -462,7 +462,7 @@ These should be answered in the CLI prototype phase.
 
 **Test Infrastructure Highlights**:
 - **Vitest**: SvelteKit's official test framework
-- **566 tests passing**: 549 unit tests + 17 integration tests
+- **655 tests passing**: 621 unit tests + 34 integration tests
 - **Critical path coverage**: Workout generation, exercise selection, parameter calculation, metadata-driven field visibility, time field parsing, timer engine, live session, history logging, audio manager
 - **Test fixtures**: 6 questionnaire scenarios (beginner → expert, bodyweight → gym)
 - **Validation helpers**: Workout structure, exercise references, duration constraints
@@ -485,6 +485,32 @@ These should be answered in the CLI prototype phase.
 - **Test coverage**: 96 passing unit tests (29 for compound blocks)
 
 **Recent Completions**:
+- ✅ Ticket #024 (2026-01-14): Exercise History 1RM/TRM Integration (COMPLETE)
+  * **Phase 1 - 1RM Calculation Engine**: Epley formula with RPE adjustment
+    - Epley formula: 1RM = weight * (1 + reps/30)
+    - RPE adjustment factors (RPE 10 = 100%, RPE 8 = 92%, etc.)
+    - Time-weighted averaging with 14-day half-life
+    - TRM derivation: 90% of calculated 1RM
+    - 54 unit tests passing
+  * **Phase 2 - Incremental Cache Store**: localStorage persistence
+    - Cache stored in 'exercise_1rm_cache' key
+    - Full recalculation on app startup with user overrides
+    - O(1) lookup for weight prescriptions
+  * **Phase 3 - DataEntryModal Integration**: Cache updates on workout end
+    - Update cache for all exercises when session is logged to history
+    - Deduplicate exercise names including sub-exercises
+  * **Phase 4 - Profile View PR Display**: PR cards for current program
+    - PRCard.svelte with 1RM, TRM, stale indicator, trend
+    - Inline edit allows manual 1RM override
+    - Shows only exercises in active schedule
+  * **Phase 5 - Weight Prescriptions**: TRM-based weights in Schedule/Live
+    - ExerciseCard shows calculated lbs instead of "% TM" when TRM available
+    - liveSession uses cache for weight calculations
+    - Falls back to user store if no cache entry
+  * **Impact**: Auto-calculated PRs from workout history, intelligent weight suggestions
+  * **Testing**: 655 tests passing (58 new oneRMCache tests)
+  * **Files Created**: oneRMCache.ts, PRCard.svelte
+  * **Files Modified**: +layout.svelte, live/+page.svelte, profile/+page.svelte, liveSession.ts, ExerciseCard.svelte
 - ✅ Ticket #022 (2026-01-13): iOS Keyboard Double-Click Bug (COMPLETE)
   * **Phase 1 - EditableField**: Fixed text/number fields (Name, Weight, Age, 1RM)
     - Removed requestAnimationFrame() async focus call
@@ -656,7 +682,7 @@ These should be answered in the CLI prototype phase.
   * Visual enhancements: colored prefixes, empty block placeholders
   * Comprehensive test coverage with full undo support
 
-**Current Focus**: Phase 3 (History & Progression) + Mobile Polish
+**Current Focus**: Phase 4 (Mobile Polish) + Progressive Overload Suggestions
 
 **Completed UI Features**:
 - ✅ Three-tab layout (Profile, Schedule, Live)
@@ -664,14 +690,16 @@ These should be answered in the CLI prototype phase.
 - ✅ Schedule tab with week/day views, exercise editing
 - ✅ Live tab with full timer, data entry, history logging
 - ✅ Exercise browser with smart filtering
+- ✅ 1RM/TRM calculation from history with PR display
+- ✅ TRM-based weight prescriptions in Schedule/Live
 
 **Next Steps**:
-1. Wire exercise history to Profile tab (PR display)
-2. Add progressive overload suggestions based on history
-3. Mobile polish (Capacitor builds, touch gestures)
-4. Service worker for offline support
+1. Add progressive overload suggestions based on history trends
+2. Mobile polish (Capacitor builds, touch gestures)
+3. Service worker for offline support
+4. PWA optimizations
 
-**Next Developer**: Core UI is complete! All three tabs are functional. The Live tab timer (Ticket #019) enables full workout execution with data logging. Focus on connecting history data to Profile tab for PR display, then mobile polish. Read tests/README.md for test patterns. 566 tests passing.
+**Next Developer**: Core UI is complete! All three tabs are functional. Ticket #024 adds auto-calculated PRs from workout history and intelligent weight suggestions. Focus on progressive overload suggestions and mobile polish. Read tests/README.md for test patterns. 655 tests passing.
 
 ---
 

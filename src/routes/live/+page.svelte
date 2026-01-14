@@ -22,7 +22,8 @@
 		logCompletedSet,
 		skipToExercise,
 		getExerciseLog,
-		updateExerciseLogs
+		updateExerciseLogs,
+		logSubExerciseWeights
 	} from '$lib/stores/liveSession';
 	import { activeSchedule } from '$lib/stores/schedule';
 	import { logSessionToHistory } from '$lib/stores/history';
@@ -323,13 +324,35 @@
 		showReviewModal = true;
 	}
 
+	// Sub-exercise weight type (matches DataEntryModal/SetReviewModal)
+	interface SubExerciseWeight {
+		name: string;
+		weight: string;
+		weightUnit: 'lbs' | 'kg';
+		showWeight: boolean;
+	}
+
 	// Data entry modal handlers (for live timer flow)
-	function handleDataEntrySubmit(event: CustomEvent<{ setLog: SetLog; totalRounds?: number; totalTime?: number }>) {
-		const { setLog, totalRounds, totalTime } = event.detail;
+	function handleDataEntrySubmit(event: CustomEvent<{
+		setLog: SetLog;
+		totalRounds?: number;
+		totalTime?: number;
+		subExerciseWeights?: SubExerciseWeight[];
+	}>) {
+		const { setLog, totalRounds, totalTime, subExerciseWeights } = event.detail;
 
 		if (dataEntryExercise) {
 			// Normal logging for current exercise during timer flow
 			logCompletedSet(setLog, totalRounds, totalTime);
+
+			// Log sub-exercise weights as separate ExerciseLog entries
+			if (subExerciseWeights && subExerciseWeights.length > 0 && $liveSession) {
+				logSubExerciseWeights(
+					$liveSession.currentExerciseIndex,
+					dataEntryExercise.exerciseName,
+					subExerciseWeights
+				);
+			}
 
 			// Close modal and continue
 			showDataEntry = false;
@@ -350,8 +373,13 @@
 	}
 
 	// Review modal handlers (for viewing/editing any exercise)
-	function handleReviewSave(event: CustomEvent<{ sets: SetLog[]; totalRounds?: number; totalTime?: number }>) {
-		const { sets, totalRounds, totalTime } = event.detail;
+	function handleReviewSave(event: CustomEvent<{
+		sets: SetLog[];
+		totalRounds?: number;
+		totalTime?: number;
+		subExerciseWeights?: SubExerciseWeight[];
+	}>) {
+		const { sets, totalRounds, totalTime, subExerciseWeights } = event.detail;
 
 		if (reviewExerciseIndex !== null && reviewExercise && $liveSession) {
 			updateExerciseLogs(reviewExerciseIndex, sets, totalRounds, totalTime);
@@ -368,12 +396,49 @@
 				timestamp: new Date().toISOString()
 			};
 
+			// Build array of logs including sub-exercises
+			const logsToSave = [exerciseLog];
+
+			// Create sub-exercise logs if weights were entered
+			if (subExerciseWeights && subExerciseWeights.length > 0) {
+				const now = new Date().toISOString();
+				for (const subEx of subExerciseWeights) {
+					if (!subEx.weight || !subEx.showWeight) continue;
+					const weight = parseFloat(subEx.weight);
+					if (isNaN(weight) || weight <= 0) continue;
+
+					// Find the sub-exercise prescription for reps
+					const subExercise = reviewExercise.subExercises?.find(s => s.exerciseName === subEx.name);
+					const reps = subExercise?.prescription.reps ?? null;
+
+					logsToSave.push({
+						exerciseName: subEx.name,
+						exerciseOrder: reviewExerciseIndex,
+						isCompoundParent: false,
+						compoundParentName: reviewExercise.exerciseName,
+						sets: [{
+							setNumber: 1,
+							reps,
+							weight,
+							weightUnit: subEx.weightUnit,
+							workTime: null,
+							rpe: null,
+							rir: null,
+							completed: true,
+							notes: null,
+							timestamp: now
+						}],
+						timestamp: now
+					});
+				}
+			}
+
 			// Log to history
 			logSessionToHistory(
 				$liveSession.scheduleId,
 				$liveSession.weekNumber,
 				$liveSession.dayNumber,
-				[exerciseLog]
+				logsToSave
 			);
 
 			// Update 1RM cache for this exercise (and sub-exercises if compound)

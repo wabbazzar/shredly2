@@ -9,7 +9,7 @@
 	export let existingLog: ExerciseLog | null = null;
 
 	const dispatch = createEventDispatcher<{
-		save: { sets: SetLog[]; totalRounds?: number; totalTime?: number };
+		save: { sets: SetLog[]; totalRounds?: number; totalTime?: number; subExerciseWeights?: SubExerciseWeight[] };
 		close: void;
 	}>();
 
@@ -185,10 +185,16 @@
 				timestamp: new Date().toISOString()
 			};
 
+			// Include sub-exercise weights if present
+			const weightedSubExercises = hasSubExerciseWeights
+				? subExerciseWeights.filter(s => s.showWeight && s.weight)
+				: undefined;
+
 			dispatch('save', {
 				sets: [setLog],
 				totalRounds: isAmrap && roundsInput ? parseFloat(roundsInput) : undefined,
-				totalTime: isCircuit ? parseTimeInput(timeInput) ?? undefined : undefined
+				totalTime: isCircuit ? parseTimeInput(timeInput) ?? undefined : undefined,
+				subExerciseWeights: weightedSubExercises
 			});
 			return;
 		}

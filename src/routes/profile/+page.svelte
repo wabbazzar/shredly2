@@ -3,9 +3,12 @@
 	import { navigationStore } from '$lib/stores/navigation';
 	import { userStore } from '$lib/stores/user';
 	import { pwaStore, APP_VERSION } from '$lib/stores/pwa';
+	import { activeSchedule } from '$lib/stores/schedule';
+	import { getPRDisplayData, setUserOverride, type ExercisePRDisplay } from '$lib/stores/oneRMCache';
 	import EditableField from '$lib/components/EditableField.svelte';
 	import EditableHeightField from '$lib/components/EditableHeightField.svelte';
 	import EditableSelectField from '$lib/components/EditableSelectField.svelte';
+	import PRCard from '$lib/components/profile/PRCard.svelte';
 	import { lbsToKg, kgToLbs, BIG_4_LIFTS } from '$lib/types/user';
 
 	onMount(() => {
@@ -51,6 +54,40 @@
 		},
 		{} as Record<string, number>
 	);
+
+	// Extract exercises from current program for PR display
+	$: currentProgramExercises = extractProgramExercises($activeSchedule);
+	$: programPRData = currentProgramExercises.map(name => getPRDisplayData(name)).filter((pr): pr is ExercisePRDisplay => pr !== null);
+
+	function extractProgramExercises(schedule: typeof $activeSchedule): string[] {
+		if (!schedule) return [];
+
+		const exerciseNames = new Set<string>();
+		for (const day of Object.values(schedule.days)) {
+			for (const exercise of day.exercises) {
+				// Skip compound parent names (EMOM, Circuit, etc.) - they're not real exercises
+				if (!exercise.exerciseName.match(/^(EMOM|AMRAP|Circuit|Interval)/i)) {
+					exerciseNames.add(exercise.exerciseName);
+				}
+				// Include sub-exercises from compound blocks
+				if (exercise.sub_exercises) {
+					for (const sub of exercise.sub_exercises) {
+						exerciseNames.add(sub.exerciseName);
+					}
+				}
+			}
+		}
+		return Array.from(exerciseNames).sort();
+	}
+
+	function handlePROverride(e: CustomEvent<{ exerciseName: string; value: number }>) {
+		const { exerciseName, value } = e.detail;
+		setUserOverride(exerciseName, value);
+		// Also update user store for Big 4 lifts
+		if (BIG_4_LIFTS.includes(exerciseName as (typeof BIG_4_LIFTS)[number])) {
+			userStore.updateOneRepMax(exerciseName, value, true);
+		}
+	}
 
 	// Preference options from questionnaire
 	const goalOptions = [
@@ -298,6 +335,49 @@
 				/>
 			</section>
 		</div>
+
+		<!-- Current Program PRs Section -->
+		{#if currentProgramExercises.length > 0}
+			<section class="mt-6 bg-slate-800 rounded-lg p-4">
+				<div class="flex items-center justify-between mb-4">
+					<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+						Current Program PRs
+					</h2>
+					<span class="text-xs text-slate-500">
+						{currentProgramExercises.length} exercises
+					</span>
+				</div>
+
+				{#if programPRData.length > 0}
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+						{#each programPRData as prData (prData.exerciseName)}
+							<PRCard
+								{prData}
+								{unitSystem}
+								on:override={handlePROverride}
+							/>
+						{/each}
+					</div>
+				{:else}
+					<div class="text-center py-8 text-slate-400">
+						<p>No exercise history yet.</p>
+						<p class="text-sm mt-1">Complete workouts in Live view to see your PRs here.</p>
+					</div>
+				{/if}
+			</section>
+		{:else if !$activeSchedule}
+			<section class="mt-6 bg-slate-800 rounded-lg p-4">
+				<div class="flex items-center justify-between mb-4">
+					<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+						Current Program PRs
+					</h2>
+				</div>
+				<div class="text-center py-8 text-slate-400">
+					<p>No active schedule.</p>
+					<p class="text-sm mt-1">Create a schedule in the Schedule tab to see your PRs here.</p>
+				</div>
+			</section>
+		{/if}
 
 		<!-- App Info Section -->
 		<section class="mt-6 bg-slate-800 rounded-lg p-4">

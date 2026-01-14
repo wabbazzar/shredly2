@@ -2,12 +2,21 @@
 	import '../app.css';
 	import BottomTabBar from '$lib/components/BottomTabBar.svelte';
 	import SwipeContainer from '$lib/components/SwipeContainer.svelte';
+	import LoadingScreen from '$lib/components/LoadingScreen.svelte';
 	import { navigationStore } from '$lib/stores/navigation';
 	import { initializeScheduleStore } from '$lib/stores/schedule';
 	import { fullRecalculateCache } from '$lib/stores/oneRMCache';
 	import { userStore } from '$lib/stores/user';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
+
+	let isAppReady = false;
+	let minTimeElapsed = false;
+	let isFadingOut = false;
+	let showLoadingScreen = true;
+
+	const MIN_LOADING_TIME = 800; // ms - enough to see, not enough to annoy
+	const FADE_DURATION = 300; // ms - matches transition-opacity duration-300
 
 	// Track transition state
 	let transitionDirection: 'left' | 'right' | null = null;
@@ -38,8 +47,26 @@
 		}
 	}
 
+	// Dismiss loading screen with fade when both conditions met
+	function dismissLoadingScreen() {
+		if (isAppReady && minTimeElapsed && !isFadingOut) {
+			isFadingOut = true;
+			setTimeout(() => {
+				showLoadingScreen = false;
+			}, FADE_DURATION);
+		}
+	}
+
+	// Watch for conditions to dismiss
+	$: if (isAppReady && minTimeElapsed) dismissLoadingScreen();
+
 	// Initialize stores once at app startup
 	onMount(() => {
+		// Start minimum time timer
+		setTimeout(() => {
+			minTimeElapsed = true;
+		}, MIN_LOADING_TIME);
+
 		initializeScheduleStore();
 
 		// Initialize 1RM cache with user overrides
@@ -51,8 +78,15 @@
 			}
 		}
 		fullRecalculateCache(undefined, userOverrides);
+
+		// App is ready
+		isAppReady = true;
 	});
 </script>
+
+{#if showLoadingScreen}
+	<LoadingScreen fadeOut={isFadingOut} />
+{/if}
 
 <div class="h-screen flex flex-col bg-slate-900 overflow-hidden">
 	<!-- Main content area with swipe handling -->

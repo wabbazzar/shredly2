@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { navigationStore } from '$lib/stores/navigation';
 	import { userStore } from '$lib/stores/user';
+	import { pwaStore, APP_VERSION } from '$lib/stores/pwa';
 	import EditableField from '$lib/components/EditableField.svelte';
 	import EditableHeightField from '$lib/components/EditableHeightField.svelte';
 	import EditableSelectField from '$lib/components/EditableSelectField.svelte';
@@ -10,6 +11,21 @@
 	onMount(() => {
 		navigationStore.setActiveTab('profile');
 	});
+
+	// PWA update state
+	$: pwaState = $pwaStore;
+
+	async function handleCheckForUpdates() {
+		const hasUpdate = await pwaStore.checkForUpdates();
+		if (!hasUpdate && !pwaState.updateAvailable) {
+			// No update found, show brief feedback
+			alert('App is up to date!');
+		}
+	}
+
+	function handleApplyUpdate() {
+		pwaStore.applyUpdate();
+	}
 
 	// Reactive user data
 	$: userData = $userStore;
@@ -278,5 +294,54 @@
 				/>
 			</section>
 		</div>
+
+		<!-- App Info Section -->
+		<section class="mt-6 bg-slate-800 rounded-lg p-4">
+			<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">App</h2>
+
+			<div class="flex items-center justify-between">
+				<div>
+					<p class="text-white font-medium">Shredly</p>
+					<p class="text-slate-400 text-sm">Version {APP_VERSION}</p>
+				</div>
+
+				<div class="flex items-center gap-2">
+					{#if pwaState.updateAvailable}
+						<button
+							onclick={handleApplyUpdate}
+							class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+						>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+							</svg>
+							Update Now
+						</button>
+					{:else}
+						<button
+							onclick={handleCheckForUpdates}
+							disabled={pwaState.checking}
+							class="px-4 py-2 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+						>
+							{#if pwaState.checking}
+								<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+								</svg>
+								Checking...
+							{:else}
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+								</svg>
+								Check for Updates
+							{/if}
+						</button>
+					{/if}
+				</div>
+			</div>
+
+			{#if pwaState.error}
+				<p class="mt-2 text-red-400 text-sm">{pwaState.error}</p>
+			{/if}
+		</section>
 	</div>
 </div>

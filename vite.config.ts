@@ -11,6 +11,8 @@ export default defineConfig({
 			workbox: {
 				globPatterns: ['client/**/*.{js,css,html,ico,png,svg,woff,woff2}'],
 				globIgnores: ['**/node_modules/**'],
+				skipWaiting: true, // Activate new SW immediately on SKIP_WAITING message
+				clientsClaim: true, // Take control of all clients immediately
 				runtimeCaching: [
 					{
 						urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

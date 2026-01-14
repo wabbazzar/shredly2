@@ -2,6 +2,8 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { ParameterizedExercise, WeekParameters } from '$lib/engine/types';
 	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
+	import { getFromCache } from '$lib/stores/oneRMCache';
+	import { userStore } from '$lib/stores/user';
 
 	export let exercise: ParameterizedExercise;
 	export let weekNumber: number;
@@ -10,6 +12,21 @@
 	const dispatch = createEventDispatcher<{
 		edit: void;
 	}>();
+
+	// Get TRM for weight calculation
+	function getTRM(exerciseName: string): number | null {
+		// Check cache first
+		const cacheEntry = getFromCache(exerciseName);
+		if (cacheEntry && cacheEntry.trm > 0) {
+			return cacheEntry.trm;
+		}
+		// Fall back to user store
+		const oneRepMax = userStore.getOneRepMax(exerciseName);
+		if (!oneRepMax || oneRepMax.weightLbs <= 0) {
+			return null;
+		}
+		return oneRepMax.weightLbs * 0.9; // TRM = 90% of 1RM
+	}
 
 	// Get week parameters
 	$: params = (() => {
@@ -38,7 +55,7 @@
 		return `${params.work_time_minutes}min`;
 	})();
 
-	// Format weight
+	// Format weight - show calculated lbs for percent_tm if TRM available
 	$: weight = (() => {
 		if (!params?.weight) return '';
 		if (!shouldShowWeightField(exercise.name, params.weight)) return '';
@@ -47,6 +64,11 @@
 			return params.weight;
 		}
 		if (params.weight.type === 'percent_tm') {
+			const trm = getTRM(exercise.name);
+			if (trm !== null) {
+				const calculatedWeight = Math.round(trm * (params.weight.value / 100) / 5) * 5; // Round to nearest 5
+				return `${calculatedWeight} lbs`;
+			}
 			return `${params.weight.value}% TM`;
 		}
 		if (params.weight.type === 'percent_bw') {

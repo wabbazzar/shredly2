@@ -27,6 +27,7 @@ import { getExerciseMetadata } from '$lib/engine/exercise-metadata';
 import { activeSchedule } from './schedule';
 import { getWeekPerformance } from './history';
 import { userStore } from './user';
+import { getFromCache } from './oneRMCache';
 import timerConfig from '$lib/../data/timer_config.json';
 
 // ============================================================================
@@ -78,10 +79,24 @@ function roundToIncrement(weight: number, equipmentType?: string): number {
 }
 
 /**
- * Get Training Max for an exercise from user's 1RM
- * TM = 1RM * (training_max_percentage from config)
+ * Get Training Max for an exercise
+ *
+ * Priority:
+ * 1. Cache TRM (from calculated history or user override)
+ * 2. User store 1RM * training_max_percentage
+ *
+ * The cache stores TRM directly (90% of 1RM), so we use it as-is.
+ * Falls back to user store for exercises not in history.
  */
 function getTrainingMax(exerciseName: string): number | null {
+  // Check cache first (O(1) lookup)
+  const cacheEntry = getFromCache(exerciseName);
+  if (cacheEntry && cacheEntry.trm > 0) {
+    // Cache already stores TRM (90% of 1RM, respects user override)
+    return cacheEntry.trm;
+  }
+
+  // Fall back to user store
   const oneRepMax = userStore.getOneRepMax(exerciseName);
   if (!oneRepMax || oneRepMax.weightLbs <= 0) {
     return null;

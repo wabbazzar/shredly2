@@ -25,7 +25,7 @@ import type { StoredSchedule, ParameterizedExercise, ParameterizedDay } from '$l
 import { createInitialTimerState, getTimerExerciseType } from '$lib/engine/timer-engine';
 import { getExerciseMetadata } from '$lib/engine/exercise-metadata';
 import { activeSchedule } from './schedule';
-import { getWeekPerformance } from './history';
+import { getWeekPerformance, type HistoryRow } from './history';
 import { userStore } from './user';
 import { getFromCache } from './oneRMCache';
 import timerConfig from '$lib/../data/timer_config.json';
@@ -1276,4 +1276,149 @@ export function updateExerciseLogs(
 
     return { ...session, logs, exercises };
   });
+}
+
+// ============================================================================
+// HISTORY RECONSTRUCTION
+// ============================================================================
+
+/**
+ * Reconstruct ExerciseLog array from history rows
+ */
+function reconstructLogsFromHistory(
+  historyRows: HistoryRow[],
+  exercises: LiveExercise[]
+): ExerciseLog[] {
+  const logs: ExerciseLog[] = [];
+
+  // Group rows by exercise_order and exercise_name
+  const byExercise = new Map<string, HistoryRow[]>();
+  for (const row of historyRows) {
+    const key = `${row.exercise_order}|${row.exercise_name}`;
+    if (!byExercise.has(key)) byExercise.set(key, []);
+    byExercise.get(key)!.push(row);
+  }
+
+  // Convert each group to ExerciseLog
+  for (const [, rows] of byExercise) {
+    const firstRow = rows[0];
+
+    // Find compound parent row if exists
+    const parentRow = rows.find(r => r.is_compound_parent);
+
+    // Build sets from non-parent rows
+    const sets: SetLog[] = rows
+      .filter(r => !r.is_compound_parent)
+      .sort((a, b) => a.set_number - b.set_number)
+      .map(r => ({
+        setNumber: r.set_number,
+        reps: r.reps,
+        weight: r.weight,
+        weightUnit: r.weight_unit as 'lbs' | 'kg' | null,
+        workTime: r.work_time,
+        rpe: r.rpe,
+        rir: r.rir,
+        completed: r.completed,
+        notes: r.notes,
+        timestamp: r.timestamp
+      }));
+
+    // Parse totalRounds from notes (e.g., "5.5 rounds")
+    let totalRounds: number | undefined;
+    if (parentRow?.notes) {
+      const match = parentRow.notes.match(/(\d+\.?\d*)\s*rounds?/i);
+      if (match) {
+        totalRounds = parseFloat(match[1]);
+      }
+    }
+
+    logs.push({
+      exerciseName: firstRow.exercise_name,
+      exerciseOrder: firstRow.exercise_order,
+      isCompoundParent: parentRow !== undefined,
+      compoundParentName: firstRow.compound_parent_name,
+      sets,
+      totalRounds,
+      totalTime: parentRow?.work_time ?? undefined,
+      timestamp: firstRow.timestamp
+    });
+  }
+
+  return logs;
+}
+
+/**
+ * Mark exercises as completed/partial based on reconstructed logs
+ */
+function markExercisesFromLogs(
+  exercises: LiveExercise[],
+  logs: ExerciseLog[]
+): void {
+  for (const log of logs) {
+    const exercise = exercises[log.exerciseOrder];
+    if (exercise) {
+      const completedSets = log.sets.filter(s => s.completed).length;
+      exercise.completedSets = completedSets;
+      exercise.completed = completedSets >= exercise.prescription.sets ||
+        log.totalRounds !== undefined ||
+        log.totalTime !== undefined;
+      exercise.skipped = false;
+    }
+  }
+}
+
+/**
+ * Reconstruct a LiveWorkoutSession from history rows
+ *
+ * Creates a "completed" session that can be reviewed/edited using
+ * the existing review mode UI. The session is marked as isComplete: true
+ * so it goes directly into review mode.
+ *
+ * @param schedule - The active schedule
+ * @param weekNumber - The week number
+ * @param dayNumber - The day number (global day index)
+ * @param historyRows - Deduplicated history rows for this workout
+ */
+export function reconstructSessionFromHistory(
+  schedule: StoredSchedule,
+  weekNumber: number,
+  dayNumber: number,
+  historyRows: HistoryRow[]
+): LiveWorkoutSession {
+  // Get the day from schedule
+  const day = schedule.days[dayNumber.toString()];
+  if (!day) {
+    throw new Error(`Day ${dayNumber} not found in schedule`);
+  }
+
+  // Convert day exercises to LiveExercise format
+  const exercises = convertDayToLiveExercises(day, weekNumber, schedule.id);
+
+  // Reconstruct logs from history rows
+  const logs = reconstructLogsFromHistory(historyRows, exercises);
+
+  // Mark exercises as completed based on logs
+  markExercisesFromLogs(exercises, logs);
+
+  // Get config
+  const config = get(audioConfig);
+
+  // Create session with isComplete: true for review mode
+  return {
+    workoutId: `${schedule.id}-${weekNumber}-${dayNumber}-history`,
+    scheduleId: schedule.id,
+    weekNumber,
+    dayNumber,
+    startTime: historyRows[0]?.timestamp ?? new Date().toISOString(),
+    endTime: historyRows[historyRows.length - 1]?.timestamp ?? new Date().toISOString(),
+    currentExerciseIndex: -1, // -1 indicates review mode (no current exercise)
+    exercises,
+    logs,
+    timerState: createInitialTimerState(),
+    audioConfig: config,
+    isPaused: false,
+    pauseStartTime: null,
+    totalPauseTime: 0,
+    isComplete: true
+  };
 }

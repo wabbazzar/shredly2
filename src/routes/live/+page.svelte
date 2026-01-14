@@ -23,10 +23,11 @@
 		skipToExercise,
 		getExerciseLog,
 		updateExerciseLogs,
-		logSubExerciseWeights
+		logSubExerciseWeights,
+		reconstructSessionFromHistory
 	} from '$lib/stores/liveSession';
 	import { activeSchedule } from '$lib/stores/schedule';
-	import { logSessionToHistory } from '$lib/stores/history';
+	import { logSessionToHistory, getTodaysHistoryForWorkout } from '$lib/stores/history';
 	import { updateCacheForExercise } from '$lib/stores/oneRMCache';
 	import {
 		TimerEngine,
@@ -54,6 +55,7 @@
 	let showStartPrompt = false;
 	let noScheduleMessage = '';
 	let isReady = false; // Defers heavy work until after first paint
+	let isHistoryReviewMode = false; // True when showing previously logged workout
 
 	// Modal state
 	let showDataEntry = false;
@@ -103,7 +105,26 @@
 					// Check for today's workout
 					const todaysWorkout = getTodaysWorkout($activeSchedule);
 					if (todaysWorkout) {
-						showStartPrompt = true;
+						// Check if user has already logged exercises for today's workout
+						const historyRows = getTodaysHistoryForWorkout(
+							$activeSchedule.id,
+							todaysWorkout.weekNumber,
+							todaysWorkout.dayNumber
+						);
+
+						if (historyRows && historyRows.length > 0) {
+							// Reconstruct session from history for review mode
+							const reconstructedSession = reconstructSessionFromHistory(
+								$activeSchedule,
+								todaysWorkout.weekNumber,
+								todaysWorkout.dayNumber,
+								historyRows
+							);
+							liveSession.set(reconstructedSession);
+							isHistoryReviewMode = true;
+						} else {
+							showStartPrompt = true;
+						}
 					} else {
 						noScheduleMessage = 'No workout scheduled for today';
 					}
@@ -276,6 +297,7 @@
 	function handleStartNewWorkout() {
 		clearSession();
 		showStartPrompt = false;
+		isHistoryReviewMode = false;
 
 		// Check if there's a workout for today
 		if ($activeSchedule) {
@@ -286,6 +308,23 @@
 				noScheduleMessage = 'No workout scheduled for today';
 			}
 		}
+	}
+
+	// Done with workout - clear session and return to start prompt
+	function handleDone() {
+		clearSession();
+		isHistoryReviewMode = false;
+
+		// Go back to start prompt if there's a workout for today
+		if ($activeSchedule) {
+			const todaysWorkout = getTodaysWorkout($activeSchedule);
+			if (todaysWorkout) {
+				showStartPrompt = true;
+				noScheduleMessage = '';
+				return;
+			}
+		}
+		noScheduleMessage = 'No workout scheduled for today';
 	}
 
 	// Exercise info handler
@@ -483,23 +522,42 @@
 			<!-- Workout Complete - Full width review mode -->
 			<div class="flex-1 min-h-0 flex flex-col">
 				<!-- Completion Header -->
-				<div class="bg-green-900/50 border-b border-green-700 p-4">
+				<div class="{isHistoryReviewMode ? 'bg-indigo-900/50 border-indigo-700' : 'bg-green-900/50 border-green-700'} border-b p-4">
 					<div class="flex items-center justify-between max-w-4xl mx-auto">
 						<div class="flex items-center gap-3">
-							<svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+							<svg class="w-8 h-8 {isHistoryReviewMode ? 'text-indigo-400' : 'text-green-400'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								{#if isHistoryReviewMode}
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+								{:else}
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+								{/if}
 							</svg>
 							<div>
-								<h2 class="text-lg font-semibold text-white">Workout Complete!</h2>
-								<p class="text-sm text-green-300">Tap any exercise to review or edit your data</p>
+								<h2 class="text-lg font-semibold text-white">
+									{isHistoryReviewMode ? 'Previous Workout' : 'Workout Complete!'}
+								</h2>
+								<p class="text-sm {isHistoryReviewMode ? 'text-indigo-300' : 'text-green-300'}">
+									{isHistoryReviewMode
+										? 'Review or edit your logged data from earlier today'
+										: 'Tap any exercise to review or edit your data'}
+								</p>
 							</div>
 						</div>
-						<button
-							class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors"
-							on:click={handleStartNewWorkout}
-						>
-							Done
-						</button>
+						{#if isHistoryReviewMode}
+							<button
+								class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors"
+								on:click={handleStartNewWorkout}
+							>
+								Start New Workout
+							</button>
+						{:else}
+							<button
+								class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors"
+								on:click={handleDone}
+							>
+								Done
+							</button>
+						{/if}
 					</div>
 				</div>
 

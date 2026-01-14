@@ -21,6 +21,8 @@ import {
   getPersonalRecords,
   getExerciseStats,
   getLastPerformance,
+  getTodaysHistoryForWorkout,
+  hasLoggedTodaysWorkout,
   exportHistoryCsv,
   clearHistory,
   getStorageInfo,
@@ -487,6 +489,148 @@ describe('History Store', () => {
 
       const stored = mockStorage['shredly_exercise_history_v2'];
       expect(stored).toContain('Test Exercise');
+    });
+  });
+
+  describe('getTodaysHistoryForWorkout', () => {
+    it('should return null when no history exists', () => {
+      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+      expect(result).toBe(null);
+    });
+
+    it('should return rows for today\'s workout', () => {
+      const today = new Date().toISOString().split('T')[0];
+      appendHistoryRows([
+        createMockHistoryRow({
+          date: today,
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Bench Press',
+          set_number: 1
+        }),
+        createMockHistoryRow({
+          date: today,
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Bench Press',
+          set_number: 2
+        })
+      ]);
+
+      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+
+      expect(result).not.toBe(null);
+      expect(result?.length).toBe(2);
+    });
+
+    it('should exclude rows from different dates', () => {
+      const today = new Date().toISOString().split('T')[0];
+      appendHistoryRows([
+        createMockHistoryRow({
+          date: today,
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1
+        }),
+        createMockHistoryRow({
+          date: '2020-01-01', // Different date
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1
+        })
+      ]);
+
+      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+
+      expect(result?.length).toBe(1);
+    });
+
+    it('should exclude rows from different programs', () => {
+      const today = new Date().toISOString().split('T')[0];
+      appendHistoryRows([
+        createMockHistoryRow({
+          date: today,
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1
+        }),
+        createMockHistoryRow({
+          date: today,
+          workout_program_id: 'other-program', // Different program
+          week_number: 1,
+          day_number: 1
+        })
+      ]);
+
+      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+
+      expect(result?.length).toBe(1);
+    });
+
+    it('should deduplicate by keeping latest timestamp', () => {
+      const today = new Date().toISOString().split('T')[0];
+      appendHistoryRows([
+        createMockHistoryRow({
+          date: today,
+          timestamp: `${today}T10:00:00.000Z`,
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Bench Press',
+          set_number: 1,
+          weight: 100
+        }),
+        createMockHistoryRow({
+          date: today,
+          timestamp: `${today}T12:00:00.000Z`, // Later timestamp
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Bench Press',
+          set_number: 1,
+          weight: 135 // Updated weight
+        })
+      ]);
+
+      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+
+      expect(result?.length).toBe(1);
+      expect(result?.[0].weight).toBe(135); // Should have latest weight
+    });
+  });
+
+  describe('hasLoggedTodaysWorkout', () => {
+    it('should return false when no history exists', () => {
+      const result = hasLoggedTodaysWorkout('test-program', 1, 1);
+      expect(result).toBe(false);
+    });
+
+    it('should return true when history exists for today', () => {
+      const today = new Date().toISOString().split('T')[0];
+      appendHistoryRow(createMockHistoryRow({
+        date: today,
+        workout_program_id: 'test-program',
+        week_number: 1,
+        day_number: 1
+      }));
+
+      const result = hasLoggedTodaysWorkout('test-program', 1, 1);
+      expect(result).toBe(true);
+    });
+
+    it('should return false for different week/day', () => {
+      const today = new Date().toISOString().split('T')[0];
+      appendHistoryRow(createMockHistoryRow({
+        date: today,
+        workout_program_id: 'test-program',
+        week_number: 1,
+        day_number: 1
+      }));
+
+      const result = hasLoggedTodaysWorkout('test-program', 2, 3);
+      expect(result).toBe(false);
     });
   });
 });

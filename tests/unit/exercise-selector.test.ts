@@ -68,7 +68,7 @@ describe("exercise-selector", () => {
     });
 
     it("should match total_exercises count from database", () => {
-      const expectedCount = 372; // Actual count in database (updated in Ticket #023)
+      const expectedCount = 373; // Actual count in database (added Butler Bows)
 
       expect(allExercises.length).toBe(expectedCount);
     });

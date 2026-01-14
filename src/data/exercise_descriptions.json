@@ -439,6 +439,14 @@
       "cues": "Long and strong, hips level, reach through limbs, no arching back"
     }
   },
+  "Butler Bows": {
+    "description": {
+      "overview": "A standing hip hinge mobility drill targeting hamstrings and lower back. Teaches proper hinge mechanics while improving posterior chain flexibility and control.",
+      "setup": "Stand with feet hip-width apart, slight bend in knees. Hands clasped behind back or at sides. Core engaged, chest proud.",
+      "movement": "Hinge at hips, pushing them back while keeping spine neutral. Lower torso until stretch is felt in hamstrings. Return to standing by driving hips forward.",
+      "cues": "Push hips back not down, flat back throughout, soft knees, squeeze glutes to stand"
+    }
+  },
   "Leg Raises": {
     "description": {
       "overview": "A core exercise lifting legs while supine. Targets lower abs and hip flexors while challenging anti-extension strength.",

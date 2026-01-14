@@ -2,7 +2,7 @@
   "exercise_database": {
     "version": "2.0.0",
     "last_updated": "2026-01-14",
-    "total_exercises": 372,
+    "total_exercises": 373,
     "categories": {
       "strength": {
         "description": "Primary resistance training exercises with external load",
@@ -5579,6 +5579,25 @@
             "difficulty": "Beginner",
             "variations": [
               "Modified Bird Dog"
+            ],
+            "isometric": false,
+            "external_load": "never"
+          },
+          "Butler Bows": {
+            "category": "mobility",
+            "typical_sets": 2,
+            "typical_reps": "10",
+            "equipment": [
+              "None"
+            ],
+            "muscle_groups": [
+              "Hamstrings",
+              "Lower Back",
+              "Glutes"
+            ],
+            "difficulty": "Beginner",
+            "variations": [
+              "Good Mornings"
             ],
             "isometric": false,
             "external_load": "never"

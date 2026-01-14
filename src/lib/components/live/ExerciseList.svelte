@@ -216,6 +216,7 @@
 			{@const isClickable = isFuture || isPast || isSkipped}
 			{@const loggedData = formatLoggedData(index, exercise)}
 
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 			<div
 				class="flex items-start p-3 border-b border-slate-700/50 transition-colors
 				{isCurrent ? 'bg-slate-800' : ''}
@@ -225,7 +226,7 @@
 				on:click={() => handleExerciseClick(exercise, index)}
 				on:keydown={(e) => e.key === 'Enter' && handleExerciseClick(exercise, index)}
 				role={isClickable ? 'button' : undefined}
-				tabindex={isClickable ? 0 : undefined}
+				tabindex={isClickable ? 0 : -1}
 			>
 				<!-- Status indicator -->
 				<button

@@ -64,11 +64,20 @@
 	$: prescriptionFormatted = formatWeightPrescriptionDetailed(weightPrescription);
 </script>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" on:click|self={handleClose}>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+	class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+	on:click|self={handleClose}
+	on:keydown={(e) => e.key === 'Escape' && handleClose()}
+	role="dialog"
+	aria-modal="true"
+	aria-labelledby="exercise-info-title"
+	tabindex="-1"
+>
 	<div class="w-full max-w-md bg-slate-800 rounded-xl shadow-xl overflow-hidden max-h-[80vh] flex flex-col">
 		<!-- Header -->
 		<div class="flex items-center justify-between p-4 border-b border-slate-700 flex-shrink-0">
-			<h2 class="text-lg font-semibold text-white truncate pr-4">{exercise.exerciseName}</h2>
+			<h2 id="exercise-info-title" class="text-lg font-semibold text-white truncate pr-4">{exercise.exerciseName}</h2>
 			<button
 				class="p-2 text-slate-400 hover:text-white transition-colors flex-shrink-0"
 				on:click={handleClose}

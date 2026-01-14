@@ -184,7 +184,7 @@ export function generateCalendarData(
     weekdayToWorkoutDay[weekday] = parseInt(dayNum);
   }
 
-  let currentMonday = new Date(mondayStart);
+  const currentMonday = new Date(mondayStart);
   let currentMonthData: CalendarMonth | null = null;
 
   for (let week = 1; week <= numWeeks; week++) {

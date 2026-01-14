@@ -624,7 +624,7 @@ function selectMobilityExercise(
   random: RandomGenerator
 ): ExerciseStructure | null {
   // Filter for mobility/flexibility exercises
-  let filtered = allExercises.filter(([name, ex]) => {
+  const filtered = allExercises.filter(([name, ex]) => {
     if (usedExerciseNames.has(name)) return false;
     if (!['mobility', 'flexibility'].includes(ex.category)) return false;
 
@@ -695,7 +695,7 @@ function constructCompoundExercise(
   const experienceModifier = rules.experience_modifiers[answers.experience_level];
 
   // Filter available exercises
-  let availableExercises = allExercises.filter(([name, exercise]) => {
+  const availableExercises = allExercises.filter(([name, exercise]) => {
     // CRITICAL: Must be individual exercise category - NEVER compound categories
     if (!individualCategories.includes(exercise.category)) return false;
 

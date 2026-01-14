@@ -282,7 +282,7 @@ export function formatSubExercises(
 
       if (progression.length > 0) {
         // Capitalize field name for display (but clean up the name)
-        let displayName = fieldName
+        const displayName = fieldName
           .replace('_minutes', '')  // Remove _minutes suffix since we're showing units now
           .split('_')
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))

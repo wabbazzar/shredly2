@@ -727,7 +727,7 @@ export class TimerEngine {
     this.stopTicking();
 
     switch (this.state.phase) {
-      case 'countdown':
+      case 'countdown': {
         const nextPhase = (this.state as any)._nextPhase || 'work';
         delete (this.state as any)._nextPhase;
         if (nextPhase === 'work') {
@@ -736,6 +736,7 @@ export class TimerEngine {
           this.startRest();
         }
         break;
+      }
 
       case 'work':
         this.handleWorkComplete();

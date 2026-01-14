@@ -321,43 +321,49 @@
 			{#if isAmrap}
 				<!-- AMRAP: Total rounds input -->
 				<div class="bg-slate-700/30 rounded-lg p-3">
-					<label class="block text-xs font-medium text-slate-300 mb-1.5">Total Rounds Completed</label>
-					<input
-						type="number"
-						inputmode="decimal"
-						step="0.5"
-						bind:value={roundsInput}
-						on:focus={(e) => e.currentTarget.select()}
-						class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-						placeholder="e.g., 5.5"
-					/>
+					<label class="block">
+						<span class="block text-xs font-medium text-slate-300 mb-1.5">Total Rounds Completed</span>
+						<input
+							type="number"
+							inputmode="decimal"
+							step="0.5"
+							bind:value={roundsInput}
+							on:focus={(e) => e.currentTarget.select()}
+							class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+							placeholder="e.g., 5.5"
+						/>
+					</label>
 					<p class="mt-1 text-xs text-slate-500">Decimal allowed (3.5 = 3 full + half round)</p>
 				</div>
 			{:else if isCircuit}
 				<!-- Circuit: Total time input -->
 				<div class="bg-slate-700/30 rounded-lg p-3">
-					<label class="block text-xs font-medium text-slate-300 mb-1.5">Total Time</label>
-					<input
-						type="text"
-						bind:value={timeInput}
-						on:focus={(e) => e.currentTarget.select()}
-						class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-						placeholder="5:30"
-					/>
+					<label class="block">
+						<span class="block text-xs font-medium text-slate-300 mb-1.5">Total Time</span>
+						<input
+							type="text"
+							bind:value={timeInput}
+							on:focus={(e) => e.currentTarget.select()}
+							class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+							placeholder="5:30"
+						/>
+					</label>
 					<p class="mt-1 text-xs text-slate-500">Format: MM:SS</p>
 				</div>
 			{:else if isEmom || isInterval}
 				<!-- EMOM/Interval: Reps input -->
 				<div class="bg-slate-700/30 rounded-lg p-3">
-					<label class="block text-xs font-medium text-slate-300 mb-1.5">Reps per round</label>
-					<input
-						type="number"
-						inputmode="numeric"
-						bind:value={repsInput}
-						on:focus={(e) => e.currentTarget.select()}
-						class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-						placeholder={exercise.prescription.reps?.toString() ?? '-'}
-					/>
+					<label class="block">
+						<span class="block text-xs font-medium text-slate-300 mb-1.5">Reps per round</span>
+						<input
+							type="number"
+							inputmode="numeric"
+							bind:value={repsInput}
+							on:focus={(e) => e.currentTarget.select()}
+							class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+							placeholder={exercise.prescription.reps?.toString() ?? '-'}
+						/>
+					</label>
 				</div>
 			{:else}
 				<!-- Regular exercise: Column Headers -->

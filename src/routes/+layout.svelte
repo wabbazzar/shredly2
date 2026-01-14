@@ -4,6 +4,9 @@
 	import SwipeContainer from '$lib/components/SwipeContainer.svelte';
 	import { navigationStore } from '$lib/stores/navigation';
 	import { initializeScheduleStore } from '$lib/stores/schedule';
+	import { fullRecalculateCache } from '$lib/stores/oneRMCache';
+	import { userStore } from '$lib/stores/user';
+	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
 
 	// Track transition state
@@ -38,6 +41,16 @@
 	// Initialize stores once at app startup
 	onMount(() => {
 		initializeScheduleStore();
+
+		// Initialize 1RM cache with user overrides
+		const userData = get(userStore);
+		const userOverrides: Record<string, number> = {};
+		for (const orm of userData.oneRepMaxes) {
+			if (orm.isManual && orm.weightLbs > 0) {
+				userOverrides[orm.exerciseName] = orm.weightLbs;
+			}
+		}
+		fullRecalculateCache(undefined, userOverrides);
 	});
 </script>
 

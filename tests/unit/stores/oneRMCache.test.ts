@@ -584,3 +584,80 @@ describe('calculate1RMEntry', () => {
 		expect(entry.is_stale).toBe(false);
 	});
 });
+
+// ============================================================================
+// CACHE STORE OPERATIONS TESTS
+// ============================================================================
+
+describe('Cache Store Operations', () => {
+	beforeEach(() => {
+		// Clear any cached state before each test
+		vi.resetModules();
+	});
+
+	it('getFromCache returns null for non-existent exercise', async () => {
+		const { getFromCache, invalidateCache } = await import('$lib/stores/oneRMCache');
+		invalidateCache();
+		expect(getFromCache('NonExistentExercise')).toBeNull();
+	});
+
+	it('invalidateCache clears all cached entries', async () => {
+		const { oneRMCacheStore, invalidateCache } = await import('$lib/stores/oneRMCache');
+		const { get } = await import('svelte/store');
+
+		// Set some data
+		oneRMCacheStore.set({
+			'Bench Press': {
+				estimated_1rm: 200,
+				trm: 180,
+				last_updated: new Date().toISOString(),
+				data_points: 5,
+				is_stale: false,
+				last_performed: '2026-01-10',
+				user_override: null
+			}
+		});
+
+		// Verify data exists
+		expect(Object.keys(get(oneRMCacheStore))).toHaveLength(1);
+
+		// Clear cache
+		invalidateCache();
+
+		// Verify cache is empty
+		expect(Object.keys(get(oneRMCacheStore))).toHaveLength(0);
+	});
+
+	it('setUserOverride updates cache entry with override', async () => {
+		const { oneRMCacheStore, setUserOverride, getFromCache, deriveTRM } = await import(
+			'$lib/stores/oneRMCache'
+		);
+
+		// Need to set up exerciseHistory mock first
+		const { exerciseHistory } = await import('$lib/stores/history');
+		exerciseHistory.set([]);
+
+		setUserOverride('Bench Press', 225);
+
+		const entry = getFromCache('Bench Press');
+		expect(entry).not.toBeNull();
+		expect(entry!.user_override).toBe(225);
+		expect(entry!.trm).toBe(deriveTRM(225));
+	});
+
+	it('clearUserOverride removes override from cache entry', async () => {
+		const { setUserOverride, clearUserOverride, getFromCache } = await import(
+			'$lib/stores/oneRMCache'
+		);
+		const { exerciseHistory } = await import('$lib/stores/history');
+		exerciseHistory.set([]);
+
+		// Set override first
+		setUserOverride('Bench Press', 225);
+		expect(getFromCache('Bench Press')!.user_override).toBe(225);
+
+		// Clear override
+		clearUserOverride('Bench Press');
+		expect(getFromCache('Bench Press')!.user_override).toBeNull();
+	});
+});

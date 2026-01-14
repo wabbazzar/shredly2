@@ -727,6 +727,7 @@ export interface LiveWorkoutSession {
   weekNumber: number;
   dayNumber: number;
   startTime: string;  // ISO timestamp
+  endTime: string | null;  // ISO timestamp when workout ended
   currentExerciseIndex: number;
   exercises: LiveExercise[];
   logs: ExerciseLog[];
@@ -735,6 +736,7 @@ export interface LiveWorkoutSession {
   isPaused: boolean;
   pauseStartTime: string | null;
   totalPauseTime: number;  // seconds
+  isComplete: boolean;  // True when workout is finished but session kept for review
 }
 
 /**

@@ -646,6 +646,11 @@ audioConfig.subscribe((config) => {
 export const hasActiveSession = derived(liveSession, ($session) => $session !== null);
 
 /**
+ * Whether the workout is complete (finished but session kept for review)
+ */
+export const isWorkoutComplete = derived(liveSession, ($session) => $session?.isComplete ?? false);
+
+/**
  * Current exercise in the session
  */
 export const currentExercise = derived(liveSession, ($session): LiveExercise | null => {
@@ -699,6 +704,7 @@ export function startWorkout(
     weekNumber,
     dayNumber,
     startTime: new Date().toISOString(),
+    endTime: null,
     currentExerciseIndex: 0,
     exercises,
     logs: [],
@@ -706,7 +712,8 @@ export function startWorkout(
     audioConfig: config,
     isPaused: false,
     pauseStartTime: null,
-    totalPauseTime: 0
+    totalPauseTime: 0,
+    isComplete: false
   };
 
   liveSession.set(session);
@@ -1037,7 +1044,8 @@ export function logCompletedSet(
 }
 
 /**
- * End the workout session
+ * End the workout session - marks as complete but keeps session for review/editing
+ * Call clearSession() to fully clear after user is done reviewing
  */
 export function endWorkout(): { logs: ExerciseLog[]; session: LiveWorkoutSession } | null {
   const session = get(liveSession);
@@ -1045,7 +1053,15 @@ export function endWorkout(): { logs: ExerciseLog[]; session: LiveWorkoutSession
 
   const logs = session.logs ?? [];
 
-  liveSession.set(null);
+  // Mark as complete but keep session for review
+  liveSession.update(s => {
+    if (!s) return s;
+    return {
+      ...s,
+      isComplete: true,
+      endTime: new Date().toISOString()
+    };
+  });
 
   return { logs, session };
 }

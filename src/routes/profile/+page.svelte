@@ -4,7 +4,7 @@
 	import { userStore } from '$lib/stores/user';
 	import { pwaStore, APP_VERSION } from '$lib/stores/pwa';
 	import { activeSchedule } from '$lib/stores/schedule';
-	import { getPRDisplayData, setUserOverride, type ExercisePRDisplay } from '$lib/stores/oneRMCache';
+	import { getPRDisplayData, setUserOverride, oneRMCacheStore, type ExercisePRDisplay } from '$lib/stores/oneRMCache';
 	import EditableField from '$lib/components/EditableField.svelte';
 	import EditableHeightField from '$lib/components/EditableHeightField.svelte';
 	import EditableSelectField from '$lib/components/EditableSelectField.svelte';
@@ -57,7 +57,13 @@
 
 	// Extract exercises from current program for PR display
 	$: currentProgramExercises = extractProgramExercises($activeSchedule);
-	$: programPRData = currentProgramExercises.map(name => getPRDisplayData(name)).filter((pr): pr is ExercisePRDisplay => pr !== null);
+
+	// Compute PR data - must be a function that takes the cache to create proper reactive dependency
+	function computePRData(cache: typeof $oneRMCacheStore, exercises: string[]): ExercisePRDisplay[] {
+		// The cache parameter ensures this re-runs when cache changes
+		return exercises.map(name => getPRDisplayData(name)).filter((pr): pr is ExercisePRDisplay => pr !== null);
+	}
+	$: programPRData = computePRData($oneRMCacheStore, currentProgramExercises);
 
 	function extractProgramExercises(schedule: typeof $activeSchedule): string[] {
 		if (!schedule) return [];
@@ -66,13 +72,13 @@
 		for (const day of Object.values(schedule.days)) {
 			for (const exercise of day.exercises) {
 				// Skip compound parent names (EMOM, Circuit, etc.) - they're not real exercises
-				if (!exercise.exerciseName.match(/^(EMOM|AMRAP|Circuit|Interval)/i)) {
-					exerciseNames.add(exercise.exerciseName);
+				if (!exercise.name.match(/^(EMOM|AMRAP|Circuit|Interval)/i)) {
+					exerciseNames.add(exercise.name);
 				}
 				// Include sub-exercises from compound blocks
 				if (exercise.sub_exercises) {
 					for (const sub of exercise.sub_exercises) {
-						exerciseNames.add(sub.exerciseName);
+						exerciseNames.add(sub.name);
 					}
 				}
 			}

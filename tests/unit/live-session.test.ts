@@ -533,7 +533,11 @@ describe('Live Session Store', () => {
 
       expect(result).not.toBe(null);
       expect(result?.logs.length).toBe(1);
-      expect(get(liveSession)).toBe(null);
+      // Session is kept for review, not cleared
+      const session = get(liveSession);
+      expect(session).not.toBe(null);
+      expect(session?.isComplete).toBe(true);
+      expect(session?.endTime).not.toBe(null);
     });
 
     it('should clear session without returning logs', () => {

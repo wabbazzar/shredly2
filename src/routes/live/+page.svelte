@@ -4,6 +4,7 @@
 	import {
 		liveSession,
 		hasActiveSession,
+		isWorkoutComplete,
 		currentExercise,
 		remainingExercises,
 		sessionProgress,
@@ -246,7 +247,7 @@
 		// Save logs to history if session had data
 		if (result && result.logs.length > 0 && $liveSession) {
 			logSessionToHistory(
-				$liveSession.workoutProgramId,
+				$liveSession.scheduleId,
 				$liveSession.weekNumber,
 				$liveSession.dayNumber,
 				result.logs
@@ -266,16 +267,22 @@
 			}
 		}
 
+		// Reset timer state but keep session for review
+		timerState = createInitialTimerState();
+	}
+
+	// Start a new workout (clears completed session first)
+	function handleStartNewWorkout() {
+		clearSession();
 		showStartPrompt = false;
 
-		// Reset state
-		timerState = createInitialTimerState();
-
-		// Check if there's a workout for today again
+		// Check if there's a workout for today
 		if ($activeSchedule) {
 			const todaysWorkout = getTodaysWorkout($activeSchedule);
 			if (todaysWorkout) {
 				showStartPrompt = true;
+			} else {
+				noScheduleMessage = 'No workout scheduled for today';
 			}
 		}
 	}
@@ -346,8 +353,37 @@
 	function handleReviewSave(event: CustomEvent<{ sets: SetLog[]; totalRounds?: number; totalTime?: number }>) {
 		const { sets, totalRounds, totalTime } = event.detail;
 
-		if (reviewExerciseIndex !== null) {
+		if (reviewExerciseIndex !== null && reviewExercise && $liveSession) {
 			updateExerciseLogs(reviewExerciseIndex, sets, totalRounds, totalTime);
+
+			// Also log to history and update 1RM cache (for review mode edits)
+			const exerciseLog = {
+				exerciseName: reviewExercise.exerciseName,
+				exerciseOrder: reviewExerciseIndex,
+				isCompoundParent: reviewExercise.isCompoundParent,
+				compoundParentName: null,
+				sets,
+				totalRounds,
+				totalTime,
+				timestamp: new Date().toISOString()
+			};
+
+			// Log to history
+			logSessionToHistory(
+				$liveSession.scheduleId,
+				$liveSession.weekNumber,
+				$liveSession.dayNumber,
+				[exerciseLog]
+			);
+
+			// Update 1RM cache for this exercise (and sub-exercises if compound)
+			if (!reviewExercise.isCompoundParent) {
+				updateCacheForExercise(reviewExercise.exerciseName);
+			} else if (reviewExercise.subExercises) {
+				for (const sub of reviewExercise.subExercises) {
+					updateCacheForExercise(sub.exerciseName);
+				}
+			}
 		}
 
 		showReviewModal = false;
@@ -378,48 +414,88 @@
 	<!-- Active workout view - calc height accounts for 4rem nav bar + safe area -->
 	<!-- Mobile: stacked (col), Desktop: side-by-side (row) -->
 	<div class="flex flex-col lg:flex-row bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
-		<!-- Timer Side (left on desktop, top on mobile) -->
-		<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
-			<!-- Timer + Controls: centered vertically together -->
-			<div class="flex-1 min-h-0 flex flex-col items-center justify-center" style="background-color: {getPhaseColor(timerState.phase)}">
-				<TimerDisplay
-					{timerState}
-					currentExercise={$currentExercise}
-				/>
-				<div class="mt-4">
-					<TimerControls
-						phase={timerState.phase}
-						{hasNextExercise}
-						on:start={handleStart}
-						on:pause={handlePause}
-						on:resume={handleResume}
-						on:skip={handleSkip}
-						on:stop={handleStop}
+		{#if $isWorkoutComplete}
+			<!-- Workout Complete - Full width review mode -->
+			<div class="flex-1 min-h-0 flex flex-col">
+				<!-- Completion Header -->
+				<div class="bg-green-900/50 border-b border-green-700 p-4">
+					<div class="flex items-center justify-between max-w-4xl mx-auto">
+						<div class="flex items-center gap-3">
+							<svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+							<div>
+								<h2 class="text-lg font-semibold text-white">Workout Complete!</h2>
+								<p class="text-sm text-green-300">Tap any exercise to review or edit your data</p>
+							</div>
+						</div>
+						<button
+							class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors"
+							on:click={handleStartNewWorkout}
+						>
+							Done
+						</button>
+					</div>
+				</div>
+
+				<!-- Exercise List for Review -->
+				<div class="flex-1 min-h-0 overflow-auto">
+					<ExerciseList
+						exercises={$liveSession.exercises}
+						currentIndex={-1}
+						currentSubExerciseIndex={null}
+						{exerciseLogs}
+						on:info={handleExerciseInfo}
+						on:select={handleExerciseSelect}
+						on:review={handleExerciseReview}
 					/>
 				</div>
 			</div>
-			<!-- Exercise Description (desktop only, anchored to bottom) -->
-			<div class="hidden lg:block flex-shrink-0">
-				<ExerciseDescription
-					currentExercise={$currentExercise}
-					{timerState}
-					phaseColor={getPhaseColor(timerState.phase)}
+		{:else}
+			<!-- Timer Side (left on desktop, top on mobile) -->
+			<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
+				<!-- Timer + Controls: centered vertically together -->
+				<div class="flex-1 min-h-0 flex flex-col items-center justify-center" style="background-color: {getPhaseColor(timerState.phase)}">
+					<TimerDisplay
+						{timerState}
+						currentExercise={$currentExercise}
+					/>
+					<div class="mt-4">
+						<TimerControls
+							phase={timerState.phase}
+							{hasNextExercise}
+							on:start={handleStart}
+							on:pause={handlePause}
+							on:resume={handleResume}
+							on:skip={handleSkip}
+							on:stop={handleStop}
+						/>
+					</div>
+				</div>
+				<!-- Exercise Description (desktop only, anchored to bottom) -->
+				<div class="hidden lg:block flex-shrink-0">
+					<ExerciseDescription
+						currentExercise={$currentExercise}
+						{timerState}
+						phaseColor={getPhaseColor(timerState.phase)}
+					/>
+				</div>
+			</div>
+
+			<!-- Exercise List (right on desktop, bottom on mobile) -->
+			<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
+				<ExerciseList
+					exercises={$liveSession.exercises}
+					currentIndex={$liveSession.currentExerciseIndex}
+					currentSubExerciseIndex={timerState.currentSubExercise}
+					{exerciseLogs}
+					on:info={handleExerciseInfo}
+					on:select={handleExerciseSelect}
+					on:review={handleExerciseReview}
+					on:finish={handleStop}
 				/>
 			</div>
-		</div>
-
-		<!-- Exercise List (right on desktop, bottom on mobile) -->
-		<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
-			<ExerciseList
-				exercises={$liveSession.exercises}
-				currentIndex={$liveSession.currentExerciseIndex}
-				currentSubExerciseIndex={timerState.currentSubExercise}
-				{exerciseLogs}
-				on:info={handleExerciseInfo}
-				on:select={handleExerciseSelect}
-				on:review={handleExerciseReview}
-			/>
-		</div>
+		{/if}
 	</div>
 
 {:else if showStartPrompt}

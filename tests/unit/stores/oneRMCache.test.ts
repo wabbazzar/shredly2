@@ -661,3 +661,184 @@ describe('Cache Store Operations', () => {
 		expect(getFromCache('Bench Press')!.user_override).toBeNull();
 	});
 });
+
+// ============================================================================
+// PR DISPLAY DATA INTEGRATION TESTS
+// ============================================================================
+
+describe('getPRDisplayData Integration', () => {
+	beforeEach(() => {
+		vi.resetModules();
+	});
+
+	it('returns PR data after logging history and updating cache', async () => {
+		const { updateCacheForExercise, getPRDisplayData, invalidateCache } = await import(
+			'$lib/stores/oneRMCache'
+		);
+		const { exerciseHistory } = await import('$lib/stores/history');
+
+		// Clear any existing state
+		invalidateCache();
+
+		// Simulate logging history (as handleStop does via logSessionToHistory)
+		const now = new Date();
+		exerciseHistory.set([
+			{
+				date: now.toISOString().split('T')[0],
+				timestamp: now.toISOString(),
+				workout_program_id: 'test-program',
+				week_number: 1,
+				day_number: 1,
+				exercise_name: 'Yates Rows',
+				exercise_order: 0,
+				is_compound_parent: false,
+				compound_parent_name: null,
+				set_number: 1,
+				reps: 8,
+				weight: 135,
+				weight_unit: 'lbs',
+				work_time: null,
+				rest_time: null,
+				tempo: null,
+				rpe: 8,
+				rir: null,
+				completed: true,
+				notes: null
+			}
+		]);
+
+		// Update cache for the exercise (as handleStop does)
+		updateCacheForExercise('Yates Rows');
+
+		// Now get PR display data (as Profile view does)
+		const prData = getPRDisplayData('Yates Rows');
+
+		// This should NOT be null - we just logged data for this exercise
+		expect(prData).not.toBeNull();
+		expect(prData!.exerciseName).toBe('Yates Rows');
+		expect(prData!.estimated1RM).toBeGreaterThan(0);
+		expect(prData!.trm).toBeGreaterThan(0);
+		expect(prData!.recentActivity.lastWeight).toBe(135);
+		expect(prData!.recentActivity.lastReps).toBe(8);
+	});
+
+	it('returns null when cache entry does not exist for exercise', async () => {
+		const { getPRDisplayData, invalidateCache } = await import('$lib/stores/oneRMCache');
+
+		invalidateCache();
+
+		// No cache entry for this exercise
+		const prData = getPRDisplayData('NonExistentExercise');
+		expect(prData).toBeNull();
+	});
+
+	it('returns PR data with correct calculated 1RM using Epley formula', async () => {
+		const { updateCacheForExercise, getPRDisplayData, invalidateCache, calculateEpley1RM } =
+			await import('$lib/stores/oneRMCache');
+		const { exerciseHistory } = await import('$lib/stores/history');
+
+		invalidateCache();
+
+		const now = new Date();
+		exerciseHistory.set([
+			{
+				date: now.toISOString().split('T')[0],
+				timestamp: now.toISOString(),
+				workout_program_id: 'test-program',
+				week_number: 1,
+				day_number: 1,
+				exercise_name: 'Bench Press',
+				exercise_order: 0,
+				is_compound_parent: false,
+				compound_parent_name: null,
+				set_number: 1,
+				reps: 5,
+				weight: 225,
+				weight_unit: 'lbs',
+				work_time: null,
+				rest_time: null,
+				tempo: null,
+				rpe: 10, // Max effort, no RPE adjustment
+				rir: null,
+				completed: true,
+				notes: null
+			}
+		]);
+
+		updateCacheForExercise('Bench Press');
+		const prData = getPRDisplayData('Bench Press');
+
+		expect(prData).not.toBeNull();
+		// Epley: 225 * (1 + 5/30) = 225 * 1.167 = 262.5
+		const expected1RM = calculateEpley1RM(225, 5);
+		expect(prData!.estimated1RM).toBeCloseTo(expected1RM, 0);
+		// TRM is 90% of 1RM
+		expect(prData!.trm).toBeCloseTo(expected1RM * 0.9, 0);
+	});
+
+	it('PROFILE SCENARIO: shows PR for exercise in current program after workout completion', async () => {
+		// This test simulates exactly what happens in production:
+		// 1. User has active schedule with "Yates Rows" exercise
+		// 2. User completes workout, logs 135 lbs x 8 reps for "Yates Rows"
+		// 3. handleStop() calls logSessionToHistory() then updateCacheForExercise()
+		// 4. Profile view should show PR for "Yates Rows"
+
+		const { updateCacheForExercise, getPRDisplayData, invalidateCache, getFromCache } =
+			await import('$lib/stores/oneRMCache');
+		const { exerciseHistory, logSessionToHistory } = await import('$lib/stores/history');
+
+		// Clear initial state
+		invalidateCache();
+		exerciseHistory.set([]);
+
+		// Step 1: Simulate logSessionToHistory() being called (as in handleStop)
+		const logs = [
+			{
+				exerciseName: 'Yates Rows',
+				exerciseOrder: 0,
+				isCompoundParent: false,
+				compoundParentName: null,
+				sets: [
+					{
+						setNumber: 1,
+						reps: 8,
+						weight: 135,
+						weightUnit: 'lbs' as const,
+						workTime: null,
+						rpe: 8,
+						rir: null,
+						completed: true,
+						notes: null,
+						timestamp: new Date().toISOString()
+					}
+				],
+				timestamp: new Date().toISOString()
+			}
+		];
+
+		logSessionToHistory('test-schedule-id', 1, 1, logs);
+
+		// Step 2: Simulate cache update (as in handleStop)
+		updateCacheForExercise('Yates Rows');
+
+		// Step 3: Verify cache has entry
+		const cacheEntry = getFromCache('Yates Rows');
+		expect(cacheEntry).not.toBeNull();
+		expect(cacheEntry!.estimated_1rm).toBeGreaterThan(0);
+
+		// Step 4: Simulate Profile view calling getPRDisplayData
+		// The Profile view extracts exercise names from the schedule, then calls getPRDisplayData for each
+		const programExercises = ['Yates Rows', 'Bench Press', 'Deadlift']; // Simulated schedule exercises
+
+		const programPRData = programExercises
+			.map((name) => getPRDisplayData(name))
+			.filter((pr) => pr !== null);
+
+		// The Yates Rows PR should be in the list
+		const yatesRowsPR = programPRData.find((pr) => pr!.exerciseName === 'Yates Rows');
+		expect(yatesRowsPR).not.toBeUndefined();
+		expect(yatesRowsPR!.estimated1RM).toBeGreaterThan(0);
+		expect(yatesRowsPR!.recentActivity.lastWeight).toBe(135);
+		expect(yatesRowsPR!.recentActivity.lastReps).toBe(8);
+	});
+});

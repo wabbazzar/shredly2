@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { LiveExercise, SetLog, ExerciseLog } from '$lib/engine/types';
-	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
+	import { shouldShowWeightField, getExerciseMetadata } from '$lib/engine/exercise-metadata';
 	import { keyboardAware } from '$lib/actions/keyboardAware';
 
 	export let exercise: LiveExercise;
@@ -13,14 +13,24 @@
 		close: void;
 	}>();
 
+	// Sub-exercise weight entry type (matches DataEntryModal)
+	interface SubExerciseWeight {
+		name: string;
+		weight: string;
+		weightUnit: 'lbs' | 'kg';
+		showWeight: boolean;
+	}
+
 	// Determine field visibility
-	$: showWeight = shouldShowWeightField(exercise.exerciseName, null);
+	$: showWeight = !isCompound && shouldShowWeightField(exercise.exerciseName, null);
 	$: isCompound = exercise.isCompoundParent;
 	$: isAmrap = exercise.exerciseType === 'amrap';
 	$: isCircuit = exercise.exerciseType === 'circuit';
+	$: isEmom = exercise.exerciseType === 'emom';
+	$: isInterval = exercise.exerciseType === 'interval';
 	$: totalSets = exercise.prescription.sets;
 
-	// Form state for each set
+	// Form state for each set (only used for non-compound exercises)
 	interface SetFormData {
 		reps: string;
 		weight: string;
@@ -31,10 +41,20 @@
 	let weightUnit: 'lbs' | 'kg' = exercise.prescription.weightUnit ?? 'lbs';
 	let roundsInput: string = '';
 	let timeInput: string = '';
+	let repsInput: string = '';
+	let rpeInput: string = '';
 	let showRpeColumn = false;
+	let showRpeSection = false;
+
+	// Sub-exercise weight state (for compound blocks)
+	let subExerciseWeights: SubExerciseWeight[] = [];
 
 	// Input refs for keyboard navigation
 	let inputRefs: HTMLInputElement[][] = [];
+
+	// Check if any sub-exercises have weight fields
+	// Computed directly in initializeFormData() to avoid reactive timing issues
+	let hasSubExerciseWeights = false;
 
 	// Check if a set is complete (required fields filled)
 	function isSetComplete(setData: SetFormData): boolean {
@@ -50,8 +70,56 @@
 	function initializeFormData() {
 		setsData = [];
 		inputRefs = [];
+		subExerciseWeights = [];
 
-		for (let i = 0; i < totalSets; i++) {
+		// Use direct property access (not reactive variable) to avoid timing issues
+		const isCompoundBlock = exercise.isCompoundParent;
+
+		// Initialize sub-exercise weights for compound blocks
+		if (isCompoundBlock && exercise.subExercises && exercise.subExercises.length > 0) {
+			subExerciseWeights = exercise.subExercises.map(subEx => {
+				const metadata = getExerciseMetadata(subEx.exerciseName);
+				const showSubWeight = metadata?.external_load !== 'never';
+				return {
+					name: subEx.exerciseName,
+					weight: subEx.prescription.weight?.toString() ?? '',
+					weightUnit: subEx.prescription.weightUnit ?? 'lbs',
+					showWeight: showSubWeight
+				};
+			});
+			// Compute hasSubExerciseWeights after populating the array
+			hasSubExerciseWeights = subExerciseWeights.some(s => s.showWeight);
+		} else {
+			hasSubExerciseWeights = false;
+		}
+
+		// For compound blocks, use single-entry form (not per-set rows)
+		if (isCompoundBlock) {
+			// Initialize from existing log if available
+			if (existingLog?.totalRounds != null) {
+				roundsInput = existingLog.totalRounds.toString();
+			}
+			if (existingLog?.totalTime != null) {
+				timeInput = formatTimeInput(existingLog.totalTime);
+			}
+			// For EMOM/Interval, initialize reps from first set if logged
+			const exType = exercise.exerciseType;
+			if ((exType === 'emom' || exType === 'interval') && existingLog?.sets?.[0]?.reps != null) {
+				repsInput = existingLog.sets[0].reps.toString();
+			} else {
+				repsInput = exercise.prescription.reps?.toString() ?? '';
+			}
+			// Initialize RPE from first set if logged
+			if (existingLog?.sets?.[0]?.rpe != null) {
+				rpeInput = existingLog.sets[0].rpe.toString();
+				showRpeSection = true;
+			}
+			return;
+		}
+
+		// Non-compound: initialize per-set form data
+		const numSets = exercise.prescription.sets;
+		for (let i = 0; i < numSets; i++) {
 			const existingSet = existingLog?.sets[i];
 
 			if (existingSet) {
@@ -75,14 +143,6 @@
 				});
 			}
 			inputRefs.push([]);
-		}
-
-		if (isAmrap && existingLog?.totalRounds !== undefined) {
-			roundsInput = existingLog.totalRounds.toString();
-		}
-
-		if (isCircuit && existingLog?.totalTime !== undefined) {
-			timeInput = formatTimeInput(existingLog.totalTime);
 		}
 	}
 
@@ -109,6 +169,31 @@
 	}
 
 	function handleSave() {
+		// Compound blocks: single entry form (matches DataEntryModal pattern)
+		if (isCompound) {
+			// Create a single SetLog for compound blocks
+			const setLog: SetLog = {
+				setNumber: 1,
+				reps: (isEmom || isInterval) && repsInput ? parseInt(repsInput) : null,
+				weight: null,
+				weightUnit: null,
+				workTime: isCircuit ? parseTimeInput(timeInput) : null,
+				rpe: rpeInput ? parseInt(rpeInput) : null,
+				rir: null,
+				completed: true,
+				notes: null,
+				timestamp: new Date().toISOString()
+			};
+
+			dispatch('save', {
+				sets: [setLog],
+				totalRounds: isAmrap && roundsInput ? parseFloat(roundsInput) : undefined,
+				totalTime: isCircuit ? parseTimeInput(timeInput) ?? undefined : undefined
+			});
+			return;
+		}
+
+		// Non-compound: per-set data
 		const sets: SetLog[] = setsData.map((data, i) => ({
 			setNumber: i + 1,
 			reps: data.reps ? parseInt(data.reps) : null,
@@ -124,8 +209,8 @@
 
 		dispatch('save', {
 			sets,
-			totalRounds: isAmrap && roundsInput ? parseFloat(roundsInput) : undefined,
-			totalTime: isCircuit ? parseTimeInput(timeInput) ?? undefined : undefined
+			totalRounds: undefined,
+			totalTime: undefined
 		});
 	}
 
@@ -226,7 +311,7 @@
 		</div>
 
 		<!-- Content -->
-		<div class="px-4 py-3">
+		<div class="px-4 py-3 space-y-3">
 			{#if isAmrap}
 				<!-- AMRAP: Total rounds input -->
 				<div class="bg-slate-700/30 rounded-lg p-3">
@@ -255,8 +340,21 @@
 					/>
 					<p class="mt-1 text-xs text-slate-500">Format: MM:SS</p>
 				</div>
+			{:else if isEmom || isInterval}
+				<!-- EMOM/Interval: Reps input -->
+				<div class="bg-slate-700/30 rounded-lg p-3">
+					<label class="block text-xs font-medium text-slate-300 mb-1.5">Reps per round</label>
+					<input
+						type="number"
+						inputmode="numeric"
+						bind:value={repsInput}
+						on:focus={(e) => e.currentTarget.select()}
+						class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+						placeholder={exercise.prescription.reps?.toString() ?? '-'}
+					/>
+				</div>
 			{:else}
-				<!-- Column Headers -->
+				<!-- Regular exercise: Column Headers -->
 				<div class="flex items-center gap-2 mb-2 px-1">
 					<div class="w-7 text-xs text-slate-500 font-medium"></div>
 					<div class="flex-1 text-xs text-slate-500 font-medium text-center">Reps</div>
@@ -334,7 +432,7 @@
 					{/each}
 				</div>
 
-				<!-- RPE Toggle -->
+				<!-- RPE Toggle for regular exercises -->
 				<button
 					type="button"
 					class="flex items-center gap-1 mt-3 text-xs text-slate-400 hover:text-slate-300 transition-colors"
@@ -352,6 +450,67 @@
 						Add RPE
 					{/if}
 				</button>
+			{/if}
+
+			<!-- Sub-exercise weights (for compound blocks) -->
+			{#if hasSubExerciseWeights}
+				<div class="space-y-1.5">
+					<p class="text-xs text-slate-400 font-medium">Weight per exercise</p>
+					{#each subExerciseWeights as subEx, idx}
+						{#if subEx.showWeight}
+							<div class="flex items-center gap-2">
+								<span class="flex-1 text-xs text-slate-400 truncate">{subEx.name}</span>
+								<input
+									type="number"
+									inputmode="decimal"
+									step="2.5"
+									bind:value={subEx.weight}
+									on:focus={(e) => e.currentTarget.select()}
+									class="w-16 px-2 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+									placeholder={exercise.subExercises[idx]?.prescription.weight?.toString() ?? '-'}
+								/>
+								<span class="text-xs text-slate-500 w-6">{subEx.weightUnit}</span>
+							</div>
+						{/if}
+					{/each}
+				</div>
+			{/if}
+
+			<!-- RPE for compound blocks -->
+			{#if isCompound}
+				<button
+					type="button"
+					class="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-300 transition-colors"
+					on:click={() => showRpeSection = !showRpeSection}
+				>
+					{#if showRpeSection}
+						<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+						</svg>
+						Hide RPE {rpeInput ? `(${rpeInput})` : ''}
+					{:else}
+						<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+						</svg>
+						Add RPE {rpeInput ? `(${rpeInput})` : ''}
+					{/if}
+				</button>
+				{#if showRpeSection}
+					<div class="flex gap-1.5">
+						{#each rpeOptions as option}
+							<button
+								type="button"
+								class="flex-1 py-1.5 rounded text-xs font-medium transition-colors
+									{rpeInput === option.toString()
+										? 'bg-indigo-600 text-white'
+										: 'bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-white'}"
+								on:click={() => (rpeInput = rpeInput === option.toString() ? '' : option.toString())}
+							>
+								{option}
+							</button>
+						{/each}
+					</div>
+				{/if}
 			{/if}
 		</div>
 

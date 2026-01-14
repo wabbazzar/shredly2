@@ -12,10 +12,16 @@
 		info: { exercise: LiveExercise; index: number };
 		select: { exercise: LiveExercise; index: number };
 		review: { exercise: LiveExercise; index: number };
+		finish: void;
 	}>();
 
 	// Handle clicking on an exercise row
 	function handleExerciseClick(exercise: LiveExercise, index: number) {
+		// In review mode (currentIndex === -1), all exercises are reviewable
+		if (currentIndex === -1) {
+			dispatch('review', { exercise, index });
+			return;
+		}
 		// Skip to future exercises
 		if (index > currentIndex && !exercise.completed) {
 			dispatch('select', { exercise, index });
@@ -29,6 +35,11 @@
 	// Handle clicking on the status icon
 	function handleStatusIconClick(event: MouseEvent, exercise: LiveExercise, index: number) {
 		event.stopPropagation();
+		// In review mode (currentIndex === -1), all exercises are reviewable
+		if (currentIndex === -1) {
+			dispatch('review', { exercise, index });
+			return;
+		}
 		// Open review modal for completed or skipped exercises
 		if (exercise.completed || exercise.skipped) {
 			dispatch('review', { exercise, index });
@@ -196,7 +207,7 @@
 		<h2 class="text-white/70 text-sm font-medium uppercase tracking-wider">Exercises</h2>
 	</div>
 
-	<div class="flex-1 overflow-y-auto">
+	<div class="flex-1 overflow-y-auto pb-8">
 		{#each exercises as exercise, index}
 			{@const isCurrent = index === currentIndex}
 			{@const isPast = exercise.completed && !exercise.skipped}
@@ -318,5 +329,17 @@
 				</button>
 			</div>
 		{/each}
+
+		<!-- Finish workout button (only during active workout, not review mode) -->
+		{#if currentIndex !== -1}
+			<div class="p-4">
+				<button
+					class="w-full py-3 px-4 bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-medium rounded-lg transition-colors"
+					on:click={() => dispatch('finish')}
+				>
+					Finish Workout & Review
+				</button>
+			</div>
+		{/if}
 	</div>
 </div>

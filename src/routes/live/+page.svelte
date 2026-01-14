@@ -25,6 +25,7 @@
 	} from '$lib/stores/liveSession';
 	import { activeSchedule } from '$lib/stores/schedule';
 	import { logSessionToHistory } from '$lib/stores/history';
+	import { updateCacheForExercise } from '$lib/stores/oneRMCache';
 	import {
 		TimerEngine,
 		getTimerEngine,
@@ -251,6 +252,18 @@
 				result.logs
 			);
 			audioManager?.playSessionComplete();
+
+			// Update 1RM cache for all logged exercises
+			// Use Set to deduplicate exercise names (including sub-exercises)
+			const exerciseNames = new Set<string>();
+			for (const log of result.logs) {
+				if (!log.isCompoundParent) {
+					exerciseNames.add(log.exerciseName);
+				}
+			}
+			for (const name of exerciseNames) {
+				updateCacheForExercise(name);
+			}
 		}
 
 		showStartPrompt = false;

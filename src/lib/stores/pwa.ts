@@ -75,11 +75,38 @@ function createPwaStore() {
 				return false;
 			}
 
+			// Check if we have a registration already, or if one is pending
+			const currentState = get({ subscribe });
+			if (!currentState.registration) {
+				// Try to get registration with a timeout (no SW in dev mode)
+				try {
+					const registration = await Promise.race([
+						navigator.serviceWorker.getRegistration(),
+						new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), 2000))
+					]);
+
+					if (!registration) {
+						update((state) => ({
+							...state,
+							error: 'No service worker registered (dev mode?)'
+						}));
+						return false;
+					}
+
+					update((state) => ({ ...state, registration }));
+				} catch {
+					update((state) => ({
+						...state,
+						error: 'Service worker not available'
+					}));
+					return false;
+				}
+			}
+
 			update((state) => ({ ...state, checking: true, error: null }));
 
 			try {
-				const registration = get({ subscribe }).registration
-					|| await navigator.serviceWorker.ready;
+				const registration = get({ subscribe }).registration!;
 
 				// Force check for new service worker
 				await registration.update();
@@ -87,8 +114,7 @@ function createPwaStore() {
 				update((state) => ({
 					...state,
 					checking: false,
-					lastChecked: new Date(),
-					registration
+					lastChecked: new Date()
 				}));
 
 				// If there's a waiting worker, update is available
@@ -129,6 +155,34 @@ function createPwaStore() {
 		 */
 		forceReload(): void {
 			if (browser) {
+				window.location.reload();
+			}
+		},
+
+		/**
+		 * Nuclear option: unregister service worker, clear caches, reload
+		 * Use when updates aren't coming through
+		 */
+		async forceHardRefresh(): Promise<void> {
+			if (!browser) return;
+
+			try {
+				// Unregister all service workers
+				if ('serviceWorker' in navigator) {
+					const registrations = await navigator.serviceWorker.getRegistrations();
+					await Promise.all(registrations.map((r) => r.unregister()));
+				}
+
+				// Clear all caches
+				if ('caches' in window) {
+					const cacheNames = await caches.keys();
+					await Promise.all(cacheNames.map((name) => caches.delete(name)));
+				}
+
+				// Force reload from network
+				window.location.reload();
+			} catch (err) {
+				console.error('Force refresh failed:', err);
 				window.location.reload();
 			}
 		}

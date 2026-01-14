@@ -17,14 +17,18 @@
 
 	async function handleCheckForUpdates() {
 		const hasUpdate = await pwaStore.checkForUpdates();
-		if (!hasUpdate && !pwaState.updateAvailable) {
-			// No update found, show brief feedback
+		// Only show "up to date" if no update found AND no error occurred
+		if (!hasUpdate && !$pwaStore.updateAvailable && !$pwaStore.error) {
 			alert('App is up to date!');
 		}
 	}
 
 	function handleApplyUpdate() {
 		pwaStore.applyUpdate();
+	}
+
+	function handleForceRefresh() {
+		pwaStore.forceHardRefresh();
 	}
 
 	// Reactive user data
@@ -342,6 +346,16 @@
 			{#if pwaState.error}
 				<p class="mt-2 text-red-400 text-sm">{pwaState.error}</p>
 			{/if}
+
+			<!-- Force refresh option -->
+			<div class="mt-3 pt-3 border-t border-slate-700">
+				<button
+					onclick={handleForceRefresh}
+					class="text-slate-400 hover:text-white text-sm underline"
+				>
+					Force refresh (clear cache)
+				</button>
+			</div>
 		</section>
 	</div>
 </div>

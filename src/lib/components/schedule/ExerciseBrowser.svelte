@@ -130,7 +130,7 @@
 	// Selected exercise for preview
 	let selectedExercise: FlatExercise | null = null;
 
-	// Description modal state (mobile only)
+	// Description modal state (works on both mobile and desktop)
 	let showDescriptionModal = false;
 
 	function handleExerciseClick(exercise: FlatExercise) {
@@ -272,11 +272,11 @@
 					<div class="flex items-center justify-between gap-1.5">
 						<p class="text-base md:text-lg font-semibold text-white truncate flex-1 min-w-0">{selectedExercise.name}</p>
 						<div class="flex items-center gap-1.5 flex-shrink-0">
-							<!-- Info button (mobile only) -->
+							<!-- Info button -->
 							{#if exerciseDescriptions[selectedExercise.name]?.description}
 								<button
 									on:click={() => (showDescriptionModal = true)}
-									class="md:hidden px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+									class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
 									       transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed
 									       whitespace-nowrap min-h-[44px]"
 									aria-label="View exercise description"
@@ -289,6 +289,7 @@
 											d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 										/>
 									</svg>
+									<span class="text-sm hidden sm:inline">Info</span>
 								</button>
 							{/if}
 							<!-- Shuffle button -->
@@ -312,39 +313,6 @@
 							</button>
 						</div>
 					</div>
-
-					<!-- Description (desktop only) -->
-					{#if exerciseDescriptions[selectedExercise.name]?.description}
-						{@const desc = exerciseDescriptions[selectedExercise.name].description}
-						<div class="hidden md:block space-y-3 text-sm mt-3">
-							<div>
-								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
-									Overview
-								</h4>
-								<p class="text-slate-300 leading-relaxed">{desc.overview}</p>
-							</div>
-							<div>
-								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
-									Setup
-								</h4>
-								<p class="text-slate-300 leading-relaxed">{desc.setup}</p>
-							</div>
-							<div>
-								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
-									Movement
-								</h4>
-								<p class="text-slate-300 leading-relaxed">{desc.movement}</p>
-							</div>
-							<div>
-								<h4 class="text-xs font-medium text-slate-400 mb-1 uppercase tracking-wide">
-									Cues
-								</h4>
-								<p class="text-slate-300 leading-relaxed italic">{desc.cues}</p>
-							</div>
-						</div>
-					{:else}
-						<p class="hidden md:block text-sm text-slate-400 italic">No description available</p>
-					{/if}
 				</div>
 			{/if}
 
@@ -485,74 +453,66 @@
 	</div>
 {/if}
 
-<!-- Exercise Description Modal (Mobile Only) -->
+<!-- Exercise Description Modal (Full Screen) -->
 {#if showDescriptionModal && selectedExercise && exerciseDescriptions[selectedExercise.name]?.description}
 	{@const desc = exerciseDescriptions[selectedExercise.name].description}
 	<div
-		class="md:hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-3"
-		on:click={() => (showDescriptionModal = false)}
+		class="fixed inset-0 z-[70] flex flex-col bg-slate-900"
 		on:keydown={(e) => e.key === 'Escape' && (showDescriptionModal = false)}
-		role="button"
-		tabindex="-1"
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="description-title"
 	>
-		<div
-			class="bg-slate-800 rounded-2xl max-w-lg w-full max-h-[80vh] overflow-y-auto"
-			on:click={(e) => e.stopPropagation()}
-			role="dialog"
-			aria-modal="true"
-			aria-labelledby="description-title"
-		>
-			<!-- Header -->
-			<div class="sticky top-0 bg-slate-800 border-b border-slate-700 p-3 flex items-center justify-between">
-				<h2 id="description-title" class="text-base font-semibold text-white">
-					{selectedExercise.name}
-				</h2>
-				<button
-					on:click={() => (showDescriptionModal = false)}
-					class="p-1 text-slate-400 hover:text-white transition-colors"
-					aria-label="Close description"
-				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M6 18L18 6M6 6l12 12"
-						/>
-					</svg>
-				</button>
-			</div>
+		<!-- Header -->
+		<div class="bg-slate-800 border-b border-slate-700 p-3 flex items-center justify-between">
+			<h2 id="description-title" class="text-base font-semibold text-white">
+				{selectedExercise.name}
+			</h2>
+			<button
+				on:click={() => (showDescriptionModal = false)}
+				class="p-2 text-slate-400 hover:text-white transition-colors"
+				aria-label="Close description"
+			>
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M6 18L18 6M6 6l12 12"
+					/>
+				</svg>
+			</button>
+		</div>
 
-			<!-- Description Content -->
-			<div class="p-3 space-y-3 text-sm">
-				<div>
-					<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Overview</h3>
-					<p class="text-slate-300 leading-relaxed">{desc.overview}</p>
-				</div>
-				<div>
-					<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Setup</h3>
-					<p class="text-slate-300 leading-relaxed">{desc.setup}</p>
-				</div>
-				<div>
-					<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Movement</h3>
-					<p class="text-slate-300 leading-relaxed">{desc.movement}</p>
-				</div>
-				<div>
-					<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Cues</h3>
-					<p class="text-slate-300 leading-relaxed italic">{desc.cues}</p>
-				</div>
+		<!-- Description Content -->
+		<div class="flex-1 overflow-y-auto p-4 space-y-4 text-sm">
+			<div>
+				<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Overview</h3>
+				<p class="text-slate-300 leading-relaxed">{desc.overview}</p>
 			</div>
+			<div>
+				<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Setup</h3>
+				<p class="text-slate-300 leading-relaxed">{desc.setup}</p>
+			</div>
+			<div>
+				<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Movement</h3>
+				<p class="text-slate-300 leading-relaxed">{desc.movement}</p>
+			</div>
+			<div>
+				<h3 class="text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">Cues</h3>
+				<p class="text-slate-300 leading-relaxed italic">{desc.cues}</p>
+			</div>
+		</div>
 
-			<!-- Close Button -->
-			<div class="sticky bottom-0 p-3 bg-slate-800 border-t border-slate-700">
-				<button
-					on:click={() => (showDescriptionModal = false)}
-					class="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
-					       transition-colors font-medium min-h-[44px]"
-				>
-					Close
-				</button>
-			</div>
+		<!-- Close Button -->
+		<div class="p-4 bg-slate-800 border-t border-slate-700">
+			<button
+				on:click={() => (showDescriptionModal = false)}
+				class="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+				       transition-colors font-medium min-h-[44px]"
+			>
+				Close
+			</button>
 		</div>
 	</div>
 {/if}

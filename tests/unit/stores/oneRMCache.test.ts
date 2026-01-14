@@ -1,0 +1,586 @@
+/**
+ * Unit tests for 1RM Cache Store
+ *
+ * Tests:
+ * - Epley formula calculation
+ * - RPE adjustment factors
+ * - Time-weighted averaging
+ * - Stale data detection
+ * - TRM derivation
+ * - Cache operations
+ */
+
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import {
+	calculateEpley1RM,
+	adjustForRPE,
+	deriveTRM,
+	isStale,
+	daysBetween,
+	calculateTimeWeight,
+	calculateTimeWeightedAverage,
+	extractDataPointsFromHistory,
+	calculate1RMEntry,
+	calculateTrend,
+	type OneRMDataPoint
+} from '$lib/stores/oneRMCache';
+import type { HistoryRow } from '$lib/stores/history';
+
+// ============================================================================
+// EPLEY FORMULA TESTS
+// ============================================================================
+
+describe('calculateEpley1RM', () => {
+	it('calculates correctly for 135lbs x 10 reps', () => {
+		// Epley: 135 * (1 + 10/30) = 135 * 1.333 = 180
+		const result = calculateEpley1RM(135, 10);
+		expect(result).toBeCloseTo(180, 1);
+	});
+
+	it('calculates correctly for 225lbs x 5 reps', () => {
+		// Epley: 225 * (1 + 5/30) = 225 * 1.167 = 262.5
+		const result = calculateEpley1RM(225, 5);
+		expect(result).toBeCloseTo(262.5, 1);
+	});
+
+	it('returns same weight for 1 rep', () => {
+		const result = calculateEpley1RM(315, 1);
+		expect(result).toBe(315);
+	});
+
+	it('returns 0 for 0 weight', () => {
+		const result = calculateEpley1RM(0, 5);
+		expect(result).toBe(0);
+	});
+
+	it('returns 0 for 0 reps', () => {
+		const result = calculateEpley1RM(135, 0);
+		expect(result).toBe(0);
+	});
+
+	it('returns 0 for negative weight', () => {
+		const result = calculateEpley1RM(-135, 5);
+		expect(result).toBe(0);
+	});
+
+	it('caps reps at 10 for accuracy', () => {
+		// With 15 reps, should use 10 for calculation
+		const with15Reps = calculateEpley1RM(100, 15);
+		const with10Reps = calculateEpley1RM(100, 10);
+		expect(with15Reps).toBe(with10Reps);
+	});
+
+	it('handles various weight/rep combinations', () => {
+		// 185 x 8 = 185 * (1 + 8/30) = 185 * 1.267 = 234.3
+		expect(calculateEpley1RM(185, 8)).toBeCloseTo(234.3, 0);
+
+		// 275 x 3 = 275 * (1 + 3/30) = 275 * 1.1 = 302.5
+		expect(calculateEpley1RM(275, 3)).toBeCloseTo(302.5, 1);
+
+		// 405 x 2 = 405 * (1 + 2/30) = 405 * 1.067 = 432
+		expect(calculateEpley1RM(405, 2)).toBeCloseTo(432, 0);
+	});
+});
+
+// ============================================================================
+// RPE ADJUSTMENT TESTS
+// ============================================================================
+
+describe('adjustForRPE', () => {
+	it('returns same value for RPE 10 (no adjustment)', () => {
+		const result = adjustForRPE(180, 10);
+		expect(result).toBe(180);
+	});
+
+	it('divides by 0.92 for RPE 8', () => {
+		// 180 / 0.92 = 195.65
+		const result = adjustForRPE(180, 8);
+		expect(result).toBeCloseTo(195.65, 1);
+	});
+
+	it('divides by 0.88 for RPE 7', () => {
+		// 180 / 0.88 = 204.55
+		const result = adjustForRPE(180, 7);
+		expect(result).toBeCloseTo(204.55, 1);
+	});
+
+	it('returns same value for null RPE (no adjustment)', () => {
+		const result = adjustForRPE(180, null);
+		expect(result).toBe(180);
+	});
+
+	it('clamps RPE at 6 minimum', () => {
+		// RPE 5 should be treated as RPE 6 (0.85)
+		const resultAt5 = adjustForRPE(180, 5);
+		const resultAt6 = adjustForRPE(180, 6);
+		expect(resultAt5).toBe(resultAt6);
+	});
+
+	it('clamps RPE at 10 maximum', () => {
+		// RPE 11 should be treated as RPE 10 (1.0)
+		const resultAt11 = adjustForRPE(180, 11);
+		expect(resultAt11).toBe(180);
+	});
+
+	it('handles RPE 9 correctly', () => {
+		// 200 / 0.96 = 208.33
+		const result = adjustForRPE(200, 9);
+		expect(result).toBeCloseTo(208.33, 1);
+	});
+
+	it('handles RPE 9.5 correctly', () => {
+		// 200 / 0.98 = 204.08
+		const result = adjustForRPE(200, 9.5);
+		expect(result).toBeCloseTo(204.08, 1);
+	});
+
+	it('returns 0 for 0 input', () => {
+		const result = adjustForRPE(0, 8);
+		expect(result).toBe(0);
+	});
+
+	it('interpolates between known RPE values', () => {
+		// RPE 8.25 should interpolate between 8 (0.92) and 8.5 (0.94)
+		// Should be around 0.93
+		const at8 = adjustForRPE(100, 8);
+		const at8_5 = adjustForRPE(100, 8.5);
+		const at8_25 = adjustForRPE(100, 8.25);
+		expect(at8_25).toBeGreaterThan(at8_5);
+		expect(at8_25).toBeLessThan(at8);
+	});
+});
+
+// ============================================================================
+// TRM DERIVATION TESTS
+// ============================================================================
+
+describe('deriveTRM', () => {
+	it('calculates exactly 90% of 1RM', () => {
+		expect(deriveTRM(200)).toBe(180);
+		expect(deriveTRM(315)).toBe(283.5);
+		expect(deriveTRM(100)).toBe(90);
+	});
+
+	it('rounds to one decimal place', () => {
+		// 333.33... * 0.9 = 300
+		expect(deriveTRM(333.33)).toBe(300);
+	});
+
+	it('handles 0 input', () => {
+		expect(deriveTRM(0)).toBe(0);
+	});
+});
+
+// ============================================================================
+// STALE DATA DETECTION TESTS
+// ============================================================================
+
+describe('isStale', () => {
+	it('returns true for null lastPerformed', () => {
+		expect(isStale(null)).toBe(true);
+	});
+
+	it('returns true for >30 days ago', () => {
+		const oldDate = new Date();
+		oldDate.setDate(oldDate.getDate() - 35);
+		expect(isStale(oldDate.toISOString().split('T')[0])).toBe(true);
+	});
+
+	it('returns false for <30 days ago', () => {
+		const recentDate = new Date();
+		recentDate.setDate(recentDate.getDate() - 10);
+		expect(isStale(recentDate.toISOString().split('T')[0])).toBe(false);
+	});
+
+	it('returns false for today', () => {
+		const today = new Date().toISOString().split('T')[0];
+		expect(isStale(today)).toBe(false);
+	});
+
+	it('respects custom threshold', () => {
+		const date = new Date();
+		date.setDate(date.getDate() - 10);
+		const dateStr = date.toISOString().split('T')[0];
+
+		expect(isStale(dateStr, 5)).toBe(true); // 10 days > 5 threshold
+		expect(isStale(dateStr, 15)).toBe(false); // 10 days < 15 threshold
+	});
+});
+
+describe('daysBetween', () => {
+	it('calculates days between two dates', () => {
+		const d1 = '2026-01-01';
+		const d2 = '2026-01-10';
+		expect(daysBetween(d1, d2)).toBe(9);
+	});
+
+	it('is commutative (order does not matter)', () => {
+		const d1 = '2026-01-01';
+		const d2 = '2026-01-10';
+		expect(daysBetween(d1, d2)).toBe(daysBetween(d2, d1));
+	});
+
+	it('returns 0 for same date', () => {
+		const d = '2026-01-15';
+		expect(daysBetween(d, d)).toBe(0);
+	});
+});
+
+// ============================================================================
+// TIME-WEIGHTED AVERAGING TESTS
+// ============================================================================
+
+describe('calculateTimeWeight', () => {
+	it('returns 1 for today', () => {
+		const today = new Date().toISOString().split('T')[0];
+		expect(calculateTimeWeight(today, today)).toBeCloseTo(1, 5);
+	});
+
+	it('returns 0.5 at half-life (14 days)', () => {
+		const today = new Date().toISOString().split('T')[0];
+		const twoWeeksAgo = new Date();
+		twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+		const weight = calculateTimeWeight(twoWeeksAgo.toISOString().split('T')[0], today);
+		expect(weight).toBeCloseTo(0.5, 1);
+	});
+
+	it('returns 0.25 at two half-lives (28 days)', () => {
+		const today = new Date().toISOString().split('T')[0];
+		const fourWeeksAgo = new Date();
+		fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+		const weight = calculateTimeWeight(fourWeeksAgo.toISOString().split('T')[0], today);
+		expect(weight).toBeCloseTo(0.25, 1);
+	});
+
+	it('respects custom half-life', () => {
+		const today = new Date().toISOString().split('T')[0];
+		const sevenDaysAgo = new Date();
+		sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+		// With 7-day half-life, 7 days ago = 0.5
+		const weight = calculateTimeWeight(sevenDaysAgo.toISOString().split('T')[0], today, 7);
+		expect(weight).toBeCloseTo(0.5, 1);
+	});
+});
+
+describe('calculateTimeWeightedAverage', () => {
+	const today = new Date().toISOString().split('T')[0];
+
+	it('returns 0 for empty data points', () => {
+		expect(calculateTimeWeightedAverage([])).toBe(0);
+	});
+
+	it('weights recent data higher', () => {
+		const yesterday = new Date();
+		yesterday.setDate(yesterday.getDate() - 1);
+		const lastMonth = new Date();
+		lastMonth.setDate(lastMonth.getDate() - 30);
+
+		const dataPoints: OneRMDataPoint[] = [
+			{
+				weight: 200,
+				reps: 5,
+				rpe: 10,
+				date: yesterday.toISOString().split('T')[0],
+				timestamp: yesterday.toISOString()
+			},
+			{
+				weight: 150,
+				reps: 5,
+				rpe: 10,
+				date: lastMonth.toISOString().split('T')[0],
+				timestamp: lastMonth.toISOString()
+			}
+		];
+
+		const result = calculateTimeWeightedAverage(dataPoints);
+
+		// Recent 200x5 = 233.33 1RM should dominate over old 150x5 = 175 1RM
+		// Result should be much closer to 233 than 175
+		expect(result).toBeGreaterThan(200);
+		expect(result).toBeLessThan(235);
+	});
+
+	it('applies RPE adjustment by default', () => {
+		const dataPoints: OneRMDataPoint[] = [
+			{
+				weight: 180,
+				reps: 1,
+				rpe: 8, // At 92% effort
+				date: today,
+				timestamp: new Date().toISOString()
+			}
+		];
+
+		// 180 at RPE 8 -> 180 / 0.92 = 195.65
+		const result = calculateTimeWeightedAverage(dataPoints);
+		expect(result).toBeCloseTo(195.7, 0);
+	});
+
+	it('can disable RPE adjustment', () => {
+		const dataPoints: OneRMDataPoint[] = [
+			{
+				weight: 180,
+				reps: 1,
+				rpe: 8,
+				date: today,
+				timestamp: new Date().toISOString()
+			}
+		];
+
+		const result = calculateTimeWeightedAverage(dataPoints, { includeRPEAdjustment: false });
+		expect(result).toBe(180);
+	});
+
+	it('handles null RPE without error', () => {
+		const dataPoints: OneRMDataPoint[] = [
+			{
+				weight: 200,
+				reps: 5,
+				rpe: null,
+				date: today,
+				timestamp: new Date().toISOString()
+			}
+		];
+
+		// 200 x 5 = 200 * (1 + 5/30) = 233.33
+		const result = calculateTimeWeightedAverage(dataPoints);
+		expect(result).toBeCloseTo(233.3, 0);
+	});
+});
+
+// ============================================================================
+// DATA EXTRACTION TESTS
+// ============================================================================
+
+describe('extractDataPointsFromHistory', () => {
+	const createRow = (overrides: Partial<HistoryRow>): HistoryRow => ({
+		date: '2026-01-10',
+		timestamp: '2026-01-10T10:00:00.000Z',
+		workout_program_id: 'test-program',
+		week_number: 1,
+		day_number: 1,
+		exercise_name: 'Bench Press',
+		exercise_order: 0,
+		is_compound_parent: false,
+		compound_parent_name: null,
+		set_number: 1,
+		reps: 5,
+		weight: 135,
+		weight_unit: 'lbs',
+		work_time: null,
+		rest_time: null,
+		tempo: null,
+		rpe: 8,
+		rir: null,
+		completed: true,
+		notes: null,
+		...overrides
+	});
+
+	it('extracts valid data points for exercise', () => {
+		const history: HistoryRow[] = [
+			createRow({ weight: 135, reps: 5, timestamp: '2026-01-10T10:00:00.000Z' }),
+			createRow({ weight: 145, reps: 5, set_number: 2, timestamp: '2026-01-10T10:05:00.000Z' }),
+			createRow({ exercise_name: 'Squat', weight: 200, reps: 5 }) // Different exercise
+		];
+
+		const result = extractDataPointsFromHistory('Bench Press', history);
+
+		expect(result).toHaveLength(2);
+		expect(result[0].weight).toBe(145); // Most recent first
+		expect(result[1].weight).toBe(135);
+	});
+
+	it('skips compound parent rows', () => {
+		const history: HistoryRow[] = [
+			createRow({ is_compound_parent: true, weight: null, reps: null }),
+			createRow({ weight: 135, reps: 5 })
+		];
+
+		const result = extractDataPointsFromHistory('Bench Press', history);
+		expect(result).toHaveLength(1);
+	});
+
+	it('skips incomplete sets', () => {
+		const history: HistoryRow[] = [
+			createRow({ completed: false }),
+			createRow({ completed: true, weight: 135, reps: 5 })
+		];
+
+		const result = extractDataPointsFromHistory('Bench Press', history);
+		expect(result).toHaveLength(1);
+	});
+
+	it('skips rows without weight', () => {
+		const history: HistoryRow[] = [
+			createRow({ weight: null }),
+			createRow({ weight: 135, reps: 5 })
+		];
+
+		const result = extractDataPointsFromHistory('Bench Press', history);
+		expect(result).toHaveLength(1);
+	});
+
+	it('skips rows without reps', () => {
+		const history: HistoryRow[] = [
+			createRow({ reps: null }),
+			createRow({ weight: 135, reps: 5 })
+		];
+
+		const result = extractDataPointsFromHistory('Bench Press', history);
+		expect(result).toHaveLength(1);
+	});
+
+	it('sorts by timestamp descending', () => {
+		const history: HistoryRow[] = [
+			createRow({ timestamp: '2026-01-08T10:00:00.000Z', weight: 130 }),
+			createRow({ timestamp: '2026-01-10T10:00:00.000Z', weight: 140 }),
+			createRow({ timestamp: '2026-01-09T10:00:00.000Z', weight: 135 })
+		];
+
+		const result = extractDataPointsFromHistory('Bench Press', history);
+
+		expect(result[0].weight).toBe(140); // Most recent
+		expect(result[1].weight).toBe(135);
+		expect(result[2].weight).toBe(130); // Oldest
+	});
+});
+
+// ============================================================================
+// CALCULATE TREND TESTS
+// ============================================================================
+
+describe('calculateTrend', () => {
+	it('returns null for single data point', () => {
+		const dataPoints: OneRMDataPoint[] = [
+			{ weight: 135, reps: 5, rpe: null, date: '2026-01-10', timestamp: '2026-01-10T10:00:00.000Z' }
+		];
+		expect(calculateTrend(dataPoints)).toBeNull();
+	});
+
+	it('returns null for empty data points', () => {
+		expect(calculateTrend([])).toBeNull();
+	});
+
+	it('returns "up" when most recent is >2% higher', () => {
+		const dataPoints: OneRMDataPoint[] = [
+			{ weight: 150, reps: 5, rpe: null, date: '2026-01-10', timestamp: '2026-01-10T10:00:00.000Z' },
+			{ weight: 135, reps: 5, rpe: null, date: '2026-01-08', timestamp: '2026-01-08T10:00:00.000Z' },
+			{ weight: 135, reps: 5, rpe: null, date: '2026-01-06', timestamp: '2026-01-06T10:00:00.000Z' }
+		];
+		expect(calculateTrend(dataPoints)).toBe('up');
+	});
+
+	it('returns "down" when most recent is >2% lower', () => {
+		const dataPoints: OneRMDataPoint[] = [
+			{ weight: 120, reps: 5, rpe: null, date: '2026-01-10', timestamp: '2026-01-10T10:00:00.000Z' },
+			{ weight: 135, reps: 5, rpe: null, date: '2026-01-08', timestamp: '2026-01-08T10:00:00.000Z' },
+			{ weight: 140, reps: 5, rpe: null, date: '2026-01-06', timestamp: '2026-01-06T10:00:00.000Z' }
+		];
+		expect(calculateTrend(dataPoints)).toBe('down');
+	});
+
+	it('returns "stable" when within 2%', () => {
+		const dataPoints: OneRMDataPoint[] = [
+			{ weight: 136, reps: 5, rpe: null, date: '2026-01-10', timestamp: '2026-01-10T10:00:00.000Z' },
+			{ weight: 135, reps: 5, rpe: null, date: '2026-01-08', timestamp: '2026-01-08T10:00:00.000Z' },
+			{ weight: 134, reps: 5, rpe: null, date: '2026-01-06', timestamp: '2026-01-06T10:00:00.000Z' }
+		];
+		expect(calculateTrend(dataPoints)).toBe('stable');
+	});
+});
+
+// ============================================================================
+// CACHE ENTRY CALCULATION TESTS
+// ============================================================================
+
+describe('calculate1RMEntry', () => {
+	const createRow = (overrides: Partial<HistoryRow>): HistoryRow => ({
+		date: '2026-01-10',
+		timestamp: '2026-01-10T10:00:00.000Z',
+		workout_program_id: 'test-program',
+		week_number: 1,
+		day_number: 1,
+		exercise_name: 'Bench Press',
+		exercise_order: 0,
+		is_compound_parent: false,
+		compound_parent_name: null,
+		set_number: 1,
+		reps: 5,
+		weight: 135,
+		weight_unit: 'lbs',
+		work_time: null,
+		rest_time: null,
+		tempo: null,
+		rpe: 8,
+		rir: null,
+		completed: true,
+		notes: null,
+		...overrides
+	});
+
+	it('calculates entry with correct fields', () => {
+		const history: HistoryRow[] = [
+			createRow({ weight: 135, reps: 5, rpe: 10 })
+		];
+
+		const entry = calculate1RMEntry('Bench Press', history);
+
+		expect(entry.estimated_1rm).toBeGreaterThan(0);
+		// TRM should be ~90% of 1RM (rounding may cause slight variation)
+		expect(entry.trm).toBeCloseTo(entry.estimated_1rm * 0.9, 0);
+		expect(entry.data_points).toBe(1);
+		expect(entry.last_performed).toBe('2026-01-10');
+		expect(entry.user_override).toBeNull();
+		expect(entry.last_updated).toBeTruthy();
+	});
+
+	it('uses user override for TRM calculation', () => {
+		const history: HistoryRow[] = [
+			createRow({ weight: 135, reps: 5, rpe: 10 })
+		];
+
+		const entry = calculate1RMEntry('Bench Press', history, 200);
+
+		// TRM should be based on override (200), not calculated value
+		expect(entry.trm).toBe(deriveTRM(200));
+		expect(entry.user_override).toBe(200);
+	});
+
+	it('handles empty history', () => {
+		const entry = calculate1RMEntry('Bench Press', []);
+
+		expect(entry.estimated_1rm).toBe(0);
+		expect(entry.trm).toBe(0);
+		expect(entry.data_points).toBe(0);
+		expect(entry.is_stale).toBe(true);
+		expect(entry.last_performed).toBeNull();
+	});
+
+	it('marks data as stale when >30 days old', () => {
+		const oldDate = new Date();
+		oldDate.setDate(oldDate.getDate() - 35);
+		const dateStr = oldDate.toISOString().split('T')[0];
+
+		const history: HistoryRow[] = [
+			createRow({ date: dateStr, timestamp: oldDate.toISOString() })
+		];
+
+		const entry = calculate1RMEntry('Bench Press', history);
+		expect(entry.is_stale).toBe(true);
+	});
+
+	it('marks data as fresh when <30 days old', () => {
+		const recentDate = new Date();
+		recentDate.setDate(recentDate.getDate() - 5);
+		const dateStr = recentDate.toISOString().split('T')[0];
+
+		const history: HistoryRow[] = [
+			createRow({ date: dateStr, timestamp: recentDate.toISOString() })
+		];
+
+		const entry = calculate1RMEntry('Bench Press', history);
+		expect(entry.is_stale).toBe(false);
+	});
+});

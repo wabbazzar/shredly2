@@ -179,11 +179,11 @@ describe("Exercise Metadata Module", () => {
         expect(shouldShowWeightField("Bench Press", 0)).toBe(true);
       });
 
-      it("should return true for Dumbbell Bicep Curls regardless of currentWeight", () => {
-        expect(shouldShowWeightField("Dumbbell Bicep Curls", undefined)).toBe(
+      it("should return true for DB Bicep Curls regardless of currentWeight", () => {
+        expect(shouldShowWeightField("DB Bicep Curls", undefined)).toBe(
           true,
         );
-        expect(shouldShowWeightField("Dumbbell Bicep Curls", "heavy")).toBe(
+        expect(shouldShowWeightField("DB Bicep Curls", "heavy")).toBe(
           true,
         );
       });
@@ -254,8 +254,8 @@ describe("Exercise Metadata Module", () => {
         expect(shouldAssignWeightOnGeneration("Bench Press")).toBe(true);
       });
 
-      it("should return true for Dumbbell Bicep Curls", () => {
-        expect(shouldAssignWeightOnGeneration("Dumbbell Bicep Curls")).toBe(
+      it("should return true for DB Bicep Curls", () => {
+        expect(shouldAssignWeightOnGeneration("DB Bicep Curls")).toBe(
           true,
         );
       });

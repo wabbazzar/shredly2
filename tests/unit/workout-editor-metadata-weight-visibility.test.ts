@@ -4,7 +4,7 @@
  * Tests Phase 2 implementation from ticket #008:
  * Weight field visibility is now driven by external_load metadata (not workMode).
  *
- * Bug Fix: Weighted time-based exercises (e.g., Dumbbell Weighted Crunches)
+ * Bug Fix: Weighted time-based exercises (e.g., DB Weighted Crunches)
  * now correctly show weight field in BOTH reps and work_time modes.
  *
  * Test Coverage:
@@ -141,9 +141,9 @@ function getWeightFields(
 // ============================================================================
 
 describe("WorkoutEditor - Metadata Weight Visibility", () => {
-  describe('external_load: "always" (Dumbbell Weighted Crunches)', () => {
+  describe('external_load: "always" (DB Weighted Crunches)', () => {
     it("should show weight field in reps mode", () => {
-      const workout = createWorkoutWithExercise("Dumbbell Weighted Crunches", {
+      const workout = createWorkoutWithExercise("DB Weighted Crunches", {
         sets: 3,
         reps: 15,
         weight: { type: "fixed", value: 25, unit: "lbs" },
@@ -166,7 +166,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
     });
 
     it("should show weight field in work_time mode", () => {
-      const workout = createWorkoutWithExercise("Dumbbell Weighted Crunches", {
+      const workout = createWorkoutWithExercise("DB Weighted Crunches", {
         sets: 3,
         work_time_minutes: 45,
         work_time_unit: "seconds",
@@ -190,7 +190,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
     });
 
     it("should show weight field even if weight is undefined (always = always)", () => {
-      const workout = createWorkoutWithExercise("Dumbbell Weighted Crunches", {
+      const workout = createWorkoutWithExercise("DB Weighted Crunches", {
         sets: 3,
         reps: 15,
         rest_time_minutes: 1,
@@ -402,7 +402,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
         "EMOM 10 minutes",
         [
           {
-            name: "Dumbbell Weighted Crunches", // external_load: always
+            name: "DB Weighted Crunches", // external_load: always
             weekParams: {
               reps: 15,
               weight: { type: "fixed", value: 25, unit: "lbs" },
@@ -451,7 +451,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
         "Circuit 3 rounds",
         [
           {
-            name: "Dumbbell Weighted Crunches", // external_load: always
+            name: "DB Weighted Crunches", // external_load: always
             weekParams: {
               reps: 15,
               weight: { type: "fixed", value: 25, unit: "lbs" },
@@ -478,7 +478,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
 
       const editor = new WorkoutEditor(workout);
 
-      // Sub-exercise 0: Dumbbell Weighted Crunches (should show weight)
+      // Sub-exercise 0: DB Weighted Crunches (should show weight)
       const weightFields0 = getWeightFields(editor, 0, 0);
       expect(weightFields0).toHaveLength(2);
 
@@ -498,7 +498,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
         "EMOM 10 minutes",
         [
           {
-            name: "Dumbbell Weighted Crunches",
+            name: "DB Weighted Crunches",
             weekParams: {
               reps: 15,
               // No weight specified
@@ -511,7 +511,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
       const editor = new WorkoutEditor(workout);
       const weightFields = getWeightFields(editor, 0, 0);
 
-      // external_load: always for Dumbbell Weighted Crunches
+      // external_load: always for DB Weighted Crunches
       // Should show weight even though undefined
       expect(weightFields).toHaveLength(2);
       expect(weightFields[0].currentValue).toBeUndefined();
@@ -523,8 +523,8 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
   // ============================================================================
 
   describe("Toggle behavior preserves weight field visibility", () => {
-    it("should maintain weight field when toggling Dumbbell Weighted Crunches from reps to work_time", () => {
-      const workout = createWorkoutWithExercise("Dumbbell Weighted Crunches", {
+    it("should maintain weight field when toggling DB Weighted Crunches from reps to work_time", () => {
+      const workout = createWorkoutWithExercise("DB Weighted Crunches", {
         sets: 3,
         reps: 15,
         weight: { type: "fixed", value: 25, unit: "lbs" },
@@ -552,7 +552,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
     });
 
     it("should maintain weight field when toggling back from work_time to reps", () => {
-      const workout = createWorkoutWithExercise("Dumbbell Weighted Crunches", {
+      const workout = createWorkoutWithExercise("DB Weighted Crunches", {
         sets: 3,
         work_time_minutes: 45,
         work_time_unit: "seconds",
@@ -696,7 +696,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
     });
 
     it("should still support editing weight values", () => {
-      const workout = createWorkoutWithExercise("Dumbbell Weighted Crunches", {
+      const workout = createWorkoutWithExercise("DB Weighted Crunches", {
         sets: 3,
         reps: 15,
         weight: { type: "fixed", value: 25, unit: "lbs" },
@@ -733,7 +733,7 @@ describe("WorkoutEditor - Metadata Weight Visibility", () => {
     });
 
     it("should maintain undo stack functionality", () => {
-      const workout = createWorkoutWithExercise("Dumbbell Weighted Crunches", {
+      const workout = createWorkoutWithExercise("DB Weighted Crunches", {
         sets: 3,
         reps: 15,
         weight: { type: "fixed", value: 25, unit: "lbs" },

@@ -68,7 +68,7 @@ describe("exercise-selector", () => {
     });
 
     it("should match total_exercises count from database", () => {
-      const expectedCount = 357; // Actual count in database
+      const expectedCount = 372; // Actual count in database (updated in Ticket #023)
 
       expect(allExercises.length).toBe(expectedCount);
     });

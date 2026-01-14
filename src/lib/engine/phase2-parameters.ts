@@ -14,10 +14,17 @@ import type {
   WeightSpecification,
   GenerationRules,
   LegacyQuestionnaireAnswers,
+  QuestionnaireAnswers,
   TimeUnit,
   ParsedTimeValue,
   SubWorkMode
 } from './types.js';
+
+/**
+ * Minimal interface for questionnaire answers needed by phase2 functions
+ * Accepts both QuestionnaireAnswers and LegacyQuestionnaireAnswers
+ */
+type QuestionnaireWithExperience = QuestionnaireAnswers | LegacyQuestionnaireAnswers;
 
 /**
  * Round time values to nearest 0.5 minutes for better UX
@@ -109,7 +116,7 @@ export function applyIntensityProfile(
   exercise: ExerciseStructure,
   exerciseCategory: string,
   rules: GenerationRules,
-  answers: LegacyQuestionnaireAnswers,
+  answers: QuestionnaireWithExperience,
   isSubExercise: boolean = false,
   exerciseExternalLoad?: string,
   parentCategory?: string,

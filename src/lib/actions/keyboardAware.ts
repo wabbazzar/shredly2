@@ -11,8 +11,11 @@ export function keyboardAware(node: HTMLElement) {
 		return { destroy: () => {} };
 	}
 
+	// Capture viewport in a const so TypeScript knows it's non-null in callbacks
+	const vp = viewport;
+
 	// Store the initial viewport height to detect keyboard
-	let initialHeight = viewport.height;
+	let initialHeight = vp.height;
 	let rafId: number | null = null;
 
 	function handleResize() {
@@ -22,7 +25,7 @@ export function keyboardAware(node: HTMLElement) {
 		}
 
 		rafId = requestAnimationFrame(() => {
-			const currentHeight = viewport.height;
+			const currentHeight = vp.height;
 			const heightDiff = initialHeight - currentHeight;
 
 			// If viewport shrunk significantly (keyboard appeared), shift modal up
@@ -51,13 +54,13 @@ export function keyboardAware(node: HTMLElement) {
 	function handleOrientationChange() {
 		// Wait for resize to complete
 		setTimeout(() => {
-			initialHeight = viewport.height;
+			initialHeight = vp.height;
 			node.style.transform = '';
 		}, 300);
 	}
 
-	viewport.addEventListener('resize', handleResize);
-	viewport.addEventListener('scroll', handleScroll);
+	vp.addEventListener('resize', handleResize);
+	vp.addEventListener('scroll', handleScroll);
 	window.addEventListener('orientationchange', handleOrientationChange);
 
 	return {
@@ -65,8 +68,8 @@ export function keyboardAware(node: HTMLElement) {
 			if (rafId) {
 				cancelAnimationFrame(rafId);
 			}
-			viewport.removeEventListener('resize', handleResize);
-			viewport.removeEventListener('scroll', handleScroll);
+			vp.removeEventListener('resize', handleResize);
+			vp.removeEventListener('scroll', handleScroll);
 			window.removeEventListener('orientationchange', handleOrientationChange);
 			node.style.transform = '';
 			node.style.transition = '';

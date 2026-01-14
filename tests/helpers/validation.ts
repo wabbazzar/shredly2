@@ -9,9 +9,17 @@ import type {
   ParameterizedWorkout,
   ParameterizedDay,
   ParameterizedExercise,
+  WeekParameters,
   ExerciseDatabase,
   Exercise
 } from '../../src/lib/engine/types.js';
+
+/**
+ * Type guard to check if value is a WeekParameters object (not an array or primitive)
+ */
+function isWeekParameters(value: unknown): value is WeekParameters {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
 
 // ============================================================================
 // WORKOUT STRUCTURE VALIDATION
@@ -235,7 +243,7 @@ function estimateWorkoutDuration(day: ParameterizedDay, weekNumber: number): num
     const weekKey = `week${weekNumber}` as keyof ParameterizedExercise;
     const weekParams = exercise[weekKey];
 
-    if (weekParams && typeof weekParams === 'object') {
+    if (isWeekParameters(weekParams)) {
       const sets = weekParams.sets || 3;
       const reps = typeof weekParams.reps === 'number' ? weekParams.reps : 10;
       const restMinutes = weekParams.rest_time_minutes || 1;
@@ -313,8 +321,8 @@ export function validateProgressionLogic(
     const prevWeek = exercise[prevWeekKey];
     const currWeek = exercise[currWeekKey];
 
-    if (!prevWeek || typeof prevWeek !== 'object') continue;
-    if (!currWeek || typeof currWeek !== 'object') continue;
+    if (!isWeekParameters(prevWeek)) continue;
+    if (!isWeekParameters(currWeek)) continue;
 
     // Check if there's any progression
     const prevSets = prevWeek.sets || 0;

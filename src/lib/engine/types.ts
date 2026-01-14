@@ -156,6 +156,12 @@ export interface WorkoutMetadata {
   equipment: string[];
   estimatedDuration: string;
   tags: string[];
+  // Optional fields used in tests/UI
+  goal?: string;
+  split?: string;
+  progression?: string;
+  experience?: string;
+  programId?: string;
 }
 
 /**
@@ -180,7 +186,7 @@ export interface DayStructure {
 
 export interface ExerciseStructure {
   name: string; // References exercise_database.json (sampled from 323 exercises)
-  category?: "emom" | "amrap" | "circuit" | "interval"; // For compound exercises
+  category?: string; // For compound exercises (emom/amrap/circuit/interval) or test data
   sub_exercises?: SubExerciseStructure[];
   progressionScheme: "linear" | "density" | "wave_loading" | "volume" | "static";
   intensityProfile: "light" | "moderate" | "moderate_heavy" | "heavy" | "max" | "tabata" | "liss" | "hiit" | "amrap" | "extended";
@@ -210,7 +216,7 @@ export interface ParameterizedWorkout {
 
 export interface ParameterizedDay {
   dayNumber: number;
-  type: "gym" | "home" | "outdoor" | "recovery";
+  type: "gym" | "home" | "outdoor" | "recovery" | "training";
   focus: string;
   exercises: ParameterizedExercise[];
 }
@@ -218,7 +224,10 @@ export interface ParameterizedDay {
 export interface ParameterizedExercise {
   name: string;
   category_override?: string; // Rare - only when DB category doesn't fit
-  category?: "emom" | "amrap" | "circuit" | "interval"; // For compound exercises
+  category?: string; // For compound exercises (emom/amrap/circuit/interval) or test data
+  // Optional fields used in tests/intermediate states
+  progressionScheme?: string;
+  intensityProfile?: string;
   week1: WeekParameters;
   week2: WeekParameters;
   week3: WeekParameters;
@@ -249,8 +258,11 @@ export interface WeekParameters {
   reps?: number | string; // number or "8-12" or "AMRAP"
   work_time_minutes?: number;
   work_time_unit?: TimeUnit; // Explicit unit for work time
+  work_time_seconds?: number; // Shorthand for seconds (common in tests/UI)
   rest_time_minutes?: number;
   rest_time_unit?: TimeUnit; // Explicit unit for rest time
+  rest_time_seconds?: number; // Shorthand for seconds (common in tests/UI)
+  block_time_minutes?: number; // Total duration for compound blocks (EMOM/AMRAP)
   weight?: WeightSpecification;
   tempo?: string; // "3-1-2" format
   set_blocks?: SetBlock[]; // Advanced - mutually exclusive with flat sets/reps
@@ -552,6 +564,7 @@ export interface SplitMuscleGroupMapping {
 export interface CategoryWorkoutStructure {
   main_strength_categories?: string[];
   split_category_overrides?: {
+    description?: string;
     [splitFocus: string]: {
       first: string[];
       primary: string[];
@@ -559,7 +572,7 @@ export interface CategoryWorkoutStructure {
       tertiary: string[];
       finisher: string[];
       last: string[];
-    };
+    } | string | undefined;
   };
   category_priority_by_goal: {
     [goal: string]: {

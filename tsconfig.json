@@ -10,8 +10,8 @@
 		"forceConsistentCasingInFileNames": true,
 		"resolveJsonModule": true,
 		"noEmit": true,
-		"types": ["node"]
+		"types": ["node", "@sveltejs/kit"]
 	},
-	"include": ["src/**/*.ts", "src/**/*.svelte", "cli/**/*.ts", "tests/**/*.ts"],
-	"exclude": ["node_modules", "dist", "build"]
+	"include": ["src/**/*.ts", "src/**/*.svelte", "cli/**/*.ts"],
+	"exclude": ["node_modules", "dist", "build", "tests/**/*.ts"]
 }

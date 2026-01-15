@@ -40,10 +40,10 @@
 			animationClass =
 				transitionDirection === 'left' ? 'animate-slide-from-right' : 'animate-slide-from-left';
 
-			// Fallback timeout in case animationend doesn't fire
+			// Fallback timeout in case animationend doesn't fire (must match CSS animation duration)
 			setTimeout(() => {
 				if (isTransitioning) handleAnimationEnd();
-			}, 400);
+			}, 300);
 		}
 	}
 

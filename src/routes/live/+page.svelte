@@ -84,7 +84,7 @@
 	}
 
 	onMount(() => {
-		navigationStore.setActiveTab('live');
+		// Note: setActiveTab is handled by BottomTabBar.navigateToTab() - no duplicate call needed
 
 		// Defer heavy initialization until after first paint for smoother transitions
 		requestAnimationFrame(() => {

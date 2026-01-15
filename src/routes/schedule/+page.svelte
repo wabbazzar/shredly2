@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { navigationStore } from '$lib/stores/navigation';
 	import {
 		activeSchedule,
 		setActiveSchedule,
@@ -23,10 +21,6 @@
 	let showCreateModal = false;
 	let showLoadModal = false;
 	let showStartDateModal = false;
-
-	onMount(() => {
-		navigationStore.setActiveTab('schedule');
-	});
 
 	function handleCreateClick() {
 		showCreateModal = true;

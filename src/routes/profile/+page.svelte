@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { navigationStore } from '$lib/stores/navigation';
 	import { userStore } from '$lib/stores/user';
 	import { pwaStore, APP_VERSION } from '$lib/stores/pwa';
 	import { activeSchedule } from '$lib/stores/schedule';
@@ -10,10 +8,6 @@
 	import EditableSelectField from '$lib/components/EditableSelectField.svelte';
 	import PRCard from '$lib/components/profile/PRCard.svelte';
 	import { lbsToKg, kgToLbs, BIG_4_LIFTS } from '$lib/types/user';
-
-	onMount(() => {
-		navigationStore.setActiveTab('profile');
-	});
 
 	// PWA update state
 	$: pwaState = $pwaStore;

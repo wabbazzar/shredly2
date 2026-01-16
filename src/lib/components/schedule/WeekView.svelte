@@ -408,6 +408,18 @@
 						<span class="rest-label">Rest</span>
 					{:else if day.dayData}
 						<span class="focus-label">{day.dayData.focus}</span>
+						<!-- Location indicator (v2.1) -->
+						<span class="location-badge" class:gym={day.dayData.type === 'gym'} class:home={day.dayData.type === 'home'}>
+							{#if day.dayData.type === 'gym'}
+								<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+									<path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/>
+								</svg>
+							{:else}
+								<svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+									<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+								</svg>
+							{/if}
+						</span>
 					{/if}
 					<!-- Expand/collapse button -->
 					{#if !isRest && day.dayData}
@@ -691,6 +703,26 @@
 		font-weight: 500;
 		color: rgb(129 140 248);
 		flex: 1;
+	}
+
+	/* Location badge */
+	.location-badge {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.25rem;
+		border-radius: 0.25rem;
+		flex-shrink: 0;
+	}
+
+	.location-badge.gym {
+		background: rgb(67 56 202 / 0.3);
+		color: rgb(165 180 252);
+	}
+
+	.location-badge.home {
+		background: rgb(5 150 105 / 0.3);
+		color: rgb(110 231 183);
 	}
 
 	.rest-label {

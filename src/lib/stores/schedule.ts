@@ -369,6 +369,28 @@ export async function duplicateScheduleInDb(id: string, newName?: string): Promi
 }
 
 /**
+ * Rename a schedule
+ */
+export async function renameScheduleInDb(id: string, newName: string): Promise<void> {
+  const schedules = get(scheduleLibrary);
+  const schedule = schedules.find(s => s.id === id);
+  if (!schedule) {
+    throw new Error(`Schedule not found: ${id}`);
+  }
+
+  const updatedSchedule: StoredSchedule = {
+    ...schedule,
+    name: newName,
+    scheduleMetadata: {
+      ...schedule.scheduleMetadata,
+      updatedAt: new Date().toISOString()
+    }
+  };
+
+  await saveScheduleToDb(updatedSchedule);
+}
+
+/**
  * Navigate to a specific view level
  */
 export function navigateToView(level: ViewLevel, week?: number, day?: number): void {

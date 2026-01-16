@@ -12,8 +12,11 @@ import {
 	type WorkoutPreferences,
 	type OneRepMax,
 	type UnitSystem,
+	type EquipmentType,
 	DEFAULT_USER,
-	BIG_4_LIFTS
+	BIG_4_LIFTS,
+	DEFAULT_HOME_EQUIPMENT,
+	DEFAULT_GYM_EQUIPMENT
 } from '$lib/types/user';
 
 const STORAGE_KEY = 'shredly_user';
@@ -21,13 +24,108 @@ const STORAGE_KEY = 'shredly_user';
 // Browser check that works without SvelteKit context
 const isBrowser = typeof window !== 'undefined';
 
+/**
+ * Migrate legacy equipment_access field to new homeEquipment/gymEquipment arrays.
+ * This handles users who have data from before ticket #025.
+ */
+function migrateEquipmentAccess(
+	legacyAccess: 'full_gym' | 'dumbbells_only' | 'bodyweight_only'
+): { homeEquipment: EquipmentType[]; gymEquipment: EquipmentType[] } {
+	switch (legacyAccess) {
+		case 'full_gym':
+			return {
+				homeEquipment: [...DEFAULT_HOME_EQUIPMENT],
+				gymEquipment: [...DEFAULT_GYM_EQUIPMENT]
+			};
+		case 'dumbbells_only':
+			return {
+				homeEquipment: [
+					'Bench',
+					'Chair',
+					'Dumbbell',
+					'Dumbbells',
+					'Wall',
+					'Yoga Mat'
+				] as EquipmentType[],
+				gymEquipment: [
+					'Bench',
+					'Chair',
+					'Dumbbell',
+					'Dumbbells',
+					'Pull-up Bar',
+					'Wall',
+					'Yoga Mat'
+				] as EquipmentType[]
+			};
+		case 'bodyweight_only':
+			return {
+				homeEquipment: ['Box', 'Chair', 'Pull-up Bar', 'Wall', 'Yoga Mat'] as EquipmentType[],
+				gymEquipment: [
+					'Box',
+					'Chair',
+					'Platform',
+					'Pull-up Bar',
+					'Wall',
+					'Yoga Mat'
+				] as EquipmentType[]
+			};
+	}
+}
+
+/**
+ * Migrate user data from older versions to current format.
+ */
+function migrateUserData(parsed: UserData): UserData {
+	let migrated = { ...parsed };
+	let needsMigration = false;
+
+	// Migration: equipment_access -> homeEquipment/gymEquipment
+	if (
+		parsed.preferences.equipment_access &&
+		(!parsed.preferences.homeEquipment || !parsed.preferences.gymEquipment)
+	) {
+		const { homeEquipment, gymEquipment } = migrateEquipmentAccess(
+			parsed.preferences.equipment_access
+		);
+		migrated = {
+			...migrated,
+			preferences: {
+				...migrated.preferences,
+				homeEquipment,
+				gymEquipment
+			}
+		};
+		needsMigration = true;
+	}
+
+	// Ensure homeEquipment and gymEquipment exist with defaults
+	if (!migrated.preferences.homeEquipment) {
+		migrated.preferences.homeEquipment = [...DEFAULT_HOME_EQUIPMENT];
+		needsMigration = true;
+	}
+	if (!migrated.preferences.gymEquipment) {
+		migrated.preferences.gymEquipment = [...DEFAULT_GYM_EQUIPMENT];
+		needsMigration = true;
+	}
+
+	if (needsMigration) {
+		migrated.updatedAt = new Date().toISOString();
+	}
+
+	return migrated;
+}
+
 function loadFromStorage(): UserData {
 	if (!isBrowser) return DEFAULT_USER;
 
 	try {
 		const stored = localStorage.getItem(STORAGE_KEY);
 		if (stored) {
-			const parsed = JSON.parse(stored) as UserData;
+			let parsed = JSON.parse(stored) as UserData;
+
+			// Run migrations for older data formats
+			parsed = migrateUserData(parsed);
+
 			// Ensure Big 4 lifts exist (migration safety)
 			const existingLiftNames = new Set(parsed.oneRepMaxes.map((orm) => orm.exerciseName));
 			for (const lift of BIG_4_LIFTS) {
@@ -156,6 +254,55 @@ function createUserStore() {
 		 */
 		reset: () => {
 			set(DEFAULT_USER);
+		},
+
+		/**
+		 * Update home equipment list
+		 */
+		updateHomeEquipment: (equipment: EquipmentType[]) => {
+			update((data) => ({
+				...data,
+				preferences: { ...data.preferences, homeEquipment: equipment },
+				updatedAt: new Date().toISOString()
+			}));
+		},
+
+		/**
+		 * Update gym equipment list
+		 */
+		updateGymEquipment: (equipment: EquipmentType[]) => {
+			update((data) => ({
+				...data,
+				preferences: { ...data.preferences, gymEquipment: equipment },
+				updatedAt: new Date().toISOString()
+			}));
+		},
+
+		/**
+		 * Toggle a single equipment item for a location
+		 */
+		toggleEquipment: (location: 'home' | 'gym', equipment: EquipmentType) => {
+			update((data) => {
+				const key = location === 'home' ? 'homeEquipment' : 'gymEquipment';
+				const current = data.preferences[key];
+				const newEquipment = current.includes(equipment)
+					? current.filter((e) => e !== equipment)
+					: [...current, equipment];
+
+				return {
+					...data,
+					preferences: { ...data.preferences, [key]: newEquipment },
+					updatedAt: new Date().toISOString()
+				};
+			});
+		},
+
+		/**
+		 * Get equipment list for a location (non-reactive)
+		 */
+		getEquipment: (location: 'home' | 'gym'): EquipmentType[] => {
+			const key = location === 'home' ? 'homeEquipment' : 'gymEquipment';
+			return get({ subscribe }).preferences[key];
 		}
 	};
 }

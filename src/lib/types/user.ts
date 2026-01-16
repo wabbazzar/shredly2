@@ -7,6 +7,189 @@
 
 export type UnitSystem = 'imperial' | 'metric';
 
+/**
+ * All equipment types available in the exercise database.
+ * Derived from src/data/exercise_database.json equipment field values.
+ * Note: "None" is excluded as it represents bodyweight (no equipment needed).
+ */
+export const ALL_EQUIPMENT_TYPES = [
+	'Anchor Point',
+	'Assault Bike',
+	'Axle Bar',
+	'Barbell',
+	'Battle Ropes',
+	'Belt Squat Machine',
+	'Bench',
+	'Bicycle',
+	'Blocks',
+	'Box',
+	'Cable Machine',
+	'Cambered Bar',
+	'Chains',
+	'Chair',
+	'Dip Station',
+	'Duffalo Bar',
+	'Dumbbell',
+	'Dumbbells',
+	'Elliptical Machine',
+	'Foam Roller',
+	'Incline Bench',
+	'Jump Rope',
+	'Kettlebell',
+	'Landmine Attachment',
+	'Lat Pulldown Bar',
+	'Leg Extension Machine',
+	'Nordic Curl Strap',
+	'Parallel Bars',
+	'Parallettes',
+	'Plates',
+	'Platform',
+	'Pool',
+	'Power Rack',
+	'Pull-up Bar',
+	'Resistance Band',
+	'Resistance Bands',
+	'Rings',
+	'Rowing Machine',
+	'Safety Squat Bar',
+	'Ski Erg',
+	'Slingshot',
+	'Squat Rack',
+	'Stationary Bike',
+	'T-Bar',
+	'Track',
+	'Trap Bar',
+	'Treadmill',
+	'Wall',
+	'Weight Belt',
+	'Yoga Mat'
+] as const;
+
+export type EquipmentType = (typeof ALL_EQUIPMENT_TYPES)[number];
+
+/**
+ * Location types for workout days
+ */
+export type WorkoutLocation = 'home' | 'gym';
+
+/**
+ * Equipment profile for a specific location
+ */
+export interface LocationEquipmentProfile {
+	location: WorkoutLocation;
+	equipment: EquipmentType[];
+}
+
+/**
+ * Default equipment for gym - comprehensive commercial gym setup
+ */
+export const DEFAULT_GYM_EQUIPMENT: EquipmentType[] = [
+	'Barbell',
+	'Bench',
+	'Box',
+	'Cable Machine',
+	'Dip Station',
+	'Dumbbell',
+	'Dumbbells',
+	'Foam Roller',
+	'Incline Bench',
+	'Kettlebell',
+	'Lat Pulldown Bar',
+	'Leg Extension Machine',
+	'Plates',
+	'Platform',
+	'Power Rack',
+	'Pull-up Bar',
+	'Resistance Bands',
+	'Squat Rack',
+	'Trap Bar',
+	'Weight Belt',
+	'Yoga Mat'
+];
+
+/**
+ * Default equipment for home gym - basic home setup
+ */
+export const DEFAULT_HOME_EQUIPMENT: EquipmentType[] = [
+	'Bench',
+	'Box',
+	'Chair',
+	'Dumbbell',
+	'Dumbbells',
+	'Foam Roller',
+	'Jump Rope',
+	'Pull-up Bar',
+	'Resistance Band',
+	'Resistance Bands',
+	'Wall',
+	'Yoga Mat'
+];
+
+/**
+ * Equipment categories for grouping in the UI
+ */
+export const EQUIPMENT_CATEGORIES: Record<string, EquipmentType[]> = {
+	'Free Weights': [
+		'Barbell',
+		'Dumbbell',
+		'Dumbbells',
+		'Kettlebell',
+		'Plates',
+		'Trap Bar',
+		'Safety Squat Bar',
+		'Cambered Bar',
+		'Duffalo Bar',
+		'Axle Bar'
+	],
+	'Benches & Racks': [
+		'Bench',
+		'Incline Bench',
+		'Squat Rack',
+		'Power Rack',
+		'Box',
+		'Platform',
+		'Blocks'
+	],
+	Machines: [
+		'Cable Machine',
+		'Leg Extension Machine',
+		'Belt Squat Machine',
+		'Lat Pulldown Bar',
+		'Landmine Attachment',
+		'T-Bar'
+	],
+	'Cardio Equipment': [
+		'Treadmill',
+		'Stationary Bike',
+		'Bicycle',
+		'Rowing Machine',
+		'Elliptical Machine',
+		'Assault Bike',
+		'Ski Erg',
+		'Track',
+		'Pool'
+	],
+	'Bodyweight & Gymnastics': [
+		'Pull-up Bar',
+		'Dip Station',
+		'Parallel Bars',
+		'Parallettes',
+		'Rings',
+		'Nordic Curl Strap'
+	],
+	'Bands & Cables': ['Resistance Band', 'Resistance Bands', 'Battle Ropes', 'Anchor Point'],
+	Accessories: [
+		'Yoga Mat',
+		'Foam Roller',
+		'Chair',
+		'Wall',
+		'Weight Belt',
+		'Chains',
+		'Slingshot',
+		'Jump Rope'
+	]
+};
+
 export interface UserProfile {
 	name: string;
 	heightInches: number; // Always stored in inches internally
@@ -23,9 +206,14 @@ export interface WorkoutPreferences {
 	goal: 'build_muscle' | 'tone' | 'lose_weight';
 	session_duration: '20' | '30' | '60';
 	experience_level: 'beginner' | 'intermediate' | 'advanced';
-	equipment_access: 'full_gym' | 'dumbbells_only' | 'bodyweight_only';
+	/** @deprecated Use homeEquipment/gymEquipment instead. Kept for backward compatibility migration. */
+	equipment_access?: 'full_gym' | 'dumbbells_only' | 'bodyweight_only';
 	training_frequency: '2' | '3' | '4' | '5' | '6' | '7';
 	program_duration: '3' | '4' | '6';
+	/** Equipment available at home gym */
+	homeEquipment: EquipmentType[];
+	/** Equipment available at commercial gym */
+	gymEquipment: EquipmentType[];
 }
 
 /**
@@ -71,9 +259,10 @@ export const DEFAULT_USER: UserData = {
 		goal: 'build_muscle',
 		session_duration: '30',
 		experience_level: 'intermediate',
-		equipment_access: 'full_gym',
 		training_frequency: '4',
-		program_duration: '4'
+		program_duration: '4',
+		homeEquipment: [...DEFAULT_HOME_EQUIPMENT],
+		gymEquipment: [...DEFAULT_GYM_EQUIPMENT]
 	},
 	oneRepMaxes: [
 		{

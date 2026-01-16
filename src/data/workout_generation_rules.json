@@ -720,5 +720,143 @@
       "6": ["Push-HIIT", "Pull-HIIT", "Legs-HIIT", "FullBody-Mobility", "Upper-Volume", "Lower-Volume"],
       "7": ["Push-HIIT", "Pull-HIIT", "Legs-HIIT", "Push-Volume", "Pull-Volume", "Legs-Volume", "Flexibility"]
     }
+  },
+
+  "focus_equipment_requirements": {
+    "description": "Maps focus types to recommended equipment. Used to warn users when location equipment may be insufficient.",
+    "Push": {
+      "recommended": ["Barbell", "Bench"],
+      "warning": "Bench press works best with a barbell and bench"
+    },
+    "Pull": {
+      "recommended": ["Barbell", "Cable Machine"],
+      "warning": "Deadlifts and rows work best with a barbell"
+    },
+    "Legs": {
+      "recommended": ["Barbell", "Squat Rack"],
+      "warning": "Squats work best with a barbell and rack"
+    },
+    "Upper": {
+      "recommended": ["Barbell", "Bench"],
+      "warning": "Upper body compounds work best with a barbell"
+    },
+    "Lower": {
+      "recommended": ["Barbell", "Squat Rack"],
+      "warning": "Lower body compounds work best with a barbell"
+    },
+    "Push-Strength": {
+      "recommended": ["Barbell", "Bench", "Power Rack"],
+      "warning": "Heavy bench press requires barbell and rack"
+    },
+    "Pull-Strength": {
+      "recommended": ["Barbell", "Power Rack"],
+      "warning": "Heavy deadlifts require a barbell"
+    },
+    "Legs-Strength": {
+      "recommended": ["Barbell", "Squat Rack", "Power Rack"],
+      "warning": "Heavy squats require barbell and rack"
+    },
+    "Push-Volume": {
+      "recommended": ["Dumbbell"],
+      "warning": null
+    },
+    "Pull-Volume": {
+      "recommended": ["Dumbbell", "Pull-up Bar"],
+      "warning": null
+    },
+    "Legs-Volume": {
+      "recommended": ["Dumbbell"],
+      "warning": null
+    },
+    "Upper-Volume": {
+      "recommended": ["Dumbbell"],
+      "warning": null
+    },
+    "Lower-Volume": {
+      "recommended": ["Dumbbell"],
+      "warning": null
+    },
+    "Push-HIIT": {
+      "recommended": [],
+      "warning": null
+    },
+    "Pull-HIIT": {
+      "recommended": ["Pull-up Bar"],
+      "warning": null
+    },
+    "Legs-HIIT": {
+      "recommended": [],
+      "warning": null
+    },
+    "Upper-HIIT": {
+      "recommended": [],
+      "warning": null
+    },
+    "Lower-HIIT": {
+      "recommended": [],
+      "warning": null
+    },
+    "FullBody-Mobility": {
+      "recommended": ["Yoga Mat"],
+      "warning": null
+    },
+    "Flexibility": {
+      "recommended": ["Yoga Mat"],
+      "warning": null
+    }
+  },
+
+  "gym_priority_order": {
+    "description": "Priority order for assigning days to gym when gym days are limited. Lower index = higher priority for gym.",
+    "order": [
+      "Legs",
+      "Legs-Strength",
+      "Pull",
+      "Pull-Strength",
+      "Push",
+      "Push-Strength",
+      "Upper",
+      "Lower",
+      "Upper-Volume",
+      "Lower-Volume",
+      "Push-Volume",
+      "Pull-Volume",
+      "Legs-Volume",
+      "Push-HIIT",
+      "Pull-HIIT",
+      "Legs-HIIT",
+      "Upper-HIIT",
+      "Lower-HIIT",
+      "FullBody-Mobility",
+      "Flexibility"
+    ]
+  },
+
+  "default_gym_days_by_goal": {
+    "description": "Default number of gym days based on goal and total training days.",
+    "build_muscle": {
+      "2": 2,
+      "3": 3,
+      "4": 3,
+      "5": 3,
+      "6": 4,
+      "7": 4
+    },
+    "tone": {
+      "2": 2,
+      "3": 3,
+      "4": 3,
+      "5": 3,
+      "6": 3,
+      "7": 4
+    },
+    "lose_weight": {
+      "2": 1,
+      "3": 2,
+      "4": 2,
+      "5": 2,
+      "6": 3,
+      "7": 3
+    }
   }
 }

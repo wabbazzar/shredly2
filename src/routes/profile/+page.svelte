@@ -7,7 +7,8 @@
 	import EditableHeightField from '$lib/components/EditableHeightField.svelte';
 	import EditableSelectField from '$lib/components/EditableSelectField.svelte';
 	import PRCard from '$lib/components/profile/PRCard.svelte';
-	import { lbsToKg, kgToLbs, BIG_4_LIFTS } from '$lib/types/user';
+	import EquipmentEditor from '$lib/components/profile/EquipmentEditor.svelte';
+	import { lbsToKg, kgToLbs, BIG_4_LIFTS, ALL_EQUIPMENT_TYPES, type EquipmentType } from '$lib/types/user';
 
 	// PWA update state
 	$: pwaState = $pwaStore;
@@ -108,12 +109,6 @@
 		{ value: 'advanced', label: 'Advanced' }
 	];
 
-	const equipmentOptions = [
-		{ value: 'full_gym', label: 'Full Gym' },
-		{ value: 'dumbbells_only', label: 'Dumbbells Only' },
-		{ value: 'bodyweight_only', label: 'Bodyweight / Basic' }
-	];
-
 	const frequencyOptions = [
 		{ value: '2', label: '2 days/week' },
 		{ value: '3', label: '3 days/week' },
@@ -167,12 +162,6 @@
 		});
 	}
 
-	function handleEquipmentChange(e: CustomEvent<string>) {
-		userStore.updatePreferences({
-			equipment_access: e.detail as 'full_gym' | 'dumbbells_only' | 'bodyweight_only'
-		});
-	}
-
 	function handleFrequencyChange(e: CustomEvent<string>) {
 		userStore.updatePreferences({
 			training_frequency: e.detail as '2' | '3' | '4' | '5' | '6' | '7'
@@ -194,6 +183,39 @@
 
 	function toggleUnits() {
 		userStore.setUnitSystem(unitSystem === 'imperial' ? 'metric' : 'imperial');
+	}
+
+	// Equipment editor state
+	let homeEquipmentExpanded = false;
+	let gymEquipmentExpanded = false;
+
+	// Reactive equipment lists
+	$: homeEquipment = preferences.homeEquipment ?? [];
+	$: gymEquipment = preferences.gymEquipment ?? [];
+
+	// Equipment handlers
+	function handleHomeEquipmentToggle(e: CustomEvent<EquipmentType>) {
+		userStore.toggleEquipment('home', e.detail);
+	}
+
+	function handleGymEquipmentToggle(e: CustomEvent<EquipmentType>) {
+		userStore.toggleEquipment('gym', e.detail);
+	}
+
+	function handleHomeSelectAll() {
+		userStore.updateHomeEquipment([...ALL_EQUIPMENT_TYPES]);
+	}
+
+	function handleHomeClearAll() {
+		userStore.updateHomeEquipment([]);
+	}
+
+	function handleGymSelectAll() {
+		userStore.updateGymEquipment([...ALL_EQUIPMENT_TYPES]);
+	}
+
+	function handleGymClearAll() {
+		userStore.updateGymEquipment([]);
 	}
 </script>
 
@@ -314,13 +336,6 @@
 				/>
 
 				<EditableSelectField
-					value={preferences.equipment_access}
-					label="Equipment"
-					options={equipmentOptions}
-					on:change={handleEquipmentChange}
-				/>
-
-				<EditableSelectField
 					value={preferences.training_frequency}
 					label="Training Days"
 					options={frequencyOptions}
@@ -335,6 +350,31 @@
 				/>
 			</section>
 		</div>
+
+		<!-- Equipment Profiles Section -->
+		<section class="mt-6">
+			<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-1">
+				Equipment Profiles
+			</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<EquipmentEditor
+					location="home"
+					equipment={homeEquipment}
+					bind:expanded={homeEquipmentExpanded}
+					on:toggle={handleHomeEquipmentToggle}
+					on:selectAll={handleHomeSelectAll}
+					on:clearAll={handleHomeClearAll}
+				/>
+				<EquipmentEditor
+					location="gym"
+					equipment={gymEquipment}
+					bind:expanded={gymEquipmentExpanded}
+					on:toggle={handleGymEquipmentToggle}
+					on:selectAll={handleGymSelectAll}
+					on:clearAll={handleGymClearAll}
+				/>
+			</div>
+		</section>
 
 		<!-- Current Program PRs Section -->
 		{#if currentProgramExercises.length > 0}

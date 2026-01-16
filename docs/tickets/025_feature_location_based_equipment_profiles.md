@@ -9,7 +9,7 @@
 ### Progress
 - [x] **Phase 1**: Data Model and Types (3 pts) - COMPLETE
 - [x] **Phase 2**: Equipment Editor Component (5 pts) - COMPLETE
-- [ ] **Phase 3**: Day/Split Customizer (8 pts)
+- [x] **Phase 3**: Day/Split Customizer (8 pts) - COMPLETE
 - [ ] **Phase 4**: Exercise Selector Equipment Filtering (5 pts)
 - [ ] **Phase 5**: Schedule View Location Indicators (3 pts)
 

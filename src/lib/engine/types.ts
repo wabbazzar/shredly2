@@ -14,18 +14,34 @@
 // ============================================================================
 
 /**
+ * Configuration for a single training day (v2.1)
+ * Used in the day/split customizer questionnaire component
+ */
+export interface DayConfig {
+  focus: string;        // e.g., "Push", "Legs-HIIT", "FullBody-Mobility"
+  location: "home" | "gym";
+}
+
+/**
  * New simplified questionnaire answers (v2.0)
  * - 6 required questions
  * - Simplified options for goal, duration, experience, equipment
  * - No user-selectable split or progression (derived from goal)
+ *
+ * v2.1 additions:
+ * - dayConfigs: per-day focus and location configuration
+ * - equipment_access: now optional (legacy, use dayConfigs.location + user equipment profiles)
  */
 export interface QuestionnaireAnswers {
   goal: "build_muscle" | "tone" | "lose_weight";
   session_duration: "20" | "30" | "60";
   experience_level: "beginner" | "intermediate" | "advanced";
-  equipment_access: "full_gym" | "dumbbells_only" | "bodyweight_only";
+  /** @deprecated Use dayConfigs.location + user equipment profiles instead */
+  equipment_access?: "full_gym" | "dumbbells_only" | "bodyweight_only";
   training_frequency: "2" | "3" | "4" | "5" | "6" | "7";
   program_duration: "3" | "4" | "6";
+  /** Per-day focus and location configuration (v2.1) */
+  dayConfigs?: DayConfig[];
 }
 
 /**
@@ -63,7 +79,8 @@ export function mapToLegacyAnswers(answers: QuestionnaireAnswers): LegacyQuestio
   };
 
   // Map equipment_access -> legacy values
-  const equipmentMap: Record<QuestionnaireAnswers['equipment_access'], LegacyQuestionnaireAnswers['equipment_access']> = {
+  // Note: equipment_access is now optional (v2.1 uses dayConfigs), default to full_gym
+  const equipmentMap: Record<NonNullable<QuestionnaireAnswers['equipment_access']>, LegacyQuestionnaireAnswers['equipment_access']> = {
     full_gym: 'commercial_gym',
     dumbbells_only: 'dumbbells_only',
     bodyweight_only: 'bodyweight_only'
@@ -83,12 +100,20 @@ export function mapToLegacyAnswers(answers: QuestionnaireAnswers): LegacyQuestio
     lose_weight: 'density'
   };
 
+  // Derive equipment_access from dayConfigs if available, otherwise use legacy field or default
+  let equipmentAccess: 'full_gym' | 'dumbbells_only' | 'bodyweight_only' = answers.equipment_access ?? 'full_gym';
+  if (answers.dayConfigs && answers.dayConfigs.length > 0) {
+    // If any day is at gym, consider it full_gym access for legacy purposes
+    const hasGymDay = answers.dayConfigs.some(d => d.location === 'gym');
+    equipmentAccess = hasGymDay ? 'full_gym' : 'dumbbells_only';
+  }
+
   return {
     primary_goal: goalMap[answers.goal],
     experience_level: answers.experience_level, // beginner/intermediate/advanced map directly
     training_frequency: answers.training_frequency,
     session_duration: durationMap[answers.session_duration],
-    equipment_access: equipmentMap[answers.equipment_access],
+    equipment_access: equipmentMap[equipmentAccess],
     training_split_preference: 'no_preference', // No longer user-selectable
     program_duration: programMap[answers.program_duration],
     progression_preference: progressionMap[answers.goal]

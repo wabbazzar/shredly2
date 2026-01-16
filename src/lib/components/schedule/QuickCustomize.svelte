@@ -1,6 +1,9 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import type { QuestionnaireAnswers } from '$lib/engine/types';
+	import { userStore } from '$lib/stores/user';
+	import DaySplitCustomizer, { type DayConfig } from '$lib/components/questionnaire/DaySplitCustomizer.svelte';
+	import rules from '$data/workout_generation_rules.json';
 
 	export let answers: QuestionnaireAnswers;
 	export let startDate: string;
@@ -9,6 +12,23 @@
 		change: QuestionnaireAnswers;
 		startDateChange: string;
 	}>();
+
+	// Get prescriptive splits from config for initialization
+	const prescriptiveSplits = (rules as Record<string, unknown>).prescriptive_splits as Record<
+		string,
+		Record<string, string[]>
+	>;
+	const defaultGymDaysByGoal = (rules as Record<string, unknown>).default_gym_days_by_goal as Record<
+		string,
+		Record<string, number>
+	>;
+	const gymPriorityOrder = ((rules as Record<string, unknown>).gym_priority_order as { order: string[] })?.order ?? [];
+
+	// Reference to DaySplitCustomizer for initialization
+	let daySplitCustomizer: DaySplitCustomizer;
+
+	// Get home equipment from user store
+	$: homeEquipment = $userStore.preferences.homeEquipment ?? [];
 
 	// Goal options
 	const goalOptions = [
@@ -31,23 +51,6 @@
 		{ value: 'advanced', label: 'Advanced' }
 	] as const;
 
-	// Equipment options
-	const equipmentOptions = [
-		{ value: 'full_gym', label: 'Full Gym' },
-		{ value: 'dumbbells_only', label: 'Dumbbells Only' },
-		{ value: 'bodyweight_only', label: 'Bodyweight Only' }
-	] as const;
-
-	// Frequency options
-	const frequencyOptions = [
-		{ value: '2', label: '2 days' },
-		{ value: '3', label: '3 days' },
-		{ value: '4', label: '4 days' },
-		{ value: '5', label: '5 days' },
-		{ value: '6', label: '6 days' },
-		{ value: '7', label: '7 days' }
-	] as const;
-
 	// Program duration options
 	const programDurationOptions = [
 		{ value: '3', label: '3 weeks' },
@@ -55,8 +58,75 @@
 		{ value: '6', label: '6 weeks' }
 	] as const;
 
+	// Initialize dayConfigs if not present
+	function initializeDayConfigs(goal: string, frequency: number): DayConfig[] {
+		const splits = prescriptiveSplits[goal]?.[frequency.toString()] ?? ['Push', 'Pull', 'Legs'];
+		const defaultGymDays = defaultGymDaysByGoal[goal]?.[frequency.toString()] ?? Math.min(3, frequency);
+
+		const configs: DayConfig[] = splits.map((focus) => ({
+			focus,
+			location: 'home' as const
+		}));
+
+		// Auto-assign gym days based on priority
+		const sortedIndices = configs
+			.map((day, i) => ({
+				index: i,
+				priority: gymPriorityOrder.indexOf(day.focus)
+			}))
+			.filter((item) => item.priority !== -1)
+			.sort((a, b) => a.priority - b.priority);
+
+		const unlistedIndices = configs
+			.map((day, i) => ({
+				index: i,
+				priority: gymPriorityOrder.indexOf(day.focus)
+			}))
+			.filter((item) => item.priority === -1);
+
+		const allSorted = [...sortedIndices, ...unlistedIndices];
+		allSorted.forEach((item, rank) => {
+			configs[item.index].location = rank < defaultGymDays ? 'gym' : 'home';
+		});
+
+		return configs;
+	}
+
+	// Initialize on mount if dayConfigs is missing
+	onMount(() => {
+		if (!answers.dayConfigs || answers.dayConfigs.length === 0) {
+			const frequency = parseInt(answers.training_frequency ?? '4', 10);
+			answers.dayConfigs = initializeDayConfigs(answers.goal, frequency);
+			dispatch('change', answers);
+		}
+	});
+
 	function updateField<K extends keyof QuestionnaireAnswers>(field: K, value: QuestionnaireAnswers[K]) {
 		answers = { ...answers, [field]: value };
+		dispatch('change', answers);
+	}
+
+	function handleGoalChange(newGoal: typeof answers.goal) {
+		// When goal changes, reinitialize the day configs with the new goal's defaults
+		const frequency = answers.dayConfigs?.length ?? parseInt(answers.training_frequency ?? '4', 10);
+		const newDayConfigs = initializeDayConfigs(newGoal, frequency);
+
+		answers = {
+			...answers,
+			goal: newGoal,
+			dayConfigs: newDayConfigs,
+			training_frequency: frequency.toString() as typeof answers.training_frequency
+		};
+		dispatch('change', answers);
+	}
+
+	function handleDayConfigsChange(e: CustomEvent<DayConfig[]>) {
+		answers = {
+			...answers,
+			dayConfigs: e.detail,
+			// Keep training_frequency in sync with dayConfigs length
+			training_frequency: e.detail.length.toString() as typeof answers.training_frequency
+		};
 		dispatch('change', answers);
 	}
 
@@ -75,7 +145,7 @@
 			{#each goalOptions as option}
 				<button
 					type="button"
-					on:click={() => updateField('goal', option.value)}
+					on:click={() => handleGoalChange(option.value)}
 					class="py-1.5 px-2 text-xs rounded-md transition-colors
 						   {answers.goal === option.value
 						? 'bg-indigo-600 text-white'
@@ -125,43 +195,14 @@
 		</div>
 	</div>
 
-	<!-- Equipment -->
-	<div>
-		<label class="block text-xs font-medium text-slate-400 mb-1.5">Equipment</label>
-		<div class="grid grid-cols-3 gap-1.5">
-			{#each equipmentOptions as option}
-				<button
-					type="button"
-					on:click={() => updateField('equipment_access', option.value)}
-					class="py-1.5 px-2 text-xs rounded-md transition-colors
-						   {answers.equipment_access === option.value
-						? 'bg-indigo-600 text-white'
-						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
-				>
-					{option.label}
-				</button>
-			{/each}
-		</div>
-	</div>
-
-	<!-- Training Frequency -->
-	<div>
-		<label class="block text-xs font-medium text-slate-400 mb-1.5">Days/Week</label>
-		<div class="grid grid-cols-6 gap-1">
-			{#each frequencyOptions as option}
-				<button
-					type="button"
-					on:click={() => updateField('training_frequency', option.value)}
-					class="py-1.5 text-xs rounded-md transition-colors
-						   {answers.training_frequency === option.value
-						? 'bg-indigo-600 text-white'
-						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
-				>
-					{option.value}
-				</button>
-			{/each}
-		</div>
-	</div>
+	<!-- Day/Split Customizer -->
+	<DaySplitCustomizer
+		bind:this={daySplitCustomizer}
+		goal={answers.goal}
+		dayConfigs={answers.dayConfigs ?? []}
+		{homeEquipment}
+		on:change={handleDayConfigsChange}
+	/>
 
 	<!-- Program Duration -->
 	<div>

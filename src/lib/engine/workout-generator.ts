@@ -249,7 +249,14 @@ function generateTags(answers: QuestionnaireAnswers, legacyAnswers: LegacyQuesti
   tags.push(answers.goal);
   tags.push(answers.experience_level);
   tags.push(`${answers.training_frequency}_days_week`);
-  tags.push(answers.equipment_access);
+
+  // Derive equipment tag from dayConfigs or legacy field
+  if (answers.dayConfigs && answers.dayConfigs.length > 0) {
+    const hasGymDay = answers.dayConfigs.some(d => d.location === 'gym');
+    tags.push(hasGymDay ? 'full_gym' : 'dumbbells_only');
+  } else if (answers.equipment_access) {
+    tags.push(answers.equipment_access);
+  }
 
   return tags;
 }

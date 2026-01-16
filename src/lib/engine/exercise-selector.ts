@@ -16,7 +16,6 @@ import type {
   BlockSpec,
   MuscleGroupMappingEntry
 } from './types.js';
-import { estimateExerciseDuration } from './duration-estimator.js';
 import { createRandom, shuffleArray, type RandomGenerator } from './seeded-random.js';
 import { buildDayStructure, getBaseFocus, assignIntensityProfile, getProgressionFromGoal } from './phase1-structure.js';
 

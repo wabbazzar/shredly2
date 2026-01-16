@@ -423,7 +423,6 @@ export interface GenerationRules {
   intensity_profiles: IntensityProfiles;
   progression_schemes: ProgressionSchemes;
   experience_modifiers: ExperienceModifiers;
-  time_estimates: TimeEstimates;
   category_workout_structure: CategoryWorkoutStructure;
   split_muscle_group_mapping: SplitMuscleGroupMapping;
   compound_exercise_construction: CompoundExerciseConstruction;
@@ -590,19 +589,6 @@ export interface CategoryWorkoutStructure {
 export interface ExerciseSelectionStrategy {
   description?: string;
   shuffle_pools?: boolean;
-}
-
-export interface TimeEstimates {
-  setup_time_minutes: {
-    [category: string]: number;
-  };
-  seconds_per_rep: {
-    [key: string]: number;
-  };
-  transition_time_minutes: {
-    between_exercises: number;
-    between_categories: number;
-  };
 }
 
 // ============================================================================

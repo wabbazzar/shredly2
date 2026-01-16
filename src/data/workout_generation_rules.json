@@ -379,36 +379,6 @@
     }
   },
 
-  "time_estimates": {
-    "setup_time_minutes": {
-      "strength": 1.0,
-      "bodyweight": 0.25,
-      "interval": 0.5,
-      "emom": 0.333,
-      "amrap": 0.333,
-      "circuit": 0.75,
-      "mobility": 0.167,
-      "flexibility": 0.167,
-      "cardio": 0.5
-    },
-
-    "seconds_per_rep": {
-      "strength_default_tempo": 4,
-      "strength_tempo_eccentric": 2,
-      "strength_tempo_pause": 0,
-      "strength_tempo_concentric": 2,
-      "bodyweight": 3,
-      "interval": 3,
-      "emom": 3,
-      "amrap": 3
-    },
-
-    "transition_time_minutes": {
-      "between_exercises": 0.5,
-      "between_categories": 2.0
-    }
-  },
-
   "category_workout_structure": {
     "main_strength_categories": ["strength"],
 
@@ -719,7 +689,7 @@
 
   "compound_blocks_by_time": {
     "description": "Number of compound blocks to include based on session duration",
-    "20": 2,
+    "20": 1,
     "30": 2,
     "60": 4
   },

@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { userStore } from '$lib/stores/user';
 	import { saveScheduleToDb, setActiveSchedule, navigateToWeek } from '$lib/stores/schedule';
-	import { generateWorkout } from '$lib/engine/workout-generator';
+	import { generateWorkout, type EquipmentProfiles } from '$lib/engine/workout-generator';
 	import type { QuestionnaireAnswers } from '$lib/engine/types';
 	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
 	import QuickCustomize from './QuickCustomize.svelte';
@@ -63,8 +63,14 @@
 		error = null;
 
 		try {
-			// Generate workout using the engine
-			const workout = generateWorkout(answers);
+			// Build equipment profiles from user store (v2.1)
+			const equipmentProfiles: EquipmentProfiles = {
+				homeEquipment: $userStore.preferences.homeEquipment ?? [],
+				gymEquipment: $userStore.preferences.gymEquipment ?? []
+			};
+
+			// Generate workout using the engine with location-based equipment
+			const workout = generateWorkout(answers, undefined, equipmentProfiles);
 
 			// Create StoredSchedule with metadata
 			const storedSchedule: StoredSchedule = {

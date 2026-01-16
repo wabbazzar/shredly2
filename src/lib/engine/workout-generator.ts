@@ -32,15 +32,25 @@ const rules = generationRulesData as GenerationRules;
 const exerciseDB = exerciseDatabaseData as ExerciseDatabase;
 
 /**
+ * Location-based equipment profiles for workout generation (v2.1)
+ */
+export interface EquipmentProfiles {
+  homeEquipment: string[];
+  gymEquipment: string[];
+}
+
+/**
  * Main entry point: Generates complete workout program from questionnaire
  *
  * @param answers - User's questionnaire answers (new v2.0 format)
  * @param seed - Optional seed for deterministic testing. If provided, same seed = same workout. If omitted, randomness varies each generation.
+ * @param equipmentProfiles - Optional location-based equipment profiles (v2.1)
  * @returns Complete parameterized workout program
  */
 export function generateWorkout(
   answers: QuestionnaireAnswers,
-  seed?: number
+  seed?: number,
+  equipmentProfiles?: EquipmentProfiles
 ): ParameterizedWorkout {
   // Map new answers to legacy format for backward compatibility
   // This will be removed when Phases 2-5 are complete
@@ -65,7 +75,20 @@ export function generateWorkout(
   const days: { [dayNumber: string]: DayStructure } = {};
 
   for (let dayNum = 1; dayNum <= daysPerWeek; dayNum++) {
-    const focus = focusArray[dayNum - 1];
+    // Get focus from dayConfigs (v2.1) or prescriptive split (legacy)
+    const dayConfig = answers.dayConfigs?.[dayNum - 1];
+    const focus = dayConfig?.focus ?? focusArray[dayNum - 1];
+
+    // Determine location and equipment for this day (v2.1)
+    const location = dayConfig?.location ?? (legacyAnswers.equipment_access === 'commercial_gym' ? 'gym' : 'home');
+
+    // Get location-specific equipment array if profiles are provided
+    let availableEquipment: string[] | undefined;
+    if (equipmentProfiles) {
+      availableEquipment = location === 'gym'
+        ? equipmentProfiles.gymEquipment
+        : equipmentProfiles.homeEquipment;
+    }
 
     // Select exercises using new block-based selection
     // Pass goal directly for new progression derivation (Phase 4)
@@ -76,18 +99,12 @@ export function generateWorkout(
       rules,
       duration,
       seed,
-      answers.goal
+      answers.goal,
+      availableEquipment
     );
 
-    // Determine day type
-    let dayType: "gym" | "home" | "outdoor";
-    if (legacyAnswers.equipment_access === 'commercial_gym') {
-      dayType = 'gym';
-    } else if (legacyAnswers.equipment_access === 'bodyweight_only') {
-      dayType = 'outdoor';
-    } else {
-      dayType = 'home';
-    }
+    // Determine day type from location
+    const dayType: "gym" | "home" | "outdoor" = location === 'gym' ? 'gym' : 'home';
 
     days[`${dayNum}`] = {
       dayNumber: dayNum,

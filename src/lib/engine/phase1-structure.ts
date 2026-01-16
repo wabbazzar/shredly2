@@ -150,19 +150,47 @@ function equipmentToConfigKey(equipment: string): 'full_gym' | 'dumbbells_only' 
 }
 
 /**
+ * Derives the equipment config key from an array of available equipment.
+ * Used for location-based equipment profiles (v2.1).
+ *
+ * @param equipmentArray - Array of equipment types available at location
+ * @returns Config key for day structure selection
+ */
+export function equipmentArrayToConfigKey(equipmentArray: string[]): 'full_gym' | 'dumbbells_only' | 'bodyweight_only' {
+  // Check for barbell/rack - indicates full gym capability
+  const hasBarbell = equipmentArray.includes('Barbell');
+  const hasRack = equipmentArray.includes('Squat Rack') || equipmentArray.includes('Power Rack');
+
+  if (hasBarbell && hasRack) {
+    return 'full_gym';
+  }
+
+  // Check for dumbbells - indicates dumbbell-level capability
+  const hasDumbbells = equipmentArray.includes('Dumbbell') || equipmentArray.includes('Dumbbells');
+  if (hasDumbbells) {
+    return 'dumbbells_only';
+  }
+
+  // Default to bodyweight
+  return 'bodyweight_only';
+}
+
+/**
  * Builds day structure based on focus suffix, equipment, and duration
  *
  * @param dayFocus - Day focus with possible suffix (e.g., "Upper-HIIT", "Push-Volume", "Push")
- * @param equipment - User's equipment access level
+ * @param equipment - User's equipment access level (legacy string) OR equipment array
  * @param duration - Session duration in minutes (20, 30, or 60)
  * @param rules - Generation rules configuration
+ * @param availableEquipment - Optional array of equipment at location (v2.1)
  * @returns Array of resolved block specifications with concrete counts
  */
 export function buildDayStructure(
   dayFocus: string,
   equipment: string,
   duration: number,
-  rules: GenerationRules
+  rules: GenerationRules,
+  availableEquipment?: string[]
 ): BlockSpec[] {
   // Special handling for Flexibility day - entirely mobility-focused
   if (dayFocus === 'Flexibility') {
@@ -176,8 +204,10 @@ export function buildDayStructure(
   const suffix = parseFocusSuffix(dayFocus);
   const dayType = suffixToDayType(suffix);
 
-  // Map equipment to config key
-  const equipmentKey = equipmentToConfigKey(equipment);
+  // Map equipment to config key - use equipment array if provided (v2.1), otherwise legacy string
+  const equipmentKey = availableEquipment
+    ? equipmentArrayToConfigKey(availableEquipment)
+    : equipmentToConfigKey(equipment);
 
   // Get day structure from config
   const equipmentConfig = rules.day_structure_by_equipment[equipmentKey];

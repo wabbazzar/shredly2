@@ -46,10 +46,11 @@ export function flattenExerciseDatabase(
  * @param allExercises - Flattened exercise database
  * @param focus - Day focus (e.g., "Push", "Pull", "Upper", "Lower", "Full Body")
  * @param categories - Array of valid categories for this layer (from config)
- * @param equipmentAccess - User's equipment access
+ * @param equipmentAccess - User's equipment access (legacy)
  * @param difficultyFilter - Array of allowed difficulty levels (from experience modifiers)
  * @param externalLoadFilter - Array of allowed external load types (from experience modifiers)
  * @param muscleGroupMapping - Muscle group mapping from split focus
+ * @param availableEquipment - Optional array of available equipment (v2.1 location-based)
  * @returns Filtered array of [exerciseName, exercise] tuples
  */
 export function filterExercisesForLayer(
@@ -59,7 +60,8 @@ export function filterExercisesForLayer(
   equipmentAccess: string,
   difficultyFilter: string[],
   externalLoadFilter: string[],
-  muscleGroupMapping: { include_muscle_groups: string[]; exclude_muscle_groups?: string[] }
+  muscleGroupMapping: { include_muscle_groups: string[]; exclude_muscle_groups?: string[] },
+  availableEquipment?: string[]
 ): Array<[string, Exercise]> {
   return allExercises.filter(([name, exercise]) => {
     // Filter by category (must be in the layer's allowed categories)
@@ -110,7 +112,8 @@ export function filterExercisesForLayer(
     if (exercise.equipment.length > 0 && !exercise.equipment.includes("None")) {
       const hasRequiredEquipment = checkEquipmentAvailability(
         exercise.equipment,
-        equipmentAccess
+        equipmentAccess,
+        availableEquipment
       );
       if (!hasRequiredEquipment) {
         return false;
@@ -150,14 +153,23 @@ export function filterExercisesForLayer(
  * Checks if the user has access to required equipment
  *
  * @param requiredEquipment - Array of equipment needed for exercise
- * @param userAccess - User's equipment access level
+ * @param userAccess - User's equipment access level (legacy)
+ * @param availableEquipment - Optional array of available equipment (v2.1 location-based)
  * @returns True if user has access, false otherwise
  */
 function checkEquipmentAvailability(
   requiredEquipment: string[],
-  userAccess: string
+  userAccess: string,
+  availableEquipment?: string[]
 ): boolean {
-  // Define equipment availability by access level
+  // If explicit equipment array provided (v2.1), use it directly
+  if (availableEquipment && availableEquipment.length > 0) {
+    // Always allow "None" equipment exercises
+    const effectiveAvailable = [...availableEquipment, "None"];
+    return requiredEquipment.every(eq => effectiveAvailable.includes(eq));
+  }
+
+  // Legacy: Define equipment availability by access level
   const equipmentByAccess: { [key: string]: string[] } = {
     commercial_gym: ["Barbell", "Dumbbell", "Dumbbells", "Bench", "Plates", "Pull-up Bar",
                       "Squat Rack", "Power Rack", "Cable Machine", "Smith Machine",
@@ -174,10 +186,10 @@ function checkEquipmentAvailability(
     minimal_equipment: ["None", "Resistance Bands", "Chair", "Wall", "Mat", "Dumbbell"]
   };
 
-  const availableEquipment = equipmentByAccess[userAccess] || [];
+  const legacyAvailable = equipmentByAccess[userAccess] || [];
 
   // Check if all required equipment is available
-  return requiredEquipment.every(eq => availableEquipment.includes(eq));
+  return requiredEquipment.every(eq => legacyAvailable.includes(eq));
 }
 
 /**
@@ -296,6 +308,7 @@ function isCompoundCategory(category: string): boolean {
  * @param duration - Session duration in minutes
  * @param seed - Optional seed for deterministic testing
  * @param goal - User's goal (v2.0 format) for progression derivation
+ * @param availableEquipment - Optional array of available equipment at location (v2.1)
  * @returns Array of selected exercise structures
  */
 export function selectExercisesForDay(
@@ -305,14 +318,15 @@ export function selectExercisesForDay(
   rules: GenerationRules,
   duration: number,
   seed?: number,
-  goal?: QuestionnaireAnswers['goal']
+  goal?: QuestionnaireAnswers['goal'],
+  availableEquipment?: string[]
 ): ExerciseStructure[] {
   const random = createRandom(seed);
   const usedExerciseNames = new Set<string>();
   const selectedExercises: ExerciseStructure[] = [];
 
-  // Get block structure for this day
-  const blocks = buildDayStructure(dayFocus, answers.equipment_access, duration, rules);
+  // Get block structure for this day (use location-specific equipment if provided)
+  const blocks = buildDayStructure(dayFocus, answers.equipment_access, duration, rules, availableEquipment);
 
   // Get base focus for muscle group filtering
   const baseFocus = getBaseFocus(dayFocus);
@@ -345,7 +359,8 @@ export function selectExercisesForDay(
         experienceModifier,
         usedExerciseNames,
         random,
-        goal
+        goal,
+        availableEquipment
       );
 
       if (exercise) {
@@ -374,7 +389,8 @@ function selectExerciseForBlock(
   },
   usedExerciseNames: Set<string>,
   random: RandomGenerator,
-  goal?: QuestionnaireAnswers['goal']
+  goal?: QuestionnaireAnswers['goal'],
+  availableEquipment?: string[]
 ): ExerciseStructure | null {
   switch (block.type) {
     case 'strength':
@@ -389,7 +405,8 @@ function selectExerciseForBlock(
         experienceModifier,
         usedExerciseNames,
         random,
-        goal
+        goal,
+        availableEquipment
       );
 
     case 'compound':
@@ -402,7 +419,8 @@ function selectExerciseForBlock(
         experienceModifier,
         usedExerciseNames,
         random,
-        goal
+        goal,
+        availableEquipment
       );
 
     case 'interval':
@@ -416,7 +434,8 @@ function selectExerciseForBlock(
         experienceModifier,
         usedExerciseNames,
         random,
-        goal
+        goal,
+        availableEquipment
       );
 
     case 'mobility':
@@ -426,7 +445,8 @@ function selectExerciseForBlock(
         answers,
         rules,
         usedExerciseNames,
-        random
+        random,
+        availableEquipment
       );
 
     default:
@@ -451,7 +471,8 @@ function selectStrengthExercise(
   },
   usedExerciseNames: Set<string>,
   random: RandomGenerator,
-  goal?: QuestionnaireAnswers['goal']
+  goal?: QuestionnaireAnswers['goal'],
+  availableEquipment?: string[]
 ): ExerciseStructure | null {
   // Filter for strength exercises
   let filtered = filterExercisesForLayer(
@@ -461,7 +482,8 @@ function selectStrengthExercise(
     answers.equipment_access,
     experienceModifier.complexity_filter,
     experienceModifier.external_load_filter,
-    muscleMapping
+    muscleMapping,
+    availableEquipment
   );
 
   // Apply equipment preference filter
@@ -490,7 +512,8 @@ function selectStrengthExercise(
       answers.equipment_access,
       experienceModifier.complexity_filter,
       experienceModifier.external_load_filter,
-      muscleMapping
+      muscleMapping,
+      availableEquipment
     ).filter(([name, _]) => !usedExerciseNames.has(name));
 
     if (rules.exercise_selection_strategy.shuffle_pools) {
@@ -537,7 +560,8 @@ function selectCompoundExercise(
   },
   usedExerciseNames: Set<string>,
   random: RandomGenerator,
-  goal?: QuestionnaireAnswers['goal']
+  goal?: QuestionnaireAnswers['goal'],
+  availableEquipment?: string[]
 ): ExerciseStructure | null {
   // Try each compound type until we find one that works
   const compoundTypes: Array<'emom' | 'amrap' | 'circuit' | 'interval'> = ['emom', 'amrap', 'circuit', 'interval'];
@@ -557,7 +581,8 @@ function selectCompoundExercise(
       answers,
       usedExerciseNames,
       intensityProfile,
-      random
+      random,
+      availableEquipment
     );
 
     // Check if compound has valid sub-exercises (at least 2)
@@ -587,7 +612,8 @@ function selectIntervalBlock(
   },
   usedExerciseNames: Set<string>,
   random: RandomGenerator,
-  goal?: QuestionnaireAnswers['goal']
+  goal?: QuestionnaireAnswers['goal'],
+  availableEquipment?: string[]
 ): ExerciseStructure | null {
   const intensityProfile = assignIntensityProfile('primary', 'interval', rules);
 
@@ -600,7 +626,8 @@ function selectIntervalBlock(
     answers,
     usedExerciseNames,
     intensityProfile,
-    random
+    random,
+    availableEquipment
   );
 
   // Only return if compound has valid sub-exercises
@@ -620,7 +647,8 @@ function selectMobilityExercise(
   answers: LegacyQuestionnaireAnswers,
   rules: GenerationRules,
   usedExerciseNames: Set<string>,
-  random: RandomGenerator
+  random: RandomGenerator,
+  availableEquipment?: string[]
 ): ExerciseStructure | null {
   // Filter for mobility/flexibility exercises
   const filtered = allExercises.filter(([name, ex]) => {
@@ -629,7 +657,7 @@ function selectMobilityExercise(
 
     // Check equipment availability
     if (ex.equipment.length > 0 && !ex.equipment.includes('None')) {
-      const hasEquipment = checkEquipmentAvailability(ex.equipment, answers.equipment_access);
+      const hasEquipment = checkEquipmentAvailability(ex.equipment, answers.equipment_access, availableEquipment);
       if (!hasEquipment) return false;
     }
 
@@ -665,6 +693,7 @@ function selectMobilityExercise(
  * @param usedExerciseNames - Set of already used exercise names
  * @param intensityProfile - Intensity profile for the compound exercise
  * @param random - Random number generator (seeded or unseeded)
+ * @param availableEquipment - Optional array of available equipment at location (v2.1)
  * @returns Compound exercise structure with sub-exercises
  */
 function constructCompoundExercise(
@@ -675,7 +704,8 @@ function constructCompoundExercise(
   answers: LegacyQuestionnaireAnswers,
   usedExerciseNames: Set<string>,
   intensityProfile: string,
-  random: RandomGenerator
+  random: RandomGenerator,
+  availableEquipment?: string[]
 ): ExerciseStructure {
   // Get constituent exercise count from config
   const count = rules.compound_exercise_construction[compoundCategory].base_constituent_exercises;
@@ -727,7 +757,7 @@ function constructCompoundExercise(
 
     // Check equipment
     if (exercise.equipment.length > 0 && !exercise.equipment.includes("None")) {
-      if (!checkEquipmentAvailability(exercise.equipment, answers.equipment_access)) {
+      if (!checkEquipmentAvailability(exercise.equipment, answers.equipment_access, availableEquipment)) {
         return false;
       }
     }

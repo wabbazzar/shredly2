@@ -37,9 +37,11 @@ describe('Default User Schedule Flow', () => {
       expect(prefs.goal).toBeDefined();
       expect(prefs.session_duration).toBeDefined();
       expect(prefs.experience_level).toBeDefined();
-      expect(prefs.equipment_access).toBeDefined();
       expect(prefs.training_frequency).toBeDefined();
       expect(prefs.program_duration).toBeDefined();
+      // v2.1: equipment_access is optional, replaced by location-based equipment profiles
+      expect(prefs.homeEquipment).toBeDefined();
+      expect(prefs.gymEquipment).toBeDefined();
     });
 
     it('should have valid preference values', () => {
@@ -54,8 +56,17 @@ describe('Default User Schedule Flow', () => {
       // Validate experience_level
       expect(['beginner', 'intermediate', 'advanced']).toContain(prefs.experience_level);
 
-      // Validate equipment_access
-      expect(['full_gym', 'dumbbells_only', 'bodyweight_only']).toContain(prefs.equipment_access);
+      // v2.1: equipment_access is optional (now uses dayConfigs + equipment profiles)
+      // If present, validate it
+      if (prefs.equipment_access) {
+        expect(['full_gym', 'dumbbells_only', 'bodyweight_only']).toContain(prefs.equipment_access);
+      }
+
+      // Validate equipment arrays (v2.1)
+      expect(Array.isArray(prefs.homeEquipment)).toBe(true);
+      expect(Array.isArray(prefs.gymEquipment)).toBe(true);
+      expect(prefs.homeEquipment.length).toBeGreaterThan(0);
+      expect(prefs.gymEquipment.length).toBeGreaterThan(0);
 
       // Validate training_frequency
       expect(['2', '3', '4', '5', '6', '7']).toContain(prefs.training_frequency);

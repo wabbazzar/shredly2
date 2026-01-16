@@ -485,6 +485,37 @@ These should be answered in the CLI prototype phase.
 - **Test coverage**: 96 passing unit tests (29 for compound blocks)
 
 **Recent Completions**:
+- ✅ Ticket #025 (2026-01-15): Location-Based Equipment Profiles (COMPLETE)
+  * **Phase 1 - Data Model and Types**: Added equipment types and location profiles
+    - ALL_EQUIPMENT_TYPES (51 equipment types from exercise DB)
+    - EquipmentType, WorkoutLocation, LocationEquipmentProfile types
+    - DEFAULT_GYM_EQUIPMENT, DEFAULT_HOME_EQUIPMENT constants
+    - EQUIPMENT_CATEGORIES for UI grouping
+    - Updated WorkoutPreferences with homeEquipment/gymEquipment arrays
+    - Migration logic for legacy equipment_access field
+  * **Phase 2 - Equipment Editor Component**: Profile-based equipment toggle UI
+    - EquipmentEditor.svelte with categorized equipment toggles
+    - Select All / Clear All buttons per category
+    - Color-coded (Gym = indigo, Home = emerald)
+    - Integrated into Profile view, removed legacy dropdown
+  * **Phase 3 - Day/Split Customizer**: Interactive day card UI
+    - DayCard.svelte with focus dropdown and location toggle
+    - DaySplitCustomizer.svelte with add/remove day functionality (2-7 days)
+    - Config-driven equipment warnings (focus_equipment_requirements)
+    - Auto-assignment of gym days based on priority order
+    - Updated QuestionnaireAnswers with DayConfig[] type
+  * **Phase 4 - Exercise Selector Equipment Filtering**: Per-day equipment filtering
+    - checkEquipmentAvailability() accepts optional equipment array
+    - selectExercisesForDay() threads equipment through all selection functions
+    - workout-generator passes location-specific equipment from dayConfigs
+    - Backward compatible with legacy equipment_access
+  * **Phase 5 - Schedule View Location Indicators**: Visual location badges
+    - Home/gym icons on day cards in WeekView
+    - Color-coded badges (indigo for gym, emerald for home)
+  * **Impact**: Users can configure separate home/gym equipment, assign days to locations
+  * **Testing**: 667 tests passing
+  * **Files Created**: EquipmentEditor.svelte, DayCard.svelte, DaySplitCustomizer.svelte
+  * **Files Modified**: user.ts, user store, workout_generation_rules.json, types.ts, phase1-structure.ts, exercise-selector.ts, workout-generator.ts, QuickCustomize.svelte, CreateScheduleModal.svelte, WeekView.svelte
 - ✅ Ticket #024 (2026-01-14): Exercise History 1RM/TRM Integration (COMPLETE)
   * **Phase 1 - 1RM Calculation Engine**: Epley formula with RPE adjustment
     - Epley formula: 1RM = weight * (1 + reps/30)
@@ -699,7 +730,7 @@ These should be answered in the CLI prototype phase.
 3. Service worker for offline support
 4. PWA optimizations
 
-**Next Developer**: Core UI is complete! All three tabs are functional. Ticket #024 adds auto-calculated PRs from workout history and intelligent weight suggestions. Focus on progressive overload suggestions and mobile polish. Read tests/README.md for test patterns. 655 tests passing.
+**Next Developer**: Core UI is complete! All three tabs are functional. Ticket #025 adds location-based equipment profiles (home vs gym per day). Users can configure separate equipment for home/gym and assign days to locations. Focus on progressive overload suggestions and mobile polish. Read tests/README.md for test patterns. 667 tests passing.
 
 ---
 

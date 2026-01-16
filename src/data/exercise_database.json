@@ -3656,7 +3656,8 @@
             "typical_sets": 3,
             "typical_reps": "8-12",
             "equipment": [
-              "None"
+              "Pull-up Bar",
+              "Rings"
             ],
             "muscle_groups": [
               "Lats",
@@ -5229,6 +5230,7 @@
             "typical_sets": 3,
             "typical_reps": "10-20 seconds",
             "equipment": [
+              "Parallettes",
               "None"
             ],
             "muscle_groups": [
@@ -5248,6 +5250,7 @@
             "typical_sets": 3,
             "typical_reps": "15-30 seconds",
             "equipment": [
+              "Parallettes",
               "None"
             ],
             "muscle_groups": [
@@ -5456,7 +5459,8 @@
             "typical_sets": 3,
             "typical_reps": "4-8",
             "equipment": [
-              "None"
+              "Nordic Curl Strap",
+              "Anchor Point"
             ],
             "muscle_groups": [
               "Hamstrings"
@@ -5509,7 +5513,8 @@
             "typical_sets": 3,
             "typical_reps": "8-12",
             "equipment": [
-              "None"
+              "Parallel Bars",
+              "Dip Station"
             ],
             "muscle_groups": [
               "Triceps",
@@ -6994,7 +6999,7 @@
             "typical_sets": 1,
             "typical_reps": "20-40 minutes",
             "equipment": [
-              "None"
+              "Bicycle"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7013,7 +7018,7 @@
             "typical_sets": 1,
             "typical_reps": "20-30 minutes",
             "equipment": [
-              "None"
+              "Stationary Bike"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7031,7 +7036,7 @@
             "typical_sets": 1,
             "typical_reps": "15-20 minutes",
             "equipment": [
-              "None"
+              "Rowing Machine"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7048,7 +7053,7 @@
             "typical_sets": 3,
             "typical_reps": "60 seconds",
             "equipment": [
-              "None"
+              "Jump Rope"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7067,7 +7072,7 @@
             "typical_sets": 3,
             "typical_reps": "20-30",
             "equipment": [
-              "None"
+              "Jump Rope"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7104,7 +7109,7 @@
             "typical_sets": 1,
             "typical_reps": "20-30 minutes",
             "equipment": [
-              "None"
+              "Elliptical Machine"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7120,7 +7125,7 @@
             "typical_sets": 1,
             "typical_reps": "20-30 minutes",
             "equipment": [
-              "None"
+              "Pool"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7136,7 +7141,7 @@
             "typical_sets": 4,
             "typical_reps": "30 seconds",
             "equipment": [
-              "None"
+              "Battle Ropes"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7153,7 +7158,7 @@
             "typical_sets": 1,
             "typical_reps": "10-20 minutes",
             "equipment": [
-              "None"
+              "Assault Bike"
             ],
             "muscle_groups": [
               "Cardiovascular",
@@ -7169,7 +7174,7 @@
             "typical_sets": 1,
             "typical_reps": "10-15 minutes",
             "equipment": [
-              "None"
+              "Ski Erg"
             ],
             "muscle_groups": [
               "Cardiovascular",

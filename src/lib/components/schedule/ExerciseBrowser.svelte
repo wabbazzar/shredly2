@@ -503,16 +503,5 @@
 				<p class="text-slate-300 leading-relaxed italic">{desc.cues}</p>
 			</div>
 		</div>
-
-		<!-- Close Button -->
-		<div class="p-4 bg-slate-800 border-t border-slate-700">
-			<button
-				on:click={() => (showDescriptionModal = false)}
-				class="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
-				       transition-colors font-medium min-h-[44px]"
-			>
-				Close
-			</button>
-		</div>
 	</div>
 {/if}

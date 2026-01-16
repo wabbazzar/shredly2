@@ -389,16 +389,5 @@
 				</div>
 			{/if}
 		</div>
-
-		<!-- Close Button -->
-		<div class="p-4 border-t border-slate-700 flex-shrink-0">
-			<button
-				type="button"
-				class="w-full py-3 px-4 bg-slate-700 text-white rounded-lg font-medium hover:bg-slate-600 transition-colors"
-				on:click={handleClose}
-			>
-				Close
-			</button>
-		</div>
 	</div>
 </div>

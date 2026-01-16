@@ -1,32 +1,5 @@
 # GUI
 
-- feat(adding weight) beginner workouts show weight: light/medium/heavy intermeddiate/advanced workouts show: % TM e.g.       "exercises": [
-        {
-          "name": "Thrusters",
-          "week1": {
-            "sets": 3,
-            "reps": 4,
-            "rest_time_minutes": 2.5,
-            "rest_time_unit": "minutes",
-            "weight": "heavy"
-          },
-versus
- 26       "exercises": [
- 27         {
- 28           "name": "Bench Press",
- 29           "week1": {
- 30             "sets": 4,
- 31             "reps": 5,
- 32             "rest_time_minutes": 2,
- 33             "rest_time_unit": "minutes",
- 34             "weight": {
- 35               "type": "percent_tm",
- 36               "value": 80
- 37             }
- 38           },
-see @beginner.json and @intermediate.json and @advanced.json
-we need to show on the timer somewhere the %/rating perscription; the actual weight if %TM is avialable (these will be a separate ticket to estimate based on use rhistory) AND we need to show the work down IN THE PREVIOUS weeek if this is week > week1. give me optoins on where to display this inofrmation and how to display
-
 
 # Database Improvements
 
@@ -42,36 +15,3 @@ we need to show on the timer somewhere the %/rating perscription; the actual wei
 # Under Review
 
 
-round robin technique is convluted and buggy. workout lengths will instead follow a prescriptive format
-we might have a simpler taxonomy build muscle/tone/lose weight. time- 20/30/60. experience (filter on exercise attb). 
-eqp access. training split - depends on answer to strength/no-strength and # of days. in the following splits
-are standard 2 strength exercises followed by 2-4 blocks depending on time. alternates show -hiit and signify these
-are entirely compound based but have the same split orientation. -volume indicates a 2 strength 2-4 compound setup but 
-now the strength portion is all higher rep schemes. compound blocks can be any of: volume/amrap/emom/circuit
-- strength <tone/fat-loss> {lose-weight}
-  - 2 days - upper/lower  (OR) upper/lower hiit {lose-weight}
-  - 3 days - PPL  (OR) PPL hiit {lose-weight}
-  - 4 days - PPL/FB-mobility
-  - 5 days - PPL/upper-hiit/lower-hiit <fat-loss> (OR) PPL/upper-volume/lower-volume (OR) PPL-hiit/upper-volume/lower-volume {lose-weight}
-  - 6 days - PPL/FB-mobility/upper-hiit/lower-hiit <fat-loss> (OR) PPL/FB-mobility/upper-voume/lower-volume (strength)  (OR) PPL-hiit/FB-mobility/upper-volume/lower-volume {lose-weight{
-  - 7 days - PPL(strength)-PPL(volume)-flexibility (OR) PPL-hiit/PPL-volume-flexibility {lose-weight} 
-all workouts utilize barbell for strength volume-strength along with dumbbells at 80/20 ratio if it is available
-all workouts utilize dumbbells if they are available 
-if only basic equipment available above schedule formula holds but 2 strength exercise portions are converted into a single interval block with 3 exercises.
-program duration options are only 3,4,6 weeks
-- for progressions: linnear/volume. above schedule holds. 
-  - strength 
-    - volume: increase sets and reps same weight. 
-    - linear: decrease reps increase weight.
-  - blocks
-    - amrap
-      - volume: increase time
-      - linear: increase reps
-    - emom
-      - volume: increase time
-      - linear: increase reps
-    - interval
-      - volume: increase time
-      - linear: increase work/rest ratio
-    - circuit
-      - volume/linear increase sets

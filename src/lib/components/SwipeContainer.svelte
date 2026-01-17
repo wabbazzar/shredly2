@@ -5,6 +5,9 @@
 	import { navigationStore } from '$lib/stores/navigation';
 	import { TAB_ORDER, getTabs, type TabId } from '$lib/types/navigation';
 
+	// Subscribe to swipe disabled state
+	$: swipeDisabled = $navigationStore.swipeDisabled;
+
 	const SWIPE_THRESHOLD = 50; // Minimum px to trigger swipe
 	const VELOCITY_THRESHOLD = 0.3; // Minimum velocity (px/ms)
 
@@ -28,6 +31,7 @@
 	}
 
 	function handleTouchStart(e: TouchEvent) {
+		if (swipeDisabled) return;
 		startX = e.touches[0].clientX;
 		startY = e.touches[0].clientY;
 		startTime = Date.now();

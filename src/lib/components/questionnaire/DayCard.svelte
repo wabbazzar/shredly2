@@ -8,11 +8,16 @@
 	export let location: WorkoutLocation;
 	export let homeEquipment: string[] = [];
 	export let showRemove: boolean = true;
+	export let isDragging: boolean = false;
+	export let isDragOver: boolean = false;
 
 	const dispatch = createEventDispatcher<{
 		focusChange: string;
 		locationToggle: void;
 		remove: void;
+		dragstart: number;
+		dragover: number;
+		dragend: void;
 	}>();
 
 	// Focus options grouped by category
@@ -63,6 +68,26 @@
 		dispatch('remove');
 	}
 
+	function handleDragStart(e: DragEvent) {
+		if (e.dataTransfer) {
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text/plain', dayNumber.toString());
+		}
+		dispatch('dragstart', dayNumber);
+	}
+
+	function handleDragOver(e: DragEvent) {
+		e.preventDefault();
+		if (e.dataTransfer) {
+			e.dataTransfer.dropEffect = 'move';
+		}
+		dispatch('dragover', dayNumber);
+	}
+
+	function handleDragEnd() {
+		dispatch('dragend');
+	}
+
 	// Location styling
 	$: locationColor = location === 'gym' ? 'indigo' : 'emerald';
 	$: locationIcon =
@@ -72,8 +97,15 @@
 </script>
 
 <div
+	draggable="true"
+	ondragstart={handleDragStart}
+	ondragover={handleDragOver}
+	ondragend={handleDragEnd}
 	class="relative bg-slate-700 rounded-lg p-3 min-w-[120px] flex flex-col gap-2
-		   border-2 {locationColor === 'indigo' ? 'border-indigo-500/30' : 'border-emerald-500/30'}"
+		   border-2 transition-all cursor-grab active:cursor-grabbing
+		   {locationColor === 'indigo' ? 'border-indigo-500/30' : 'border-emerald-500/30'}
+		   {isDragging ? 'opacity-50 scale-95' : ''}
+		   {isDragOver ? 'border-white/50 scale-105' : ''}"
 >
 	<!-- Remove button -->
 	{#if showRemove}

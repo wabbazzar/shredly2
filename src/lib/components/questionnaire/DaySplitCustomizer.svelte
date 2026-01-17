@@ -20,6 +20,10 @@
 	const MAX_DAYS = 7;
 	const MIN_DAYS = 2;
 
+	// Drag state
+	let draggedIndex: number | null = null;
+	let dragOverIndex: number | null = null;
+
 	// Get prescriptive splits from config
 	const prescriptiveSplits = (rules as Record<string, unknown>).prescriptive_splits as Record<
 		string,
@@ -109,6 +113,29 @@
 		dispatch('change', dayConfigs);
 	}
 
+	function handleDragStart(index: number) {
+		draggedIndex = index;
+	}
+
+	function handleDragOver(index: number) {
+		if (draggedIndex !== null && draggedIndex !== index) {
+			dragOverIndex = index;
+		}
+	}
+
+	function handleDragEnd() {
+		if (draggedIndex !== null && dragOverIndex !== null && draggedIndex !== dragOverIndex) {
+			// Reorder the array
+			const newConfigs = [...dayConfigs];
+			const [draggedItem] = newConfigs.splice(draggedIndex, 1);
+			newConfigs.splice(dragOverIndex, 0, draggedItem);
+			dayConfigs = newConfigs;
+			dispatch('change', dayConfigs);
+		}
+		draggedIndex = null;
+		dragOverIndex = null;
+	}
+
 	// Calculate summary stats
 	$: gymDays = dayConfigs.filter((d) => d.location === 'gym').length;
 	$: homeDays = dayConfigs.filter((d) => d.location === 'home').length;
@@ -129,7 +156,7 @@
 	</div>
 
 	<!-- Day cards container - horizontal scroll on mobile -->
-	<div class="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
+	<div class="flex gap-2 overflow-x-auto pt-2 pb-2 -mx-1 px-1">
 		{#each dayConfigs as day, index (index)}
 			<DayCard
 				dayNumber={index + 1}
@@ -137,9 +164,14 @@
 				location={day.location}
 				{homeEquipment}
 				showRemove={dayConfigs.length > MIN_DAYS}
+				isDragging={draggedIndex === index}
+				isDragOver={dragOverIndex === index}
 				on:focusChange={(e) => handleFocusChange(index, e.detail)}
 				on:locationToggle={() => handleLocationToggle(index)}
 				on:remove={() => handleRemoveDay(index)}
+				on:dragstart={() => handleDragStart(index)}
+				on:dragover={() => handleDragOver(index)}
+				on:dragend={handleDragEnd}
 			/>
 		{/each}
 

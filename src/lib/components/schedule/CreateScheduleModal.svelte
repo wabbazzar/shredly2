@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { userStore } from '$lib/stores/user';
 	import { saveScheduleToDb, setActiveSchedule, navigateToWeek } from '$lib/stores/schedule';
+	import { navigationStore } from '$lib/stores/navigation';
 	import { generateWorkout, type EquipmentProfiles } from '$lib/engine/workout-generator';
 	import type { QuestionnaireAnswers } from '$lib/engine/types';
 	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
@@ -38,12 +39,15 @@
 	let isGenerating = false;
 	let error: string | null = null;
 
-	// Reset state when modal opens
+	// Reset state when modal opens/closes and manage swipe
 	$: if (isOpen) {
 		answers = { ...initialAnswers };
 		startDate = new Date().toISOString().split('T')[0];
 		isGenerating = false;
 		error = null;
+		navigationStore.disableSwipe();
+	} else {
+		navigationStore.enableSwipe();
 	}
 
 	function handleAnswersChange(e: CustomEvent<QuestionnaireAnswers>) {
@@ -122,7 +126,7 @@
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_static_element_interactions -->
 	<div
-		class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3"
+		class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-3 pb-20"
 		on:click={handleBackdropClick}
 	>
 		<!-- Modal -->

@@ -41,6 +41,7 @@
 	const durationOptions = [
 		{ value: '20', label: '20 min' },
 		{ value: '30', label: '30 min' },
+		{ value: '45', label: '45 min' },
 		{ value: '60', label: '60 min' }
 	] as const;
 
@@ -120,6 +121,18 @@
 		dispatch('change', answers);
 	}
 
+	function handleFrequencyChange(days: number) {
+		// Reinitialize day configs from prescriptive_splits for the new frequency
+		const newDayConfigs = initializeDayConfigs(answers.goal, days);
+
+		answers = {
+			...answers,
+			dayConfigs: newDayConfigs,
+			training_frequency: days.toString() as typeof answers.training_frequency
+		};
+		dispatch('change', answers);
+	}
+
 	function handleDayConfigsChange(e: CustomEvent<DayConfig[]>) {
 		answers = {
 			...answers,
@@ -160,7 +173,7 @@
 	<!-- Session Duration -->
 	<div>
 		<label class="block text-xs font-medium text-slate-400 mb-1.5">Duration</label>
-		<div class="grid grid-cols-3 gap-1.5">
+		<div class="grid grid-cols-4 gap-1.5">
 			{#each durationOptions as option}
 				<button
 					type="button"
@@ -190,6 +203,25 @@
 						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
 				>
 					{option.label}
+				</button>
+			{/each}
+		</div>
+	</div>
+
+	<!-- Training Frequency Selector -->
+	<div>
+		<label class="block text-xs font-medium text-slate-400 mb-1.5">Days / Week</label>
+		<div class="grid grid-cols-6 gap-1.5">
+			{#each [2, 3, 4, 5, 6, 7] as days}
+				<button
+					type="button"
+					on:click={() => handleFrequencyChange(days)}
+					class="py-1.5 px-2 text-xs rounded-md transition-colors
+						   {(answers.dayConfigs?.length ?? 0) === days
+						? 'bg-indigo-600 text-white'
+						: 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"
+				>
+					{days}
 				</button>
 			{/each}
 		</div>

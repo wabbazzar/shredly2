@@ -204,7 +204,7 @@ export interface UserProfile {
  */
 export interface WorkoutPreferences {
 	goal: 'build_muscle' | 'tone' | 'lose_weight';
-	session_duration: '20' | '30' | '60';
+	session_duration: '20' | '30' | '45' | '60';
 	experience_level: 'beginner' | 'intermediate' | 'advanced';
 	/** @deprecated Use homeEquipment/gymEquipment instead. Kept for backward compatibility migration. */
 	equipment_access?: 'full_gym' | 'dumbbells_only' | 'bodyweight_only';

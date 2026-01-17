@@ -30,4 +30,5 @@ export interface NavigationState {
 	activeTab: TabId;
 	previousTab: TabId | null;
 	transitionDirection: 'left' | 'right' | null;
+	swipeDisabled: boolean;
 }

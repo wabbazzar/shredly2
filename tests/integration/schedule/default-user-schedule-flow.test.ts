@@ -51,7 +51,7 @@ describe('Default User Schedule Flow', () => {
       expect(['build_muscle', 'tone', 'lose_weight']).toContain(prefs.goal);
 
       // Validate session_duration
-      expect(['20', '30', '60']).toContain(prefs.session_duration);
+      expect(['20', '30', '45', '60']).toContain(prefs.session_duration);
 
       // Validate experience_level
       expect(['beginner', 'intermediate', 'advanced']).toContain(prefs.experience_level);

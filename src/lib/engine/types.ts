@@ -34,7 +34,7 @@ export interface DayConfig {
  */
 export interface QuestionnaireAnswers {
   goal: "build_muscle" | "tone" | "lose_weight";
-  session_duration: "20" | "30" | "60";
+  session_duration: "20" | "30" | "45" | "60";
   experience_level: "beginner" | "intermediate" | "advanced";
   /** @deprecated Use dayConfigs.location + user equipment profiles instead */
   equipment_access?: "full_gym" | "dumbbells_only" | "bodyweight_only";
@@ -75,6 +75,7 @@ export function mapToLegacyAnswers(answers: QuestionnaireAnswers): LegacyQuestio
   const durationMap: Record<QuestionnaireAnswers['session_duration'], LegacyQuestionnaireAnswers['session_duration']> = {
     '20': '20-30',
     '30': '30-45',
+    '45': '45-60',
     '60': '45-60'  // 60 min maps to 45-60 range
   };
 

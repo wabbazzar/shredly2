@@ -5,7 +5,8 @@ function createNavigationStore() {
 	const { subscribe, update, set } = writable<NavigationState>({
 		activeTab: 'schedule',
 		previousTab: null,
-		transitionDirection: null
+		transitionDirection: null,
+		swipeDisabled: false
 	});
 
 	return {
@@ -16,6 +17,7 @@ function createNavigationStore() {
 				const currentIndex = TAB_ORDER.indexOf(state.activeTab);
 				const targetIndex = TAB_ORDER.indexOf(tabId);
 				return {
+					...state,
 					activeTab: tabId,
 					previousTab: state.activeTab,
 					transitionDirection: targetIndex > currentIndex ? 'left' : 'right'
@@ -27,6 +29,7 @@ function createNavigationStore() {
 				const currentIndex = TAB_ORDER.indexOf(state.activeTab);
 				if (currentIndex < TAB_ORDER.length - 1) {
 					return {
+						...state,
 						activeTab: TAB_ORDER[currentIndex + 1],
 						previousTab: state.activeTab,
 						transitionDirection: 'left'
@@ -40,6 +43,7 @@ function createNavigationStore() {
 				const currentIndex = TAB_ORDER.indexOf(state.activeTab);
 				if (currentIndex > 0) {
 					return {
+						...state,
 						activeTab: TAB_ORDER[currentIndex - 1],
 						previousTab: state.activeTab,
 						transitionDirection: 'right'
@@ -59,6 +63,18 @@ function createNavigationStore() {
 			update((state) => ({
 				...state,
 				transitionDirection: null
+			}));
+		},
+		disableSwipe: () => {
+			update((state) => ({
+				...state,
+				swipeDisabled: true
+			}));
+		},
+		enableSwipe: () => {
+			update((state) => ({
+				...state,
+				swipeDisabled: false
 			}));
 		}
 	};

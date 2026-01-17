@@ -127,7 +127,7 @@
 						<button
 							type="button"
 							onclick={() => toggleCategory(category)}
-							class="w-full flex items-center justify-between px-3 py-2 hover:bg-slate-700/30 transition-colors"
+							class="w-full flex items-center justify-between px-3 py-2"
 						>
 							<span class="text-xs font-medium text-slate-300">{category}</span>
 							<div class="flex items-center gap-2">

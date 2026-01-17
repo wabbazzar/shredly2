@@ -691,6 +691,7 @@
     "description": "Number of compound blocks to include based on session duration",
     "20": 1,
     "30": 2,
+    "45": 3,
     "60": 4
   },
 

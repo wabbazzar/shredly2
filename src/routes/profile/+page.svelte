@@ -8,6 +8,7 @@
 	import EditableSelectField from '$lib/components/EditableSelectField.svelte';
 	import PRCard from '$lib/components/profile/PRCard.svelte';
 	import EquipmentEditor from '$lib/components/profile/EquipmentEditor.svelte';
+	import AddPRModal from '$lib/components/profile/AddPRModal.svelte';
 	import { lbsToKg, kgToLbs, BIG_4_LIFTS, ALL_EQUIPMENT_TYPES, type EquipmentType } from '$lib/types/user';
 
 	// PWA update state
@@ -88,6 +89,18 @@
 		if (BIG_4_LIFTS.includes(exerciseName as (typeof BIG_4_LIFTS)[number])) {
 			userStore.updateOneRepMax(exerciseName, value, true);
 		}
+	}
+
+	// Add PR modal state
+	let showAddPRModal = false;
+
+	function handleAddPR(exerciseName: string, weightLbs: number) {
+		setUserOverride(exerciseName, weightLbs);
+		// Also update user store for Big 4 lifts
+		if (BIG_4_LIFTS.includes(exerciseName as (typeof BIG_4_LIFTS)[number])) {
+			userStore.updateOneRepMax(exerciseName, weightLbs, true);
+		}
+		showAddPRModal = false;
 	}
 
 	// Preference options from questionnaire
@@ -189,33 +202,59 @@
 	let homeEquipmentExpanded = false;
 	let gymEquipmentExpanded = false;
 
+	// Equipment undo state - tracks previous values for undo functionality
+	let previousHomeEquipment: EquipmentType[] | null = null;
+	let previousGymEquipment: EquipmentType[] | null = null;
+
 	// Reactive equipment lists
 	$: homeEquipment = preferences.homeEquipment ?? [];
 	$: gymEquipment = preferences.gymEquipment ?? [];
 
 	// Equipment handlers
 	function handleHomeEquipmentToggle(item: EquipmentType) {
+		previousHomeEquipment = [...homeEquipment];
 		userStore.toggleEquipment('home', item);
 	}
 
 	function handleGymEquipmentToggle(item: EquipmentType) {
+		previousGymEquipment = [...gymEquipment];
 		userStore.toggleEquipment('gym', item);
 	}
 
 	function handleHomeSelectAll() {
+		previousHomeEquipment = [...homeEquipment];
 		userStore.updateHomeEquipment([...ALL_EQUIPMENT_TYPES]);
 	}
 
 	function handleHomeClearAll() {
+		previousHomeEquipment = [...homeEquipment];
 		userStore.updateHomeEquipment([]);
 	}
 
 	function handleGymSelectAll() {
+		previousGymEquipment = [...gymEquipment];
 		userStore.updateGymEquipment([...ALL_EQUIPMENT_TYPES]);
 	}
 
 	function handleGymClearAll() {
+		previousGymEquipment = [...gymEquipment];
 		userStore.updateGymEquipment([]);
+	}
+
+	function handleHomeUndo() {
+		if (previousHomeEquipment !== null) {
+			const current = [...homeEquipment];
+			userStore.updateHomeEquipment(previousHomeEquipment);
+			previousHomeEquipment = current;
+		}
+	}
+
+	function handleGymUndo() {
+		if (previousGymEquipment !== null) {
+			const current = [...gymEquipment];
+			userStore.updateGymEquipment(previousGymEquipment);
+			previousGymEquipment = current;
+		}
 	}
 </script>
 
@@ -364,6 +403,8 @@
 					ontoggle={handleHomeEquipmentToggle}
 					onselectAll={handleHomeSelectAll}
 					onclearAll={handleHomeClearAll}
+					onundo={handleHomeUndo}
+					canUndo={previousHomeEquipment !== null}
 				/>
 				<EquipmentEditor
 					location="gym"
@@ -372,6 +413,8 @@
 					ontoggle={handleGymEquipmentToggle}
 					onselectAll={handleGymSelectAll}
 					onclearAll={handleGymClearAll}
+					onundo={handleGymUndo}
+					canUndo={previousGymEquipment !== null}
 				/>
 			</div>
 		</section>
@@ -383,9 +426,20 @@
 					<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
 						Current Program PRs
 					</h2>
-					<span class="text-xs text-slate-500">
-						{currentProgramExercises.length} exercises
-					</span>
+					<div class="flex items-center gap-2">
+						<span class="text-xs text-slate-500">
+							{currentProgramExercises.length} exercises
+						</span>
+						<button
+							onclick={() => (showAddPRModal = true)}
+							class="p-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+							aria-label="Add PR"
+						>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+							</svg>
+						</button>
+					</div>
 				</div>
 
 				{#if programPRData.length > 0}
@@ -401,7 +455,8 @@
 				{:else}
 					<div class="text-center py-8 text-slate-400">
 						<p>No exercise history yet.</p>
-						<p class="text-sm mt-1">Complete workouts in Live view to see your PRs here.</p>
+						<p class="text-sm mt-1">Complete workouts in Live view to see your PRs here,</p>
+						<p class="text-sm">or manually add PRs using the + button above.</p>
 					</div>
 				{/if}
 			</section>
@@ -411,10 +466,20 @@
 					<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
 						Current Program PRs
 					</h2>
+					<button
+						onclick={() => (showAddPRModal = true)}
+						class="p-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+						aria-label="Add PR"
+					>
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+						</svg>
+					</button>
 				</div>
 				<div class="text-center py-8 text-slate-400">
 					<p>No active schedule.</p>
-					<p class="text-sm mt-1">Create a schedule in the Schedule tab to see your PRs here.</p>
+					<p class="text-sm mt-1">Create a schedule in the Schedule tab to see your PRs here,</p>
+					<p class="text-sm">or manually add PRs using the + button above.</p>
 				</div>
 			</section>
 		{/if}
@@ -479,3 +544,11 @@
 		</section>
 	</div>
 </div>
+
+<!-- Add PR Modal -->
+<AddPRModal
+	isOpen={showAddPRModal}
+	{unitSystem}
+	onconfirm={handleAddPR}
+	oncancel={() => (showAddPRModal = false)}
+/>

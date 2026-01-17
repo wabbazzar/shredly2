@@ -13,6 +13,8 @@
 		ontoggle?: (item: EquipmentType) => void;
 		onselectAll?: () => void;
 		onclearAll?: () => void;
+		onundo?: () => void;
+		canUndo?: boolean;
 	}
 
 	let {
@@ -21,7 +23,9 @@
 		expanded = $bindable(false),
 		ontoggle,
 		onselectAll,
-		onclearAll
+		onclearAll,
+		onundo,
+		canUndo = false
 	}: Props = $props();
 
 	// Track which categories are expanded
@@ -123,6 +127,18 @@
 				>
 					Clear All
 				</button>
+				{#if canUndo}
+					<button
+						type="button"
+						onclick={() => onundo?.()}
+						class="px-3 py-1.5 text-xs font-medium rounded-md bg-amber-600/20 text-amber-400 hover:bg-amber-600/30 transition-colors flex items-center gap-1"
+					>
+						<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+						</svg>
+						Undo
+					</button>
+				{/if}
 			</div>
 
 			<!-- Equipment categories -->

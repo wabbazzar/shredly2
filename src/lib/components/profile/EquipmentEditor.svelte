@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import {
 		type EquipmentType,
 		type WorkoutLocation,
@@ -7,22 +6,30 @@
 		ALL_EQUIPMENT_TYPES
 	} from '$lib/types/user';
 
-	export let location: WorkoutLocation;
-	export let equipment: EquipmentType[];
-	export let expanded: boolean = false;
+	interface Props {
+		location: WorkoutLocation;
+		equipment: EquipmentType[];
+		expanded?: boolean;
+		ontoggle?: (item: EquipmentType) => void;
+		onselectAll?: () => void;
+		onclearAll?: () => void;
+	}
 
-	const dispatch = createEventDispatcher<{
-		toggle: EquipmentType;
-		selectAll: void;
-		clearAll: void;
-	}>();
+	let {
+		location,
+		equipment,
+		expanded = $bindable(false),
+		ontoggle,
+		onselectAll,
+		onclearAll
+	}: Props = $props();
 
 	// Track which categories are expanded
-	let expandedCategories: Record<string, boolean> = {};
+	let expandedCategories: Record<string, boolean> = $state({});
 
 	// Get count of selected equipment
-	$: selectedCount = equipment.length;
-	$: totalCount = ALL_EQUIPMENT_TYPES.length;
+	let selectedCount = $derived(equipment.length);
+	let totalCount = $derived(ALL_EQUIPMENT_TYPES.length);
 
 	// Check if equipment is selected
 	function isSelected(item: EquipmentType): boolean {
@@ -35,15 +42,15 @@
 	}
 
 	function handleToggle(item: EquipmentType) {
-		dispatch('toggle', item);
+		ontoggle?.(item);
 	}
 
 	function handleSelectAll() {
-		dispatch('selectAll');
+		onselectAll?.();
 	}
 
 	function handleClearAll() {
-		dispatch('clearAll');
+		onclearAll?.();
 	}
 
 	function toggleCategory(category: string) {
@@ -51,9 +58,9 @@
 	}
 
 	// Location display info
-	$: locationIcon = location === 'gym' ? 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' : 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6';
-	$: locationLabel = location === 'gym' ? 'Gym Equipment' : 'Home Equipment';
-	$: locationColor = location === 'gym' ? 'indigo' : 'emerald';
+	let locationIcon = $derived(location === 'gym' ? 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' : 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6');
+	let locationLabel = $derived(location === 'gym' ? 'Gym Equipment' : 'Home Equipment');
+	let locationColor = $derived(location === 'gym' ? 'indigo' : 'emerald');
 </script>
 
 <div class="bg-slate-800 rounded-lg overflow-hidden">

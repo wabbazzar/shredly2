@@ -194,12 +194,12 @@
 	$: gymEquipment = preferences.gymEquipment ?? [];
 
 	// Equipment handlers
-	function handleHomeEquipmentToggle(e: CustomEvent<EquipmentType>) {
-		userStore.toggleEquipment('home', e.detail);
+	function handleHomeEquipmentToggle(item: EquipmentType) {
+		userStore.toggleEquipment('home', item);
 	}
 
-	function handleGymEquipmentToggle(e: CustomEvent<EquipmentType>) {
-		userStore.toggleEquipment('gym', e.detail);
+	function handleGymEquipmentToggle(item: EquipmentType) {
+		userStore.toggleEquipment('gym', item);
 	}
 
 	function handleHomeSelectAll() {
@@ -361,17 +361,17 @@
 					location="home"
 					equipment={homeEquipment}
 					bind:expanded={homeEquipmentExpanded}
-					on:toggle={handleHomeEquipmentToggle}
-					on:selectAll={handleHomeSelectAll}
-					on:clearAll={handleHomeClearAll}
+					ontoggle={handleHomeEquipmentToggle}
+					onselectAll={handleHomeSelectAll}
+					onclearAll={handleHomeClearAll}
 				/>
 				<EquipmentEditor
 					location="gym"
 					equipment={gymEquipment}
 					bind:expanded={gymEquipmentExpanded}
-					on:toggle={handleGymEquipmentToggle}
-					on:selectAll={handleGymSelectAll}
-					on:clearAll={handleGymClearAll}
+					ontoggle={handleGymEquipmentToggle}
+					onselectAll={handleGymSelectAll}
+					onclearAll={handleGymClearAll}
 				/>
 			</div>
 		</section>

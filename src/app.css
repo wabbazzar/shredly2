@@ -10,14 +10,21 @@
 	.pt-safe {
 		padding-top: env(safe-area-inset-top, 0px);
 	}
-	/* Bottom nav clearance: nav height (4rem/64px) + safe area */
+	/* Bottom nav clearance: nav height (3.5rem/56px) + safe area */
 	.pb-nav {
-		padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+		padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
 	}
 }
 
 /* Base styles */
-html,
+html {
+	/* iOS PWA fix: when content is pushed down by safe-area-inset-top,
+	   add that same amount to min-height to prevent bottom gap */
+	min-height: calc(100% + env(safe-area-inset-top));
+	padding-top: env(safe-area-inset-top);
+	background-color: #0f172a; /* slate-900 - fill the safe areas */
+}
+
 body {
 	height: 100%;
 	margin: 0;
@@ -26,9 +33,6 @@ body {
 	/* Disable pinch-to-zoom and prevent edge swipe gestures */
 	touch-action: pan-x pan-y;
 	-ms-touch-action: pan-x pan-y;
-}
-
-body {
 	background-color: #0f172a; /* slate-900 */
 	color: #f8fafc; /* slate-50 */
 	font-family:

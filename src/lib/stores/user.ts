@@ -16,7 +16,8 @@ import {
 	DEFAULT_USER,
 	BIG_4_LIFTS,
 	DEFAULT_HOME_EQUIPMENT,
-	DEFAULT_GYM_EQUIPMENT
+	DEFAULT_GYM_EQUIPMENT,
+	ageToBirthday
 } from '$lib/types/user';
 
 const STORAGE_KEY = 'shredly_user';
@@ -105,6 +106,26 @@ function migrateUserData(parsed: UserData): UserData {
 	}
 	if (!migrated.preferences.gymEquipment) {
 		migrated.preferences.gymEquipment = [...DEFAULT_GYM_EQUIPMENT];
+		needsMigration = true;
+	}
+
+	// Migration: age -> birthday
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const profileAny = parsed.profile as any;
+	if (profileAny.age !== undefined && !profileAny.birthday) {
+		migrated = {
+			...migrated,
+			profile: {
+				...migrated.profile,
+				birthday: ageToBirthday(profileAny.age)
+			}
+		};
+		needsMigration = true;
+	}
+
+	// Ensure birthday exists with default
+	if (!migrated.profile.birthday) {
+		migrated.profile.birthday = DEFAULT_USER.profile.birthday;
 		needsMigration = true;
 	}
 
@@ -303,6 +324,17 @@ function createUserStore() {
 		getEquipment: (location: 'home' | 'gym'): EquipmentType[] => {
 			const key = location === 'home' ? 'homeEquipment' : 'gymEquipment';
 			return get({ subscribe }).preferences[key];
+		},
+
+		/**
+		 * Remove a 1RM entry by exercise name
+		 */
+		removeOneRepMax: (exerciseName: string) => {
+			update((data) => ({
+				...data,
+				oneRepMaxes: data.oneRepMaxes.filter((orm) => orm.exerciseName !== exerciseName),
+				updatedAt: new Date().toISOString()
+			}));
 		}
 	};
 }

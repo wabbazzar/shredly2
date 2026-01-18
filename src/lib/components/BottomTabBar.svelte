@@ -31,7 +31,7 @@
 	role="tablist"
 	aria-label="Main navigation"
 >
-	<div class="flex justify-around items-center h-16 max-w-md mx-auto">
+	<div class="flex justify-around items-center h-14 max-w-md mx-auto">
 		{#each tabs as tab}
 			{@const isActive = activePath === tab.path || ((activePath === base || activePath === `${base}/`) && tab.id === 'schedule')}
 			<button

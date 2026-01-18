@@ -88,12 +88,12 @@
 	<LoadingScreen fadeOut={isFadingOut} />
 {/if}
 
-<div class="h-screen flex flex-col bg-slate-900 overflow-hidden">
+<div class="h-full flex flex-col bg-slate-900 overflow-hidden">
 	<!-- Main content area with swipe handling -->
 	<SwipeContainer>
 		<main class="h-full overflow-auto pb-nav">
 			<div
-				class="h-full will-change-transform {animationClass}"
+				class="h-full {isTransitioning ? 'will-change-transform' : ''} {animationClass}"
 				on:animationend={handleAnimationEnd}
 			>
 				<slot />

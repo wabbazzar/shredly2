@@ -5,11 +5,12 @@
 	import { getPRDisplayData, setUserOverride, oneRMCacheStore, type ExercisePRDisplay } from '$lib/stores/oneRMCache';
 	import EditableField from '$lib/components/EditableField.svelte';
 	import EditableHeightField from '$lib/components/EditableHeightField.svelte';
+	import EditableBirthdayField from '$lib/components/EditableBirthdayField.svelte';
 	import EditableSelectField from '$lib/components/EditableSelectField.svelte';
 	import PRCard from '$lib/components/profile/PRCard.svelte';
 	import EquipmentEditor from '$lib/components/profile/EquipmentEditor.svelte';
 	import AddPRModal from '$lib/components/profile/AddPRModal.svelte';
-	import { lbsToKg, kgToLbs, BIG_4_LIFTS, ALL_EQUIPMENT_TYPES, type EquipmentType } from '$lib/types/user';
+	import { lbsToKg, kgToLbs, ALL_EQUIPMENT_TYPES, type EquipmentType } from '$lib/types/user';
 
 	// PWA update state
 	$: pwaState = $pwaStore;
@@ -85,22 +86,31 @@
 	function handlePROverride(e: CustomEvent<{ exerciseName: string; value: number }>) {
 		const { exerciseName, value } = e.detail;
 		setUserOverride(exerciseName, value);
-		// Also update user store for Big 4 lifts
-		if (BIG_4_LIFTS.includes(exerciseName as (typeof BIG_4_LIFTS)[number])) {
+		// Also update user store if this exercise exists in oneRepMaxes
+		const existsInStore = oneRepMaxes.some((orm) => orm.exerciseName === exerciseName);
+		if (existsInStore) {
 			userStore.updateOneRepMax(exerciseName, value, true);
 		}
 	}
 
-	// Add PR modal state
+	// Add PR modal state (for Current Program PRs)
 	let showAddPRModal = false;
+	// Add 1RM modal state (for 1RM section)
+	let show1RMModal = false;
 
 	function handleAddPR(exerciseName: string, weightLbs: number) {
 		setUserOverride(exerciseName, weightLbs);
-		// Also update user store for Big 4 lifts
-		if (BIG_4_LIFTS.includes(exerciseName as (typeof BIG_4_LIFTS)[number])) {
-			userStore.updateOneRepMax(exerciseName, weightLbs, true);
-		}
 		showAddPRModal = false;
+	}
+
+	function handleAdd1RM(exerciseName: string, weightLbs: number) {
+		userStore.updateOneRepMax(exerciseName, weightLbs, true);
+		setUserOverride(exerciseName, weightLbs);
+		show1RMModal = false;
+	}
+
+	function handleRemove1RM(exerciseName: string) {
+		userStore.removeOneRepMax(exerciseName);
 	}
 
 	// Preference options from questionnaire
@@ -155,8 +165,8 @@
 		userStore.updateProfile({ weightLbs });
 	}
 
-	function handleAgeChange(e: CustomEvent<string | number>) {
-		userStore.updateProfile({ age: Number(e.detail) });
+	function handleBirthdayChange(e: CustomEvent<string>) {
+		userStore.updateProfile({ birthday: e.detail });
 	}
 
 	function handleGoalChange(e: CustomEvent<string>) {
@@ -317,34 +327,60 @@
 					on:change={handleWeightChange}
 				/>
 
-				<EditableField
-					value={profile.age}
-					label="Age"
-					type="number"
-					suffix="years"
-					min={13}
-					max={100}
-					on:change={handleAgeChange}
+				<EditableBirthdayField
+					birthday={profile.birthday}
+					on:change={handleBirthdayChange}
 				/>
 			</section>
 
-			<!-- 1RM Section (Big 4) -->
+			<!-- 1RM Section -->
 			<section class="bg-slate-800 rounded-lg px-4 divide-y divide-slate-700 h-fit">
-				<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider py-3">
-					1RM (One Rep Max)
-				</h2>
+				<div class="flex items-center justify-between py-3">
+					<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+						1RM (One Rep Max)
+					</h2>
+					<button
+						onclick={() => (show1RMModal = true)}
+						class="p-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+						aria-label="Add 1RM"
+					>
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+						</svg>
+					</button>
+				</div>
 
-				{#each BIG_4_LIFTS as lift}
-					<EditableField
-						value={oneRepMaxDisplayValues[lift] ?? 0}
-						label={lift}
-						type="number"
-						suffix={weightUnit}
-						min={0}
-						max={unitSystem === 'imperial' ? 1000 : 454}
-						on:change={(e) => handleOneRepMaxChange(lift, e)}
-					/>
-				{/each}
+				{#if oneRepMaxes.length === 0}
+					<div class="py-6 text-center text-slate-400">
+						<p class="text-sm">No lifts tracked yet.</p>
+						<p class="text-xs mt-1">Add your first 1RM using the + button above.</p>
+					</div>
+				{:else}
+					{#each oneRepMaxes as orm (orm.exerciseName)}
+						<div class="flex items-center gap-2">
+							<div class="flex-1">
+								<EditableField
+									value={oneRepMaxDisplayValues[orm.exerciseName] ?? 0}
+									label={orm.exerciseName}
+									type="number"
+									suffix={weightUnit}
+									min={0}
+									max={unitSystem === 'imperial' ? 1000 : 454}
+									on:change={(e) => handleOneRepMaxChange(orm.exerciseName, e)}
+								/>
+							</div>
+							<button
+								onclick={() => handleRemove1RM(orm.exerciseName)}
+								class="p-2 text-slate-500 hover:text-red-400 transition-colors"
+								aria-label="Remove {orm.exerciseName}"
+							>
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+								</svg>
+							</button>
+						</div>
+					{/each}
+				{/if}
 			</section>
 
 			<!-- Workout Preferences Section -->
@@ -545,10 +581,18 @@
 	</div>
 </div>
 
-<!-- Add PR Modal -->
+<!-- Add PR Modal (for Current Program PRs) -->
 <AddPRModal
 	isOpen={showAddPRModal}
 	{unitSystem}
 	onconfirm={handleAddPR}
 	oncancel={() => (showAddPRModal = false)}
+/>
+
+<!-- Add 1RM Modal -->
+<AddPRModal
+	isOpen={show1RMModal}
+	{unitSystem}
+	onconfirm={handleAdd1RM}
+	oncancel={() => (show1RMModal = false)}
 />

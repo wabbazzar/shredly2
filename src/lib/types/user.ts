@@ -194,7 +194,7 @@ export interface UserProfile {
 	name: string;
 	heightInches: number; // Always stored in inches internally
 	weightLbs: number; // Always stored in lbs internally
-	age: number;
+	birthday: string; // ISO date string (YYYY-MM-DD)
 	unitSystem: UnitSystem;
 }
 
@@ -252,7 +252,7 @@ export const DEFAULT_USER: UserData = {
 		name: 'V',
 		heightInches: 65, // 5'5"
 		weightLbs: 140,
-		age: 32,
+		birthday: '1994-01-15', // ~32 years old
 		unitSystem: 'imperial'
 	},
 	preferences: {
@@ -330,4 +330,27 @@ export function formatWeight(lbs: number, unitSystem: UnitSystem): string {
 		return `${lbs} lbs`;
 	}
 	return `${lbsToKg(lbs)} kg`;
+}
+
+/**
+ * Calculate age from birthday string (YYYY-MM-DD format)
+ */
+export function calculateAge(birthday: string): number {
+	const birthDate = new Date(birthday);
+	const today = new Date();
+	let age = today.getFullYear() - birthDate.getFullYear();
+	const monthDiff = today.getMonth() - birthDate.getMonth();
+	// Adjust if birthday hasn't occurred yet this year
+	if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+		age--;
+	}
+	return age;
+}
+
+/**
+ * Convert age to approximate birthday (assumes Jan 1 of birth year)
+ */
+export function ageToBirthday(age: number): string {
+	const year = new Date().getFullYear() - age;
+	return `${year}-01-01`;
 }

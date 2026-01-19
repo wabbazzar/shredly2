@@ -107,11 +107,8 @@
 					const todaysWorkout = getTodaysWorkout($activeSchedule);
 					if (todaysWorkout) {
 						// Check if user has already logged exercises for today's workout
-						const historyRows = getTodaysHistoryForWorkout(
-							$activeSchedule.id,
-							todaysWorkout.weekNumber,
-							todaysWorkout.dayNumber
-						);
+						// Query by date + program_id only - resilient to start date changes
+						const historyRows = getTodaysHistoryForWorkout($activeSchedule.id);
 
 						if (historyRows && historyRows.length > 0) {
 							// Reconstruct session from history for review mode

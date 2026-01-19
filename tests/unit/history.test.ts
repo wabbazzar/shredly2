@@ -494,7 +494,7 @@ describe('History Store', () => {
 
   describe('getTodaysHistoryForWorkout', () => {
     it('should return null when no history exists', () => {
-      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+      const result = getTodaysHistoryForWorkout('test-program');
       expect(result).toBe(null);
     });
 
@@ -519,7 +519,35 @@ describe('History Store', () => {
         })
       ]);
 
-      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+      const result = getTodaysHistoryForWorkout('test-program');
+
+      expect(result).not.toBe(null);
+      expect(result?.length).toBe(2);
+    });
+
+    it('should return all rows regardless of week/day values (resilient to start date changes)', () => {
+      const today = new Date().toISOString().split('T')[0];
+      appendHistoryRows([
+        createMockHistoryRow({
+          date: today,
+          workout_program_id: 'test-program',
+          week_number: 1,  // Week 1 when logged
+          day_number: 1,
+          exercise_name: 'Bench Press',
+          set_number: 1
+        }),
+        createMockHistoryRow({
+          date: today,
+          workout_program_id: 'test-program',
+          week_number: 3,  // Different week (simulating start date change effect)
+          day_number: 2,
+          exercise_name: 'Squats',
+          set_number: 1
+        })
+      ]);
+
+      // Both rows should be returned regardless of week/day values
+      const result = getTodaysHistoryForWorkout('test-program');
 
       expect(result).not.toBe(null);
       expect(result?.length).toBe(2);
@@ -542,7 +570,7 @@ describe('History Store', () => {
         })
       ]);
 
-      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+      const result = getTodaysHistoryForWorkout('test-program');
 
       expect(result?.length).toBe(1);
     });
@@ -564,7 +592,7 @@ describe('History Store', () => {
         })
       ]);
 
-      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+      const result = getTodaysHistoryForWorkout('test-program');
 
       expect(result?.length).toBe(1);
     });
@@ -594,7 +622,7 @@ describe('History Store', () => {
         })
       ]);
 
-      const result = getTodaysHistoryForWorkout('test-program', 1, 1);
+      const result = getTodaysHistoryForWorkout('test-program');
 
       expect(result?.length).toBe(1);
       expect(result?.[0].weight).toBe(135); // Should have latest weight
@@ -603,7 +631,7 @@ describe('History Store', () => {
 
   describe('hasLoggedTodaysWorkout', () => {
     it('should return false when no history exists', () => {
-      const result = hasLoggedTodaysWorkout('test-program', 1, 1);
+      const result = hasLoggedTodaysWorkout('test-program');
       expect(result).toBe(false);
     });
 
@@ -616,21 +644,22 @@ describe('History Store', () => {
         day_number: 1
       }));
 
-      const result = hasLoggedTodaysWorkout('test-program', 1, 1);
+      const result = hasLoggedTodaysWorkout('test-program');
       expect(result).toBe(true);
     });
 
-    it('should return false for different week/day', () => {
+    it('should return true regardless of stored week/day values (resilient to start date changes)', () => {
       const today = new Date().toISOString().split('T')[0];
       appendHistoryRow(createMockHistoryRow({
         date: today,
         workout_program_id: 'test-program',
-        week_number: 1,
-        day_number: 1
+        week_number: 99,  // Arbitrary week (shouldn't matter)
+        day_number: 7     // Arbitrary day (shouldn't matter)
       }));
 
-      const result = hasLoggedTodaysWorkout('test-program', 2, 3);
-      expect(result).toBe(false);
+      // Should still find the history regardless of week/day values
+      const result = hasLoggedTodaysWorkout('test-program');
+      expect(result).toBe(true);
     });
   });
 });

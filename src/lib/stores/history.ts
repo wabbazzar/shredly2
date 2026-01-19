@@ -545,26 +545,25 @@ export function getLastPerformance(exerciseName: string): HistoryRow | null {
 }
 
 /**
- * Get today's logged history for a specific workout session, deduplicated
+ * Get today's logged history for a specific workout program, deduplicated
  * Returns null if no history exists for today's workout
+ *
+ * Queries by date + program_id only - resilient to start date changes.
+ * week_number and day_number are still stored in history but not used for filtering.
  *
  * Deduplication: If multiple rows exist for the same (exercise_name, set_number, is_compound_parent),
  * only the row with the latest timestamp is returned.
  */
 export function getTodaysHistoryForWorkout(
-  workoutProgramId: string,
-  weekNumber: number,
-  dayNumber: number
+  workoutProgramId: string
 ): HistoryRow[] | null {
   const today = new Date().toISOString().split('T')[0];
   const history = get(exerciseHistory);
 
-  // Filter to today's rows for this workout
+  // Filter by date + program_id only - resilient to start date changes
   const todaysRows = history.filter(
     r => r.date === today &&
-      r.workout_program_id === workoutProgramId &&
-      r.week_number === weekNumber &&
-      r.day_number === dayNumber
+      r.workout_program_id === workoutProgramId
   );
 
   if (todaysRows.length === 0) return null;
@@ -584,13 +583,12 @@ export function getTodaysHistoryForWorkout(
 
 /**
  * Check if user has logged any exercises for today's workout
+ * Queries by date + program_id only - resilient to start date changes.
  */
 export function hasLoggedTodaysWorkout(
-  workoutProgramId: string,
-  weekNumber: number,
-  dayNumber: number
+  workoutProgramId: string
 ): boolean {
-  const rows = getTodaysHistoryForWorkout(workoutProgramId, weekNumber, dayNumber);
+  const rows = getTodaysHistoryForWorkout(workoutProgramId);
   return rows !== null && rows.length > 0;
 }
 

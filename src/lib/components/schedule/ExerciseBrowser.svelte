@@ -214,6 +214,7 @@
 		<!-- Modal content - full screen on mobile, constrained card on desktop -->
 		<div
 			class="flex flex-col h-full w-full lg:h-auto lg:max-h-[85vh] lg:max-w-6xl lg:bg-slate-900 lg:rounded-xl lg:overflow-hidden"
+			style="padding-top: env(safe-area-inset-top, 0px)"
 			on:click|stopPropagation
 		>
 			<!-- Header with actions -->
@@ -458,6 +459,7 @@
 	{@const desc = exerciseDescriptions[selectedExercise.name].description}
 	<div
 		class="fixed inset-0 z-[70] flex flex-col bg-slate-900"
+		style="padding-top: env(safe-area-inset-top, 0px)"
 		on:keydown={(e) => e.key === 'Escape' && (showDescriptionModal = false)}
 		role="dialog"
 		aria-modal="true"

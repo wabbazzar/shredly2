@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { StoredSchedule } from '$lib/types/schedule';
-	import type { ParameterizedDay, ParameterizedExercise, ParameterizedSubExercise, WeekParameters, Exercise } from '$lib/engine/types';
+	import type { ParameterizedDay, ParameterizedExercise, ParameterizedSubExercise, WeekParameters, WeightSpecification, Exercise } from '$lib/engine/types';
 	import type { EditScope } from '$lib/types/schedule';
 	import { saveScheduleToDb, activeSchedule } from '$lib/stores/schedule';
+	import { getFromCache } from '$lib/stores/oneRMCache';
+	import { getLastPerformance } from '$lib/stores/history';
+	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
 	import EditScopeModal from './EditScopeModal.svelte';
 	import ProgressionModal from './ProgressionModal.svelte';
+	import WeightModal from './WeightModal.svelte';
 	import ExerciseBrowser from './ExerciseBrowser.svelte';
 	import exerciseDatabase from '../../../data/exercise_database.json';
 
@@ -40,6 +44,12 @@
 	let progressionExerciseIndex: number = -1;
 	let progressionField: string = '';
 	let progressionSubExerciseIndex: number = -1; // -1 means parent exercise
+
+	// Weight modal state
+	let showWeightModal = false;
+	let weightExercise: ParameterizedExercise | null = null;
+	let weightExerciseIndex: number = -1;
+	let weightSubExerciseIndex: number = -1; // -1 means parent exercise
 
 	// Exercise browser state
 	let showExerciseBrowser = false;
@@ -82,18 +92,93 @@
 		return `${(seconds / 60).toFixed(1).replace(/\.0$/, '')}min`;
 	}
 
+	// Calculate actual weight from weight specification
+	function calculateWeight(exerciseName: string, weight: WeightSpecification | undefined): {
+		displayWeight: string | null;
+		calculatedLbs: number | null;
+		isPercentTM: boolean;
+		percentTM: number | null;
+	} {
+		if (!weight) return { displayWeight: null, calculatedLbs: null, isPercentTM: false, percentTM: null };
+
+		// Qualitative weight (beginner programs)
+		if (typeof weight === 'string') {
+			return { displayWeight: weight, calculatedLbs: null, isPercentTM: false, percentTM: null };
+		}
+
+		// Percent TM - calculate actual weight from cache
+		if (weight.type === 'percent_tm') {
+			const cacheEntry = getFromCache(exerciseName);
+			if (cacheEntry && cacheEntry.trm > 0) {
+				const calculatedLbs = Math.round(cacheEntry.trm * (weight.value / 100) / 5) * 5; // Round to nearest 5
+				return {
+					displayWeight: `${calculatedLbs}`,
+					calculatedLbs,
+					isPercentTM: true,
+					percentTM: weight.value
+				};
+			}
+			// No TRM available - show percent
+			return {
+				displayWeight: `${weight.value}%`,
+				calculatedLbs: null,
+				isPercentTM: true,
+				percentTM: weight.value
+			};
+		}
+
+		// Percent body weight
+		if (weight.type === 'percent_bw') {
+			return {
+				displayWeight: `${weight.value}% BW`,
+				calculatedLbs: null,
+				isPercentTM: false,
+				percentTM: null
+			};
+		}
+
+		// Absolute weight
+		if (weight.type === 'absolute') {
+			return {
+				displayWeight: `${weight.value}`,
+				calculatedLbs: weight.value,
+				isPercentTM: false,
+				percentTM: null
+			};
+		}
+
+		return { displayWeight: null, calculatedLbs: null, isPercentTM: false, percentTM: null };
+	}
+
 	// Format exercise parameters for display
 	function formatParams(exercise: ParameterizedExercise | ParameterizedSubExercise, week: number): {
 		sets?: number;
 		reps?: number | string;
 		workTime?: string;
 		restTime?: string;
+		weight?: {
+			displayWeight: string | null;
+			calculatedLbs: number | null;
+			isPercentTM: boolean;
+			percentTM: number | null;
+		};
 	} {
 		const weekKey = `week${week}` as keyof typeof exercise;
 		const params = exercise[weekKey] as WeekParameters | undefined;
 		if (!params) return {};
 
-		const result: { sets?: number; reps?: number | string; workTime?: string; restTime?: string } = {};
+		const result: {
+			sets?: number;
+			reps?: number | string;
+			workTime?: string;
+			restTime?: string;
+			weight?: {
+				displayWeight: string | null;
+				calculatedLbs: number | null;
+				isPercentTM: boolean;
+				percentTM: number | null;
+			};
+		} = {};
 
 		if (params.sets) result.sets = params.sets;
 		if (params.reps) result.reps = params.reps;
@@ -103,11 +188,14 @@
 		if (params.rest_time_minutes !== undefined) {
 			result.restTime = formatTime(params.rest_time_minutes, params.rest_time_unit);
 		}
+		if (params.weight !== undefined) {
+			result.weight = calculateWeight(exercise.name, params.weight);
+		}
 
 		return result;
 	}
 
-	// Get display value for sets/reps
+	// Get display value for sets/reps (without weight - used for header)
 	function getSetsRepsDisplay(exercise: ParameterizedExercise | ParameterizedSubExercise, week: number): string {
 		const params = formatParams(exercise, week);
 		if (params.sets && params.reps) {
@@ -117,6 +205,30 @@
 			return params.workTime;
 		}
 		return '-';
+	}
+
+	// Get combined reps + weight display for inline view
+	function getRepsWeightDisplay(exercise: ParameterizedExercise | ParameterizedSubExercise, week: number): {
+		repsDisplay: string;
+		weightDisplay: string | null;
+		showWeight: boolean;
+	} {
+		const params = formatParams(exercise, week);
+		const showWeight = shouldShowWeightField(exercise.name);
+
+		let repsDisplay = '-';
+		if (params.reps !== undefined) {
+			repsDisplay = String(params.reps);
+		} else if (params.workTime) {
+			repsDisplay = params.workTime;
+		}
+
+		let weightDisplay: string | null = null;
+		if (showWeight && params.weight?.displayWeight) {
+			weightDisplay = params.weight.displayWeight;
+		}
+
+		return { repsDisplay, weightDisplay, showWeight };
 	}
 
 	// Check if exercise is a compound block
@@ -174,27 +286,36 @@
 	// Get sub-exercise display based on parent block type
 	// EMOM/AMRAP/CIRCUIT: sub-exercises use reps (sub_work_mode: "reps")
 	// INTERVAL: sub-exercises use work_time/rest_time (sub_work_mode: "time")
-	function getSubExerciseDisplay(subEx: ParameterizedSubExercise, parentCategory: string | undefined, week: number): string {
+	function getSubExerciseDisplay(subEx: ParameterizedSubExercise, parentCategory: string | undefined, week: number): {
+		mainDisplay: string;
+		weightDisplay: string | null;
+		showWeight: boolean;
+	} {
 		const params = formatParams(subEx, week);
+		const showWeight = shouldShowWeightField(subEx.name);
+
+		let mainDisplay = '-';
 
 		if (parentCategory === 'interval') {
 			// Interval sub-exercises show work_time / rest_time
 			if (params.workTime) {
-				return params.restTime ? `${params.workTime} / ${params.restTime}` : params.workTime;
+				mainDisplay = params.restTime ? `${params.workTime} / ${params.restTime}` : params.workTime;
+			}
+		} else {
+			// EMOM/AMRAP/CIRCUIT sub-exercises show reps
+			if (params.reps !== undefined) {
+				mainDisplay = `${params.reps} reps`;
+			} else if (params.workTime) {
+				mainDisplay = params.workTime;
 			}
 		}
 
-		// EMOM/AMRAP/CIRCUIT sub-exercises show reps
-		if (params.reps !== undefined) {
-			return `${params.reps} reps`;
+		let weightDisplay: string | null = null;
+		if (showWeight && params.weight?.displayWeight) {
+			weightDisplay = params.weight.displayWeight;
 		}
 
-		// Fallback - try work time
-		if (params.workTime) {
-			return params.workTime;
-		}
-
-		return '-';
+		return { mainDisplay, weightDisplay, showWeight };
 	}
 
 	// Get the primary editable field for sub-exercises based on parent category
@@ -220,6 +341,14 @@
 		progressionField = field;
 		progressionSubExerciseIndex = subExerciseIndex;
 		showProgressionModal = true;
+	}
+
+	// Handle clicking weight field (opens weight modal)
+	function handleWeightClick(exerciseIndex: number, subExerciseIndex: number = -1) {
+		weightExercise = dayData?.exercises[exerciseIndex] ?? null;
+		weightExerciseIndex = exerciseIndex;
+		weightSubExerciseIndex = subExerciseIndex;
+		showWeightModal = true;
 	}
 
 	// Handle clicking exercise name (opens exercise browser for replacement)
@@ -366,6 +495,51 @@
 		showProgressionModal = false;
 		progressionExercise = null;
 		progressionSubExerciseIndex = -1;
+	}
+
+	// Handle weight modal save
+	async function handleWeightSave(e: CustomEvent<{
+		exerciseIndex: number;
+		weekValues: Record<string, WeightSpecification>;
+		scope: EditScope;
+		subExerciseIndex?: number;
+	}>) {
+		const { exerciseIndex, weekValues, scope, subExerciseIndex } = e.detail;
+
+		// Deep clone the schedule to modify
+		const updatedSchedule = JSON.parse(JSON.stringify(currentSchedule)) as StoredSchedule;
+		const exercise = updatedSchedule.days[dayNumber.toString()].exercises[exerciseIndex];
+
+		// Determine target: parent exercise or sub-exercise
+		const isSubExercise = subExerciseIndex !== undefined && subExerciseIndex >= 0;
+		const target = isSubExercise && exercise.sub_exercises
+			? exercise.sub_exercises[subExerciseIndex]
+			: exercise;
+
+		// Apply values based on scope
+		const weekKeys = Object.keys(weekValues);
+		for (const weekKey of weekKeys) {
+			const weekNum = parseInt(weekKey.replace('week', ''));
+			const shouldApply =
+				scope === 'all_weeks' ||
+				(scope === 'this_week_and_remaining' && weekNum >= weekNumber) ||
+				(scope === 'this_instance_only' && weekNum === weekNumber);
+
+			if (shouldApply) {
+				const weekParams = target[weekKey as keyof typeof target] as WeekParameters | undefined;
+				if (weekParams) {
+					weekParams.weight = weekValues[weekKey];
+				}
+			}
+		}
+
+		updatedSchedule.scheduleMetadata.updatedAt = new Date().toISOString();
+		await saveScheduleToDb(updatedSchedule);
+		dispatch('scheduleUpdated', updatedSchedule);
+
+		showWeightModal = false;
+		weightExercise = null;
+		weightSubExerciseIndex = -1;
 	}
 
 	function handleBackClick() {
@@ -899,18 +1073,33 @@
 							</button>
 						{/if}
 						{#if params.reps !== undefined && !isCompound}
-							<button
-								class="field-row"
-								on:click={() => handleProgressionClick(i, 'reps')}
-							>
-								<span class="field-label">Reps</span>
-								<span class="field-value">
-									{params.reps}
-									<svg class="field-edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-									</svg>
-								</span>
-							</button>
+							{@const repsWeight = getRepsWeightDisplay(exercise, weekNumber)}
+							<div class="field-row-split">
+								<span class="field-label">Reps{#if repsWeight.showWeight}/Weight{/if}</span>
+								<div class="field-value-split">
+									<button
+										class="split-value"
+										on:click={() => handleProgressionClick(i, 'reps')}
+									>
+										{params.reps}
+										<svg class="field-edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+										</svg>
+									</button>
+									{#if repsWeight.showWeight}
+										<span class="split-separator">@</span>
+										<button
+											class="split-value weight-value"
+											on:click={() => handleWeightClick(i)}
+										>
+											{repsWeight.weightDisplay ?? '—'}
+											<svg class="field-edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+											</svg>
+										</button>
+									{/if}
+								</div>
+							</div>
 						{/if}
 
 						{#if params.workTime && !isCompound}
@@ -949,6 +1138,7 @@
 						<div class="sub-exercises-section">
 							{#if exercise.sub_exercises && exercise.sub_exercises.length > 0}
 								{#each exercise.sub_exercises as subEx, subIndex}
+									{@const subDisplay = getSubExerciseDisplay(subEx, exercise.category, weekNumber)}
 									<div class="sub-exercise-row">
 										<!-- Sub-exercise name - clickable to replace -->
 										<button
@@ -960,13 +1150,24 @@
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
 											</svg>
 										</button>
-										<!-- Parameters display -->
-										<button
-											class="text-xs font-medium text-slate-400 hover:text-indigo-400 flex-shrink-0 transition-colors"
-											on:click={() => handleProgressionClick(i, getSubExerciseEditField(exercise.category), subIndex)}
-										>
-											{getSubExerciseDisplay(subEx, exercise.category, weekNumber)}
-										</button>
+										<!-- Parameters display with optional weight -->
+										<div class="sub-exercise-params">
+											<button
+												class="text-xs font-medium text-slate-400 hover:text-indigo-400 transition-colors"
+												on:click={() => handleProgressionClick(i, getSubExerciseEditField(exercise.category), subIndex)}
+											>
+												{subDisplay.mainDisplay}
+											</button>
+											{#if subDisplay.showWeight}
+												<span class="text-slate-600 text-xs">@</span>
+												<button
+													class="text-xs font-medium text-slate-400 hover:text-indigo-400 transition-colors"
+													on:click={() => handleWeightClick(i, subIndex)}
+												>
+													{subDisplay.weightDisplay ?? '—'}
+												</button>
+											{/if}
+										</div>
 									</div>
 								{/each}
 							{/if}
@@ -1034,6 +1235,20 @@
 		subExerciseIndex={progressionSubExerciseIndex}
 		on:close={() => { showProgressionModal = false; progressionExercise = null; progressionSubExerciseIndex = -1; }}
 		on:save={handleProgressionSave}
+	/>
+{/if}
+
+<!-- Weight Modal -->
+{#if weightExercise}
+	<WeightModal
+		isOpen={showWeightModal}
+		exercise={weightExercise}
+		exerciseIndex={weightExerciseIndex}
+		currentWeek={weekNumber}
+		totalWeeks={currentSchedule.weeks}
+		subExerciseIndex={weightSubExerciseIndex}
+		on:close={() => { showWeightModal = false; weightExercise = null; weightSubExerciseIndex = -1; }}
+		on:save={handleWeightSave}
 	/>
 {/if}
 
@@ -1178,6 +1393,69 @@
 
 	.field-row:hover .field-edit-icon {
 		color: rgb(129 140 248);
+	}
+
+	/* Split field row for Reps/Weight */
+	.field-row-split {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		padding: 0.5rem 0;
+		border-bottom: 1px solid rgb(51 65 85);
+	}
+
+	.field-row-split:last-child {
+		border-bottom: none;
+	}
+
+	.field-value-split {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.split-value {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		font-size: 0.875rem;
+		color: white;
+		font-weight: 500;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		padding: 0.25rem 0.5rem;
+		margin: -0.25rem 0;
+		border-radius: 0.25rem;
+		transition: background 0.15s, color 0.15s;
+	}
+
+	.split-value:hover {
+		background: rgba(99, 102, 241, 0.15);
+		color: rgb(129 140 248);
+	}
+
+	.split-value:hover .field-edit-icon {
+		color: rgb(129 140 248);
+	}
+
+	.split-separator {
+		color: rgb(100 116 139);
+		font-size: 0.75rem;
+		padding: 0 0.125rem;
+	}
+
+	.weight-value {
+		color: rgb(148 163 184);
+	}
+
+	/* Sub-exercise params container */
+	.sub-exercise-params {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		flex-shrink: 0;
 	}
 
 	/* ==================== DRAG TO REORDER ==================== */

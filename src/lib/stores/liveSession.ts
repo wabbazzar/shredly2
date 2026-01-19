@@ -1056,11 +1056,14 @@ interface SubExerciseWeight {
 /**
  * Log sub-exercise weights as separate ExerciseLog entries
  * Creates history entries for sub-exercises with compoundParentName set
+ *
+ * @param replaceExisting - If true, replaces existing sets instead of appending (for edit mode)
  */
 export function logSubExerciseWeights(
   parentExerciseIndex: number,
   parentExerciseName: string,
-  subExerciseWeights: SubExerciseWeight[]
+  subExerciseWeights: SubExerciseWeight[],
+  replaceExisting = false
 ): void {
   liveSession.update(session => {
     if (!session) return session;
@@ -1080,26 +1083,14 @@ export function logSubExerciseWeights(
       const subExercise = parentExercise?.subExercises?.find(s => s.exerciseName === subEx.name);
       const reps = subExercise?.prescription.reps ?? null;
 
-      // Find or create exercise log for this sub-exercise
-      let exerciseLog = logs.find(
+      // Find existing log index
+      const existingIndex = logs.findIndex(
         l => l.exerciseName === subEx.name && l.compoundParentName === parentExerciseName
       );
 
-      if (!exerciseLog) {
-        exerciseLog = {
-          exerciseName: subEx.name,
-          exerciseOrder: parentExerciseIndex, // Same order as parent for grouping
-          isCompoundParent: false,
-          compoundParentName: parentExerciseName,
-          sets: [],
-          timestamp: now
-        };
-        logs.push(exerciseLog);
-      }
-
-      // Add/update the set with weight data
+      // Create the set log
       const setLog: SetLog = {
-        setNumber: exerciseLog.sets.length + 1,
+        setNumber: 1,
         reps,
         weight,
         weightUnit: subEx.weightUnit,
@@ -1111,7 +1102,33 @@ export function logSubExerciseWeights(
         timestamp: now
       };
 
-      exerciseLog.sets.push(setLog);
+      if (existingIndex >= 0) {
+        // Update existing log
+        if (replaceExisting) {
+          // Replace all sets with the new one
+          logs[existingIndex] = {
+            ...logs[existingIndex],
+            sets: [setLog],
+            timestamp: now
+          };
+        } else {
+          // Append to existing sets
+          logs[existingIndex].sets.push({
+            ...setLog,
+            setNumber: logs[existingIndex].sets.length + 1
+          });
+        }
+      } else {
+        // Create new log
+        logs.push({
+          exerciseName: subEx.name,
+          exerciseOrder: parentExerciseIndex,
+          isCompoundParent: false,
+          compoundParentName: parentExerciseName,
+          sets: [setLog],
+          timestamp: now
+        });
+      }
     }
 
     return { ...session, logs };

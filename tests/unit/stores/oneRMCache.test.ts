@@ -842,3 +842,209 @@ describe('getPRDisplayData Integration', () => {
 		expect(yatesRowsPR!.recentActivity.lastReps).toBe(8);
 	});
 });
+
+// ============================================================================
+// USER OVERRIDE PERSISTENCE TESTS (App Restart Scenarios)
+// ============================================================================
+
+describe('User Override Persistence (App Restart)', () => {
+	beforeEach(() => {
+		vi.resetModules();
+	});
+
+	it('fullRecalculateCache includes exercises from userOverrides even without history', async () => {
+		const { fullRecalculateCache, getFromCache, invalidateCache, deriveTRM } = await import(
+			'$lib/stores/oneRMCache'
+		);
+		const { exerciseHistory } = await import('$lib/stores/history');
+
+		// Clear initial state
+		invalidateCache();
+		exerciseHistory.set([]); // No history at all
+
+		// User has manual overrides for exercises (loaded from userStore on app start)
+		const userOverrides: Record<string, number> = {
+			'Bench Press': 225,
+			'Squat': 315
+		};
+
+		// Simulate app startup: fullRecalculateCache is called
+		fullRecalculateCache(undefined, userOverrides);
+
+		// Even with no history, exercises with overrides should be in cache
+		const benchEntry = getFromCache('Bench Press');
+		const squatEntry = getFromCache('Squat');
+
+		expect(benchEntry).not.toBeNull();
+		expect(benchEntry!.user_override).toBe(225);
+		expect(benchEntry!.trm).toBe(deriveTRM(225)); // 202.5
+
+		expect(squatEntry).not.toBeNull();
+		expect(squatEntry!.user_override).toBe(315);
+		expect(squatEntry!.trm).toBe(deriveTRM(315)); // 283.5
+	});
+
+	it('fullRecalculateCache merges history exercises with userOverrides exercises', async () => {
+		const { fullRecalculateCache, getFromCache, invalidateCache } = await import(
+			'$lib/stores/oneRMCache'
+		);
+		const { exerciseHistory } = await import('$lib/stores/history');
+
+		invalidateCache();
+
+		// Exercise A has history but no override
+		// Exercise B has override but no history
+		// Exercise C has both history and override
+
+		const now = new Date();
+		exerciseHistory.set([
+			{
+				date: now.toISOString().split('T')[0],
+				timestamp: now.toISOString(),
+				workout_program_id: 'test-program',
+				week_number: 1,
+				day_number: 1,
+				exercise_name: 'Deadlift', // Exercise A: history only
+				exercise_order: 0,
+				is_compound_parent: false,
+				compound_parent_name: null,
+				set_number: 1,
+				reps: 5,
+				weight: 315,
+				weight_unit: 'lbs',
+				work_time: null,
+				rest_time: null,
+				tempo: null,
+				rpe: 10,
+				rir: null,
+				completed: true,
+				notes: null
+			},
+			{
+				date: now.toISOString().split('T')[0],
+				timestamp: now.toISOString(),
+				workout_program_id: 'test-program',
+				week_number: 1,
+				day_number: 1,
+				exercise_name: 'Bench Press', // Exercise C: both history and override
+				exercise_order: 1,
+				is_compound_parent: false,
+				compound_parent_name: null,
+				set_number: 1,
+				reps: 5,
+				weight: 185,
+				weight_unit: 'lbs',
+				work_time: null,
+				rest_time: null,
+				tempo: null,
+				rpe: 10,
+				rir: null,
+				completed: true,
+				notes: null
+			}
+		]);
+
+		const userOverrides: Record<string, number> = {
+			'Squat': 405, // Exercise B: override only
+			'Bench Press': 225 // Exercise C: override takes precedence for TRM
+		};
+
+		fullRecalculateCache(undefined, userOverrides);
+
+		// Exercise A (Deadlift): from history only
+		const deadliftEntry = getFromCache('Deadlift');
+		expect(deadliftEntry).not.toBeNull();
+		expect(deadliftEntry!.estimated_1rm).toBeGreaterThan(0);
+		expect(deadliftEntry!.user_override).toBeNull();
+
+		// Exercise B (Squat): from override only (no history)
+		const squatEntry = getFromCache('Squat');
+		expect(squatEntry).not.toBeNull();
+		expect(squatEntry!.user_override).toBe(405);
+		expect(squatEntry!.estimated_1rm).toBe(0); // No history data
+		expect(squatEntry!.trm).toBeCloseTo(405 * 0.9, 0); // TRM uses override
+
+		// Exercise C (Bench Press): both history and override
+		const benchEntry = getFromCache('Bench Press');
+		expect(benchEntry).not.toBeNull();
+		expect(benchEntry!.user_override).toBe(225);
+		expect(benchEntry!.estimated_1rm).toBeGreaterThan(0); // From history
+		expect(benchEntry!.trm).toBeCloseTo(225 * 0.9, 0); // TRM uses override, not calculated
+	});
+
+	it('user override persists after app restart simulation', async () => {
+		// This test simulates:
+		// 1. User sets override on Profile page
+		// 2. App "restarts" (fullRecalculateCache called with userOverrides from userStore)
+		// 3. DayView should still show calculated weight
+
+		const { setUserOverride, fullRecalculateCache, getFromCache, invalidateCache, deriveTRM } =
+			await import('$lib/stores/oneRMCache');
+		const { exerciseHistory } = await import('$lib/stores/history');
+
+		invalidateCache();
+		exerciseHistory.set([]);
+
+		// Step 1: User sets override (simulating profile page action)
+		setUserOverride('Romanian Deadlift', 185);
+
+		// Verify cache entry exists
+		let entry = getFromCache('Romanian Deadlift');
+		expect(entry).not.toBeNull();
+		expect(entry!.trm).toBe(deriveTRM(185));
+
+		// Step 2: Simulate app restart - cache is rebuilt from userStore overrides
+		// In real app, +layout.svelte calls fullRecalculateCache with userOverrides from userStore
+		const userOverridesFromUserStore: Record<string, number> = {
+			'Romanian Deadlift': 185 // This would come from userStore.oneRepMaxes
+		};
+
+		// Clear cache to simulate fresh start
+		invalidateCache();
+		expect(getFromCache('Romanian Deadlift')).toBeNull();
+
+		// Rebuild cache (as +layout.svelte does)
+		fullRecalculateCache(undefined, userOverridesFromUserStore);
+
+		// Step 3: Verify cache still has the entry
+		entry = getFromCache('Romanian Deadlift');
+		expect(entry).not.toBeNull();
+		expect(entry!.user_override).toBe(185);
+		expect(entry!.trm).toBe(deriveTRM(185));
+	});
+
+	it('DayView weight calculation works with override-only exercises (no history)', async () => {
+		// This tests the exact scenario reported in the bug:
+		// - User sets PR on profile
+		// - DayView shows calculated weight
+		// - App restarts, weight shows "%TM" instead
+
+		const { fullRecalculateCache, getFromCache, invalidateCache, deriveTRM } = await import(
+			'$lib/stores/oneRMCache'
+		);
+		const { exerciseHistory } = await import('$lib/stores/history');
+
+		invalidateCache();
+		exerciseHistory.set([]);
+
+		// User has override for an exercise in their program
+		const userOverrides: Record<string, number> = {
+			'Bulgarian Split Squat': 135
+		};
+
+		// App starts, cache is rebuilt
+		fullRecalculateCache(undefined, userOverrides);
+
+		// DayView calls getFromCache to calculate weight
+		const entry = getFromCache('Bulgarian Split Squat');
+
+		// This must NOT be null - it should have the user override
+		expect(entry).not.toBeNull();
+		expect(entry!.trm).toBe(deriveTRM(135)); // 121.5
+
+		// Simulate DayView weight calculation: weight = TRM * (percent / 100)
+		const percentTM = 80; // 80% of TRM
+		const calculatedWeight = Math.round(entry!.trm * (percentTM / 100) / 5) * 5;
+		expect(calculatedWeight).toBe(95); // 121.5 * 0.8 = 97.2, rounded to nearest 5 = 95
+	});
+});

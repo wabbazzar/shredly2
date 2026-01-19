@@ -466,9 +466,11 @@ export function fullRecalculateCache(
 ): void {
 	const history = get(exerciseHistory);
 
-	// If no exercise list provided, extract from history
-	const names =
-		exerciseNames ?? Array.from(new Set(history.filter((r) => !r.is_compound_parent).map((r) => r.exercise_name)));
+	// If no exercise list provided, extract from history AND userOverrides
+	// This ensures exercises with overrides but no history are included
+	const historyNames = history.filter((r) => !r.is_compound_parent).map((r) => r.exercise_name);
+	const overrideNames = userOverrides ? Object.keys(userOverrides) : [];
+	const names = exerciseNames ?? Array.from(new Set([...historyNames, ...overrideNames]));
 
 	const newCache: Exercise1RMCache = {};
 

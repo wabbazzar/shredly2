@@ -2,7 +2,7 @@
 	import { userStore } from '$lib/stores/user';
 	import { pwaStore, APP_VERSION } from '$lib/stores/pwa';
 	import { activeSchedule } from '$lib/stores/schedule';
-	import { getPRDisplayData, setUserOverride, oneRMCacheStore, type ExercisePRDisplay } from '$lib/stores/oneRMCache';
+	import { getPRDisplayData, setUserOverride, clearUserOverride, oneRMCacheStore, type ExercisePRDisplay } from '$lib/stores/oneRMCache';
 	import EditableField from '$lib/components/EditableField.svelte';
 	import EditableHeightField from '$lib/components/EditableHeightField.svelte';
 	import EditableBirthdayField from '$lib/components/EditableBirthdayField.svelte';
@@ -86,11 +86,8 @@
 	function handlePROverride(e: CustomEvent<{ exerciseName: string; value: number }>) {
 		const { exerciseName, value } = e.detail;
 		setUserOverride(exerciseName, value);
-		// Also update user store if this exercise exists in oneRepMaxes
-		const existsInStore = oneRepMaxes.some((orm) => orm.exerciseName === exerciseName);
-		if (existsInStore) {
-			userStore.updateOneRepMax(exerciseName, value, true);
-		}
+		// Always update user store so override persists across app restarts
+		userStore.updateOneRepMax(exerciseName, value, true);
 	}
 
 	// Add PR modal state (for Current Program PRs)
@@ -98,8 +95,18 @@
 	// Add 1RM modal state (for 1RM section)
 	let show1RMModal = false;
 
+	// PR search state
+	let prSearchQuery = '';
+	$: filteredPRData = prSearchQuery.trim()
+		? programPRData.filter(pr =>
+			pr.exerciseName.toLowerCase().includes(prSearchQuery.toLowerCase())
+		)
+		: programPRData;
+
 	function handleAddPR(exerciseName: string, weightLbs: number) {
 		setUserOverride(exerciseName, weightLbs);
+		// Also update user store so override persists across app restarts
+		userStore.updateOneRepMax(exerciseName, weightLbs, true);
 		showAddPRModal = false;
 	}
 
@@ -111,6 +118,8 @@
 
 	function handleRemove1RM(exerciseName: string) {
 		userStore.removeOneRepMax(exerciseName);
+		// Also clear cache entry so DayView updates (falls back to history if available)
+		clearUserOverride(exerciseName);
 	}
 
 	// Preference options from questionnaire
@@ -478,16 +487,48 @@
 					</div>
 				</div>
 
-				{#if programPRData.length > 0}
-					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-						{#each programPRData as prData (prData.exerciseName)}
-							<PRCard
-								{prData}
-								{unitSystem}
-								on:override={handlePROverride}
-							/>
-						{/each}
+				<!-- Search input -->
+				{#if programPRData.length > 3}
+					<div class="relative mb-4">
+						<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+						</svg>
+						<input
+							type="text"
+							placeholder="Search exercises..."
+							bind:value={prSearchQuery}
+							class="w-full pl-10 pr-8 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+						/>
+						{#if prSearchQuery}
+							<button
+								onclick={() => (prSearchQuery = '')}
+								class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+								aria-label="Clear search"
+							>
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						{/if}
 					</div>
+				{/if}
+
+				{#if programPRData.length > 0}
+					{#if filteredPRData.length > 0}
+						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+							{#each filteredPRData as prData (prData.exerciseName)}
+								<PRCard
+									{prData}
+									{unitSystem}
+									on:override={handlePROverride}
+								/>
+							{/each}
+						</div>
+					{:else}
+						<div class="text-center py-6 text-slate-400">
+							<p class="text-sm">No exercises match "{prSearchQuery}"</p>
+						</div>
+					{/if}
 				{:else}
 					<div class="text-center py-8 text-slate-400">
 						<p>No exercise history yet.</p>

@@ -7,6 +7,8 @@
 	export let exercise: LiveExercise;
 	export let exerciseIndex: number;
 	export let existingLog: ExerciseLog | null = null;
+	// Sub-exercise logs for compound blocks (keyed by sub-exercise name)
+	export let subExerciseLogs: Map<string, ExerciseLog> = new Map();
 
 	const dispatch = createEventDispatcher<{
 		save: { sets: SetLog[]; totalRounds?: number; totalTime?: number; subExerciseWeights?: SubExerciseWeight[] };
@@ -80,10 +82,16 @@
 			subExerciseWeights = exercise.subExercises.map(subEx => {
 				const metadata = getExerciseMetadata(subEx.exerciseName);
 				const showSubWeight = metadata?.external_load !== 'never';
+
+				// Check for existing logged weight from sub-exercise logs
+				const subLog = subExerciseLogs.get(subEx.exerciseName);
+				const loggedWeight = subLog?.sets?.[0]?.weight;
+				const loggedUnit = subLog?.sets?.[0]?.weightUnit;
+
 				return {
 					name: subEx.exerciseName,
-					weight: subEx.prescription.weight?.toString() ?? '',
-					weightUnit: subEx.prescription.weightUnit ?? 'lbs',
+					weight: loggedWeight?.toString() ?? subEx.prescription.weight?.toString() ?? '',
+					weightUnit: loggedUnit ?? subEx.prescription.weightUnit ?? 'lbs',
 					showWeight: showSubWeight
 				};
 			});

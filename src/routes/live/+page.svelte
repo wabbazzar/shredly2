@@ -69,6 +69,7 @@
 	let reviewExercise: LiveExercise | null = null;
 	let reviewExerciseIndex: number | null = null;
 	let reviewExistingLog: ExerciseLog | null = null;
+	let reviewSubExerciseLogs: Map<string, ExerciseLog> = new Map();
 
 	// Build exercise logs map for ExerciseList
 	$: exerciseLogs = buildExerciseLogsMap($liveSession);
@@ -357,6 +358,19 @@
 		// Get existing log data
 		const existingLog = getExerciseLog(index);
 
+		// Get sub-exercise logs for compound blocks
+		reviewSubExerciseLogs = new Map();
+		if (exercise.isCompoundParent && exercise.subExercises && $liveSession) {
+			for (const subEx of exercise.subExercises) {
+				const subLog = $liveSession.logs.find(
+					l => l.exerciseName === subEx.exerciseName && l.compoundParentName === exercise.exerciseName
+				);
+				if (subLog) {
+					reviewSubExerciseLogs.set(subEx.exerciseName, subLog);
+				}
+			}
+		}
+
 		reviewExercise = exercise;
 		reviewExerciseIndex = index;
 		reviewExistingLog = existingLog;
@@ -422,6 +436,12 @@
 
 		if (reviewExerciseIndex !== null && reviewExercise && $liveSession) {
 			updateExerciseLogs(reviewExerciseIndex, sets, totalRounds, totalTime);
+
+			// Also update sub-exercise weights in session logs (so they persist when modal reopens)
+			// Use replaceExisting=true to replace existing data rather than appending
+			if (subExerciseWeights && subExerciseWeights.length > 0) {
+				logSubExerciseWeights(reviewExerciseIndex, reviewExercise.exerciseName, subExerciseWeights, true);
+			}
 
 			// Also log to history and update 1RM cache (for review mode edits)
 			const exerciseLog = {
@@ -494,6 +514,7 @@
 		reviewExercise = null;
 		reviewExerciseIndex = null;
 		reviewExistingLog = null;
+		reviewSubExerciseLogs = new Map();
 	}
 
 	function handleReviewClose() {
@@ -501,6 +522,7 @@
 		reviewExercise = null;
 		reviewExerciseIndex = null;
 		reviewExistingLog = null;
+		reviewSubExerciseLogs = new Map();
 	}
 
 	function handleExerciseInfoClose() {
@@ -735,6 +757,7 @@
 		exercise={reviewExercise}
 		exerciseIndex={reviewExerciseIndex}
 		existingLog={reviewExistingLog}
+		subExerciseLogs={reviewSubExerciseLogs}
 		on:save={handleReviewSave}
 		on:close={handleReviewClose}
 	/>

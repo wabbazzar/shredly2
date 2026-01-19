@@ -2,11 +2,51 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { LiveExercise, ExerciseLog } from '$lib/engine/types';
 	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
+	import { getFromCache } from '$lib/stores/oneRMCache';
 
 	export let exercises: LiveExercise[];
 	export let currentIndex: number;
 	export let currentSubExerciseIndex: number = 0;
 	export let exerciseLogs: Map<number, ExerciseLog> = new Map();
+
+	/**
+	 * Calculate weight from cache at render time (like DayView does)
+	 * This ensures we always show the latest cached TRM values
+	 */
+	function calculateWeightFromCache(exerciseName: string, percentTM: number): number | null {
+		const cacheEntry = getFromCache(exerciseName);
+		if (cacheEntry && cacheEntry.trm > 0) {
+			return Math.round(cacheEntry.trm * (percentTM / 100) / 5) * 5; // Round to nearest 5
+		}
+		return null;
+	}
+
+	/**
+	 * Get the display weight for an exercise - prefer cache calculation over pre-calculated
+	 */
+	function getDisplayWeight(exercise: LiveExercise): { weight: number | null; unit: string; fromCache: boolean } {
+		// First try to calculate from cache (most up-to-date)
+		if (exercise.prescription.weightPrescription?.type === 'percent_tm') {
+			const cachedWeight = calculateWeightFromCache(
+				exercise.exerciseName,
+				exercise.prescription.weightPrescription.value
+			);
+			if (cachedWeight !== null) {
+				return { weight: cachedWeight, unit: 'lbs', fromCache: true };
+			}
+		}
+
+		// Fall back to pre-calculated weight from session
+		if (exercise.prescription.weight) {
+			return {
+				weight: exercise.prescription.weight,
+				unit: exercise.prescription.weightUnit || 'lbs',
+				fromCache: false
+			};
+		}
+
+		return { weight: null, unit: 'lbs', fromCache: false };
+	}
 
 	const dispatch = createEventDispatcher<{
 		info: { exercise: LiveExercise; index: number };
@@ -88,10 +128,23 @@
 			}
 		}
 
-		if (exercise.prescription.weight) {
-			parts.push(
-				`${exercise.prescription.weight} ${exercise.prescription.weightUnit || 'lbs'}`
-			);
+		// Show weight - calculate from cache at render time (like DayView)
+		const showWeightForExercise = shouldShowWeightField(exercise.exerciseName);
+		if (showWeightForExercise) {
+			const displayWeight = getDisplayWeight(exercise);
+			if (displayWeight.weight !== null) {
+				parts.push(`${displayWeight.weight} ${displayWeight.unit}`);
+			} else if (exercise.prescription.weightPrescription) {
+				// Fallback to prescription display when no cached weight
+				const wp = exercise.prescription.weightPrescription;
+				if (wp.type === 'qualitative') {
+					parts.push(String(wp.value));
+				} else if (wp.type === 'percent_tm') {
+					parts.push(`${wp.value}% TM`);
+				} else if (wp.type === 'absolute') {
+					parts.push(`${wp.value} ${wp.unit || 'lbs'}`);
+				}
+			}
 		}
 
 		return parts.join(' | ');
@@ -178,13 +231,12 @@
 			}
 		}
 
-		// Add weight if applicable (use metadata to determine visibility)
-		const showWeight = shouldShowWeightField(subEx.exerciseName, subEx.prescription.weight);
+		// Add weight if applicable - calculate from cache at render time (like DayView)
+		const showWeight = shouldShowWeightField(subEx.exerciseName);
 		if (showWeight) {
-			// Priority: calculated weight > weight prescription fallback
-			if (subEx.prescription.weight) {
-				// Calculated weight available (from % TM with 1RM)
-				parts.push(`${subEx.prescription.weight} ${subEx.prescription.weightUnit || 'lbs'}`);
+			const displayWeight = getDisplayWeight(subEx);
+			if (displayWeight.weight !== null) {
+				parts.push(`${displayWeight.weight} ${displayWeight.unit}`);
 			} else if (subEx.prescription.weightPrescription) {
 				// Fallback to prescription display (% TM or qualitative)
 				const wp = subEx.prescription.weightPrescription;

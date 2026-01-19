@@ -2,6 +2,7 @@
 	import { userStore } from '$lib/stores/user';
 	import { pwaStore, APP_VERSION } from '$lib/stores/pwa';
 	import { activeSchedule } from '$lib/stores/schedule';
+	import { exerciseHistory } from '$lib/stores/history';
 	import { getPRDisplayData, setUserOverride, clearUserOverride, oneRMCacheStore, type ExercisePRDisplay } from '$lib/stores/oneRMCache';
 	import EditableField from '$lib/components/EditableField.svelte';
 	import EditableHeightField from '$lib/components/EditableHeightField.svelte';
@@ -10,6 +11,7 @@
 	import PRCard from '$lib/components/profile/PRCard.svelte';
 	import EquipmentEditor from '$lib/components/profile/EquipmentEditor.svelte';
 	import AddPRModal from '$lib/components/profile/AddPRModal.svelte';
+	import ExerciseHistoryModal from '$lib/components/profile/ExerciseHistoryModal.svelte';
 	import { lbsToKg, kgToLbs, ALL_EQUIPMENT_TYPES, type EquipmentType } from '$lib/types/user';
 
 	// PWA update state
@@ -94,6 +96,11 @@
 	let showAddPRModal = false;
 	// Add 1RM modal state (for 1RM section)
 	let show1RMModal = false;
+	// Exercise history modal state
+	let showHistoryModal = false;
+
+	// History stats for display
+	$: historyRowCount = $exerciseHistory.filter(r => !r.is_compound_parent).length;
 
 	// PR search state
 	let prSearchQuery = '';
@@ -561,6 +568,31 @@
 			</section>
 		{/if}
 
+		<!-- Data & History Section -->
+		<section class="mt-6 bg-slate-800 rounded-lg p-4">
+			<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Data & History</h2>
+
+			<button
+				onclick={() => showHistoryModal = true}
+				class="w-full flex items-center justify-between p-3 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors group"
+			>
+				<div class="flex items-center gap-3">
+					<div class="p-2 bg-indigo-600/20 rounded-lg">
+						<svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+						</svg>
+					</div>
+					<div class="text-left">
+						<p class="text-white font-medium">Exercise History</p>
+						<p class="text-slate-400 text-sm">{historyRowCount} logged sets</p>
+					</div>
+				</div>
+				<svg class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+			</button>
+		</section>
+
 		<!-- App Info Section -->
 		<section class="mt-6 bg-slate-800 rounded-lg p-4">
 			<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">App</h2>
@@ -636,4 +668,11 @@
 	{unitSystem}
 	onconfirm={handleAdd1RM}
 	oncancel={() => (show1RMModal = false)}
+/>
+
+<!-- Exercise History Modal -->
+<ExerciseHistoryModal
+	isOpen={showHistoryModal}
+	{unitSystem}
+	onclose={() => (showHistoryModal = false)}
 />

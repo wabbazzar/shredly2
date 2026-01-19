@@ -573,13 +573,13 @@ export function getTodaysWorkout(schedule: StoredSchedule): {
   for (const [dayNum, weekday] of Object.entries(effectiveMapping)) {
     if (weekday === todayWeekday) {
       // This workout day is scheduled for today
-      const globalDayNumber = (currentWeekIndex * daysPerWeek) + parseInt(dayNum);
-      const day = days[globalDayNumber.toString()];
+      // Look up using per-week day number (matches how days are stored as template)
+      const day = days[dayNum];
 
       if (day) {
         return {
           weekNumber,
-          dayNumber: globalDayNumber,
+          dayNumber: parseInt(dayNum),  // Per-week day number (1, 2, 3...)
           day
         };
       }
@@ -601,12 +601,12 @@ export function getWorkoutForDay(
   dayNumber: number;
   day: ParameterizedDay;
 } | null {
-  const { days, daysPerWeek } = schedule;
-  const dayNumber = ((weekNumber - 1) * daysPerWeek) + dayInWeek;
-  const day = days[dayNumber.toString()];
+  const { days } = schedule;
+  // Look up using per-week day number (matches how days are stored as template)
+  const day = days[dayInWeek.toString()];
 
   if (day) {
-    return { dayNumber, day };
+    return { dayNumber: dayInWeek, day };
   }
 
   return null;

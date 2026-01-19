@@ -683,12 +683,13 @@ describe('getWorkoutForDay', () => {
     expect(result).toBe(null);
   });
 
-  it('should calculate correct day number for week 2', () => {
+  it('should return per-week day number for week 2', () => {
     const schedule = createMockSchedule();
 
     const result = getWorkoutForDay(schedule, 2, 1);
 
-    // Week 2, day 1 = day 4 (3 days per week)
-    expect(result!.dayNumber).toBe(4);
+    // dayNumber is the per-week day (1, 2, 3), not a global index
+    // Week context is provided separately via weekNumber parameter
+    expect(result!.dayNumber).toBe(1);
   });
 });

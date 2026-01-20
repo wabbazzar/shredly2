@@ -87,9 +87,10 @@ describe('calculateWorkoutTimeFromLiveExercises', () => {
 
       // 3 sets of 10 reps @ 4 sec/rep = 3 * 40 = 120 seconds work
       // 2 rest periods (between sets) of 90 sec = 180 seconds rest
-      // Total = 120 + 180 = 300 seconds = 5 minutes
+      // 1 block transition time = 90 seconds
+      // Total = 120 + 180 + 90 = 390 seconds
       const time = calculateWorkoutTimeFromLiveExercises([exercise]);
-      expect(time).toBe(300);
+      expect(time).toBe(390);
     });
 
     it('should calculate time using explicit work time', () => {
@@ -109,9 +110,10 @@ describe('calculateWorkoutTimeFromLiveExercises', () => {
 
       // 4 sets of 30 sec work = 120 seconds
       // 3 rest periods of 60 sec = 180 seconds
-      // Total = 120 + 180 = 300 seconds
+      // 1 block transition time = 90 seconds
+      // Total = 120 + 180 + 90 = 390 seconds
       const time = calculateWorkoutTimeFromLiveExercises([exercise]);
-      expect(time).toBe(300);
+      expect(time).toBe(390);
     });
 
     it('should calculate time for multiple exercises', () => {
@@ -145,9 +147,10 @@ describe('calculateWorkoutTimeFromLiveExercises', () => {
 
       // Exercise 1: 3 * 40 + 2 * 60 = 120 + 120 = 240
       // Exercise 2: 3 * 32 + 2 * 90 = 96 + 180 = 276
-      // Total = 516 seconds
+      // 2 block transition times = 180 seconds
+      // Total = 516 + 180 = 696 seconds
       const time = calculateWorkoutTimeFromLiveExercises([exercise1, exercise2]);
-      expect(time).toBe(516);
+      expect(time).toBe(696);
     });
   });
 
@@ -173,8 +176,9 @@ describe('calculateWorkoutTimeFromLiveExercises', () => {
         ]
       });
 
+      // EMOM: 10 minutes = 600 seconds + 90 sec transition = 690 seconds
       const time = calculateWorkoutTimeFromLiveExercises([emom]);
-      expect(time).toBe(600);
+      expect(time).toBe(690);
     });
   });
 
@@ -200,8 +204,9 @@ describe('calculateWorkoutTimeFromLiveExercises', () => {
         ]
       });
 
+      // AMRAP: 15 minutes = 900 seconds + 90 sec transition = 990 seconds
       const time = calculateWorkoutTimeFromLiveExercises([amrap]);
-      expect(time).toBe(900);
+      expect(time).toBe(990);
     });
   });
 
@@ -254,9 +259,9 @@ describe('calculateWorkoutTimeFromLiveExercises', () => {
       });
 
       // Round time: 40 + 60 + (2 exercises * 5 sec transition) = 110 sec
-      // 3 rounds * 110 = 330 seconds
+      // 3 rounds * 110 = 330 seconds + 90 sec block transition = 420 seconds
       const time = calculateWorkoutTimeFromLiveExercises([circuit]);
-      expect(time).toBe(330);
+      expect(time).toBe(420);
     });
   });
 
@@ -295,9 +300,9 @@ describe('calculateWorkoutTimeFromLiveExercises', () => {
       });
 
       // 1 sub-exercise: 30 work + 30 rest = 60 sec per interval
-      // 4 sets * 60 = 240 seconds
+      // 4 sets * 60 = 240 seconds + 90 sec block transition = 330 seconds
       const time = calculateWorkoutTimeFromLiveExercises([interval]);
-      expect(time).toBe(240);
+      expect(time).toBe(330);
     });
   });
 
@@ -325,9 +330,10 @@ describe('calculateWorkoutTimeFromDay', () => {
 
     // 3 sets of 10 reps @ 4 sec/rep = 120 sec work
     // 2 rest periods of 90 sec = 180 sec rest
-    // Total = 300 seconds
+    // 1 block transition time = 90 seconds
+    // Total = 300 + 90 = 390 seconds
     const time = calculateWorkoutTimeFromDay(day, 1);
-    expect(time).toBe(300);
+    expect(time).toBe(390);
   });
 
   it('should handle EMOM blocks in ParameterizedDay', () => {
@@ -348,8 +354,8 @@ describe('calculateWorkoutTimeFromDay', () => {
       ]
     };
 
-    // EMOM: 10 minutes = 600 seconds
+    // EMOM: 10 minutes = 600 seconds + 90 sec block transition = 690 seconds
     const time = calculateWorkoutTimeFromDay(day, 1);
-    expect(time).toBe(600);
+    expect(time).toBe(690);
   });
 });

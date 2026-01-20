@@ -13,6 +13,7 @@ import timerConfig from '$lib/../data/timer_config.json';
 
 const TEMPO_SECONDS_PER_REP = timerConfig.defaults.tempo_seconds_per_rep;
 const DEFAULT_REST_SECONDS = timerConfig.defaults.default_rest_seconds;
+const TRANSITION_TIME_PER_BLOCK_SECONDS = 90; // Time to set up equipment, move stations, etc.
 
 /**
  * Calculate work duration for a single set (in seconds)
@@ -56,6 +57,13 @@ function parseTempoToSeconds(tempo: string): number {
  */
 export function calculateWorkoutTimeFromLiveExercises(exercises: LiveExercise[]): number {
   let totalSeconds = 0;
+
+  // Count exercise blocks for transition time
+  const blockCount = exercises.filter(e => !e.isCompoundParent ||
+    ['emom', 'amrap', 'circuit', 'interval'].includes(e.exerciseType)).length;
+
+  // Add transition time between blocks (setup, equipment changes, etc.)
+  totalSeconds += blockCount * TRANSITION_TIME_PER_BLOCK_SECONDS;
 
   for (const exercise of exercises) {
     const { prescription, exerciseType, isCompoundParent, subExercises } = exercise;
@@ -119,6 +127,10 @@ export function calculateWorkoutTimeFromLiveExercises(exercises: LiveExercise[])
 export function calculateWorkoutTimeFromDay(day: ParameterizedDay, weekNumber: number): number {
   let totalSeconds = 0;
 
+  // Add transition time between blocks (setup, equipment changes, etc.)
+  // Each top-level exercise counts as a block
+  totalSeconds += day.exercises.length * TRANSITION_TIME_PER_BLOCK_SECONDS;
+
   for (const exercise of day.exercises) {
     const weekKey = `week${weekNumber}` as keyof ParameterizedExercise;
     const weekParams = exercise[weekKey] as WeekParameters | undefined;
@@ -144,7 +156,7 @@ export function calculateWorkoutTimeFromDay(day: ParameterizedDay, weekNumber: n
           for (const subEx of exercise.sub_exercises) {
             const subWeekParams = subEx[weekKey as keyof typeof subEx] as WeekParameters | undefined;
             if (subWeekParams) {
-              if (subWeekParams.reps) {
+              if (subWeekParams.reps && typeof subWeekParams.reps === 'number') {
                 roundTime += calculateWorkDurationSeconds(subWeekParams.reps, undefined, undefined);
               } else if (subWeekParams.work_time_minutes !== undefined) {
                 roundTime += subWeekParams.work_time_minutes * 60;
@@ -192,7 +204,8 @@ export function calculateWorkoutTimeFromDay(day: ParameterizedDay, weekNumber: n
       if (weekParams.work_time_minutes !== undefined) {
         workTime = weekParams.work_time_minutes * 60;
       } else {
-        workTime = calculateWorkDurationSeconds(weekParams.reps, undefined, undefined);
+        const reps = typeof weekParams.reps === 'number' ? weekParams.reps : undefined;
+        workTime = calculateWorkDurationSeconds(reps, undefined, undefined);
       }
 
       let restTime: number;

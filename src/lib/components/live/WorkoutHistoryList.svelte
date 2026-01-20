@@ -96,9 +96,14 @@
 		<div class="flex-1 overflow-y-auto">
 			{#each sessions as session}
 				{@const dateInfo = getRelativeDate(session.date)}
-				<button
-					class="w-full flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 active:bg-slate-800 transition-colors border-b border-slate-800 text-left"
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<div
+					role="button"
+					tabindex="0"
+					class="w-full flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 active:bg-slate-800 transition-colors border-b border-slate-800 text-left cursor-pointer"
 					on:click={() => handleSessionClick(session)}
+					on:keydown={(e) => e.key === 'Enter' && handleSessionClick(session)}
 				>
 					<!-- Date column -->
 					<div class="flex-shrink-0 w-20">
@@ -171,7 +176,7 @@
 					>
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 					</svg>
-				</button>
+				</div>
 			{/each}
 		</div>
 	{/if}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { LiveExercise, SetLog, ExerciseLog } from '$lib/engine/types';
-	import { shouldShowWeightField, getExerciseMetadata } from '$lib/engine/exercise-metadata';
+	import { shouldShowWeightField, getExerciseMetadata, getDefaultWorkMode } from '$lib/engine/exercise-metadata';
 	import { keyboardAware } from '$lib/actions/keyboardAware';
 
 	export let exercise: LiveExercise;
@@ -10,18 +10,29 @@
 	// Sub-exercise logs for compound blocks (keyed by sub-exercise name)
 	export let subExerciseLogs: Map<string, ExerciseLog> = new Map();
 
-	const dispatch = createEventDispatcher<{
-		save: { sets: SetLog[]; totalRounds?: number; totalTime?: number; subExerciseWeights?: SubExerciseWeight[] };
-		close: void;
-	}>();
+	// Sub-exercise data entry type (includes both reps/time AND weight)
+	interface SubExerciseData {
+		name: string;
+		reps: string;
+		weight: string;
+		weightUnit: 'lbs' | 'kg';
+		workMode: 'reps' | 'work_time';
+		showWeight: boolean;
+	}
 
-	// Sub-exercise weight entry type (matches DataEntryModal)
+	// Legacy type for dispatch (for backward compatibility with liveSession logging)
 	interface SubExerciseWeight {
 		name: string;
+		reps: number | null;
 		weight: string;
 		weightUnit: 'lbs' | 'kg';
 		showWeight: boolean;
 	}
+
+	const dispatch = createEventDispatcher<{
+		save: { sets: SetLog[]; totalRounds?: number; totalTime?: number; subExerciseWeights?: SubExerciseWeight[] };
+		close: void;
+	}>();
 
 	// Determine field visibility
 	$: showWeight = !isCompound && shouldShowWeightField(exercise.exerciseName, null);
@@ -31,6 +42,9 @@
 	$: isEmom = exercise.exerciseType === 'emom';
 	$: isInterval = exercise.exerciseType === 'interval';
 	$: totalSets = exercise.prescription.sets;
+
+	// Check if we need to show sub-exercise performance inputs (EMOM/Interval)
+	$: showSubExercisePerformance = isCompound && (isEmom || isInterval);
 
 	// Form state for each set (only used for non-compound exercises)
 	interface SetFormData {
@@ -43,13 +57,13 @@
 	let weightUnit: 'lbs' | 'kg' = exercise.prescription.weightUnit ?? 'lbs';
 	let roundsInput: string = '';
 	let timeInput: string = '';
-	let repsInput: string = '';
+	let repsInput: string = ''; // Legacy single input (kept for backward compat but unused for EMOM/Interval)
 	let rpeInput: string = '';
 	let showRpeColumn = false;
 	let showRpeSection = false;
 
-	// Sub-exercise weight state (for compound blocks)
-	let subExerciseWeights: SubExerciseWeight[] = [];
+	// Sub-exercise data state (for compound blocks - tracks reps/time AND weight per sub-exercise)
+	let subExerciseData: SubExerciseData[] = [];
 
 	// Input refs for keyboard navigation
 	let inputRefs: HTMLInputElement[][] = [];
@@ -68,35 +82,61 @@
 		return hasReps;
 	}
 
+	// Helper to format seconds to MM:SS
+	function formatTimeValue(seconds: number): string {
+		const mins = Math.floor(seconds / 60);
+		const secs = seconds % 60;
+		return `${mins}:${secs.toString().padStart(2, '0')}`;
+	}
+
 	// Initialize form data from existing logs or prescription
 	function initializeFormData() {
 		setsData = [];
 		inputRefs = [];
-		subExerciseWeights = [];
+		subExerciseData = [];
 
 		// Use direct property access (not reactive variable) to avoid timing issues
 		const isCompoundBlock = exercise.isCompoundParent;
 
-		// Initialize sub-exercise weights for compound blocks
+		// Initialize sub-exercise data for compound blocks
 		if (isCompoundBlock && exercise.subExercises && exercise.subExercises.length > 0) {
-			subExerciseWeights = exercise.subExercises.map(subEx => {
+			subExerciseData = exercise.subExercises.map(subEx => {
 				const metadata = getExerciseMetadata(subEx.exerciseName);
 				const showSubWeight = metadata?.external_load !== 'never';
+				const workMode = getDefaultWorkMode(subEx.exerciseName);
 
-				// Check for existing logged weight from sub-exercise logs
+				// Check for existing logged data from sub-exercise logs
 				const subLog = subExerciseLogs.get(subEx.exerciseName);
+				const loggedReps = subLog?.sets?.[0]?.reps;
 				const loggedWeight = subLog?.sets?.[0]?.weight;
 				const loggedUnit = subLog?.sets?.[0]?.weightUnit;
 
+				// Determine reps/time value
+				let repsValue = '';
+				if (workMode === 'work_time') {
+					// For time-based, use logged reps (which stores seconds) or prescription
+					if (loggedReps !== null && loggedReps !== undefined) {
+						repsValue = formatTimeValue(loggedReps);
+					} else {
+						const seconds = subEx.prescription.workTimeSeconds ?? 30;
+						repsValue = formatTimeValue(seconds);
+					}
+				} else {
+					// For reps-based
+					repsValue = loggedReps?.toString() ?? subEx.prescription.reps?.toString() ?? '';
+				}
+
 				return {
 					name: subEx.exerciseName,
+					reps: repsValue,
 					weight: loggedWeight?.toString() ?? subEx.prescription.weight?.toString() ?? '',
 					weightUnit: loggedUnit ?? subEx.prescription.weightUnit ?? 'lbs',
+					workMode,
 					showWeight: showSubWeight
 				};
 			});
 			// Compute hasSubExerciseWeights after populating the array
-			hasSubExerciseWeights = subExerciseWeights.some(s => s.showWeight);
+			hasSubExerciseWeights = subExerciseData.some(s => s.showWeight);
 		} else {
 			hasSubExerciseWeights = false;
 		}
@@ -182,7 +222,7 @@
 			// Create a single SetLog for compound blocks
 			const setLog: SetLog = {
 				setNumber: 1,
-				reps: (isEmom || isInterval) && repsInput ? parseInt(repsInput) : null,
+				reps: null, // Reps are now per-sub-exercise, not per-block
 				weight: null,
 				weightUnit: null,
 				workTime: isCircuit ? parseTimeInput(timeInput) : null,
@@ -193,16 +233,35 @@
 				timestamp: new Date().toISOString()
 			};
 
-			// Include sub-exercise weights if present
-			const weightedSubExercises = hasSubExerciseWeights
-				? subExerciseWeights.filter(s => s.showWeight && s.weight)
-				: undefined;
+			// Convert subExerciseData to SubExerciseWeight format for logging
+			// This includes reps per sub-exercise (not per block)
+			let subExerciseWeights: SubExerciseWeight[] | undefined;
+			if (subExerciseData.length > 0) {
+				subExerciseWeights = subExerciseData
+					.filter(s => s.showWeight || s.reps) // Include if has weight OR reps
+					.map(s => {
+						let parsedReps: number | null = null;
+						if (s.workMode === 'work_time') {
+							// For time-based exercises, parse as time and store in reps as seconds
+							parsedReps = parseTimeInput(s.reps);
+						} else {
+							parsedReps = s.reps ? parseInt(s.reps) : null;
+						}
+						return {
+							name: s.name,
+							reps: parsedReps,
+							weight: s.weight,
+							weightUnit: s.weightUnit,
+							showWeight: s.showWeight
+						};
+					});
+			}
 
 			dispatch('save', {
 				sets: [setLog],
 				totalRounds: isAmrap && roundsInput ? parseFloat(roundsInput) : undefined,
 				totalTime: isCircuit ? parseTimeInput(timeInput) ?? undefined : undefined,
-				subExerciseWeights: weightedSubExercises
+				subExerciseWeights
 			});
 			return;
 		}
@@ -359,20 +418,48 @@
 					<p class="mt-1 text-xs text-slate-500">Format: MM:SS</p>
 				</div>
 			{:else if isEmom || isInterval}
-				<!-- EMOM/Interval: Reps input -->
-				<div class="bg-slate-700/30 rounded-lg p-3">
-					<label class="block">
-						<span class="block text-xs font-medium text-slate-300 mb-1.5">Reps per round</span>
-						<input
-							type="number"
-							inputmode="numeric"
-							bind:value={repsInput}
-							on:focus={(e) => e.currentTarget.select()}
-							class="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
-							placeholder={exercise.prescription.reps?.toString() ?? '-'}
-						/>
-					</label>
-				</div>
+				<!-- EMOM/Interval: Per-sub-exercise performance data -->
+				{#if subExerciseData.length > 0}
+					<div class="space-y-2">
+						<p class="text-xs text-slate-400 font-medium">Performance per exercise</p>
+						{#each subExerciseData as subEx, idx}
+							<div class="bg-slate-700/30 rounded-lg p-2">
+								<span class="block text-xs text-slate-300 mb-1.5 truncate">{subEx.name}</span>
+								<div class="flex items-center gap-2">
+									<!-- Reps or Time input based on work mode -->
+									<div class="flex-1">
+										<input
+											type={subEx.workMode === 'work_time' ? 'text' : 'number'}
+											inputmode={subEx.workMode === 'work_time' ? 'text' : 'numeric'}
+											bind:value={subEx.reps}
+											on:focus={(e) => e.currentTarget.select()}
+											class="w-full px-2 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+											placeholder={subEx.workMode === 'work_time' ? '0:30' : (exercise.subExercises[idx]?.prescription.reps?.toString() ?? '-')}
+										/>
+										<span class="block text-[10px] text-slate-500 mt-0.5 text-center">
+											{subEx.workMode === 'work_time' ? 'time' : 'reps'}
+										</span>
+									</div>
+									<!-- Weight input (only if showWeight) -->
+									{#if subEx.showWeight}
+										<div class="flex-1">
+											<input
+												type="number"
+												inputmode="decimal"
+												step="2.5"
+												bind:value={subEx.weight}
+												on:focus={(e) => e.currentTarget.select()}
+												class="w-full px-2 py-1.5 bg-slate-700 border border-slate-600 rounded text-white text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+												placeholder={exercise.subExercises[idx]?.prescription.weight?.toString() ?? '-'}
+											/>
+											<span class="block text-[10px] text-slate-500 mt-0.5 text-center">{subEx.weightUnit}</span>
+										</div>
+									{/if}
+								</div>
+							</div>
+						{/each}
+					</div>
+				{/if}
 			{:else}
 				<!-- Regular exercise: Column Headers -->
 				<div class="flex items-center gap-2 mb-2 px-1">
@@ -472,11 +559,11 @@
 				</button>
 			{/if}
 
-			<!-- Sub-exercise weights (for compound blocks) -->
-			{#if hasSubExerciseWeights}
+			<!-- Sub-exercise weights (for AMRAP/Circuit - EMOM/Interval shows weights inline above) -->
+			{#if hasSubExerciseWeights && !showSubExercisePerformance}
 				<div class="space-y-1.5">
 					<p class="text-xs text-slate-400 font-medium">Weight per exercise</p>
-					{#each subExerciseWeights as subEx, idx}
+					{#each subExerciseData as subEx, idx}
 						{#if subEx.showWeight}
 							<div class="flex items-center gap-2">
 								<span class="flex-1 text-xs text-slate-400 truncate">{subEx.name}</span>

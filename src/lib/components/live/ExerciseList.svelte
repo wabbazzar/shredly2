@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { LiveExercise, ExerciseLog } from '$lib/engine/types';
-	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
+	import { shouldShowWeightField, getDefaultWorkMode } from '$lib/engine/exercise-metadata';
 	import { getFromCache } from '$lib/stores/oneRMCache';
 	import { calculateWorkoutTimeFromLiveExercises, formatWorkoutTime } from '$lib/utils/workoutTimeEstimate';
 
@@ -9,6 +9,8 @@
 	export let currentIndex: number;
 	export let currentSubExerciseIndex: number = 0;
 	export let exerciseLogs: Map<number, ExerciseLog> = new Map();
+	// All session logs (includes sub-exercise logs with compoundParentName set)
+	export let allLogs: ExerciseLog[] = [];
 
 	// Calculate estimated workout time
 	$: estimatedTimeSeconds = calculateWorkoutTimeFromLiveExercises(exercises);
@@ -164,32 +166,113 @@
 		return '';
 	}
 
+	// Helper to format time in MM:SS
+	function formatTimeDisplay(seconds: number): string {
+		const mins = Math.floor(seconds / 60);
+		const secs = seconds % 60;
+		if (mins > 0 && secs > 0) {
+			return `${mins}:${secs.toString().padStart(2, '0')}`;
+		} else if (mins > 0) {
+			return `${mins}m`;
+		}
+		return `${secs}s`;
+	}
+
+	// Helper to build per-sub-exercise summary for compound blocks
+	function buildSubExerciseSummaries(exercise: LiveExercise): string[] {
+		const summaries: string[] = [];
+		for (const subEx of exercise.subExercises) {
+			const subLog = allLogs.find(
+				l => l.exerciseName === subEx.exerciseName && l.compoundParentName === exercise.exerciseName
+			);
+			if (subLog && subLog.sets.length > 0) {
+				const set = subLog.sets[0];
+				const showWeight = shouldShowWeightField(subEx.exerciseName, null);
+				const workMode = getDefaultWorkMode(subEx.exerciseName);
+
+				// Build the summary for this sub-exercise
+				let summary = '';
+				if (showWeight && set.weight) {
+					// Has weight
+					if (workMode === 'work_time' && set.reps) {
+						// Time-based with weight (rare but possible)
+						summary = `${formatTimeDisplay(set.reps)} @ ${set.weight}${set.weightUnit || 'lbs'}`;
+					} else if (set.reps) {
+						// Reps with weight
+						summary = `${set.weight}x${set.reps}`;
+					} else {
+						// Weight only
+						summary = `${set.weight}${set.weightUnit || 'lbs'}`;
+					}
+				} else if (workMode === 'work_time' && set.reps) {
+					// Time-based, no weight
+					summary = formatTimeDisplay(set.reps);
+				} else if (set.reps) {
+					// Reps only, no weight
+					summary = `${set.reps} reps`;
+				}
+
+				if (summary) {
+					// Abbreviate long exercise names
+					const shortName = subEx.exerciseName.length > 15
+						? subEx.exerciseName.substring(0, 12) + '...'
+						: subEx.exerciseName;
+					summaries.push(`${shortName}: ${summary}`);
+				}
+			}
+		}
+		return summaries;
+	}
+
 	// Format logged data summary for display
 	function formatLoggedData(exerciseIndex: number, exercise: LiveExercise): string {
 		const log = exerciseLogs.get(exerciseIndex);
 		if (!log) return '';
 
-		// AMRAP - show rounds
-		if (exercise.exerciseType === 'amrap' && log.totalRounds !== undefined) {
-			return `${log.totalRounds} rounds`;
-		}
+		// All compound blocks: show per-sub-exercise data
+		if (exercise.isCompoundParent && exercise.subExercises.length > 0) {
+			const subExSummaries = buildSubExerciseSummaries(exercise);
 
-		// Circuit - show time
-		if (exercise.exerciseType === 'circuit' && log.totalTime !== undefined) {
-			const mins = Math.floor(log.totalTime / 60);
-			const secs = log.totalTime % 60;
-			return `${mins}:${secs.toString().padStart(2, '0')}`;
+			// Build prefix based on block type
+			let prefix = '';
+			if (exercise.exerciseType === 'amrap' && log.totalRounds !== undefined) {
+				prefix = `${log.totalRounds} rounds`;
+			} else if (exercise.exerciseType === 'circuit' && log.totalTime !== undefined) {
+				const mins = Math.floor(log.totalTime / 60);
+				const secs = log.totalTime % 60;
+				prefix = `${mins}:${secs.toString().padStart(2, '0')}`;
+			}
+
+			// Combine prefix with sub-exercise summaries
+			if (subExSummaries.length > 0) {
+				const subExText = subExSummaries.join(' | ');
+				return prefix ? `${prefix} | ${subExText}` : subExText;
+			}
+
+			// Fallback to just prefix if no sub-exercise data
+			return prefix;
 		}
 
 		// Regular sets - show weight x reps for each set
 		if (log.sets.length === 0) return '';
 
 		const showWeight = shouldShowWeightField(exercise.exerciseName, null);
+		const workMode = getDefaultWorkMode(exercise.exerciseName);
 
-		// Group identical sets together
-		const repsList = log.sets.map(s => s.reps ?? 0);
-		const weights = log.sets.map(s => s.weight);
-		const unit = log.sets[0]?.weightUnit ?? 'lbs';
+		// For isometric exercises, show time not reps
+		if (workMode === 'work_time') {
+			const times = log.sets.map(s => s.workTime ?? s.reps).filter(t => t !== null && t !== undefined && t > 0);
+			if (times.length === 0) return '';
+			return times.map(t => formatTimeDisplay(t as number)).join(', ');
+		}
+
+		// Filter out null/zero reps to avoid 0x display
+		const validSets = log.sets.filter(s => s.reps !== null && s.reps !== undefined && s.reps > 0);
+		if (validSets.length === 0) return '';
+
+		const repsList = validSets.map(s => s.reps);
+		const weights = validSets.map(s => s.weight);
+		const unit = validSets[0]?.weightUnit ?? 'lbs';
 
 		// Check if all weights are the same
 		const allSameWeight = weights.every(w => w === weights[0]);
@@ -199,11 +282,11 @@
 			return `${weights[0]} ${unit} x ${repsList.join(',')}`;
 		} else if (showWeight) {
 			// Format: "135x8, 145x8, 155x6"
-			return log.sets.map(s => {
+			return validSets.map(s => {
 				if (s.weight) {
-					return `${s.weight}x${s.reps ?? '?'}`;
+					return `${s.weight}x${s.reps}`;
 				}
-				return `${s.reps ?? '?'}`;
+				return `${s.reps}`;
 			}).join(', ');
 		} else {
 			// No weight - just show reps: "8,8,8,7 reps"

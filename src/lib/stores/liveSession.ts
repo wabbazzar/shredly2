@@ -1131,10 +1131,12 @@ export function logCompletedSet(
 }
 
 /**
- * Sub-exercise weight type (matches DataEntryModal/SetReviewModal)
+ * Sub-exercise data type (matches DataEntryModal/SetReviewModal)
+ * Now includes reps per sub-exercise (not just weight)
  */
 interface SubExerciseWeight {
   name: string;
+  reps: number | null; // User-entered reps for this sub-exercise (or time in seconds for isometric)
   weight: string;
   weightUnit: 'lbs' | 'kg';
   showWeight: boolean;
@@ -1159,16 +1161,17 @@ export function logSubExerciseWeights(
     const now = new Date().toISOString();
 
     for (const subEx of subExerciseWeights) {
-      // Skip if no weight entered
-      if (!subEx.weight || !subEx.showWeight) continue;
+      // Skip if no data entered (no reps AND no weight)
+      const hasReps = subEx.reps !== null && subEx.reps > 0;
+      const hasWeight = subEx.weight && subEx.showWeight;
 
-      const weight = parseFloat(subEx.weight);
-      if (isNaN(weight) || weight <= 0) continue;
+      if (!hasReps && !hasWeight) continue;
 
-      // Find the sub-exercise prescription for reps
-      const parentExercise = session.exercises[parentExerciseIndex];
-      const subExercise = parentExercise?.subExercises?.find(s => s.exerciseName === subEx.name);
-      const reps = subExercise?.prescription.reps ?? null;
+      const weight = hasWeight ? parseFloat(subEx.weight) : null;
+      if (hasWeight && (weight === null || isNaN(weight) || weight <= 0)) continue;
+
+      // Use reps from the user input (per-sub-exercise), not prescription
+      const reps = subEx.reps;
 
       // Find existing log index
       const existingIndex = logs.findIndex(
@@ -1179,8 +1182,8 @@ export function logSubExerciseWeights(
       const setLog: SetLog = {
         setNumber: 1,
         reps,
-        weight,
-        weightUnit: subEx.weightUnit,
+        weight: weight ?? null,
+        weightUnit: weight !== null ? subEx.weightUnit : null,
         workTime: null,
         rpe: null,
         rir: null,

@@ -735,6 +735,7 @@
 						currentIndex={-1}
 						currentSubExerciseIndex={null}
 						{exerciseLogs}
+						allLogs={$liveSession?.logs ?? []}
 						on:info={handleExerciseInfo}
 						on:select={handleExerciseSelect}
 						on:review={handleExerciseReview}
@@ -783,6 +784,7 @@
 					currentIndex={$liveSession.currentExerciseIndex}
 					currentSubExerciseIndex={timerState.currentSubExercise}
 					{exerciseLogs}
+					allLogs={$liveSession?.logs ?? []}
 					on:info={handleExerciseInfo}
 					on:select={handleExerciseSelect}
 					on:review={handleExerciseReview}

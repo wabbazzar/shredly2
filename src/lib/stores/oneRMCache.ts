@@ -220,8 +220,46 @@ export function deriveTRM(oneRM: number): number {
 }
 
 /**
+ * Get the best set per day from data points
+ * "Best" = highest estimated 1RM (heaviest set takes precedence)
+ *
+ * @param dataPoints - Array of 1RM data points
+ * @param includeRPEAdjustment - Whether to apply RPE adjustment
+ * @returns Map of date -> best data point for that day
+ */
+export function getBestSetPerDay(
+	dataPoints: OneRMDataPoint[],
+	includeRPEAdjustment = true
+): Map<string, OneRMDataPoint> {
+	const bestByDay = new Map<string, { point: OneRMDataPoint; estimated1RM: number }>();
+
+	for (const point of dataPoints) {
+		// Calculate estimated 1RM for this set
+		let estimated1RM = calculateEpley1RM(point.weight, point.reps);
+		if (includeRPEAdjustment) {
+			estimated1RM = adjustForRPE(estimated1RM, point.rpe);
+		}
+
+		const existing = bestByDay.get(point.date);
+		if (!existing || estimated1RM > existing.estimated1RM) {
+			bestByDay.set(point.date, { point, estimated1RM });
+		}
+	}
+
+	// Return just the points
+	const result = new Map<string, OneRMDataPoint>();
+	bestByDay.forEach(({ point }, date) => {
+		result.set(date, point);
+	});
+	return result;
+}
+
+/**
  * Calculate time-weighted average 1RM from multiple data points
  * Recent data is weighted higher using exponential decay
+ *
+ * IMPORTANT: Only uses the BEST set per day to avoid warmup/light sets
+ * diluting the calculation. 165x6 takes precedence over 135x6 on the same day.
  *
  * @param dataPoints - Array of 1RM data points
  * @param options - Calculation options
@@ -237,11 +275,14 @@ export function calculateTimeWeightedAverage(
 
 	const { includeRPEAdjustment = true, recencyHalfLifeDays = RECENCY_HALF_LIFE_DAYS } = options;
 
+	// Get only the best set per day (filters out warmup/light sets)
+	const bestByDay = getBestSetPerDay(dataPoints, includeRPEAdjustment);
+
 	const today = toLocalDateString(new Date());
 	let weightedSum = 0;
 	let totalWeight = 0;
 
-	for (const point of dataPoints) {
+	bestByDay.forEach((point, date) => {
 		// Calculate raw 1RM from weight and reps
 		let estimated1RM = calculateEpley1RM(point.weight, point.reps);
 
@@ -251,11 +292,11 @@ export function calculateTimeWeightedAverage(
 		}
 
 		// Calculate time weight (recent data weighted higher)
-		const timeWeight = calculateTimeWeight(point.date, today, recencyHalfLifeDays);
+		const timeWeight = calculateTimeWeight(date, today, recencyHalfLifeDays);
 
 		weightedSum += estimated1RM * timeWeight;
 		totalWeight += timeWeight;
-	}
+	});
 
 	if (totalWeight === 0) {
 		return 0;

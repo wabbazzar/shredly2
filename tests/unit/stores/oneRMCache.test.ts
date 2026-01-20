@@ -19,6 +19,7 @@ import {
 	daysBetween,
 	calculateTimeWeight,
 	calculateTimeWeightedAverage,
+	getBestSetPerDay,
 	extractDataPointsFromHistory,
 	calculate1RMEntry,
 	calculateTrend,
@@ -263,6 +264,79 @@ describe('calculateTimeWeight', () => {
 	});
 });
 
+// ============================================================================
+// BEST SET PER DAY TESTS
+// ============================================================================
+
+describe('getBestSetPerDay', () => {
+	const today = new Date().toISOString().split('T')[0];
+
+	it('returns empty map for empty input', () => {
+		const result = getBestSetPerDay([]);
+		expect(result.size).toBe(0);
+	});
+
+	it('selects heaviest set when same reps on same day', () => {
+		const dataPoints: OneRMDataPoint[] = [
+			{ weight: 135, reps: 6, rpe: null, date: today, timestamp: new Date().toISOString() },
+			{ weight: 165, reps: 6, rpe: null, date: today, timestamp: new Date().toISOString() }
+		];
+
+		const result = getBestSetPerDay(dataPoints, false);
+		expect(result.size).toBe(1);
+
+		const best = result.get(today);
+		expect(best?.weight).toBe(165);
+	});
+
+	it('considers 1RM estimate, not just raw weight', () => {
+		// 200x3 = 200 * 1.1 = 220 1RM
+		// 185x8 = 185 * 1.267 = 234.3 1RM
+		// 185x8 is "better" despite lower weight
+		const dataPoints: OneRMDataPoint[] = [
+			{ weight: 200, reps: 3, rpe: null, date: today, timestamp: new Date().toISOString() },
+			{ weight: 185, reps: 8, rpe: null, date: today, timestamp: new Date().toISOString() }
+		];
+
+		const result = getBestSetPerDay(dataPoints, false);
+		const best = result.get(today);
+		expect(best?.weight).toBe(185);
+		expect(best?.reps).toBe(8);
+	});
+
+	it('keeps one best set per unique date', () => {
+		const yesterday = new Date();
+		yesterday.setDate(yesterday.getDate() - 1);
+		const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+		const dataPoints: OneRMDataPoint[] = [
+			{ weight: 100, reps: 10, rpe: null, date: today, timestamp: new Date().toISOString() },
+			{ weight: 150, reps: 10, rpe: null, date: today, timestamp: new Date().toISOString() },
+			{ weight: 100, reps: 10, rpe: null, date: yesterdayStr, timestamp: yesterday.toISOString() },
+			{ weight: 140, reps: 10, rpe: null, date: yesterdayStr, timestamp: yesterday.toISOString() }
+		];
+
+		const result = getBestSetPerDay(dataPoints, false);
+		expect(result.size).toBe(2);
+		expect(result.get(today)?.weight).toBe(150);
+		expect(result.get(yesterdayStr)?.weight).toBe(140);
+	});
+
+	it('applies RPE adjustment when comparing sets', () => {
+		// 165x6 at RPE 8 = 165 * 1.2 / 0.92 = 215.2 1RM
+		// 135x6 at RPE 10 = 135 * 1.2 / 1.0 = 162 1RM
+		// 165x6 should win
+		const dataPoints: OneRMDataPoint[] = [
+			{ weight: 135, reps: 6, rpe: 10, date: today, timestamp: new Date().toISOString() },
+			{ weight: 165, reps: 6, rpe: 8, date: today, timestamp: new Date().toISOString() }
+		];
+
+		const result = getBestSetPerDay(dataPoints, true);
+		const best = result.get(today);
+		expect(best?.weight).toBe(165);
+	});
+});
+
 describe('calculateTimeWeightedAverage', () => {
 	const today = new Date().toISOString().split('T')[0];
 
@@ -346,6 +420,58 @@ describe('calculateTimeWeightedAverage', () => {
 		// 200 x 5 = 200 * (1 + 5/30) = 233.33
 		const result = calculateTimeWeightedAverage(dataPoints);
 		expect(result).toBeCloseTo(233.3, 0);
+	});
+
+	it('uses best set per day, not average of all sets (fixes warmup set dilution)', () => {
+		// Bug: 135x6 (warmup) was diluting 165x6 (working set)
+		// Fix: Use heaviest set per day for PR calculation
+		const dataPoints: OneRMDataPoint[] = [
+			{
+				weight: 135,
+				reps: 6,
+				rpe: 6,
+				date: today,
+				timestamp: new Date().toISOString()
+			},
+			{
+				weight: 165,
+				reps: 6,
+				rpe: 8,
+				date: today,
+				timestamp: new Date().toISOString()
+			}
+		];
+
+		const result = calculateTimeWeightedAverage(dataPoints);
+
+		// 165x6 at RPE 8 = 165 * (1 + 6/30) / 0.92 = 198 / 0.92 = 215.2
+		// 135x6 at RPE 6 = 135 * (1 + 6/30) / 0.85 = 162 / 0.85 = 190.6
+		// Best set is 165x6 with 215.2 1RM estimate - this is what should be used
+		expect(result).toBeCloseTo(215.2, 0);
+	});
+
+	it('takes best from each day when multiple days have multiple sets', () => {
+		const yesterday = new Date();
+		yesterday.setDate(yesterday.getDate() - 1);
+		const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+		const dataPoints: OneRMDataPoint[] = [
+			// Today: warmup then working set
+			{ weight: 95, reps: 10, rpe: 5, date: today, timestamp: new Date().toISOString() },
+			{ weight: 135, reps: 8, rpe: 9, date: today, timestamp: new Date().toISOString() },
+			// Yesterday: warmup then working set
+			{ weight: 95, reps: 10, rpe: 5, date: yesterdayStr, timestamp: yesterday.toISOString() },
+			{ weight: 130, reps: 8, rpe: 9, date: yesterdayStr, timestamp: yesterday.toISOString() }
+		];
+
+		const result = calculateTimeWeightedAverage(dataPoints);
+
+		// Today best: 135x8 at RPE 9 = 135 * 1.267 / 0.96 = 178.1
+		// Yesterday best: 130x8 at RPE 9 = 130 * 1.267 / 0.96 = 171.5
+		// Time-weighted average heavily favors today (more recent)
+		// Should be closer to 178 than to the average of all sets
+		expect(result).toBeGreaterThan(170);
+		expect(result).toBeLessThan(180);
 	});
 });
 

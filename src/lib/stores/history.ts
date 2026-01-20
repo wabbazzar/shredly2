@@ -786,7 +786,8 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
     weekNumber: number;
     dayNumber: number;
     exerciseNames: Set<string>;
-    completedSetCount: number;
+    // Track deduplicated sets: key = exercise_name|set_number, value = latest timestamp
+    deduplicatedSets: Map<string, string>;
     earliestTimestamp: string;
   }>();
 
@@ -797,23 +798,29 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
     // Only count completed sets
     if (!row.completed) continue;
 
-    const key = `${row.date}|${row.workout_program_id}`;
+    const sessionKey = `${row.date}|${row.workout_program_id}`;
 
-    if (!sessionMap.has(key)) {
-      sessionMap.set(key, {
+    if (!sessionMap.has(sessionKey)) {
+      sessionMap.set(sessionKey, {
         date: row.date,
         workoutProgramId: row.workout_program_id,
         weekNumber: row.week_number,
         dayNumber: row.day_number,
         exerciseNames: new Set(),
-        completedSetCount: 0,
+        deduplicatedSets: new Map(),
         earliestTimestamp: row.timestamp
       });
     }
 
-    const session = sessionMap.get(key)!;
+    const session = sessionMap.get(sessionKey)!;
     session.exerciseNames.add(row.exercise_name);
-    session.completedSetCount++;
+
+    // Deduplicate: only count the latest entry for each (exercise_name, set_number)
+    const setKey = `${row.exercise_name}|${row.set_number}`;
+    const existingTimestamp = session.deduplicatedSets.get(setKey);
+    if (!existingTimestamp || new Date(row.timestamp).getTime() > new Date(existingTimestamp).getTime()) {
+      session.deduplicatedSets.set(setKey, row.timestamp);
+    }
 
     // Track earliest timestamp
     if (row.timestamp < session.earliestTimestamp) {
@@ -823,14 +830,14 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
 
   // Convert to array and filter out empty sessions
   const sessions: WorkoutSession[] = Array.from(sessionMap.values())
-    .filter(s => s.completedSetCount > 0)
+    .filter(s => s.deduplicatedSets.size > 0)
     .map(s => ({
       date: s.date,
       workoutProgramId: s.workoutProgramId,
       weekNumber: s.weekNumber,
       dayNumber: s.dayNumber,
       exerciseCount: s.exerciseNames.size,
-      completedSetCount: s.completedSetCount,
+      completedSetCount: s.deduplicatedSets.size, // Use deduplicated count
       earliestTimestamp: s.earliestTimestamp
     }));
 

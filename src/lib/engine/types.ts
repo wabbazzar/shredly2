@@ -749,6 +749,7 @@ export interface LiveWorkoutSession {
   pauseStartTime: string | null;
   totalPauseTime: number;  // seconds
   isComplete: boolean;  // True when workout is finished but session kept for review
+  historicalDate?: string;  // Set when viewing a historical (non-today) workout, e.g., "2026-01-15"
 }
 
 /**

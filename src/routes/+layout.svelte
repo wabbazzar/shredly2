@@ -6,6 +6,7 @@
 	import { navigationStore } from '$lib/stores/navigation';
 	import { initializeScheduleStore } from '$lib/stores/schedule';
 	import { fullRecalculateCache } from '$lib/stores/oneRMCache';
+	import { hydrateHistory } from '$lib/stores/history';
 	import { userStore } from '$lib/stores/user';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
@@ -67,9 +68,11 @@
 			minTimeElapsed = true;
 		}, MIN_LOADING_TIME);
 
+		// Hydrate stores from localStorage (SSR sends empty arrays)
+		hydrateHistory();
 		initializeScheduleStore();
 
-		// Initialize 1RM cache with user overrides
+		// Initialize 1RM cache with user overrides (depends on history being hydrated)
 		const userData = get(userStore);
 		const userOverrides: Record<string, number> = {};
 		for (const orm of userData.oneRepMaxes) {

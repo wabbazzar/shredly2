@@ -24,10 +24,18 @@
 		getExerciseLog,
 		updateExerciseLogs,
 		logSubExerciseWeights,
-		reconstructSessionFromHistory
+		reconstructSessionFromHistory,
+		loadHistoricalSession
 	} from '$lib/stores/liveSession';
 	import { activeSchedule } from '$lib/stores/schedule';
-	import { logSessionToHistory, getTodaysHistoryForWorkout } from '$lib/stores/history';
+	import {
+		exerciseHistory,
+		logSessionToHistory,
+		getTodaysHistoryForWorkout,
+		getCompletedSessions,
+		getHistoryForSession,
+		type WorkoutSession
+	} from '$lib/stores/history';
 	import { updateCacheForExercise } from '$lib/stores/oneRMCache';
 	import {
 		TimerEngine,
@@ -44,6 +52,7 @@
 	import DataEntryModal from '$lib/components/live/DataEntryModal.svelte';
 	import ExerciseInfoModal from '$lib/components/live/ExerciseInfoModal.svelte';
 	import SetReviewModal from '$lib/components/live/SetReviewModal.svelte';
+	import WorkoutHistoryList from '$lib/components/live/WorkoutHistoryList.svelte';
 	import type { ExerciseLog } from '$lib/engine/types';
 
 	let timerEngine: TimerEngine;
@@ -56,6 +65,9 @@
 	let noScheduleMessage = '';
 	let isReady = false; // Defers heavy work until after first paint
 	let isHistoryReviewMode = false; // True when showing previously logged workout
+
+	// History list state - reactive to exerciseHistory store changes (including hydration)
+	$: historySessions = $exerciseHistory.length > 0 ? getCompletedSessions(50) : [];
 
 	// Modal state
 	let showDataEntry = false;
@@ -130,6 +142,7 @@
 					noScheduleMessage = 'No active schedule. Create one in the Schedule tab.';
 				}
 
+				// History sessions are now reactive to $exerciseHistory store
 				isReady = true;
 			});
 		});
@@ -325,6 +338,40 @@
 		noScheduleMessage = 'No workout scheduled for today';
 	}
 
+	// Handle clicking on a historical session in the history list
+	function handleHistoricalSessionClick(event: CustomEvent<WorkoutSession>) {
+		const session = event.detail;
+		if (!$activeSchedule) return;
+
+		const historyRows = getHistoryForSession(session.date, session.workoutProgramId);
+		if (!historyRows || historyRows.length === 0) return;
+
+		// Check if this is for the current schedule
+		if (session.workoutProgramId !== $activeSchedule.id) {
+			// Schedule has changed - can't load this session
+			// Could show a warning here, but for now just skip
+			return;
+		}
+
+		loadHistoricalSession($activeSchedule, session.date, historyRows);
+		isHistoryReviewMode = true;
+		showStartPrompt = false;
+		noScheduleMessage = '';
+	}
+
+	/**
+	 * Format historical date for display
+	 * e.g., "Mon, Jan 15"
+	 */
+	function formatHistoricalDate(dateStr: string): string {
+		const date = new Date(dateStr + 'T00:00:00'); // Force local timezone
+		return date.toLocaleDateString('en-US', {
+			weekday: 'short',
+			month: 'short',
+			day: 'numeric'
+		});
+	}
+
 	// Exercise info handler
 	function handleExerciseInfo(event: CustomEvent<{ exercise: LiveExercise; index: number }>) {
 		exerciseInfoExercise = event.detail.exercise;
@@ -489,12 +536,13 @@
 				}
 			}
 
-			// Log to history
+			// Log to history (use historical date if editing a past workout)
 			logSessionToHistory(
 				$liveSession.scheduleId,
 				$liveSession.weekNumber,
 				$liveSession.dayNumber,
-				logsToSave
+				logsToSave,
+				$liveSession.historicalDate
 			);
 
 			// Update 1RM cache for this exercise (and sub-exercises if compound)
@@ -553,12 +601,22 @@
 							</svg>
 							<div>
 								<h2 class="text-lg font-semibold text-white">
-									{isHistoryReviewMode ? 'Previous Workout' : 'Workout Complete!'}
+									{#if $liveSession?.historicalDate}
+										Previous Workout - {formatHistoricalDate($liveSession.historicalDate)}
+									{:else if isHistoryReviewMode}
+										Previous Workout
+									{:else}
+										Workout Complete!
+									{/if}
 								</h2>
-								<p class="text-sm {isHistoryReviewMode ? 'text-indigo-300' : 'text-green-300'}">
-									{isHistoryReviewMode
-										? 'Review or edit your logged data from earlier today'
-										: 'Tap any exercise to review or edit your data'}
+								<p class="text-sm {isHistoryReviewMode || $liveSession?.historicalDate ? 'text-indigo-300' : 'text-green-300'}">
+									{#if $liveSession?.historicalDate}
+										Review or edit your logged data
+									{:else if isHistoryReviewMode}
+										Review or edit your logged data from earlier today
+									{:else}
+										Tap any exercise to review or edit your data
+									{/if}
 								</p>
 							</div>
 						</div>
@@ -692,39 +750,78 @@
 	</div>
 
 {:else}
-	<!-- No workout / empty state - calc height accounts for nav bar -->
-	<div class="flex flex-col items-center justify-center bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
-		<svg
-			class="w-24 h-24 mb-6 text-indigo-400"
-			fill="none"
-			stroke="currentColor"
-			viewBox="0 0 24 24"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="1.5"
-				d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-			/>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="1.5"
-				d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-			/>
-		</svg>
-		<h1 class="text-3xl font-bold text-white mb-3">Live</h1>
-		<p class="text-slate-400 text-center px-8 max-w-sm">
-			{noScheduleMessage || 'Active workout execution with timer will appear here'}
-		</p>
-
+	<!-- No workout / empty state with history list - calc height accounts for nav bar -->
+	<div class="flex flex-col bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
 		{#if $activeSchedule}
-			<button
-				class="mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition-colors"
-				on:click={() => (showStartPrompt = true)}
-			>
-				Browse Workouts
-			</button>
+			{@const todaysWorkout = getTodaysWorkout($activeSchedule)}
+
+			<!-- Start today's workout button (if scheduled) -->
+			{#if todaysWorkout}
+				<div class="flex-shrink-0 p-4 border-b border-slate-800">
+					<button
+						class="w-full py-4 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl text-lg transition-colors flex items-center justify-center gap-3"
+						on:click={handleStartTodaysWorkout}
+					>
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+							/>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+							/>
+						</svg>
+						Start Today's Workout
+					</button>
+					<p class="text-center text-slate-400 text-sm mt-2">
+						{todaysWorkout.day.focus} - {todaysWorkout.day.exercises.length} exercises
+					</p>
+				</div>
+			{:else if noScheduleMessage}
+				<div class="flex-shrink-0 p-4 border-b border-slate-800 text-center">
+					<p class="text-slate-400">{noScheduleMessage}</p>
+				</div>
+			{/if}
+
+			<!-- History list -->
+			<div class="flex-1 min-h-0 overflow-hidden">
+				<WorkoutHistoryList
+					sessions={historySessions}
+					on:sessionClick={handleHistoricalSessionClick}
+				/>
+			</div>
+		{:else}
+			<!-- No schedule at all -->
+			<div class="flex-1 flex flex-col items-center justify-center p-6">
+				<svg
+					class="w-24 h-24 mb-6 text-indigo-400"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+					/>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="1.5"
+						d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+					/>
+				</svg>
+				<h1 class="text-3xl font-bold text-white mb-3">Live</h1>
+				<p class="text-slate-400 text-center px-8 max-w-sm">
+					{noScheduleMessage || 'No active schedule. Create one in the Schedule tab.'}
+				</p>
+			</div>
 		{/if}
 	</div>
 {/if}

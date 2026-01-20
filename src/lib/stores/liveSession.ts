@@ -1395,12 +1395,14 @@ function markExercisesFromLogs(
  * @param weekNumber - The week number
  * @param dayNumber - The day number (global day index)
  * @param historyRows - Deduplicated history rows for this workout
+ * @param historicalDate - Optional date string for historical sessions (non-today)
  */
 export function reconstructSessionFromHistory(
   schedule: StoredSchedule,
   weekNumber: number,
   dayNumber: number,
-  historyRows: HistoryRow[]
+  historyRows: HistoryRow[],
+  historicalDate?: string
 ): LiveWorkoutSession {
   // Get the day from schedule
   const day = schedule.days[dayNumber.toString()];
@@ -1436,6 +1438,69 @@ export function reconstructSessionFromHistory(
     isPaused: false,
     pauseStartTime: null,
     totalPauseTime: 0,
-    isComplete: true
+    isComplete: true,
+    historicalDate
   };
+}
+
+/**
+ * Load a historical workout session for review
+ *
+ * Creates a session from history rows and sets it in the liveSession store.
+ * The session is marked with historicalDate to distinguish it from today's workout.
+ *
+ * @param schedule - The active schedule
+ * @param date - The historical date (ISO format "2026-01-15")
+ * @param historyRows - Deduplicated history rows for this workout
+ */
+export function loadHistoricalSession(
+  schedule: StoredSchedule,
+  date: string,
+  historyRows: HistoryRow[]
+): void {
+  if (!historyRows || historyRows.length === 0) {
+    return;
+  }
+
+  // Derive weekNumber and dayNumber from history rows
+  const firstRow = historyRows[0];
+  const weekNumber = firstRow.week_number;
+  let dayNumber = firstRow.day_number;
+
+  // Convert to per-week template key if necessary
+  // Old data might have stored global day numbers (4, 5, 6 for week 2)
+  // but schedule.days uses per-week keys ("1", "2", "3")
+  if (dayNumber > schedule.daysPerWeek) {
+    dayNumber = ((dayNumber - 1) % schedule.daysPerWeek) + 1;
+  }
+
+  // Fallback: if day still not found (e.g., schedule was regenerated with different days),
+  // try to find a matching day by exercise names
+  if (!schedule.days[dayNumber.toString()]) {
+    const historyExerciseNames = new Set(historyRows.map(r => r.exercise_name));
+    let bestMatch = { dayKey: '1', matchCount: 0 };
+
+    for (const [dayKey, day] of Object.entries(schedule.days)) {
+      const dayExerciseNames = new Set(day.exercises.map(e => e.name));
+      const matchCount = [...historyExerciseNames].filter(name => dayExerciseNames.has(name)).length;
+      if (matchCount > bestMatch.matchCount) {
+        bestMatch = { dayKey, matchCount };
+      }
+    }
+
+    dayNumber = parseInt(bestMatch.dayKey);
+    console.warn(`Day number conversion fallback: using day ${dayNumber} based on exercise name matching`);
+  }
+
+  // Reconstruct session with historical date marker
+  const session = reconstructSessionFromHistory(
+    schedule,
+    weekNumber,
+    dayNumber,
+    historyRows,
+    date
+  );
+
+  // Set the session
+  liveSession.set(session);
 }

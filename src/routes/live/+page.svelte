@@ -36,7 +36,10 @@
 		getTodaysHistoryForWorkout,
 		getCompletedSessions,
 		getHistoryForSession,
-		type WorkoutSession
+		getSessionRowsForDeletion,
+		deleteSession,
+		type WorkoutSession,
+		type HistoryRow
 	} from '$lib/stores/history';
 	import { updateCacheForExercise } from '$lib/stores/oneRMCache';
 	import {
@@ -55,6 +58,7 @@
 	import ExerciseInfoModal from '$lib/components/live/ExerciseInfoModal.svelte';
 	import SetReviewModal from '$lib/components/live/SetReviewModal.svelte';
 	import WorkoutHistoryList from '$lib/components/live/WorkoutHistoryList.svelte';
+	import DeleteSessionModal from '$lib/components/live/DeleteSessionModal.svelte';
 	import type { ExerciseLog } from '$lib/engine/types';
 
 	let timerEngine: TimerEngine;
@@ -83,6 +87,11 @@
 	let reviewExerciseIndex: number | null = null;
 	let reviewExistingLog: ExerciseLog | null = null;
 	let reviewSubExerciseLogs: Map<string, ExerciseLog> = new Map();
+
+	// Delete session modal state
+	let showDeleteModal = false;
+	let deleteSessionTarget: WorkoutSession | null = null;
+	let deleteSessionRows: HistoryRow[] = [];
 
 	// Build exercise logs map for ExerciseList
 	$: exerciseLogs = buildExerciseLogsMap($liveSession);
@@ -387,6 +396,49 @@
 		loadHistoricalSession($activeSchedule, session.date, historyRows);
 		isHistoryReviewMode = true;
 		noScheduleMessage = '';
+	}
+
+	// Handle delete click on a session in the history list
+	function handleDeleteSessionClick(event: CustomEvent<WorkoutSession>) {
+		const session = event.detail;
+
+		// Get all rows that would be deleted for the preview
+		const rows = getSessionRowsForDeletion(
+			session.date,
+			session.workoutProgramId,
+			session.weekNumber,
+			session.dayNumber
+		);
+
+		deleteSessionTarget = session;
+		deleteSessionRows = rows;
+		showDeleteModal = true;
+	}
+
+	// Handle confirming session deletion
+	function handleDeleteSessionConfirm() {
+		if (!deleteSessionTarget) return;
+
+		deleteSession(
+			deleteSessionTarget.date,
+			deleteSessionTarget.workoutProgramId,
+			deleteSessionTarget.weekNumber,
+			deleteSessionTarget.dayNumber
+		);
+
+		// Close modal and clear state
+		showDeleteModal = false;
+		deleteSessionTarget = null;
+		deleteSessionRows = [];
+
+		// Note: historySessions will auto-update due to reactive statement
+	}
+
+	// Handle canceling session deletion
+	function handleDeleteSessionCancel() {
+		showDeleteModal = false;
+		deleteSessionTarget = null;
+		deleteSessionRows = [];
 	}
 
 	/**
@@ -784,6 +836,7 @@
 				<WorkoutHistoryList
 					sessions={historySessions}
 					on:sessionClick={handleHistoricalSessionClick}
+					on:deleteClick={handleDeleteSessionClick}
 				/>
 			</div>
 		{:else}
@@ -847,3 +900,12 @@
 		on:close={handleReviewClose}
 	/>
 {/if}
+
+<!-- Delete Session Confirmation Modal -->
+<DeleteSessionModal
+	isOpen={showDeleteModal}
+	session={deleteSessionTarget}
+	rowsToDelete={deleteSessionRows}
+	on:confirm={handleDeleteSessionConfirm}
+	on:cancel={handleDeleteSessionCancel}
+/>

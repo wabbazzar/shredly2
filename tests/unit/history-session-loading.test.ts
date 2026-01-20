@@ -15,6 +15,8 @@ import {
   logSessionToHistory,
   getCompletedSessions,
   getHistoryForSession,
+  getSessionRowsForDeletion,
+  deleteSession,
   getTodaysHistoryForWorkout,
   type HistoryRow
 } from '$lib/stores/history';
@@ -322,6 +324,109 @@ describe('History Session Loading', () => {
       expect(allRows).not.toBeNull();
       // Should have at least some rows
       expect(allRows!.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('getSessionRowsForDeletion', () => {
+    it('should return empty array when no matching rows exist', () => {
+      const rows = getSessionRowsForDeletion('2026-01-15', 'test-schedule-123', 1, 1);
+      expect(rows).toEqual([]);
+    });
+
+    it('should return all rows for a session (not deduplicated)', () => {
+      const logs = createExerciseLogs();
+
+      // Log the same session twice (simulating re-saves)
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-15');
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-15');
+
+      const rows = getSessionRowsForDeletion('2026-01-15', 'test-schedule-123', 1, 1);
+
+      // Should return ALL rows, including duplicates (6 = 3 sets * 2 logs)
+      expect(rows.length).toBe(6);
+    });
+
+    it('should only return rows matching exact week/day', () => {
+      const logs = createExerciseLogs();
+
+      // Log sessions for different week/day combinations
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-18');
+      logSessionToHistory('test-schedule-123', 2, 1, logs, '2026-01-18');
+
+      // Get rows only for week 1 day 1
+      const week1Rows = getSessionRowsForDeletion('2026-01-18', 'test-schedule-123', 1, 1);
+      const week2Rows = getSessionRowsForDeletion('2026-01-18', 'test-schedule-123', 2, 1);
+
+      // Each should only return rows for that specific week
+      expect(week1Rows.every(r => r.week_number === 1)).toBe(true);
+      expect(week2Rows.every(r => r.week_number === 2)).toBe(true);
+    });
+  });
+
+  describe('deleteSession', () => {
+    it('should return 0 when no matching rows exist', () => {
+      const deletedCount = deleteSession('2026-01-15', 'test-schedule-123', 1, 1);
+      expect(deletedCount).toBe(0);
+    });
+
+    it('should delete all rows for a session and return count', () => {
+      const logs = createExerciseLogs();
+
+      // Log a session
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-15');
+
+      // Verify rows exist
+      const before = getSessionRowsForDeletion('2026-01-15', 'test-schedule-123', 1, 1);
+      expect(before.length).toBe(3);
+
+      // Delete the session
+      const deletedCount = deleteSession('2026-01-15', 'test-schedule-123', 1, 1);
+
+      // Should return number of deleted rows
+      expect(deletedCount).toBe(3);
+
+      // Verify rows are gone
+      const after = getSessionRowsForDeletion('2026-01-15', 'test-schedule-123', 1, 1);
+      expect(after.length).toBe(0);
+    });
+
+    it('should remove session from getCompletedSessions after deletion', () => {
+      const logs = createExerciseLogs();
+
+      // Log two sessions
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-15');
+      logSessionToHistory('test-schedule-123', 1, 2, logs, '2026-01-16');
+
+      // Verify both sessions exist
+      const beforeSessions = getCompletedSessions();
+      expect(beforeSessions.length).toBe(2);
+
+      // Delete one session
+      deleteSession('2026-01-15', 'test-schedule-123', 1, 1);
+
+      // Verify only one session remains
+      const afterSessions = getCompletedSessions();
+      expect(afterSessions.length).toBe(1);
+      expect(afterSessions[0].date).toBe('2026-01-16');
+    });
+
+    it('should only delete rows matching exact week/day', () => {
+      const logs = createExerciseLogs();
+
+      // Log sessions for different week/day combinations on same date
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-18');
+      logSessionToHistory('test-schedule-123', 2, 1, logs, '2026-01-18');
+
+      // Delete only week 1
+      deleteSession('2026-01-18', 'test-schedule-123', 1, 1);
+
+      // Week 2 should still exist
+      const week2Rows = getSessionRowsForDeletion('2026-01-18', 'test-schedule-123', 2, 1);
+      expect(week2Rows.length).toBe(3);
+
+      // Week 1 should be gone
+      const week1Rows = getSessionRowsForDeletion('2026-01-18', 'test-schedule-123', 1, 1);
+      expect(week1Rows.length).toBe(0);
     });
   });
 

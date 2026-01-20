@@ -911,3 +911,65 @@ export function getHistoryForSession(
 
   return Array.from(latestByKey.values());
 }
+
+/**
+ * Get ALL history rows for a session (not deduplicated) - for deletion preview
+ *
+ * This returns every row that would be deleted, including duplicates from re-logging.
+ *
+ * @param date ISO date string "2026-01-15"
+ * @param workoutProgramId The schedule/program ID
+ * @param weekNumber Week number (1-indexed)
+ * @param dayNumber Day number (1-indexed)
+ */
+export function getSessionRowsForDeletion(
+  date: string,
+  workoutProgramId: string,
+  weekNumber: number,
+  dayNumber: number
+): HistoryRow[] {
+  const history = get(exerciseHistory);
+
+  return history.filter(r =>
+    r.date === date &&
+    r.workout_program_id === workoutProgramId &&
+    r.week_number === weekNumber &&
+    r.day_number === dayNumber
+  );
+}
+
+/**
+ * Delete a workout session from history
+ *
+ * Removes ALL rows matching the date/program/week/day combination.
+ * This is a destructive operation - the data cannot be recovered.
+ *
+ * @param date ISO date string "2026-01-15"
+ * @param workoutProgramId The schedule/program ID
+ * @param weekNumber Week number (1-indexed)
+ * @param dayNumber Day number (1-indexed)
+ * @returns Number of rows deleted
+ */
+export function deleteSession(
+  date: string,
+  workoutProgramId: string,
+  weekNumber: number,
+  dayNumber: number
+): number {
+  const history = get(exerciseHistory);
+
+  const rowsToKeep = history.filter(r =>
+    !(r.date === date &&
+      r.workout_program_id === workoutProgramId &&
+      r.week_number === weekNumber &&
+      r.day_number === dayNumber)
+  );
+
+  const deletedCount = history.length - rowsToKeep.length;
+
+  if (deletedCount > 0) {
+    exerciseHistory.set(rowsToKeep);
+  }
+
+  return deletedCount;
+}

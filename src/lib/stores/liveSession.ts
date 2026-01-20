@@ -847,6 +847,93 @@ export function advanceToNextSet(): boolean {
 }
 
 /**
+ * Go back to previous exercise
+ * Resets the current exercise state and moves to the previous one
+ * Returns true if successful
+ */
+export function goToPreviousExercise(): boolean {
+  let moved = false;
+
+  liveSession.update(session => {
+    if (!session) return session;
+    if (session.currentExerciseIndex <= 0) return session;
+
+    // Move to previous exercise
+    const prevIndex = session.currentExerciseIndex - 1;
+    const exercises = [...session.exercises];
+
+    // Reset current exercise state
+    if (exercises[session.currentExerciseIndex]) {
+      exercises[session.currentExerciseIndex] = {
+        ...exercises[session.currentExerciseIndex],
+        completed: false,
+        completedSets: 0,
+        skipped: false
+      };
+    }
+
+    // Reset previous exercise state if it was completed
+    if (exercises[prevIndex]) {
+      exercises[prevIndex] = {
+        ...exercises[prevIndex],
+        completed: false,
+        completedSets: 0,
+        skipped: false
+      };
+    }
+
+    moved = true;
+    return {
+      ...session,
+      exercises,
+      currentExerciseIndex: prevIndex,
+      timerState: createInitialTimerState()
+    };
+  });
+
+  return moved;
+}
+
+/**
+ * Rewind to previous set within current exercise
+ * Decrements completedSets and returns true if successful
+ */
+export function rewindToPreviousSet(): boolean {
+  let rewound = false;
+
+  liveSession.update(session => {
+    if (!session) return session;
+
+    const exercises = [...session.exercises];
+    const current = exercises[session.currentExerciseIndex];
+
+    if (current && current.completedSets > 0) {
+      exercises[session.currentExerciseIndex] = {
+        ...current,
+        completedSets: current.completedSets - 1,
+        completed: false  // Unmark as complete if rewinding
+      };
+
+      // Also remove the last logged set for this exercise
+      const logs = [...session.logs];
+      const exerciseLogIndex = logs.findIndex(
+        l => l.exerciseName === current.exerciseName && l.exerciseOrder === session.currentExerciseIndex
+      );
+      if (exerciseLogIndex >= 0 && logs[exerciseLogIndex].sets.length > 0) {
+        logs[exerciseLogIndex].sets.pop();
+      }
+
+      rewound = true;
+      return { ...session, exercises, logs };
+    }
+
+    return session;
+  });
+
+  return rewound;
+}
+
+/**
  * Skip forward to a specific exercise
  * Marks all exercises between current and target as skipped (incomplete data)
  * Returns true if skip was successful
@@ -1282,13 +1369,20 @@ export function updateExerciseLogs(
     // Update exercise state
     const exercises = [...session.exercises];
     const completedSets = sets.filter(s => s.completed).length;
+    // For compound blocks (EMOM/AMRAP/Circuit/Interval), data was logged if:
+    // - totalRounds is provided (AMRAP)
+    // - totalTime is provided (Circuit)
+    // - Any completed sets exist (EMOM/Interval log a single SetLog with reps)
+    const hasCompoundData = totalRounds !== undefined ||
+                            totalTime !== undefined ||
+                            (exercise.isCompoundParent && completedSets > 0);
     exercises[exerciseIndex] = {
       ...exercise,
       completedSets,
-      // Clear skipped flag if any data was logged
-      skipped: sets.length > 0 ? false : exercise.skipped,
-      // Mark as completed if all sets are done
-      completed: completedSets >= exercise.prescription.sets || exercise.completed
+      // Clear skipped flag if any data was logged (sets for regular, compound data for compound blocks)
+      skipped: (sets.length > 0 || hasCompoundData) ? false : exercise.skipped,
+      // Mark as completed if all sets are done OR compound block has data
+      completed: completedSets >= exercise.prescription.sets || exercise.completed || hasCompoundData
     };
 
     return { ...session, logs, exercises };
@@ -1376,9 +1470,14 @@ function markExercisesFromLogs(
     if (exercise) {
       const completedSets = log.sets.filter(s => s.completed).length;
       exercise.completedSets = completedSets;
-      exercise.completed = completedSets >= exercise.prescription.sets ||
-        log.totalRounds !== undefined ||
-        log.totalTime !== undefined;
+      // For compound blocks (EMOM/AMRAP/Circuit/Interval), mark completed if:
+      // - totalRounds is provided (AMRAP)
+      // - totalTime is provided (Circuit)
+      // - Any completed sets exist (EMOM/Interval log a single SetLog with reps)
+      const hasCompoundData = log.totalRounds !== undefined ||
+                              log.totalTime !== undefined ||
+                              (exercise.isCompoundParent && completedSets > 0);
+      exercise.completed = completedSets >= exercise.prescription.sets || hasCompoundData;
       exercise.skipped = false;
     }
   }

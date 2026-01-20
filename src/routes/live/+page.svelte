@@ -25,7 +25,9 @@
 		updateExerciseLogs,
 		logSubExerciseWeights,
 		reconstructSessionFromHistory,
-		loadHistoricalSession
+		loadHistoricalSession,
+		goToPreviousExercise,
+		rewindToPreviousSet
 	} from '$lib/stores/liveSession';
 	import { activeSchedule } from '$lib/stores/schedule';
 	import {
@@ -61,7 +63,6 @@
 
 	// Local reactive state
 	let timerState = createInitialTimerState();
-	let showStartPrompt = false;
 	let noScheduleMessage = '';
 	let isReady = false; // Defers heavy work until after first paint
 	let isHistoryReviewMode = false; // True when showing previously logged workout
@@ -132,9 +133,8 @@
 							);
 							liveSession.set(reconstructedSession);
 							isHistoryReviewMode = true;
-						} else {
-							showStartPrompt = true;
 						}
+						// else: fall through to show "Start Today's Workout" button
 					} else {
 						noScheduleMessage = 'No workout scheduled for today';
 					}
@@ -229,7 +229,6 @@
 		if (!todaysWorkout) return;
 
 		startWorkout($activeSchedule, todaysWorkout.weekNumber, todaysWorkout.dayNumber, todaysWorkout.day);
-		showStartPrompt = false;
 
 		// Initialize timer for first exercise
 		if ($currentExercise) {
@@ -273,6 +272,36 @@
 		}
 	}
 
+	// Rewind to previous set
+	function handleRewindSet() {
+		// Stop the timer
+		timerEngine.stop();
+
+		// Rewind the session
+		const rewound = rewindToPreviousSet();
+
+		if (rewound && $currentExercise) {
+			// Re-initialize timer for current exercise
+			timerEngine.initializeForExercise($currentExercise);
+			timerState = timerEngine.getState();
+		}
+	}
+
+	// Rewind to previous exercise block
+	function handleRewindBlock() {
+		// Stop the timer
+		timerEngine.stop();
+
+		// Go to previous exercise
+		const moved = goToPreviousExercise();
+
+		if (moved && $currentExercise) {
+			// Initialize timer for the previous exercise
+			timerEngine.initializeForExercise($currentExercise);
+			timerState = timerEngine.getState();
+		}
+	}
+
 	function handleStop() {
 		timerEngine.stop();
 		const result = endWorkout();
@@ -307,35 +336,31 @@
 	// Start a new workout (clears completed session first)
 	function handleStartNewWorkout() {
 		clearSession();
-		showStartPrompt = false;
 		isHistoryReviewMode = false;
+		noScheduleMessage = '';
 
 		// Check if there's a workout for today
 		if ($activeSchedule) {
 			const todaysWorkout = getTodaysWorkout($activeSchedule);
-			if (todaysWorkout) {
-				showStartPrompt = true;
-			} else {
+			if (!todaysWorkout) {
 				noScheduleMessage = 'No workout scheduled for today';
 			}
 		}
 	}
 
-	// Done with workout - clear session and return to start prompt
+	// Done with workout - clear session and return to history list
 	function handleDone() {
 		clearSession();
 		isHistoryReviewMode = false;
+		noScheduleMessage = '';
 
-		// Go back to start prompt if there's a workout for today
+		// Set message if no workout scheduled for today
 		if ($activeSchedule) {
 			const todaysWorkout = getTodaysWorkout($activeSchedule);
-			if (todaysWorkout) {
-				showStartPrompt = true;
-				noScheduleMessage = '';
-				return;
+			if (!todaysWorkout) {
+				noScheduleMessage = 'No workout scheduled for today';
 			}
 		}
-		noScheduleMessage = 'No workout scheduled for today';
 	}
 
 	// Handle clicking on a historical session in the history list
@@ -355,7 +380,6 @@
 
 		loadHistoricalSession($activeSchedule, session.date, historyRows);
 		isHistoryReviewMode = true;
-		showStartPrompt = false;
 		noScheduleMessage = '';
 	}
 
@@ -579,6 +603,14 @@
 	$: hasNextExercise = $liveSession
 		? $liveSession.currentExerciseIndex < $liveSession.exercises.length - 1
 		: false;
+
+	// Check if there's a previous exercise
+	$: hasPreviousExercise = $liveSession
+		? $liveSession.currentExerciseIndex > 0
+		: false;
+
+	// Get current set number from timer state
+	$: currentSet = timerState?.currentSet ?? 1;
 </script>
 
 {#if $hasActiveSession && $liveSession}
@@ -625,7 +657,7 @@
 								class="px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-medium rounded-lg transition-colors"
 								on:click={handleStartNewWorkout}
 							>
-								Start New Workout
+								Submit
 							</button>
 						{:else}
 							<button
@@ -664,11 +696,15 @@
 						<TimerControls
 							phase={timerState.phase}
 							{hasNextExercise}
+							{hasPreviousExercise}
+							{currentSet}
 							on:start={handleStart}
 							on:pause={handlePause}
 							on:resume={handleResume}
 							on:skip={handleSkip}
 							on:stop={handleStop}
+							on:rewindSet={handleRewindSet}
+							on:rewindBlock={handleRewindBlock}
 						/>
 					</div>
 				</div>
@@ -696,57 +732,6 @@
 				/>
 			</div>
 		{/if}
-	</div>
-
-{:else if showStartPrompt}
-	<!-- Start workout prompt - calc height accounts for nav bar -->
-	<div class="flex flex-col items-center justify-center bg-slate-900 p-6" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
-		<svg
-			class="w-20 h-20 mb-6 text-green-400"
-			fill="none"
-			stroke="currentColor"
-			viewBox="0 0 24 24"
-		>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="1.5"
-				d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-			/>
-			<path
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				stroke-width="1.5"
-				d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-			/>
-		</svg>
-
-		<h1 class="text-2xl font-bold text-white mb-2">Ready to Workout?</h1>
-
-		{#if $activeSchedule}
-			{@const todaysWorkout = getTodaysWorkout($activeSchedule)}
-			{#if todaysWorkout}
-				<p class="text-slate-400 text-center mb-6">
-					Today's workout: <span class="text-white">{todaysWorkout.day.focus}</span>
-					<br />
-					<span class="text-sm">{todaysWorkout.day.exercises.length} exercises</span>
-				</p>
-			{/if}
-		{/if}
-
-		<button
-			class="px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-full text-lg transition-colors"
-			on:click={handleStartTodaysWorkout}
-		>
-			Start Workout
-		</button>
-
-		<button
-			class="mt-4 text-slate-400 hover:text-white transition-colors"
-			on:click={() => (showStartPrompt = false)}
-		>
-			Not now
-		</button>
 	</div>
 
 {:else}

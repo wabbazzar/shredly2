@@ -30,7 +30,10 @@ import {
   getSessionDuration,
   updateAudioConfig,
   getTodaysWorkout,
-  getWorkoutForDay
+  getWorkoutForDay,
+  updateExerciseLogs,
+  goToPreviousExercise,
+  rewindToPreviousSet
 } from '../../src/lib/stores/liveSession';
 import type { StoredSchedule, ParameterizedDay, ParameterizedExercise } from '../../src/lib/types/schedule';
 import type { SetLog } from '../../src/lib/engine/types';
@@ -160,6 +163,82 @@ function createMockEMOMExercise(): ParameterizedExercise {
         week2: { sets: 1, reps: 10 },
         week3: { sets: 1, reps: 10 }
       }
+    ]
+  };
+}
+
+function createMockCircuitExercise(): ParameterizedExercise {
+  return {
+    name: 'Circuit Block',
+    category: 'circuit',
+    week1: {
+      sets: 1,
+      block_time_minutes: 10
+    },
+    week2: {
+      sets: 1,
+      block_time_minutes: 12
+    },
+    week3: {
+      sets: 1,
+      block_time_minutes: 15
+    },
+    sub_exercises: [
+      {
+        name: 'Jump Squats',
+        week1: { sets: 1, reps: 15 },
+        week2: { sets: 1, reps: 18 },
+        week3: { sets: 1, reps: 20 }
+      },
+      {
+        name: 'Mountain Climbers',
+        week1: { sets: 1, reps: 20 },
+        week2: { sets: 1, reps: 25 },
+        week3: { sets: 1, reps: 30 }
+      }
+    ]
+  };
+}
+
+function createMockIntervalExercise(): ParameterizedExercise {
+  return {
+    name: 'Interval Block',
+    category: 'interval',
+    week1: {
+      sets: 4,
+      work_time_seconds: 30,
+      rest_time_seconds: 30
+    },
+    week2: {
+      sets: 5,
+      work_time_seconds: 35,
+      rest_time_seconds: 25
+    },
+    week3: {
+      sets: 6,
+      work_time_seconds: 40,
+      rest_time_seconds: 20
+    },
+    sub_exercises: [
+      {
+        name: 'Sprint',
+        week1: { sets: 1, work_time_seconds: 30, rest_time_seconds: 30 },
+        week2: { sets: 1, work_time_seconds: 35, rest_time_seconds: 25 },
+        week3: { sets: 1, work_time_seconds: 40, rest_time_seconds: 20 }
+      }
+    ]
+  };
+}
+
+function createDayWithCompoundBlocks(): ParameterizedDay {
+  return {
+    dayNumber: 1,
+    type: 'gym',
+    focus: 'Conditioning',
+    exercises: [
+      createMockExercise('Deadlift', 3, 5, 120),
+      createMockCircuitExercise(),
+      createMockIntervalExercise()
     ]
   };
 }
@@ -691,5 +770,347 @@ describe('getWorkoutForDay', () => {
     // dayNumber is the per-week day (1, 2, 3), not a global index
     // Week context is provided separately via weekNumber parameter
     expect(result!.dayNumber).toBe(1);
+  });
+});
+
+describe('updateExerciseLogs', () => {
+  it('should mark Circuit exercise as completed when totalTime is provided', () => {
+    const schedule = createMockSchedule();
+    schedule.days['1'] = createDayWithCompoundBlocks();
+
+    startWorkout(schedule, 1, 1, schedule.days['1']);
+
+    // Circuit exercise is at index 1
+    const circuitIndex = 1;
+    const session = get(liveSession);
+    expect(session!.exercises[circuitIndex].exerciseName).toBe('Circuit Block');
+    expect(session!.exercises[circuitIndex].completed).toBe(false);
+
+    // Log Circuit with totalTime (empty sets array)
+    updateExerciseLogs(circuitIndex, [], undefined, 600); // 10 minutes
+
+    // Should be marked as completed
+    const updatedSession = get(liveSession);
+    expect(updatedSession!.exercises[circuitIndex].completed).toBe(true);
+    expect(updatedSession!.exercises[circuitIndex].skipped).toBe(false);
+  });
+
+  it('should mark Interval exercise as completed when totalTime is provided', () => {
+    const schedule = createMockSchedule();
+    schedule.days['1'] = createDayWithCompoundBlocks();
+
+    startWorkout(schedule, 1, 1, schedule.days['1']);
+
+    // Interval exercise is at index 2
+    const intervalIndex = 2;
+    const session = get(liveSession);
+    expect(session!.exercises[intervalIndex].exerciseName).toBe('Interval Block');
+    expect(session!.exercises[intervalIndex].completed).toBe(false);
+
+    // Log Interval with totalTime (empty sets array)
+    updateExerciseLogs(intervalIndex, [], undefined, 480); // 8 minutes
+
+    // Should be marked as completed
+    const updatedSession = get(liveSession);
+    expect(updatedSession!.exercises[intervalIndex].completed).toBe(true);
+    expect(updatedSession!.exercises[intervalIndex].skipped).toBe(false);
+  });
+
+  it('should mark AMRAP exercise as completed when totalRounds is provided', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    // EMOM exercise is at index 2 (using as proxy for AMRAP since structure is similar)
+    const emomIndex = 2;
+
+    // Log with totalRounds (empty sets array)
+    updateExerciseLogs(emomIndex, [], 5.5, undefined);
+
+    // Should be marked as completed
+    const updatedSession = get(liveSession);
+    expect(updatedSession!.exercises[emomIndex].completed).toBe(true);
+    expect(updatedSession!.exercises[emomIndex].skipped).toBe(false);
+  });
+
+  it('should clear skipped flag when totalTime is provided', () => {
+    const schedule = createMockSchedule();
+    schedule.days['1'] = createDayWithCompoundBlocks();
+
+    startWorkout(schedule, 1, 1, schedule.days['1']);
+
+    // First mark the Circuit exercise as skipped
+    const circuitIndex = 1;
+    liveSession.update(session => {
+      if (!session) return session;
+      const exercises = [...session.exercises];
+      exercises[circuitIndex] = {
+        ...exercises[circuitIndex],
+        skipped: true
+      };
+      return { ...session, exercises };
+    });
+
+    // Verify it's skipped
+    let session = get(liveSession);
+    expect(session!.exercises[circuitIndex].skipped).toBe(true);
+
+    // Now update with totalTime
+    updateExerciseLogs(circuitIndex, [], undefined, 600);
+
+    // Skipped flag should be cleared
+    session = get(liveSession);
+    expect(session!.exercises[circuitIndex].skipped).toBe(false);
+    expect(session!.exercises[circuitIndex].completed).toBe(true);
+  });
+
+  it('should still mark regular exercise as completed based on sets', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    // Log all sets for first exercise (Bench Press with 4 sets)
+    const sets: SetLog[] = [
+      { setNumber: 1, reps: 8, weight: 135, weightUnit: 'lbs', workTime: null, rpe: null, rir: null, completed: true, notes: null, timestamp: new Date().toISOString() },
+      { setNumber: 2, reps: 8, weight: 135, weightUnit: 'lbs', workTime: null, rpe: null, rir: null, completed: true, notes: null, timestamp: new Date().toISOString() },
+      { setNumber: 3, reps: 8, weight: 135, weightUnit: 'lbs', workTime: null, rpe: null, rir: null, completed: true, notes: null, timestamp: new Date().toISOString() },
+      { setNumber: 4, reps: 8, weight: 135, weightUnit: 'lbs', workTime: null, rpe: null, rir: null, completed: true, notes: null, timestamp: new Date().toISOString() }
+    ];
+
+    updateExerciseLogs(0, sets);
+
+    const session = get(liveSession);
+    expect(session!.exercises[0].completed).toBe(true);
+    expect(session!.exercises[0].completedSets).toBe(4);
+  });
+
+  it('should mark EMOM compound block as completed when sets have completed=true', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    // EMOM exercise is at index 2 (isCompoundParent=true, prescription.sets=1)
+    const emomIndex = 2;
+    const session = get(liveSession);
+    expect(session!.exercises[emomIndex].isCompoundParent).toBe(true);
+    expect(session!.exercises[emomIndex].completed).toBe(false);
+
+    // Log with a single SetLog with completed=true (how EMOM/Interval are logged)
+    const sets: SetLog[] = [
+      { setNumber: 1, reps: 10, weight: null, weightUnit: null, workTime: null, rpe: 8, rir: null, completed: true, notes: null, timestamp: new Date().toISOString() }
+    ];
+
+    // No totalRounds or totalTime - just the sets array
+    updateExerciseLogs(emomIndex, sets, undefined, undefined);
+
+    // Should be marked as completed because it's a compound parent with completed sets
+    const updatedSession = get(liveSession);
+    expect(updatedSession!.exercises[emomIndex].completed).toBe(true);
+    expect(updatedSession!.exercises[emomIndex].skipped).toBe(false);
+  });
+
+  it('should mark Interval compound block as completed when sets have completed=true', () => {
+    const schedule = createMockSchedule();
+    schedule.days['1'] = createDayWithCompoundBlocks();
+
+    startWorkout(schedule, 1, 1, schedule.days['1']);
+
+    // Interval exercise is at index 2 (isCompoundParent=true, but prescription.sets=4)
+    const intervalIndex = 2;
+    const session = get(liveSession);
+    expect(session!.exercises[intervalIndex].exerciseName).toBe('Interval Block');
+    expect(session!.exercises[intervalIndex].isCompoundParent).toBe(true);
+    expect(session!.exercises[intervalIndex].prescription.sets).toBe(4); // 4 work/rest cycles
+    expect(session!.exercises[intervalIndex].completed).toBe(false);
+
+    // Log with a single SetLog (how Interval is logged via SetReviewModal)
+    const sets: SetLog[] = [
+      { setNumber: 1, reps: 10, weight: null, weightUnit: null, workTime: null, rpe: 8, rir: null, completed: true, notes: null, timestamp: new Date().toISOString() }
+    ];
+
+    // No totalRounds or totalTime - just the sets array
+    updateExerciseLogs(intervalIndex, sets, undefined, undefined);
+
+    // Should be marked as completed even though completedSets(1) < prescription.sets(4)
+    // because it's a compound parent with any completed sets
+    const updatedSession = get(liveSession);
+    expect(updatedSession!.exercises[intervalIndex].completed).toBe(true);
+    expect(updatedSession!.exercises[intervalIndex].skipped).toBe(false);
+  });
+});
+
+describe('goToPreviousExercise', () => {
+  it('should return false when at first exercise', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    expect(get(liveSession)!.currentExerciseIndex).toBe(0);
+
+    const moved = goToPreviousExercise();
+
+    expect(moved).toBe(false);
+    expect(get(liveSession)!.currentExerciseIndex).toBe(0);
+  });
+
+  it('should move to previous exercise', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+    advanceToNextExercise();
+
+    expect(get(liveSession)!.currentExerciseIndex).toBe(1);
+
+    const moved = goToPreviousExercise();
+
+    expect(moved).toBe(true);
+    expect(get(liveSession)!.currentExerciseIndex).toBe(0);
+  });
+
+  it('should reset both current and previous exercise states', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    // Complete some sets and advance
+    advanceToNextSet();
+    advanceToNextSet();
+    advanceToNextExercise();
+
+    // Verify first exercise was marked completed
+    expect(get(liveSession)!.exercises[0].completed).toBe(true);
+
+    // Go back to previous exercise
+    goToPreviousExercise();
+
+    // Both exercises should be reset
+    const session = get(liveSession);
+    expect(session!.exercises[0].completed).toBe(false);
+    expect(session!.exercises[0].completedSets).toBe(0);
+    expect(session!.exercises[1].completed).toBe(false);
+    expect(session!.exercises[1].completedSets).toBe(0);
+  });
+
+  it('should return false when no active session', () => {
+    expect(goToPreviousExercise()).toBe(false);
+  });
+});
+
+describe('rewindToPreviousSet', () => {
+  it('should return false when no sets completed', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    expect(get(liveSession)!.exercises[0].completedSets).toBe(0);
+
+    const rewound = rewindToPreviousSet();
+
+    expect(rewound).toBe(false);
+    expect(get(liveSession)!.exercises[0].completedSets).toBe(0);
+  });
+
+  it('should decrement completedSets', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    // Complete 2 sets
+    advanceToNextSet();
+    advanceToNextSet();
+
+    expect(get(liveSession)!.exercises[0].completedSets).toBe(2);
+
+    const rewound = rewindToPreviousSet();
+
+    expect(rewound).toBe(true);
+    expect(get(liveSession)!.exercises[0].completedSets).toBe(1);
+  });
+
+  it('should unmark exercise as completed when rewinding', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    // Complete all 4 sets of first exercise (Bench Press)
+    advanceToNextSet();
+    advanceToNextSet();
+    advanceToNextSet();
+    advanceToNextSet();
+
+    // Manually mark as completed
+    liveSession.update(session => {
+      if (!session) return session;
+      const exercises = [...session.exercises];
+      exercises[0] = { ...exercises[0], completed: true };
+      return { ...session, exercises };
+    });
+
+    expect(get(liveSession)!.exercises[0].completed).toBe(true);
+
+    const rewound = rewindToPreviousSet();
+
+    expect(rewound).toBe(true);
+    expect(get(liveSession)!.exercises[0].completed).toBe(false);
+    expect(get(liveSession)!.exercises[0].completedSets).toBe(3);
+  });
+
+  it('should remove last logged set', () => {
+    const schedule = createMockSchedule();
+    const day = schedule.days['1'];
+
+    startWorkout(schedule, 1, 1, day);
+
+    // Log 2 sets
+    logSet(0, {
+      setNumber: 1,
+      reps: 8,
+      weight: 135,
+      weightUnit: 'lbs',
+      workTime: null,
+      rpe: 7,
+      rir: null,
+      completed: true,
+      notes: null,
+      timestamp: new Date().toISOString()
+    });
+
+    logSet(0, {
+      setNumber: 2,
+      reps: 8,
+      weight: 140,
+      weightUnit: 'lbs',
+      workTime: null,
+      rpe: 8,
+      rir: null,
+      completed: true,
+      notes: null,
+      timestamp: new Date().toISOString()
+    });
+
+    advanceToNextSet();
+    advanceToNextSet();
+
+    expect(get(liveSession)!.logs[0].sets.length).toBe(2);
+
+    const rewound = rewindToPreviousSet();
+
+    expect(rewound).toBe(true);
+    // Last set should be removed from logs
+    expect(get(liveSession)!.logs[0].sets.length).toBe(1);
+    expect(get(liveSession)!.logs[0].sets[0].weight).toBe(135); // First set remains
+  });
+
+  it('should return false when no active session', () => {
+    expect(rewindToPreviousSet()).toBe(false);
   });
 });

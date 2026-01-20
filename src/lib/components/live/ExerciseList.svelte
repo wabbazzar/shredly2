@@ -3,11 +3,16 @@
 	import type { LiveExercise, ExerciseLog } from '$lib/engine/types';
 	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
 	import { getFromCache } from '$lib/stores/oneRMCache';
+	import { calculateWorkoutTimeFromLiveExercises, formatWorkoutTime } from '$lib/utils/workoutTimeEstimate';
 
 	export let exercises: LiveExercise[];
 	export let currentIndex: number;
 	export let currentSubExerciseIndex: number = 0;
 	export let exerciseLogs: Map<number, ExerciseLog> = new Map();
+
+	// Calculate estimated workout time
+	$: estimatedTimeSeconds = calculateWorkoutTimeFromLiveExercises(exercises);
+	$: estimatedTimeDisplay = formatWorkoutTime(estimatedTimeSeconds);
 
 	/**
 	 * Calculate weight from cache at render time (like DayView does)
@@ -256,7 +261,17 @@
 
 <div class="flex flex-col h-full bg-slate-900 overflow-y-auto">
 	<div class="p-3 border-b border-slate-700">
-		<h2 class="text-white/70 text-sm font-medium uppercase tracking-wider">Exercises</h2>
+		<div class="flex items-center justify-between">
+			<h2 class="text-white/70 text-sm font-medium uppercase tracking-wider">Exercises</h2>
+			{#if estimatedTimeSeconds > 0}
+				<span class="text-xs text-indigo-400 font-medium flex items-center gap-1">
+					<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+					{estimatedTimeDisplay}
+				</span>
+			{/if}
+		</div>
 	</div>
 
 	<div class="flex-1 overflow-y-auto pb-8">

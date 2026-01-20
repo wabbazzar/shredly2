@@ -5,6 +5,8 @@
 
 	export let phase: TimerPhase;
 	export let hasNextExercise: boolean = true;
+	export let hasPreviousExercise: boolean = false;
+	export let currentSet: number = 1;
 
 	const dispatch = createEventDispatcher<{
 		start: void;
@@ -12,6 +14,8 @@
 		resume: void;
 		skip: void;
 		stop: void;
+		rewindSet: void;
+		rewindBlock: void;
 	}>();
 
 	$: isPaused = phase === 'paused';
@@ -20,19 +24,50 @@
 	$: isEntry = phase === 'entry';
 	$: isRunning = !isPaused && !isIdle && !isComplete && !isEntry;
 	$: phaseColorHex = getPhaseColor(phase);
+
+	// Can rewind to previous set (set > 1)
+	$: canRewindSet = currentSet > 1 && !isIdle && !isEntry;
+	// Can rewind to previous exercise block
+	$: canRewindBlock = hasPreviousExercise && !isEntry;
 </script>
 
 <div
-	class="flex items-center justify-center gap-3 py-2 px-3"
+	class="flex items-center justify-center gap-2 py-2 px-3"
 >
 	<!-- Stop Button -->
 	<button
-		class="w-11 h-11 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors"
+		class="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors"
 		on:click={() => dispatch('stop')}
 		aria-label="Stop workout"
 	>
-		<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+		<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 			<rect x="6" y="6" width="12" height="12" rx="1" />
+		</svg>
+	</button>
+
+	<!-- Rewind to Previous Block (larger rewind icon) -->
+	<button
+		class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+		on:click={() => dispatch('rewindBlock')}
+		disabled={!canRewindBlock}
+		aria-label="Previous exercise"
+	>
+		<!-- Double backward arrow (skip back to previous block) -->
+		<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+			<path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z" />
+		</svg>
+	</button>
+
+	<!-- Rewind One Set (smaller rewind icon) -->
+	<button
+		class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+		on:click={() => dispatch('rewindSet')}
+		disabled={!canRewindSet}
+		aria-label="Previous set"
+	>
+		<!-- Single backward arrow (rewind one set) -->
+		<svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+			<path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
 		</svg>
 	</button>
 

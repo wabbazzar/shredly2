@@ -7,6 +7,7 @@
 	import { getFromCache } from '$lib/stores/oneRMCache';
 	import { getLastPerformance } from '$lib/stores/history';
 	import { shouldShowWeightField } from '$lib/engine/exercise-metadata';
+	import { calculateWorkoutTimeFromDay, formatWorkoutTime } from '$lib/utils/workoutTimeEstimate';
 	import EditScopeModal from './EditScopeModal.svelte';
 	import ProgressionModal from './ProgressionModal.svelte';
 	import WeightModal from './WeightModal.svelte';
@@ -27,6 +28,10 @@
 
 	// Get day data
 	$: dayData = currentSchedule.days[dayNumber.toString()] as ParameterizedDay | undefined;
+
+	// Calculate estimated workout time
+	$: estimatedTimeSeconds = dayData ? calculateWorkoutTimeFromDay(dayData, weekNumber) : 0;
+	$: estimatedTimeDisplay = formatWorkoutTime(estimatedTimeSeconds);
 
 	// Edit scope memory for this session
 	let rememberedScope: EditScope | null = null;
@@ -952,6 +957,9 @@
 					Week {weekNumber} | Day {dayNumber}
 					{#if dayData}
 						| {dayData.type}
+					{/if}
+					{#if estimatedTimeSeconds > 0}
+						| <span class="text-indigo-400">{estimatedTimeDisplay}</span>
 					{/if}
 				</p>
 			</div>

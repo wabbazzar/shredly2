@@ -12,7 +12,7 @@
  */
 
 import { writable, get } from 'svelte/store';
-import { exerciseHistory, type HistoryRow } from './history';
+import { exerciseHistory, toLocalDateString, type HistoryRow } from './history';
 
 // ============================================================================
 // CONSTANTS
@@ -188,7 +188,7 @@ export function daysBetween(date1: string, date2: string): number {
  */
 export function isStale(lastPerformed: string | null, thresholdDays = STALE_THRESHOLD_DAYS): boolean {
 	if (!lastPerformed) return true;
-	const now = new Date().toISOString().split('T')[0];
+	const now = toLocalDateString(new Date());
 	return daysBetween(lastPerformed, now) > thresholdDays;
 }
 
@@ -237,7 +237,7 @@ export function calculateTimeWeightedAverage(
 
 	const { includeRPEAdjustment = true, recencyHalfLifeDays = RECENCY_HALF_LIFE_DAYS } = options;
 
-	const today = new Date().toISOString().split('T')[0];
+	const today = toLocalDateString(new Date());
 	let weightedSum = 0;
 	let totalWeight = 0;
 
@@ -532,7 +532,7 @@ export function getPRDisplayData(exerciseName: string): ExercisePRDisplay | null
 	// Calculate days since last performed
 	let daysSinceLastPerformed: number | null = null;
 	if (entry.last_performed) {
-		const today = new Date().toISOString().split('T')[0];
+		const today = toLocalDateString(new Date());
 		daysSinceLastPerformed = Math.round(daysBetween(entry.last_performed, today));
 	}
 

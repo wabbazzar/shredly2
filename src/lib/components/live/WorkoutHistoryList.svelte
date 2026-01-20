@@ -22,17 +22,27 @@
 	}
 
 	/**
+	 * Format date to YYYY-MM-DD in local timezone
+	 */
+	function toLocalDateString(date: Date): string {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
+	}
+
+	/**
 	 * Get relative date label
 	 * e.g., "Today", "Yesterday", or formatted date
 	 */
 	function getRelativeDate(dateStr: string): { label: string; isRecent: boolean } {
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
-		const todayStr = today.toISOString().split('T')[0];
+		const todayStr = toLocalDateString(today);
 
 		const yesterday = new Date(today);
 		yesterday.setDate(yesterday.getDate() - 1);
-		const yesterdayStr = yesterday.toISOString().split('T')[0];
+		const yesterdayStr = toLocalDateString(yesterday);
 
 		if (dateStr === todayStr) {
 			return { label: 'Today', isRecent: true };

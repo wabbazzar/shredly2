@@ -7,6 +7,7 @@
 	import type { QuestionnaireAnswers } from '$lib/engine/types';
 	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
 	import QuickCustomize from './QuickCustomize.svelte';
+	import { toLocalDateString } from '$lib/stores/history';
 
 	// Create default day mapping (consecutive days starting Monday)
 	function createDefaultDayMapping(daysPerWeek: number): DayMapping {
@@ -35,14 +36,14 @@
 	} as QuestionnaireAnswers;
 
 	let answers: QuestionnaireAnswers = { ...initialAnswers };
-	let startDate: string = new Date().toISOString().split('T')[0];
+	let startDate: string = toLocalDateString(new Date());
 	let isGenerating = false;
 	let error: string | null = null;
 
 	// Reset state when modal opens/closes and manage swipe
 	$: if (isOpen) {
 		answers = { ...initialAnswers };
-		startDate = new Date().toISOString().split('T')[0];
+		startDate = toLocalDateString(new Date());
 		isGenerating = false;
 		error = null;
 		navigationStore.disableSwipe();

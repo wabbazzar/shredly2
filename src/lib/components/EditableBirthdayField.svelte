@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { calculateAge } from '$lib/types/user';
+	import { toLocalDateString } from '$lib/stores/history';
 
 	export let birthday: string; // ISO date string (YYYY-MM-DD)
 
@@ -14,11 +15,11 @@
 	$: displayAge = calculateAge(birthday);
 
 	// Get max date (today) and min date (130 years ago) for date picker
-	$: maxDate = new Date().toISOString().split('T')[0];
+	$: maxDate = toLocalDateString(new Date());
 	$: minDate = (() => {
 		const d = new Date();
 		d.setFullYear(d.getFullYear() - 130);
-		return d.toISOString().split('T')[0];
+		return toLocalDateString(d);
 	})();
 
 	function startEdit(e?: Event) {

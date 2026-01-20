@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { exerciseHistory, type HistoryRow, clearHistory } from '$lib/stores/history';
+	import { exerciseHistory, type HistoryRow, clearHistory, toLocalDateString } from '$lib/stores/history';
 	import { lbsToKg } from '$lib/types/user';
 
 	interface Props {
@@ -43,7 +43,7 @@
 			const now = new Date();
 			const days = dateFilter === '7d' ? 7 : dateFilter === '30d' ? 30 : 90;
 			const cutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-			const cutoffStr = cutoff.toISOString().split('T')[0];
+			const cutoffStr = toLocalDateString(cutoff);
 			rows = rows.filter(r => r.date >= cutoffStr);
 		}
 

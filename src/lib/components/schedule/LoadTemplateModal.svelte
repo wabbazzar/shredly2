@@ -4,6 +4,7 @@
 	import type { ParameterizedWorkout } from '$lib/engine/types';
 	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
 	import DatePicker from './DatePicker.svelte';
+	import { toLocalDateString } from '$lib/stores/history';
 
 	// Create default day mapping (consecutive days starting Monday)
 	function createDefaultDayMapping(daysPerWeek: number): DayMapping {
@@ -53,7 +54,7 @@
 	];
 
 	let selectedTemplate: (typeof templates)[0] | null = null;
-	let startDate: string = new Date().toISOString().split('T')[0];
+	let startDate: string = toLocalDateString(new Date());
 	let isLoading = false;
 	let error: string | null = null;
 
@@ -64,7 +65,7 @@
 	// Reset when modal opens
 	$: if (isOpen) {
 		selectedTemplate = null;
-		startDate = new Date().toISOString().split('T')[0];
+		startDate = toLocalDateString(new Date());
 		isLoading = false;
 		error = null;
 		importFile = null;
@@ -267,7 +268,7 @@
 						type="date"
 						value={startDate}
 						on:change={(e) => handleStartDateChange(new CustomEvent('change', { detail: e.currentTarget.value }))}
-						min={new Date().toISOString().split('T')[0]}
+						min={toLocalDateString(new Date())}
 						class="w-full max-w-full py-1.5 px-2 text-sm bg-slate-700 border border-slate-600 rounded-md
 							   text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
 					/>

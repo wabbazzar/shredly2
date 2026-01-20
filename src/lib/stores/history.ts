@@ -17,6 +17,17 @@ import type { ExerciseLog, SetLog } from '$lib/engine/types';
 const HISTORY_KEY = 'shredly_exercise_history_v2';
 const isBrowser = typeof window !== 'undefined';
 
+/**
+ * Format date to YYYY-MM-DD in local timezone
+ * Avoids toISOString() which converts to UTC
+ */
+export function toLocalDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 // CSV column headers
 const CSV_HEADERS = [
   'date',
@@ -390,7 +401,7 @@ export function logSetToHistory(
 ): void {
   const now = new Date();
   const row: HistoryRow = {
-    date: now.toISOString().split('T')[0],
+    date: toLocalDateString(now),
     timestamp: now.toISOString(),
     workout_program_id: workoutProgramId,
     week_number: weekNumber,
@@ -434,7 +445,7 @@ export function logSessionToHistory(
   const rows: HistoryRow[] = [];
   const now = new Date();
   // Use override date if provided, otherwise use today
-  const date = overrideDate ?? now.toISOString().split('T')[0];
+  const date = overrideDate ?? toLocalDateString(now);
 
   for (const log of logs) {
     // Log compound parent if applicable
@@ -631,7 +642,7 @@ export function getLastPerformance(exerciseName: string): HistoryRow | null {
 export function getTodaysHistoryForWorkout(
   workoutProgramId: string
 ): HistoryRow[] | null {
-  const today = new Date().toISOString().split('T')[0];
+  const today = toLocalDateString(new Date());
   const history = get(exerciseHistory);
 
   // Filter by date + program_id only - resilient to start date changes

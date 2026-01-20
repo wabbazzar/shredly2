@@ -781,16 +781,19 @@ export interface WorkoutSession {
 /**
  * Get list of completed workout sessions from history
  *
- * Groups history rows by (date, workout_program_id) to be resilient to start date changes.
+ * Groups history rows by (date, workout_program_id, week_number, day_number).
+ * This allows users to repeat weeks (e.g., doing week 1 twice) and log multiple
+ * sessions on the same date without them being incorrectly merged.
  * Only includes sessions with at least 1 completed set.
- * Sorted by date descending (most recent first).
+ * Sorted by date descending (most recent first), then by timestamp for same-day sessions.
  *
  * @param limit Maximum number of sessions to return (default: 50)
  */
 export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
   const history = get(exerciseHistory);
 
-  // Group by (date, workout_program_id)
+  // Group by (date, workout_program_id, week_number, day_number)
+  // This ensures repeated weeks and multiple sessions per day are tracked separately
   const sessionMap = new Map<string, {
     date: string;
     workoutProgramId: string;
@@ -809,7 +812,8 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
     // Only count completed sets
     if (!row.completed) continue;
 
-    const sessionKey = `${row.date}|${row.workout_program_id}`;
+    // Include week and day in session key to prevent merging different week/day combinations
+    const sessionKey = `${row.date}|${row.workout_program_id}|${row.week_number}|${row.day_number}`;
 
     if (!sessionMap.has(sessionKey)) {
       sessionMap.set(sessionKey, {
@@ -852,8 +856,13 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
       earliestTimestamp: s.earliestTimestamp
     }));
 
-  // Sort by date descending (most recent first)
-  sessions.sort((a, b) => b.date.localeCompare(a.date));
+  // Sort by date descending (most recent first), then by timestamp for same-day sessions
+  sessions.sort((a, b) => {
+    const dateCompare = b.date.localeCompare(a.date);
+    if (dateCompare !== 0) return dateCompare;
+    // For same-day sessions, sort by earliest timestamp (most recent first)
+    return b.earliestTimestamp.localeCompare(a.earliestTimestamp);
+  });
 
   // Apply limit
   return sessions.slice(0, limit);
@@ -862,22 +871,30 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
 /**
  * Get history rows for a specific session
  *
- * Queries by date + program_id only - resilient to start date changes.
+ * Queries by date + program_id + week_number + day_number for precise session matching.
  * Returns deduplicated rows (latest per exercise_name + set_number + is_compound_parent).
  *
  * @param date ISO date string "2026-01-15"
  * @param workoutProgramId The schedule/program ID
+ * @param weekNumber Week number (1-indexed)
+ * @param dayNumber Day number (1-indexed)
  */
 export function getHistoryForSession(
   date: string,
-  workoutProgramId: string
+  workoutProgramId: string,
+  weekNumber?: number,
+  dayNumber?: number
 ): HistoryRow[] | null {
   const history = get(exerciseHistory);
 
-  // Filter by date + program_id only - resilient to start date changes
-  const sessionRows = history.filter(
-    r => r.date === date && r.workout_program_id === workoutProgramId
-  );
+  // Filter by date + program_id + week/day for precise session matching
+  // Week/day are optional for backward compatibility but should be provided
+  const sessionRows = history.filter(r => {
+    if (r.date !== date || r.workout_program_id !== workoutProgramId) return false;
+    if (weekNumber !== undefined && r.week_number !== weekNumber) return false;
+    if (dayNumber !== undefined && r.day_number !== dayNumber) return false;
+    return true;
+  });
 
   if (sessionRows.length === 0) return null;
 

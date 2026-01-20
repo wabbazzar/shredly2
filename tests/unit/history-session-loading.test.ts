@@ -186,6 +186,72 @@ describe('History Session Loading', () => {
       expect(sessions[1].date).toBe('2026-01-16');
       expect(sessions[2].date).toBe('2026-01-15');
     });
+
+    it('should NOT merge sessions with different week/day on same date', () => {
+      const logs = createExerciseLogs();
+
+      // User repeats week 1 and also does week 2 on the same day
+      // This can happen when:
+      // 1. User restarts a program (doing week 1 again)
+      // 2. User logs multiple workouts in one day
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-18');
+      logSessionToHistory('test-schedule-123', 2, 1, logs, '2026-01-18');
+
+      const sessions = getCompletedSessions();
+
+      // Should be 2 SEPARATE sessions, not merged into 1
+      expect(sessions.length).toBe(2);
+
+      // Both sessions should be present
+      const week1Session = sessions.find(s => s.weekNumber === 1 && s.dayNumber === 1);
+      const week2Session = sessions.find(s => s.weekNumber === 2 && s.dayNumber === 1);
+      expect(week1Session).toBeDefined();
+      expect(week2Session).toBeDefined();
+
+      // Both should be on the same date
+      expect(week1Session!.date).toBe('2026-01-18');
+      expect(week2Session!.date).toBe('2026-01-18');
+    });
+
+    it('should keep separate sessions when repeating the same week', () => {
+      const logs = createExerciseLogs();
+
+      // User does week 1 day 1 on Monday
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-13');
+
+      // User restarts the program and does week 1 day 1 again on Monday next week
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-20');
+
+      const sessions = getCompletedSessions();
+
+      // Should be 2 sessions (different dates)
+      expect(sessions.length).toBe(2);
+      expect(sessions[0].date).toBe('2026-01-20');
+      expect(sessions[1].date).toBe('2026-01-13');
+    });
+
+    it('should sort same-day sessions by timestamp (most recent first)', () => {
+      // Create logs with specific timestamps
+      const earlierLogs = createExerciseLogs();
+      earlierLogs[0].timestamp = '2026-01-18T08:00:00.000Z';
+      earlierLogs[0].sets[0].timestamp = '2026-01-18T08:00:00.000Z';
+
+      const laterLogs = createExerciseLogs();
+      laterLogs[0].timestamp = '2026-01-18T14:00:00.000Z';
+      laterLogs[0].sets[0].timestamp = '2026-01-18T14:00:00.000Z';
+
+      // Log week 1 in the morning
+      logSessionToHistory('test-schedule-123', 1, 1, earlierLogs, '2026-01-18');
+      // Log week 2 in the afternoon
+      logSessionToHistory('test-schedule-123', 2, 1, laterLogs, '2026-01-18');
+
+      const sessions = getCompletedSessions();
+
+      expect(sessions.length).toBe(2);
+      // Week 2 should come first (logged later)
+      expect(sessions[0].weekNumber).toBe(2);
+      expect(sessions[1].weekNumber).toBe(1);
+    });
   });
 
   describe('getHistoryForSession', () => {
@@ -222,6 +288,40 @@ describe('History Session Loading', () => {
 
       // Should only return 3 rows (deduplicated), not 6
       expect(rows!.length).toBe(3);
+    });
+
+    it('should filter by week/day when parameters are provided', () => {
+      const logs = createExerciseLogs();
+
+      // Log both week 1 and week 2 on the same date
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-18');
+      logSessionToHistory('test-schedule-123', 2, 1, logs, '2026-01-18');
+
+      // Query with week/day filters
+      const week1Rows = getHistoryForSession('2026-01-18', 'test-schedule-123', 1, 1);
+      const week2Rows = getHistoryForSession('2026-01-18', 'test-schedule-123', 2, 1);
+
+      // Each should return only rows for that specific week
+      expect(week1Rows).not.toBeNull();
+      expect(week2Rows).not.toBeNull();
+      expect(week1Rows!.every(r => r.week_number === 1)).toBe(true);
+      expect(week2Rows!.every(r => r.week_number === 2)).toBe(true);
+    });
+
+    it('should return all rows when week/day not specified (backward compatible)', () => {
+      const logs = createExerciseLogs();
+
+      // Log both week 1 and week 2 on the same date
+      logSessionToHistory('test-schedule-123', 1, 1, logs, '2026-01-18');
+      logSessionToHistory('test-schedule-123', 2, 1, logs, '2026-01-18');
+
+      // Query without week/day filters (backward compatible mode)
+      const allRows = getHistoryForSession('2026-01-18', 'test-schedule-123');
+
+      // Should return rows from both weeks (deduplicated by exercise+set)
+      expect(allRows).not.toBeNull();
+      // Should have at least some rows
+      expect(allRows!.length).toBeGreaterThan(0);
     });
   });
 

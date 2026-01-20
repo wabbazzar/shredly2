@@ -368,7 +368,13 @@
 		const session = event.detail;
 		if (!$activeSchedule) return;
 
-		const historyRows = getHistoryForSession(session.date, session.workoutProgramId);
+		// Pass week/day to get precise session match (supports repeated weeks)
+		const historyRows = getHistoryForSession(
+			session.date,
+			session.workoutProgramId,
+			session.weekNumber,
+			session.dayNumber
+		);
 		if (!historyRows || historyRows.length === 0) return;
 
 		// Check if this is for the current schedule

@@ -63,12 +63,17 @@
 	$: phaseColorHex = getPhaseColor(timerState.phase);
 
 	// Set counter display
+	// During rest phase, show NEXT set number (anticipating what's coming)
 	$: setDisplay = (() => {
 		if (timerState.exerciseType === 'emom' || timerState.exerciseType === 'amrap') {
 			return `Minute ${timerState.currentMinute} of ${timerState.totalMinutes}`;
 		}
 		if (timerState.totalSets > 1) {
-			return `Set ${timerState.currentSet} of ${timerState.totalSets}`;
+			// During rest, display the upcoming set number (e.g., after set 1 work, show "Set 2 of 5")
+			const displaySet = timerState.phase === 'rest'
+				? Math.min(timerState.currentSet + 1, timerState.totalSets)
+				: timerState.currentSet;
+			return `Set ${displaySet} of ${timerState.totalSets}`;
 		}
 		return '';
 	})();

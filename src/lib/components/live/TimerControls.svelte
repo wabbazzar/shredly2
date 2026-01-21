@@ -7,6 +7,7 @@
 	export let hasNextExercise: boolean = true;
 	export let hasPreviousExercise: boolean = false;
 	export let currentSet: number = 1;
+	export let totalSets: number = 1;
 
 	const dispatch = createEventDispatcher<{
 		start: void;
@@ -25,8 +26,13 @@
 	$: isRunning = !isPaused && !isIdle && !isComplete && !isEntry;
 	$: phaseColorHex = getPhaseColor(phase);
 
-	// Can rewind to previous set (set > 1)
-	$: canRewindSet = currentSet > 1 && !isIdle && !isEntry;
+	// Can rewind to previous set:
+	// - During rest phase after any set (user just completed a set they may want to redo)
+	// - During work/other phases if set > 1
+	$: canRewindSet = !isIdle && !isEntry && (
+		(phase === 'rest' && currentSet >= 1) ||  // Rest after any set - can rewind to redo it
+		currentSet > 1  // On set 2+, can always go back
+	);
 	// Can rewind to previous exercise block
 	$: canRewindBlock = hasPreviousExercise && !isEntry;
 </script>

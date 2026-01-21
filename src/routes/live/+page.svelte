@@ -731,6 +731,7 @@
 
 	// Get current set number from timer state
 	$: currentSet = timerState?.currentSet ?? 1;
+	$: totalSets = timerState?.totalSets ?? 1;
 </script>
 
 {#if $hasActiveSession && $liveSession}
@@ -819,6 +820,7 @@
 							{hasNextExercise}
 							{hasPreviousExercise}
 							{currentSet}
+							{totalSets}
 							on:start={handleStart}
 							on:pause={handlePause}
 							on:resume={handleResume}

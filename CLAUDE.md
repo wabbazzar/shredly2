@@ -194,6 +194,24 @@ chore(deps): update SvelteKit to latest stable
   <div style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
   ```
   Or use the `pb-nav` utility class for scrollable content.
+- **CRITICAL: Modal action buttons belong in HEADERS, not footers**: On mobile (especially iPhones with Dynamic Island or notch), footer buttons get cut off by the bottom nav bar when modal content expands (e.g., calendars, dropdowns). ALWAYS place Cancel/Confirm buttons in the modal header:
+  - X button (cancel) on the left
+  - Action button (Confirm/Add/Save) on the right
+  - Title centered between them
+  - Reference implementation: `ExerciseBrowser.svelte` shows the correct pattern
+  - Example header structure:
+    ```html
+    <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700">
+      <button on:click={handleCancel} class="p-2 text-slate-400" aria-label="Cancel">
+        <!-- X icon -->
+      </button>
+      <h2 class="text-base font-semibold text-white">Modal Title</h2>
+      <button on:click={handleConfirm} class="px-4 py-2 bg-indigo-600 text-white rounded-lg">
+        Confirm
+      </button>
+    </div>
+    ```
+  - NEVER use bottom footers for modal action buttons - they WILL get obscured on mobile
 
 ### Ticket Management
 

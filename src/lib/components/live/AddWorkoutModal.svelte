@@ -195,16 +195,26 @@
 			class="w-full max-w-sm bg-slate-800 rounded-xl flex flex-col max-h-[85vh]"
 			on:click|stopPropagation
 		>
-			<!-- Header (fixed) -->
+			<!-- Header with actions (buttons at top to avoid bottom nav bar issues on mobile) -->
 			<div class="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-slate-700">
-				<h2 class="text-base font-semibold text-white">Add Workout</h2>
 				<button
 					on:click={handleCancel}
-					class="p-1 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-700"
+					class="p-2 text-slate-400 hover:text-white transition-colors rounded-lg"
+					aria-label="Cancel"
 				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 					</svg>
+				</button>
+				<h2 class="text-base font-semibold text-white">Add Workout</h2>
+				<button
+					on:click={handleConfirm}
+					disabled={!canConfirm}
+					class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg
+					       transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+					aria-label="Add workout"
+				>
+					Add
 				</button>
 			</div>
 
@@ -319,23 +329,6 @@
 				<p class="text-xs text-slate-500">
 					Log a workout you did on a specific date. You'll be able to enter your actual weights, reps, and other data after selecting.
 				</p>
-			</div>
-
-			<!-- Footer (fixed) -->
-			<div class="flex-shrink-0 px-4 py-3 border-t border-slate-700 flex gap-2">
-				<button
-					on:click={handleCancel}
-					class="flex-1 py-2 px-4 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-medium rounded-lg transition-colors"
-				>
-					Cancel
-				</button>
-				<button
-					on:click={handleConfirm}
-					disabled={!canConfirm}
-					class="flex-1 py-2 px-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-600 disabled:text-slate-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
-				>
-					Add Workout
-				</button>
 			</div>
 		</div>
 	</div>

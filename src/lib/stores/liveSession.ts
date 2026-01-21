@@ -636,6 +636,13 @@ audioConfig.subscribe((config) => {
   saveAudioConfig(config);
 });
 
+/**
+ * Signal to close all modals in Live view
+ * Increments each time navigateUpLive() is called
+ * Live page subscribes and closes modals when value changes
+ */
+export const liveViewCloseSignal = writable<number>(0);
+
 // ============================================================================
 // DERIVED STORES
 // ============================================================================
@@ -1265,6 +1272,36 @@ export function endWorkout(): { logs: ExerciseLog[]; session: LiveWorkoutSession
  */
 export function clearSession(): void {
   liveSession.set(null);
+}
+
+/**
+ * Navigate up one level in Live view hierarchy
+ * Used when re-tapping the Live tab
+ *
+ * Hierarchy:
+ * - Historical review mode -> return to history list
+ * - Any modal open -> close it (via signal)
+ * - Active workout -> stay (user is working out)
+ *
+ * @returns true if navigation occurred, false if already at main view
+ */
+export function navigateUpLive(): boolean {
+  const session = get(liveSession);
+
+  // If viewing a historical session (completed workout from history list),
+  // clear it and return to history list
+  if (session && session.isComplete && session.historicalDate) {
+    liveSession.set(null);
+    return true;
+  }
+
+  // Signal to close any open modals
+  // The Live page subscribes to this and closes modals when it changes
+  liveViewCloseSignal.update(n => n + 1);
+
+  // Return true to indicate the signal was sent
+  // (modals may or may not be open, but the signal was sent)
+  return true;
 }
 
 /**

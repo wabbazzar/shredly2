@@ -5,6 +5,7 @@
 	import { getTabs, type TabConfig } from '$lib/types/navigation';
 	import { navigationStore } from '$lib/stores/navigation';
 	import { navigateUp } from '$lib/stores/schedule';
+	import { navigateUpLive } from '$lib/stores/liveSession';
 
 	// Get tabs with base path
 	$: tabs = getTabs();
@@ -15,6 +16,12 @@
 		// If already on schedule tab, navigate up the view hierarchy
 		if (isCurrentTab && tab.id === 'schedule') {
 			navigateUp();
+			return;
+		}
+
+		// If already on live tab, navigate up (close modals, exit history review)
+		if (isCurrentTab && tab.id === 'live') {
+			navigateUpLive();
 			return;
 		}
 

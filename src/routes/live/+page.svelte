@@ -28,7 +28,8 @@
 		loadHistoricalSession,
 		startManualSession,
 		goToPreviousExercise,
-		rewindToPreviousSet
+		rewindToPreviousSet,
+		liveViewCloseSignal
 	} from '$lib/stores/liveSession';
 	import { activeSchedule } from '$lib/stores/schedule';
 	import {
@@ -102,6 +103,44 @@
 
 	// Add workout modal state
 	let showAddWorkoutModal = false;
+
+	// Close all modals when live view "navigate up" signal is triggered
+	// (e.g., when user re-taps the Live tab)
+	$: if ($liveViewCloseSignal) {
+		closeAllModals();
+	}
+
+	function closeAllModals() {
+		// Close all modals
+		showDataEntry = false;
+		dataEntryExercise = null;
+		showExerciseInfo = false;
+		exerciseInfoExercise = null;
+		showReviewModal = false;
+		reviewExercise = null;
+		reviewExerciseIndex = null;
+		reviewExistingLog = null;
+		reviewSubExerciseLogs = new Map();
+		showDeleteModal = false;
+		deleteSessionTarget = null;
+		deleteSessionRows = [];
+		showEditDateModal = false;
+		editDateSessionTarget = null;
+		showAddWorkoutModal = false;
+
+		// Reset view state (if historical session was cleared by navigateUpLive)
+		if (!$hasActiveSession) {
+			isHistoryReviewMode = false;
+			noScheduleMessage = '';
+			// Set message if no workout scheduled for today
+			if ($activeSchedule) {
+				const todaysWorkout = getTodaysWorkout($activeSchedule);
+				if (!todaysWorkout) {
+					noScheduleMessage = 'No workout scheduled for today';
+				}
+			}
+		}
+	}
 
 	// Build exercise logs map for ExerciseList
 	$: exerciseLogs = buildExerciseLogsMap($liveSession);

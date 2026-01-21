@@ -142,7 +142,7 @@
 							</span>
 						</div>
 						<div class="text-xs text-slate-500 mt-0.5">
-							{session.exerciseCount} exercises, {session.completedSetCount} sets
+							{session.exerciseCount} exercises
 						</div>
 					</div>
 

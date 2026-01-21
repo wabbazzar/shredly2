@@ -635,7 +635,6 @@ export interface WorkoutSession {
   weekNumber: number;
   dayNumber: number;
   exerciseCount: number;
-  completedSetCount: number;
   earliestTimestamp: string;
 }
 
@@ -653,15 +652,11 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
       weekNumber: number;
       dayNumber: number;
       exerciseNames: Set<string>;
-      deduplicatedSets: Map<string, string>;
       earliestTimestamp: string;
     }
   >();
 
   for (const row of history) {
-    if (row.is_compound_parent) continue;
-    if (!row.completed) continue;
-
     const sessionKey = `${row.date}|${row.workout_program_id}|${row.week_number}|${row.day_number}`;
 
     if (!sessionMap.has(sessionKey)) {
@@ -671,22 +666,23 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
         weekNumber: row.week_number,
         dayNumber: row.day_number,
         exerciseNames: new Set(),
-        deduplicatedSets: new Map(),
         earliestTimestamp: row.timestamp
       });
     }
 
     const session = sessionMap.get(sessionKey)!;
-    session.exerciseNames.add(row.exercise_name);
 
-    const setKey = `${row.exercise_name}|${row.set_number}`;
-    const existingTimestamp = session.deduplicatedSets.get(setKey);
-    if (
-      !existingTimestamp ||
-      new Date(row.timestamp).getTime() > new Date(existingTimestamp).getTime()
-    ) {
-      session.deduplicatedSets.set(setKey, row.timestamp);
+    // Skip compound parents - they're not real exercises
+    if (row.is_compound_parent) {
+      if (row.timestamp < session.earliestTimestamp) {
+        session.earliestTimestamp = row.timestamp;
+      }
+      continue;
     }
+
+    if (!row.completed) continue;
+
+    session.exerciseNames.add(row.exercise_name);
 
     if (row.timestamp < session.earliestTimestamp) {
       session.earliestTimestamp = row.timestamp;
@@ -694,14 +690,13 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
   }
 
   const sessions: WorkoutSession[] = Array.from(sessionMap.values())
-    .filter((s) => s.deduplicatedSets.size > 0)
+    .filter((s) => s.exerciseNames.size > 0)
     .map((s) => ({
       date: s.date,
       workoutProgramId: s.workoutProgramId,
       weekNumber: s.weekNumber,
       dayNumber: s.dayNumber,
       exerciseCount: s.exerciseNames.size,
-      completedSetCount: s.deduplicatedSets.size,
       earliestTimestamp: s.earliestTimestamp
     }));
 

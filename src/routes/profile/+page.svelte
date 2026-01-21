@@ -108,13 +108,13 @@
 	// History stats for display
 	$: historyRowCount = $exerciseHistory.filter(r => !r.is_compound_parent).length;
 
-	// PR search state
+	// PR display state - sorted by 1RM descending, limited to top 5 by default
+	let showAllPRs = false;
+	$: sortedPRData = [...programPRData].sort((a, b) => b.estimated1RM - a.estimated1RM);
+	$: displayedPRData = showAllPRs ? sortedPRData : sortedPRData.slice(0, 5);
+
+	// Legacy search state (kept for compatibility but not used in new UI)
 	let prSearchQuery = '';
-	$: filteredPRData = prSearchQuery.trim()
-		? programPRData.filter(pr =>
-			pr.exerciseName.toLowerCase().includes(prSearchQuery.toLowerCase())
-		)
-		: programPRData;
 
 	function handleAddPR(exerciseName: string, weightLbs: number) {
 		setUserOverride(exerciseName, weightLbs);
@@ -477,6 +477,31 @@
 			</div>
 		</section>
 
+		<!-- Data & History Section -->
+		<section class="mt-6 bg-slate-800 rounded-lg p-4">
+			<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Data & History</h2>
+
+			<button
+				onclick={() => showHistoryModal = true}
+				class="w-full flex items-center justify-between p-3 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors group"
+			>
+				<div class="flex items-center gap-3">
+					<div class="p-2 bg-indigo-600/20 rounded-lg">
+						<svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+						</svg>
+					</div>
+					<div class="text-left">
+						<p class="text-white font-medium">Exercise History</p>
+						<p class="text-slate-400 text-sm">{historyRowCount} logged sets</p>
+					</div>
+				</div>
+				<svg class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+			</button>
+		</section>
+
 		<!-- Current Program PRs Section -->
 		{#if currentProgramExercises.length > 0}
 			<section class="mt-6 bg-slate-800 rounded-lg p-4">
@@ -486,7 +511,7 @@
 					</h2>
 					<div class="flex items-center gap-2">
 						<span class="text-xs text-slate-500">
-							{currentProgramExercises.length} exercises
+							{programPRData.length} of {currentProgramExercises.length} tracked
 						</span>
 						<button
 							onclick={() => (showAddPRModal = true)}
@@ -500,36 +525,10 @@
 					</div>
 				</div>
 
-				<!-- Search input -->
-				{#if programPRData.length > 3}
-					<div class="relative mb-4">
-						<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-						</svg>
-						<input
-							type="text"
-							placeholder="Search exercises..."
-							bind:value={prSearchQuery}
-							class="w-full pl-10 pr-8 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-400 focus:outline-none focus:border-indigo-500"
-						/>
-						{#if prSearchQuery}
-							<button
-								onclick={() => (prSearchQuery = '')}
-								class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-								aria-label="Clear search"
-							>
-								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-								</svg>
-							</button>
-						{/if}
-					</div>
-				{/if}
-
 				{#if programPRData.length > 0}
-					{#if filteredPRData.length > 0}
+					{#if displayedPRData.length > 0}
 						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-							{#each filteredPRData as prData (prData.exerciseName)}
+							{#each displayedPRData as prData (prData.exerciseName)}
 								<PRCard
 									{prData}
 									{unitSystem}
@@ -537,6 +536,27 @@
 								/>
 							{/each}
 						</div>
+						{#if !showAllPRs && sortedPRData.length > 5}
+							<button
+								onclick={() => showAllPRs = true}
+								class="w-full mt-3 py-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors flex items-center justify-center gap-1"
+							>
+								See all {sortedPRData.length} exercises
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+								</svg>
+							</button>
+						{:else if showAllPRs && sortedPRData.length > 5}
+							<button
+								onclick={() => showAllPRs = false}
+								class="w-full mt-3 py-2 text-sm text-slate-400 hover:text-slate-300 transition-colors flex items-center justify-center gap-1"
+							>
+								Show less
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+								</svg>
+							</button>
+						{/if}
 					{:else}
 						<div class="text-center py-6 text-slate-400">
 							<p class="text-sm">No exercises match "{prSearchQuery}"</p>
@@ -573,31 +593,6 @@
 				</div>
 			</section>
 		{/if}
-
-		<!-- Data & History Section -->
-		<section class="mt-6 bg-slate-800 rounded-lg p-4">
-			<h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Data & History</h2>
-
-			<button
-				onclick={() => showHistoryModal = true}
-				class="w-full flex items-center justify-between p-3 bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors group"
-			>
-				<div class="flex items-center gap-3">
-					<div class="p-2 bg-indigo-600/20 rounded-lg">
-						<svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-						</svg>
-					</div>
-					<div class="text-left">
-						<p class="text-white font-medium">Exercise History</p>
-						<p class="text-slate-400 text-sm">{historyRowCount} logged sets</p>
-					</div>
-				</div>
-				<svg class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-				</svg>
-			</button>
-		</section>
 
 		<!-- App Info Section -->
 		<section class="mt-6 bg-slate-800 rounded-lg p-4">

@@ -23,6 +23,44 @@
 	// Confirm clear state
 	let showClearConfirm = $state(false);
 
+	// Download history as CSV
+	function handleDownload() {
+		const rows = $exerciseHistory.filter(r => !r.is_compound_parent);
+		if (rows.length === 0) return;
+
+		// CSV header
+		const headers = ['Date', 'Exercise', 'Set', 'Weight', 'Unit', 'Reps', 'RPE', 'Work Time (s)', 'Notes'];
+		const csvRows = [headers.join(',')];
+
+		// Convert rows to CSV
+		for (const row of rows) {
+			const csvRow = [
+				row.date,
+				`"${row.exercise_name.replace(/"/g, '""')}"`,
+				row.set_number,
+				row.weight ?? '',
+				row.weight_unit ?? '',
+				row.reps ?? '',
+				row.rpe ?? '',
+				row.work_time ?? '',
+				row.notes ? `"${row.notes.replace(/"/g, '""')}"` : ''
+			];
+			csvRows.push(csvRow.join(','));
+		}
+
+		const csv = csvRows.join('\n');
+		const blob = new Blob([csv], { type: 'text/csv' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		const today = new Date().toISOString().split('T')[0];
+		a.download = `shredly-history-${today}.csv`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
+
 	// Reset state when modal opens
 	$effect(() => {
 		if (isOpen) {
@@ -185,15 +223,29 @@
 							</p>
 						</div>
 					</div>
-					<button
-						onclick={handleClose}
-						class="hidden sm:block p-2 text-slate-400 hover:text-white transition-colors rounded-lg"
-						aria-label="Close"
-					>
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</button>
+					<div class="flex items-center gap-1">
+						{#if totalRows > 0}
+							<button
+								onclick={handleDownload}
+								class="p-2 text-slate-400 hover:text-white transition-colors rounded-lg"
+								aria-label="Download history"
+								title="Download as CSV"
+							>
+								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+								</svg>
+							</button>
+						{/if}
+						<button
+							onclick={handleClose}
+							class="hidden sm:block p-2 text-slate-400 hover:text-white transition-colors rounded-lg"
+							aria-label="Close"
+						>
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+						</button>
+					</div>
 				</div>
 
 				<!-- Filters -->

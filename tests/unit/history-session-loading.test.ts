@@ -239,7 +239,6 @@ describe('History Session Loading', () => {
       expect(sessions[0].weekNumber).toBe(1);
       expect(sessions[0].dayNumber).toBe(1);
       expect(sessions[0].exerciseCount).toBe(2); // 2 unique exercises
-      expect(sessions[0].completedSetCount).toBe(3); // 3 total sets
     });
 
     it('should return sessions sorted by date descending', async () => {

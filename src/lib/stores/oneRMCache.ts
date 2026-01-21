@@ -31,6 +31,9 @@ const TRM_FACTOR = 0.90;
 // Maximum reps for reliable Epley calculation
 const MAX_REPS_FOR_CALCULATION = 10;
 
+// Standard plate increment for rounding
+const PLATE_INCREMENT = 5;
+
 /**
  * RPE to estimated max effort percentage
  * When RPE < 10, we divide by this factor to estimate true max
@@ -114,6 +117,15 @@ export interface ExercisePRDisplay {
 // ============================================================================
 // CORE CALCULATION FUNCTIONS
 // ============================================================================
+
+/**
+ * Round down to nearest 5lb increment
+ * Standard plates come in 5lb increments, so we round down for practical use
+ */
+export function roundDownToNearest5(value: number): number {
+	if (value <= 0) return 0;
+	return Math.floor(value / PLATE_INCREMENT) * PLATE_INCREMENT;
+}
 
 /**
  * Calculate 1RM using Epley formula
@@ -213,10 +225,10 @@ export function calculateTimeWeight(
 
 /**
  * Derive TRM (Training Rep Max) from 1RM
- * TRM = 90% of 1RM
+ * TRM = 90% of 1RM, rounded down to nearest 5lb
  */
 export function deriveTRM(oneRM: number): number {
-	return Math.round(oneRM * TRM_FACTOR * 10) / 10;
+	return roundDownToNearest5(oneRM * TRM_FACTOR);
 }
 
 /**
@@ -302,7 +314,7 @@ export function calculateTimeWeightedAverage(
 		return 0;
 	}
 
-	return Math.round((weightedSum / totalWeight) * 10) / 10;
+	return roundDownToNearest5(weightedSum / totalWeight);
 }
 
 // ============================================================================
@@ -432,7 +444,7 @@ export function calculate1RMEntry(
 	const effective1RM = userOverride !== null && userOverride > 0 ? userOverride : estimated1RM;
 
 	return {
-		estimated_1rm: Math.round(estimated1RM * 10) / 10,
+		estimated_1rm: estimated1RM, // Already rounded down to nearest 5 by calculateTimeWeightedAverage
 		trm: deriveTRM(effective1RM),
 		last_updated: new Date().toISOString(),
 		data_points: dataPoints.length,

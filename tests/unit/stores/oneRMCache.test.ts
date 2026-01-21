@@ -156,15 +156,15 @@ describe('adjustForRPE', () => {
 // ============================================================================
 
 describe('deriveTRM', () => {
-	it('calculates exactly 90% of 1RM', () => {
-		expect(deriveTRM(200)).toBe(180);
-		expect(deriveTRM(315)).toBe(283.5);
-		expect(deriveTRM(100)).toBe(90);
+	it('calculates 90% of 1RM, rounded down to nearest 5lbs', () => {
+		expect(deriveTRM(200)).toBe(180); // 200 * 0.9 = 180
+		expect(deriveTRM(315)).toBe(280); // 315 * 0.9 = 283.5 → 280
+		expect(deriveTRM(100)).toBe(90); // 100 * 0.9 = 90
 	});
 
-	it('rounds to one decimal place', () => {
-		// 333.33... * 0.9 = 300
-		expect(deriveTRM(333.33)).toBe(300);
+	it('rounds down to nearest 5lbs', () => {
+		// 333.33... * 0.9 = 299.997 → 295
+		expect(deriveTRM(333.33)).toBe(295);
 	});
 
 	it('handles 0 input', () => {
@@ -386,9 +386,9 @@ describe('calculateTimeWeightedAverage', () => {
 			}
 		];
 
-		// 180 at RPE 8 -> 180 / 0.92 = 195.65
+		// 180 at RPE 8 -> 180 / 0.92 = 195.65 → 195 (rounded down to nearest 5)
 		const result = calculateTimeWeightedAverage(dataPoints);
-		expect(result).toBeCloseTo(195.7, 0);
+		expect(result).toBe(195);
 	});
 
 	it('can disable RPE adjustment', () => {
@@ -417,9 +417,9 @@ describe('calculateTimeWeightedAverage', () => {
 			}
 		];
 
-		// 200 x 5 = 200 * (1 + 5/30) = 233.33
+		// 200 x 5 = 200 * (1 + 5/30) = 233.33 → 230 (rounded down to nearest 5)
 		const result = calculateTimeWeightedAverage(dataPoints);
-		expect(result).toBeCloseTo(233.3, 0);
+		expect(result).toBe(230);
 	});
 
 	it('uses best set per day, not average of all sets (fixes warmup set dilution)', () => {
@@ -444,10 +444,10 @@ describe('calculateTimeWeightedAverage', () => {
 
 		const result = calculateTimeWeightedAverage(dataPoints);
 
-		// 165x6 at RPE 8 = 165 * (1 + 6/30) / 0.92 = 198 / 0.92 = 215.2
+		// 165x6 at RPE 8 = 165 * (1 + 6/30) / 0.92 = 198 / 0.92 = 215.2 → 215 (rounded down)
 		// 135x6 at RPE 6 = 135 * (1 + 6/30) / 0.85 = 162 / 0.85 = 190.6
 		// Best set is 165x6 with 215.2 1RM estimate - this is what should be used
-		expect(result).toBeCloseTo(215.2, 0);
+		expect(result).toBe(215);
 	});
 
 	it('takes best from each day when multiple days have multiple sets', () => {
@@ -468,9 +468,9 @@ describe('calculateTimeWeightedAverage', () => {
 
 		// Today best: 135x8 at RPE 9 = 135 * 1.267 / 0.96 = 178.1
 		// Yesterday best: 130x8 at RPE 9 = 130 * 1.267 / 0.96 = 171.5
-		// Time-weighted average heavily favors today (more recent)
-		// Should be closer to 178 than to the average of all sets
-		expect(result).toBeGreaterThan(170);
+		// Time-weighted average heavily favors today (more recent) → ~175
+		// Rounded down to nearest 5: 175
+		expect(result).toBeGreaterThanOrEqual(170);
 		expect(result).toBeLessThan(180);
 	});
 });
@@ -654,8 +654,10 @@ describe('calculate1RMEntry', () => {
 		const entry = calculate1RMEntry('Bench Press', history);
 
 		expect(entry.estimated_1rm).toBeGreaterThan(0);
-		// TRM should be ~90% of 1RM (rounding may cause slight variation)
-		expect(entry.trm).toBeCloseTo(entry.estimated_1rm * 0.9, 0);
+		// Both 1RM and TRM are rounded down to nearest 5lbs
+		// TRM should be roughly 90% of 1RM (within 10lbs due to double rounding)
+		expect(entry.trm).toBeLessThanOrEqual(entry.estimated_1rm * 0.9);
+		expect(entry.trm).toBeGreaterThan(entry.estimated_1rm * 0.8);
 		expect(entry.data_points).toBe(1);
 		expect(entry.last_performed).toBe('2026-01-10');
 		expect(entry.user_override).toBeNull();
@@ -895,11 +897,10 @@ describe('getPRDisplayData Integration', () => {
 		const prData = getPRDisplayData('Bench Press');
 
 		expect(prData).not.toBeNull();
-		// Epley: 225 * (1 + 5/30) = 225 * 1.167 = 262.5
-		const expected1RM = calculateEpley1RM(225, 5);
-		expect(prData!.estimated1RM).toBeCloseTo(expected1RM, 0);
-		// TRM is 90% of 1RM
-		expect(prData!.trm).toBeCloseTo(expected1RM * 0.9, 0);
+		// Epley: 225 * (1 + 5/30) = 225 * 1.167 = 262.5 → 260 (rounded down to nearest 5)
+		expect(prData!.estimated1RM).toBe(260);
+		// TRM: 260 * 0.9 = 234 → 230 (rounded down to nearest 5)
+		expect(prData!.trm).toBe(230);
 	});
 
 	it('PROFILE SCENARIO: shows PR for exercise in current program after workout completion', async () => {
@@ -1088,14 +1089,14 @@ describe('User Override Persistence (App Restart)', () => {
 		expect(squatEntry).not.toBeNull();
 		expect(squatEntry!.user_override).toBe(405);
 		expect(squatEntry!.estimated_1rm).toBe(0); // No history data
-		expect(squatEntry!.trm).toBeCloseTo(405 * 0.9, 0); // TRM uses override
+		expect(squatEntry!.trm).toBe(360); // TRM: 405 * 0.9 = 364.5 → 360 (rounded down)
 
 		// Exercise C (Bench Press): both history and override
 		const benchEntry = getFromCache('Bench Press');
 		expect(benchEntry).not.toBeNull();
 		expect(benchEntry!.user_override).toBe(225);
 		expect(benchEntry!.estimated_1rm).toBeGreaterThan(0); // From history
-		expect(benchEntry!.trm).toBeCloseTo(225 * 0.9, 0); // TRM uses override, not calculated
+		expect(benchEntry!.trm).toBe(200); // TRM: 225 * 0.9 = 202.5 → 200 (rounded down)
 	});
 
 	it('user override persists after app restart simulation', async () => {

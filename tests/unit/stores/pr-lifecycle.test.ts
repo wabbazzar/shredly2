@@ -221,8 +221,10 @@ describe('Manual PR Removal', () => {
 		// Should fall back to calculated from history
 		const entry = getFromCache('Bench Press');
 		expect(entry!.user_override).toBeNull();
-		expect(entry!.estimated_1rm).toBeCloseTo(262.5, 0);
-		expect(entry!.trm).toBeCloseTo(262.5 * 0.9, 0); // ~236.25
+		// 225 x 5 = 262.5 → 260 (rounded down to nearest 5)
+		expect(entry!.estimated_1rm).toBe(260);
+		// TRM: 260 * 0.9 = 234 → 230 (rounded down to nearest 5)
+		expect(entry!.trm).toBe(230);
 	});
 
 	it('DayView uses historical TRM after manual PR removal', async () => {
@@ -233,7 +235,7 @@ describe('Manual PR Removal', () => {
 
 		invalidateCache();
 
-		// History: 225 x 5 @ RPE 10 = 262.5 1RM, TRM = 236.25
+		// History: 225 x 5 @ RPE 10 = 262.5 → 260 (rounded), TRM = 230
 		exerciseHistory.set([createHistoryRow({ exercise_name: 'Bench Press', weight: 225, reps: 5 })]);
 
 		// Manual override of 300, TRM = 270
@@ -246,9 +248,9 @@ describe('Manual PR Removal', () => {
 		// Remove override
 		clearUserOverride('Bench Press');
 
-		// DayView at 80% TM = 236.25 * 0.8 = 189, rounded to 190
+		// DayView at 80% TM = 230 * 0.8 = 184, rounded to nearest 5 = 185
 		result = calculateDayViewWeight('Bench Press', 80, getFromCache);
-		expect(result.calculatedLbs).toBe(190);
+		expect(result.calculatedLbs).toBe(185);
 	});
 });
 
@@ -289,13 +291,14 @@ describe('Historical PR Only (No Manual Override)', () => {
 
 		invalidateCache();
 
-		// 185 x 8 = 185 * (1 + 8/30) = 234.33 1RM, TRM = 210.9
+		// 185 x 8 = 185 * (1 + 8/30) = 234.33 → 230 (rounded down)
+		// TRM = 230 * 0.9 = 207 → 205 (rounded down)
 		exerciseHistory.set([createHistoryRow({ exercise_name: 'Romanian Deadlift', weight: 185, reps: 8 })]);
 		updateCacheForExercise('Romanian Deadlift');
 
-		// 80% of 210.9 = 168.72, rounded to 170
+		// 80% of 205 = 164, rounded to nearest 5 = 165
 		const result = calculateDayViewWeight('Romanian Deadlift', 80, getFromCache);
-		expect(result.calculatedLbs).toBe(170);
+		expect(result.calculatedLbs).toBe(165);
 	});
 
 	it('multiple history entries use time-weighted average', async () => {
@@ -331,8 +334,8 @@ describe('Historical PR Only (No Manual Override)', () => {
 
 		const entry = getFromCache('Bench Press');
 		// Recent data (200x5=233) should be weighted more heavily than old data (180x5=210)
-		// Result should be closer to 233 than to 210
-		expect(entry!.estimated_1rm).toBeGreaterThan(220);
+		// Time-weighted average ~225, rounded down to nearest 5: 225 or 220
+		expect(entry!.estimated_1rm).toBeGreaterThanOrEqual(220);
 	});
 });
 
@@ -427,8 +430,9 @@ describe('App Restart Persistence', () => {
 
 		const entry = getFromCache('Bench Press');
 		expect(entry!.user_override).toBe(300);
-		expect(entry!.trm).toBe(deriveTRM(300)); // Uses override
-		expect(entry!.estimated_1rm).toBeCloseTo(262.5, 0); // Still calculated from history
+		expect(entry!.trm).toBe(deriveTRM(300)); // Uses override: 270 → 270
+		// estimated_1rm: 225 x 5 = 262.5 → 260 (rounded down to nearest 5)
+		expect(entry!.estimated_1rm).toBe(260);
 	});
 });
 
@@ -485,11 +489,12 @@ describe('Weight Prescription Display', () => {
 		invalidateCache();
 		exerciseHistory.set([]);
 
-		// 1RM = 227, TRM = 204.3, 80% = 163.44 → should round to 165
+		// 1RM = 227, TRM = 204.3 → 200 (rounded down to nearest 5)
+		// 80% of 200 = 160
 		setUserOverride('Test Exercise', 227);
 
 		const result = calculateDayViewWeight('Test Exercise', 80, getFromCache);
-		expect(result.calculatedLbs).toBe(165);
+		expect(result.calculatedLbs).toBe(160);
 	});
 
 	it('different %TM values calculate correctly', async () => {
@@ -588,13 +593,13 @@ describe('Profile Page Integration (handleRemove1RM bug)', () => {
 
 		entry = getFromCache('Bench Press');
 		expect(entry!.user_override).toBeNull();
-		// TRM should be ~90% of 216 = ~194.4
-		expect(entry!.trm).toBeCloseTo(216 * 0.9, 0);
+		// 185 x 5 = 215.83 → 215 (rounded), TRM = 215 * 0.9 = 193.5 → 190
+		expect(entry!.trm).toBe(190);
 
 		// DayView should use historical TRM
 		const result = calculateDayViewWeight('Bench Press', 80, getFromCache);
-		// 194.4 * 0.8 = 155.5 → 155
-		expect(result.calculatedLbs).toBe(155);
+		// 190 * 0.8 = 152 → 150
+		expect(result.calculatedLbs).toBe(150);
 	});
 });
 

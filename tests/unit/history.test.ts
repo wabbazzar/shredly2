@@ -26,6 +26,7 @@ import {
   exportHistoryCsv,
   clearHistory,
   getStorageInfo,
+  updateSessionDate,
   type HistoryRow
 } from '../../src/lib/stores/history';
 import type { ExerciseLog, SetLog } from '../../src/lib/engine/types';
@@ -660,6 +661,170 @@ describe('History Store', () => {
       // Should still find the history regardless of week/day values
       const result = hasLoggedTodaysWorkout('test-program');
       expect(result).toBe(true);
+    });
+  });
+
+  describe('updateSessionDate', () => {
+    it('should update date for all matching rows', () => {
+      appendHistoryRows([
+        createMockHistoryRow({
+          date: '2026-01-15',
+          timestamp: '2026-01-15T10:00:00.000Z',
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Bench Press',
+          set_number: 1
+        }),
+        createMockHistoryRow({
+          date: '2026-01-15',
+          timestamp: '2026-01-15T10:05:00.000Z',
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Bench Press',
+          set_number: 2
+        }),
+        createMockHistoryRow({
+          date: '2026-01-15',
+          timestamp: '2026-01-15T10:10:00.000Z',
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Squats',
+          set_number: 1
+        })
+      ]);
+
+      const updatedCount = updateSessionDate(
+        '2026-01-15',
+        'test-program',
+        1,
+        1,
+        '2026-01-10'
+      );
+
+      expect(updatedCount).toBe(3);
+
+      const rows = get(exerciseHistory);
+      expect(rows.every(r => r.date === '2026-01-10')).toBe(true);
+    });
+
+    it('should not update rows from different sessions', () => {
+      appendHistoryRows([
+        createMockHistoryRow({
+          date: '2026-01-15',
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Bench Press'
+        }),
+        createMockHistoryRow({
+          date: '2026-01-16',
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 2,
+          exercise_name: 'Squats'
+        })
+      ]);
+
+      updateSessionDate(
+        '2026-01-15',
+        'test-program',
+        1,
+        1,
+        '2026-01-10'
+      );
+
+      const rows = get(exerciseHistory);
+      expect(rows.find(r => r.exercise_name === 'Bench Press')?.date).toBe('2026-01-10');
+      expect(rows.find(r => r.exercise_name === 'Squats')?.date).toBe('2026-01-16');
+    });
+
+    it('should update timestamp to preserve time but change date', () => {
+      appendHistoryRow(createMockHistoryRow({
+        date: '2026-01-15',
+        timestamp: '2026-01-15T14:30:45.123Z',
+        workout_program_id: 'test-program',
+        week_number: 1,
+        day_number: 1
+      }));
+
+      updateSessionDate(
+        '2026-01-15',
+        'test-program',
+        1,
+        1,
+        '2026-01-10'
+      );
+
+      const row = get(exerciseHistory)[0];
+      expect(row.date).toBe('2026-01-10');
+      // Timestamp should have new date but same time components
+      const timestamp = new Date(row.timestamp);
+      expect(timestamp.getUTCHours()).toBe(14);
+      expect(timestamp.getUTCMinutes()).toBe(30);
+      expect(timestamp.getUTCSeconds()).toBe(45);
+    });
+
+    it('should return 0 when no matching rows exist', () => {
+      appendHistoryRow(createMockHistoryRow({
+        date: '2026-01-15',
+        workout_program_id: 'different-program',
+        week_number: 1,
+        day_number: 1
+      }));
+
+      const updatedCount = updateSessionDate(
+        '2026-01-15',
+        'test-program',
+        1,
+        1,
+        '2026-01-10'
+      );
+
+      expect(updatedCount).toBe(0);
+    });
+
+    it('should only update rows matching all session identifiers', () => {
+      appendHistoryRows([
+        createMockHistoryRow({
+          date: '2026-01-15',
+          workout_program_id: 'test-program',
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Exercise A'
+        }),
+        createMockHistoryRow({
+          date: '2026-01-15',
+          workout_program_id: 'test-program',
+          week_number: 2,  // Different week
+          day_number: 1,
+          exercise_name: 'Exercise B'
+        }),
+        createMockHistoryRow({
+          date: '2026-01-15',
+          workout_program_id: 'other-program',  // Different program
+          week_number: 1,
+          day_number: 1,
+          exercise_name: 'Exercise C'
+        })
+      ]);
+
+      const updatedCount = updateSessionDate(
+        '2026-01-15',
+        'test-program',
+        1,
+        1,
+        '2026-01-10'
+      );
+
+      expect(updatedCount).toBe(1);
+
+      const rows = get(exerciseHistory);
+      expect(rows.find(r => r.exercise_name === 'Exercise A')?.date).toBe('2026-01-10');
+      expect(rows.find(r => r.exercise_name === 'Exercise B')?.date).toBe('2026-01-15');
+      expect(rows.find(r => r.exercise_name === 'Exercise C')?.date).toBe('2026-01-15');
     });
   });
 });

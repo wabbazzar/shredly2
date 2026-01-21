@@ -13,6 +13,7 @@
 	import AddPRModal from '$lib/components/profile/AddPRModal.svelte';
 	import ExerciseHistoryModal from '$lib/components/profile/ExerciseHistoryModal.svelte';
 	import { lbsToKg, kgToLbs, ALL_EQUIPMENT_TYPES, type EquipmentType } from '$lib/types/user';
+	import { usesExternalLoad } from '$lib/engine/exercise-metadata';
 
 	// PWA update state
 	$: pwaState = $pwaStore;
@@ -72,12 +73,17 @@
 			for (const exercise of day.exercises) {
 				// Skip compound parent names (EMOM, Circuit, etc.) - they're not real exercises
 				if (!exercise.name.match(/^(EMOM|AMRAP|Circuit|Interval)/i)) {
-					exerciseNames.add(exercise.name);
+					// Only include exercises that use external load (for PR tracking)
+					if (usesExternalLoad(exercise.name)) {
+						exerciseNames.add(exercise.name);
+					}
 				}
 				// Include sub-exercises from compound blocks
 				if (exercise.sub_exercises) {
 					for (const sub of exercise.sub_exercises) {
-						exerciseNames.add(sub.name);
+						if (usesExternalLoad(sub.name)) {
+							exerciseNames.add(sub.name);
+						}
 					}
 				}
 			}

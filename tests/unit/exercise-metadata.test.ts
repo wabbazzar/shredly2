@@ -22,6 +22,7 @@ import {
   canToggleToReps,
   canToggleToWorkTime,
   getDefaultWorkMode,
+  usesExternalLoad,
   clearCache,
   type ExerciseMetadata,
 } from "../../src/lib/engine/exercise-metadata.js";

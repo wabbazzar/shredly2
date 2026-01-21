@@ -26,6 +26,7 @@
 		logSubExerciseWeights,
 		reconstructSessionFromHistory,
 		loadHistoricalSession,
+		startManualSession,
 		goToPreviousExercise,
 		rewindToPreviousSet
 	} from '$lib/stores/liveSession';
@@ -33,15 +34,15 @@
 	import {
 		exerciseHistory,
 		logSessionToHistory,
-		getTodaysHistoryForWorkout,
 		getCompletedSessions,
 		getHistoryForSession,
 		getSessionRowsForDeletion,
 		deleteSession,
+		updateSessionDate,
 		type WorkoutSession,
 		type HistoryRow
 	} from '$lib/stores/history';
-	import { updateCacheForExercise } from '$lib/stores/oneRMCache';
+	import { updateCacheForExercise, fullRecalculateCache } from '$lib/stores/oneRMCache';
 	import {
 		TimerEngine,
 		getTimerEngine,
@@ -59,6 +60,8 @@
 	import SetReviewModal from '$lib/components/live/SetReviewModal.svelte';
 	import WorkoutHistoryList from '$lib/components/live/WorkoutHistoryList.svelte';
 	import DeleteSessionModal from '$lib/components/live/DeleteSessionModal.svelte';
+	import EditDateModal from '$lib/components/live/EditDateModal.svelte';
+	import AddWorkoutModal from '$lib/components/live/AddWorkoutModal.svelte';
 	import type { ExerciseLog } from '$lib/engine/types';
 
 	let timerEngine: TimerEngine;
@@ -93,6 +96,13 @@
 	let deleteSessionTarget: WorkoutSession | null = null;
 	let deleteSessionRows: HistoryRow[] = [];
 
+	// Edit date modal state
+	let showEditDateModal = false;
+	let editDateSessionTarget: WorkoutSession | null = null;
+
+	// Add workout modal state
+	let showAddWorkoutModal = false;
+
 	// Build exercise logs map for ExerciseList
 	$: exerciseLogs = buildExerciseLogsMap($liveSession);
 
@@ -119,34 +129,25 @@
 				timerEngine = getTimerEngine();
 				unsubscribeTimer = timerEngine.subscribe(handleTimerEvent);
 
-				// Check for existing session
-				if ($hasActiveSession && $currentExercise) {
-					// Resume existing session
-					timerEngine.initializeForExercise($currentExercise);
-					timerState = timerEngine.getState();
+				// Check for existing session (in-progress or completed review)
+				if ($hasActiveSession && $liveSession) {
+					if ($liveSession.isComplete) {
+						// Completed session in storage (e.g., from viewing history)
+						// Show it in review mode
+						isHistoryReviewMode = !!$liveSession.historicalDate;
+					} else if ($currentExercise) {
+						// Resume existing in-progress session
+						timerEngine.initializeForExercise($currentExercise);
+						timerState = timerEngine.getState();
+					}
 				} else if ($activeSchedule) {
-					// Check for today's workout
+					// No active session - check for today's workout
 					const todaysWorkout = getTodaysWorkout($activeSchedule);
-					if (todaysWorkout) {
-						// Check if user has already logged exercises for today's workout
-						// Query by date + program_id only - resilient to start date changes
-						const historyRows = getTodaysHistoryForWorkout($activeSchedule.id);
-
-						if (historyRows && historyRows.length > 0) {
-							// Reconstruct session from history for review mode
-							const reconstructedSession = reconstructSessionFromHistory(
-								$activeSchedule,
-								todaysWorkout.weekNumber,
-								todaysWorkout.dayNumber,
-								historyRows
-							);
-							liveSession.set(reconstructedSession);
-							isHistoryReviewMode = true;
-						}
-						// else: fall through to show "Start Today's Workout" button
-					} else {
+					if (!todaysWorkout) {
 						noScheduleMessage = 'No workout scheduled for today';
 					}
+					// If today has a workout, show "Start Today's Workout" button
+					// User can view past workouts (including today's) from the history list
 				} else {
 					noScheduleMessage = 'No active schedule. Create one in the Schedule tab.';
 				}
@@ -439,6 +440,67 @@
 		showDeleteModal = false;
 		deleteSessionTarget = null;
 		deleteSessionRows = [];
+	}
+
+	// Handle edit date click on a session in the history list
+	function handleEditDateClick(event: CustomEvent<WorkoutSession>) {
+		const session = event.detail;
+		editDateSessionTarget = session;
+		showEditDateModal = true;
+	}
+
+	// Handle confirming date change
+	function handleEditDateConfirm(event: CustomEvent<{ newDate: string }>) {
+		if (!editDateSessionTarget) return;
+
+		const { newDate } = event.detail;
+
+		// Update all history rows for this session
+		updateSessionDate(
+			editDateSessionTarget.date,
+			editDateSessionTarget.workoutProgramId,
+			editDateSessionTarget.weekNumber,
+			editDateSessionTarget.dayNumber,
+			newDate
+		);
+
+		// Recalculate 1RM cache since dates affect time-weighted calculations
+		fullRecalculateCache();
+
+		// Close modal and clear state
+		showEditDateModal = false;
+		editDateSessionTarget = null;
+
+		// Note: historySessions will auto-update due to reactive statement
+	}
+
+	// Handle canceling date edit
+	function handleEditDateCancel() {
+		showEditDateModal = false;
+		editDateSessionTarget = null;
+	}
+
+	// Handle clicking "Add Workout" button
+	function handleAddWorkoutClick() {
+		showAddWorkoutModal = true;
+	}
+
+	// Handle confirming add workout
+	function handleAddWorkoutConfirm(event: CustomEvent<{ weekNumber: number; dayNumber: number; date: string }>) {
+		if (!$activeSchedule) return;
+
+		const { weekNumber, dayNumber, date } = event.detail;
+
+		// Start a manual session in review mode
+		startManualSession($activeSchedule, weekNumber, dayNumber, date);
+
+		// Close modal
+		showAddWorkoutModal = false;
+	}
+
+	// Handle canceling add workout
+	function handleAddWorkoutCancel() {
+		showAddWorkoutModal = false;
 	}
 
 	/**
@@ -839,6 +901,8 @@
 					sessions={historySessions}
 					on:sessionClick={handleHistoricalSessionClick}
 					on:deleteClick={handleDeleteSessionClick}
+					on:editDateClick={handleEditDateClick}
+					on:addWorkout={handleAddWorkoutClick}
 				/>
 			</div>
 		{:else}
@@ -910,4 +974,20 @@
 	rowsToDelete={deleteSessionRows}
 	on:confirm={handleDeleteSessionConfirm}
 	on:cancel={handleDeleteSessionCancel}
+/>
+
+<!-- Edit Date Modal -->
+<EditDateModal
+	isOpen={showEditDateModal}
+	session={editDateSessionTarget}
+	on:confirm={handleEditDateConfirm}
+	on:cancel={handleEditDateCancel}
+/>
+
+<!-- Add Workout Modal -->
+<AddWorkoutModal
+	isOpen={showAddWorkoutModal}
+	schedule={$activeSchedule}
+	on:confirm={handleAddWorkoutConfirm}
+	on:cancel={handleAddWorkoutCancel}
 />

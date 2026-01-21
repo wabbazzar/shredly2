@@ -1236,10 +1236,22 @@ export function endWorkout(): { logs: ExerciseLog[]; session: LiveWorkoutSession
   const logs = session.logs ?? [];
 
   // Mark as complete but keep session for review
+  // Also mark the current exercise as completed (fixes bug where last exercise lacks checkmark)
   liveSession.update(s => {
     if (!s) return s;
+
+    const exercises = [...s.exercises];
+    // Mark current exercise as completed if it exists and hasn't been skipped
+    if (s.currentExerciseIndex >= 0 && exercises[s.currentExerciseIndex] && !exercises[s.currentExerciseIndex].skipped) {
+      exercises[s.currentExerciseIndex] = {
+        ...exercises[s.currentExerciseIndex],
+        completed: true
+      };
+    }
+
     return {
       ...s,
+      exercises,
       isComplete: true,
       endTime: new Date().toISOString()
     };
@@ -1543,6 +1555,58 @@ export function reconstructSessionFromHistory(
     isComplete: true,
     historicalDate
   };
+}
+
+/**
+ * Start a manual session for retroactive workout logging
+ *
+ * Creates a new session directly in review mode (isComplete: true).
+ * The user can tap each exercise to log data, same as the post-workout review screen.
+ *
+ * @param schedule - The active schedule
+ * @param weekNumber - The week number (1-indexed)
+ * @param dayNumber - The day number (1-indexed, per-week)
+ * @param date - The date for this workout (ISO format "2026-01-15")
+ */
+export function startManualSession(
+  schedule: StoredSchedule,
+  weekNumber: number,
+  dayNumber: number,
+  date: string
+): void {
+  // Get the day from schedule
+  const day = schedule.days[dayNumber.toString()];
+  if (!day) {
+    throw new Error(`Day ${dayNumber} not found in schedule`);
+  }
+
+  // Convert day exercises to LiveExercise format
+  const exercises = convertDayToLiveExercises(day, weekNumber, schedule.id);
+
+  // Get config
+  const config = get(audioConfig);
+
+  // Create session in review mode (isComplete: true, currentExerciseIndex: -1)
+  const session: LiveWorkoutSession = {
+    workoutId: `${schedule.id}-${weekNumber}-${dayNumber}-manual-${Date.now()}`,
+    scheduleId: schedule.id,
+    weekNumber,
+    dayNumber,
+    startTime: new Date().toISOString(),
+    endTime: null,
+    currentExerciseIndex: -1, // -1 indicates review mode (no current exercise)
+    exercises,
+    logs: [],
+    timerState: createInitialTimerState(),
+    audioConfig: config,
+    isPaused: false,
+    pauseStartTime: null,
+    totalPauseTime: 0,
+    isComplete: true, // Start in review mode
+    historicalDate: date // Mark as manual entry for the specified date
+  };
+
+  liveSession.set(session);
 }
 
 /**

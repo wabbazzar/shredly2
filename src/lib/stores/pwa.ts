@@ -58,8 +58,17 @@ function createPwaStore() {
 
 		// Listen for controller change (new SW activated)
 		navigator.serviceWorker.addEventListener('controllerchange', () => {
-			// New service worker has taken control, reload to get fresh content
-			window.location.reload();
+			// New service worker has taken control
+			// IMPORTANT: Don't reload immediately - give async operations time to complete
+			// This prevents data loss during reload if IndexedDB operations are in flight
+			console.log('[PWA] Service worker update detected, scheduling graceful reload...');
+
+			// Brief delay ensures any pending localStorage/IndexedDB writes complete
+			// Longer delays (30s) would be safer but hurt UX - 2s is a reasonable compromise
+			setTimeout(() => {
+				console.log('[PWA] Applying service worker update...');
+				window.location.reload();
+			}, 2000);
 		});
 	}
 

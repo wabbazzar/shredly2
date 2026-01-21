@@ -215,6 +215,26 @@ export function getDefaultWorkMode(exerciseName: string): 'reps' | 'work_time' {
 }
 
 /**
+ * Check if exercise uses external load (for PR tracking)
+ *
+ * Exercises with external_load === 'never' should NOT appear in PR lists
+ * since they have no weight to track.
+ *
+ * @param exerciseName - Name of exercise
+ * @returns true if exercise uses external load (always or sometimes)
+ */
+export function usesExternalLoad(exerciseName: string): boolean {
+  const metadata = getExerciseMetadata(exerciseName);
+
+  if (!metadata) {
+    // Unknown exercises: assume no external load (conservative default)
+    return false;
+  }
+
+  return metadata.external_load !== 'never';
+}
+
+/**
  * Clear metadata cache (for testing)
  */
 export function clearCache(): void {

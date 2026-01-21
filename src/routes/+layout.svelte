@@ -10,6 +10,7 @@
 	import { userStore } from '$lib/stores/user';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 
 	let isAppReady = false;
 	let minTimeElapsed = false;
@@ -61,16 +62,41 @@
 	// Watch for conditions to dismiss
 	$: if (isAppReady && minTimeElapsed) dismissLoadingScreen();
 
+	/**
+	 * Request persistent storage to prevent browser from clearing localStorage/IndexedDB
+	 * Without this, PWA storage is "best effort" and can be evicted by the browser
+	 */
+	async function requestPersistentStorage(): Promise<void> {
+		if (!browser || !navigator.storage?.persist) return;
+
+		try {
+			const isPersistent = await navigator.storage.persist();
+			if (isPersistent) {
+				console.log('[Storage] Persistent storage granted');
+			} else {
+				console.warn('[Storage] Persistent storage denied - data may be cleared by browser');
+			}
+		} catch (e) {
+			console.warn('[Storage] Failed to request persistent storage:', e);
+		}
+	}
+
 	// Initialize stores once at app startup
-	onMount(() => {
+	onMount(async () => {
 		// Start minimum time timer
 		setTimeout(() => {
 			minTimeElapsed = true;
 		}, MIN_LOADING_TIME);
 
+		// Request persistent storage FIRST - prevents browser from clearing our data
+		await requestPersistentStorage();
+
 		// Hydrate stores from localStorage (SSR sends empty arrays)
 		hydrateHistory();
-		initializeScheduleStore();
+
+		// CRITICAL: Await IndexedDB initialization before marking app ready
+		// Without this, reload during initialization can lose data
+		await initializeScheduleStore();
 
 		// Initialize 1RM cache with user overrides (depends on history being hydrated)
 		const userData = get(userStore);
@@ -82,7 +108,7 @@
 		}
 		fullRecalculateCache(undefined, userOverrides);
 
-		// App is ready
+		// App is ready ONLY after all async initialization is complete
 		isAppReady = true;
 	});
 </script>

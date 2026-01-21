@@ -248,18 +248,51 @@ function loadHistory(): HistoryRow[] {
 }
 
 /**
- * Save history to localStorage
+ * Save history to localStorage with verification
+ * Returns true if save succeeded, false otherwise
  */
-function saveHistory(rows: HistoryRow[]): void {
-  if (!isBrowser) return;
+function saveHistory(rows: HistoryRow[]): boolean {
+  if (!isBrowser) return false;
 
   try {
     const header = CSV_HEADERS.join(',');
     const lines = [header, ...rows.map(rowToCSV)];
     const csv = lines.join('\n');
+
+    // Check size before writing (localStorage typically has 5-10MB limit)
+    const sizeInBytes = new Blob([csv]).size;
+    const sizeInMB = sizeInBytes / (1024 * 1024);
+    if (sizeInMB > 4.5) {
+      console.warn(`[History] Data size (${sizeInMB.toFixed(2)}MB) approaching localStorage limit`);
+    }
+
     localStorage.setItem(HISTORY_KEY, csv);
+
+    // Verify write succeeded by reading back
+    const stored = localStorage.getItem(HISTORY_KEY);
+    if (!stored) {
+      console.error('[History] Write verification failed - data not persisted');
+      return false;
+    }
+
+    // Quick sanity check: row count should match
+    const storedLineCount = stored.split('\n').length;
+    const expectedLineCount = lines.length;
+    if (storedLineCount !== expectedLineCount) {
+      console.error(`[History] Write verification failed - expected ${expectedLineCount} lines, got ${storedLineCount}`);
+      return false;
+    }
+
+    return true;
   } catch (e) {
-    console.error('Failed to save history:', e);
+    // Handle quota exceeded specifically
+    if (e instanceof DOMException && (e.code === 22 || e.name === 'QuotaExceededError')) {
+      console.error('[History] localStorage quota exceeded - cannot save workout history');
+      console.error('[History] Consider exporting your data and clearing old entries');
+    } else {
+      console.error('[History] Failed to save history:', e);
+    }
+    return false;
   }
 }
 
@@ -972,4 +1005,58 @@ export function deleteSession(
   }
 
   return deletedCount;
+}
+
+/**
+ * Update the date of a workout session in history
+ *
+ * Changes the date field for ALL rows matching the session identifier.
+ * This updates both the date and timestamp fields.
+ *
+ * @param originalDate Original ISO date string "2026-01-15"
+ * @param workoutProgramId The schedule/program ID
+ * @param weekNumber Week number (1-indexed)
+ * @param dayNumber Day number (1-indexed)
+ * @param newDate New ISO date string "2026-01-10"
+ * @returns Number of rows updated
+ */
+export function updateSessionDate(
+  originalDate: string,
+  workoutProgramId: string,
+  weekNumber: number,
+  dayNumber: number,
+  newDate: string
+): number {
+  const history = get(exerciseHistory);
+
+  let updatedCount = 0;
+  const updatedRows = history.map(r => {
+    if (r.date === originalDate &&
+        r.workout_program_id === workoutProgramId &&
+        r.week_number === weekNumber &&
+        r.day_number === dayNumber) {
+      updatedCount++;
+      // Update the date field
+      // Also update timestamp to preserve the time portion but change the date
+      const originalTimestamp = new Date(r.timestamp);
+      const newTimestamp = new Date(newDate + 'T00:00:00');
+      newTimestamp.setHours(originalTimestamp.getHours());
+      newTimestamp.setMinutes(originalTimestamp.getMinutes());
+      newTimestamp.setSeconds(originalTimestamp.getSeconds());
+      newTimestamp.setMilliseconds(originalTimestamp.getMilliseconds());
+
+      return {
+        ...r,
+        date: newDate,
+        timestamp: newTimestamp.toISOString()
+      };
+    }
+    return r;
+  });
+
+  if (updatedCount > 0) {
+    exerciseHistory.set(updatedRows);
+  }
+
+  return updatedCount;
 }

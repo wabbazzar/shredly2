@@ -7,7 +7,13 @@
 	const dispatch = createEventDispatcher<{
 		sessionClick: WorkoutSession;
 		deleteClick: WorkoutSession;
+		editDateClick: WorkoutSession;
+		addWorkout: void;
 	}>();
+
+	function handleAddWorkout() {
+		dispatch('addWorkout');
+	}
 
 	/**
 	 * Format date for display
@@ -61,15 +67,31 @@
 		e.stopPropagation(); // Prevent triggering session click
 		dispatch('deleteClick', session);
 	}
+
+	function handleEditDateClick(e: MouseEvent, session: WorkoutSession) {
+		e.stopPropagation(); // Prevent triggering session click
+		dispatch('editDateClick', session);
+	}
 </script>
 
 <div class="flex flex-col h-full">
 	<!-- Header -->
 	<div class="flex items-center justify-between px-4 py-3 border-b border-slate-700">
-		<h2 class="text-lg font-semibold text-white">Completed Workouts</h2>
-		<span class="px-2 py-0.5 text-xs bg-slate-700 text-slate-300 rounded-full">
-			{sessions.length}
-		</span>
+		<div class="flex items-center gap-2">
+			<h2 class="text-lg font-semibold text-white">Completed Workouts</h2>
+			<span class="px-2 py-0.5 text-xs bg-slate-700 text-slate-300 rounded-full">
+				{sessions.length}
+			</span>
+		</div>
+		<button
+			on:click={handleAddWorkout}
+			class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors"
+		>
+			<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+			</svg>
+			Add
+		</button>
 	</div>
 
 	{#if sessions.length === 0}
@@ -101,81 +123,50 @@
 				<div
 					role="button"
 					tabindex="0"
-					class="w-full flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 active:bg-slate-800 transition-colors border-b border-slate-800 text-left cursor-pointer"
+					class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/50 active:bg-slate-800 transition-colors border-b border-slate-800 text-left cursor-pointer"
 					on:click={() => handleSessionClick(session)}
 					on:keydown={(e) => e.key === 'Enter' && handleSessionClick(session)}
 				>
-					<!-- Date column -->
-					<div class="flex-shrink-0 w-20">
-						<span
-							class="text-sm font-medium {dateInfo.isRecent
-								? 'text-indigo-400'
-								: 'text-slate-300'}"
-						>
-							{dateInfo.label}
-						</span>
-					</div>
-
-					<!-- Week/Day info -->
+					<!-- Left: Date and Week/Day -->
 					<div class="flex-1 min-w-0">
-						<div class="text-sm text-white truncate">
-							Week {session.weekNumber}, Day {session.dayNumber}
+						<div class="flex items-baseline gap-2">
+							<span
+								class="text-sm font-medium {dateInfo.isRecent
+									? 'text-indigo-400'
+									: 'text-white'}"
+							>
+								{dateInfo.label}
+							</span>
+							<span class="text-xs text-slate-500">
+								W{session.weekNumber} D{session.dayNumber}
+							</span>
+						</div>
+						<div class="text-xs text-slate-500 mt-0.5">
+							{session.exerciseCount} exercises, {session.completedSetCount} sets
 						</div>
 					</div>
 
-					<!-- Stats badges -->
-					<div class="flex items-center gap-2 flex-shrink-0">
-						<!-- Exercise count -->
-						<span
-							class="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-slate-700 text-slate-300 rounded"
+					<!-- Right: Action buttons -->
+					<div class="flex items-center gap-1 flex-shrink-0">
+						<button
+							on:click={(e) => handleEditDateClick(e, session)}
+							class="p-1.5 text-slate-500 hover:text-indigo-400 hover:bg-indigo-900/20 rounded transition-colors"
+							title="Change date"
 						>
-							<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M4 6h16M4 10h16M4 14h16M4 18h16"
-								/>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 							</svg>
-							{session.exerciseCount}
-						</span>
-
-						<!-- Set count -->
-						<span
-							class="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-indigo-900/50 text-indigo-300 rounded"
+						</button>
+						<button
+							on:click={(e) => handleDeleteClick(e, session)}
+							class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-900/20 rounded transition-colors"
+							title="Delete workout"
 						>
-							<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
 							</svg>
-							{session.completedSetCount}
-						</span>
+						</button>
 					</div>
-
-					<!-- Delete button -->
-					<button
-						on:click={(e) => handleDeleteClick(e, session)}
-						class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-900/20 rounded transition-colors flex-shrink-0"
-						title="Delete workout"
-					>
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-						</svg>
-					</button>
-
-					<!-- Chevron -->
-					<svg
-						class="w-5 h-5 text-slate-500 flex-shrink-0"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-					</svg>
 				</div>
 			{/each}
 		</div>

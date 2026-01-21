@@ -27,9 +27,44 @@ import {
   clearHistory,
   getStorageInfo,
   updateSessionDate,
+  _resetInitializationState,
   type HistoryRow
 } from '../../src/lib/stores/history';
 import type { ExerciseLog, SetLog } from '../../src/lib/engine/types';
+
+// ============================================================================
+// MOCK INDEXEDDB OPERATIONS
+// ============================================================================
+
+// Track mock row count for updateSessionDate to return proper counts
+let mockUpdateCount = 0;
+
+// Mock IndexedDB operations to work synchronously for tests
+// The key insight: we mock IndexedDB to be a "pass-through" that doesn't actually persist
+// but returns values that let the in-memory store operations proceed correctly
+vi.mock('$lib/stores/historyDb', () => ({
+  openHistoryDatabase: vi.fn().mockResolvedValue(null),
+  getAllRows: vi.fn().mockResolvedValue([]),
+  appendRows: vi.fn().mockResolvedValue([]),
+  deleteSessionRows: vi.fn().mockImplementation(() => Promise.resolve(0)),
+  // updateSessionDate needs to return proper count so the in-memory update happens
+  updateSessionDate: vi.fn().mockImplementation(async () => {
+    // Return the count that was set before the call
+    return mockUpdateCount;
+  }),
+  migrateFromLocalStorage: vi.fn().mockResolvedValue({ migrated: false, rowCount: 0, message: '' }),
+  saveBackupMetadata: vi.fn(),
+  verifyDataIntegrity: vi
+    .fn()
+    .mockResolvedValue({ intact: true, dbRowCount: 0, backupRowCount: null, message: '' }),
+  compactDatabase: vi.fn().mockResolvedValue(0),
+  clearAllRows: vi.fn().mockResolvedValue(undefined)
+}));
+
+// Helper to set the expected update count before calling updateSessionDate
+function setMockUpdateCount(count: number) {
+  mockUpdateCount = count;
+}
 
 // ============================================================================
 // MOCK STORAGE
@@ -42,13 +77,20 @@ beforeEach(() => {
 
   vi.stubGlobal('localStorage', {
     getItem: (key: string) => mockStorage[key] ?? null,
-    setItem: (key: string, value: string) => { mockStorage[key] = value; },
-    removeItem: (key: string) => { delete mockStorage[key]; },
-    clear: () => { mockStorage = {}; }
+    setItem: (key: string, value: string) => {
+      mockStorage[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete mockStorage[key];
+    },
+    clear: () => {
+      mockStorage = {};
+    }
   });
 
-  // Clear history for each test
-  clearHistory();
+  // Reset initialization state and clear history for each test
+  _resetInitializationState();
+  exerciseHistory.set([]);
 });
 
 afterEach(() => {
@@ -114,17 +156,17 @@ describe('History Store', () => {
   });
 
   describe('appendHistoryRow', () => {
-    it('should add a single row', () => {
+    it('should add a single row', async () => {
       const row = createMockHistoryRow();
-      appendHistoryRow(row);
+      await appendHistoryRow(row);
 
       expect(get(historyRowCount)).toBe(1);
       expect(get(exerciseHistory)[0]).toEqual(row);
     });
 
-    it('should preserve all 20 columns', () => {
+    it('should preserve all 20 columns', async () => {
       const row = createMockHistoryRow();
-      appendHistoryRow(row);
+      await appendHistoryRow(row);
 
       const stored = get(exerciseHistory)[0];
       expect(stored.date).toBe('2026-01-11');
@@ -151,24 +193,24 @@ describe('History Store', () => {
   });
 
   describe('appendHistoryRows', () => {
-    it('should add multiple rows at once', () => {
+    it('should add multiple rows at once', async () => {
       const rows = [
         createMockHistoryRow({ set_number: 1 }),
         createMockHistoryRow({ set_number: 2 }),
         createMockHistoryRow({ set_number: 3 })
       ];
 
-      appendHistoryRows(rows);
+      await appendHistoryRows(rows);
 
       expect(get(historyRowCount)).toBe(3);
     });
   });
 
   describe('logSetToHistory', () => {
-    it('should create history row from set log', () => {
+    it('should create history row from set log', async () => {
       const setLog = createMockSetLog();
 
-      logSetToHistory(
+      await logSetToHistory(
         'test-program-123',
         1,
         1,
@@ -184,10 +226,10 @@ describe('History Store', () => {
       expect(row.weight).toBe(135);
     });
 
-    it('should handle compound parent logging', () => {
+    it('should handle compound parent logging', async () => {
       const setLog = createMockSetLog();
 
-      logSetToHistory(
+      await logSetToHistory(
         'test-program-123',
         1,
         1,
@@ -207,7 +249,7 @@ describe('History Store', () => {
   });
 
   describe('logSessionToHistory', () => {
-    it('should log exercise logs from session', () => {
+    it('should log exercise logs from session', async () => {
       const logs: ExerciseLog[] = [
         {
           exerciseName: 'Bench Press',
@@ -223,12 +265,12 @@ describe('History Store', () => {
         }
       ];
 
-      logSessionToHistory('test-program-123', 1, 1, logs);
+      await logSessionToHistory('test-program-123', 1, 1, logs);
 
       expect(get(historyRowCount)).toBe(3);
     });
 
-    it('should log compound parent row', () => {
+    it('should log compound parent row', async () => {
       const logs: ExerciseLog[] = [
         {
           exerciseName: 'EMOM Block',
@@ -242,7 +284,7 @@ describe('History Store', () => {
         }
       ];
 
-      logSessionToHistory('test-program-123', 1, 1, logs);
+      await logSessionToHistory('test-program-123', 1, 1, logs);
 
       const rows = get(exerciseHistory);
       expect(rows.length).toBe(1);
@@ -253,8 +295,8 @@ describe('History Store', () => {
   });
 
   describe('getPersonalRecords', () => {
-    it('should calculate max weight', () => {
-      appendHistoryRows([
+    it('should calculate max weight', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ weight: 135, date: '2026-01-01' }),
         createMockHistoryRow({ weight: 145, date: '2026-01-05' }),
         createMockHistoryRow({ weight: 155, date: '2026-01-10' }),
@@ -267,8 +309,8 @@ describe('History Store', () => {
       expect(pr.maxWeightDate).toBe('2026-01-10');
     });
 
-    it('should calculate max reps', () => {
-      appendHistoryRows([
+    it('should calculate max reps', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ reps: 8, date: '2026-01-01' }),
         createMockHistoryRow({ reps: 10, date: '2026-01-05' }),
         createMockHistoryRow({ reps: 12, date: '2026-01-10' }),
@@ -281,8 +323,8 @@ describe('History Store', () => {
       expect(pr.maxRepsDate).toBe('2026-01-10');
     });
 
-    it('should calculate max volume', () => {
-      appendHistoryRows([
+    it('should calculate max volume', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ weight: 100, reps: 10 }), // 1000
         createMockHistoryRow({ weight: 150, reps: 8 }),  // 1200
         createMockHistoryRow({ weight: 135, reps: 10 }) // 1350
@@ -301,8 +343,8 @@ describe('History Store', () => {
       expect(pr.maxVolume).toBe(null);
     });
 
-    it('should ignore compound parent rows', () => {
-      appendHistoryRows([
+    it('should ignore compound parent rows', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ weight: 135, is_compound_parent: false }),
         createMockHistoryRow({ weight: null, is_compound_parent: true })
       ]);
@@ -314,8 +356,8 @@ describe('History Store', () => {
   });
 
   describe('getExerciseStats', () => {
-    it('should calculate total sets', () => {
-      appendHistoryRows([
+    it('should calculate total sets', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ set_number: 1 }),
         createMockHistoryRow({ set_number: 2 }),
         createMockHistoryRow({ set_number: 3 }),
@@ -327,8 +369,8 @@ describe('History Store', () => {
       expect(stats.totalSets).toBe(4);
     });
 
-    it('should calculate total reps', () => {
-      appendHistoryRows([
+    it('should calculate total reps', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ reps: 8 }),
         createMockHistoryRow({ reps: 8 }),
         createMockHistoryRow({ reps: 7 }),
@@ -340,8 +382,8 @@ describe('History Store', () => {
       expect(stats.totalReps).toBe(29);
     });
 
-    it('should calculate average weight', () => {
-      appendHistoryRows([
+    it('should calculate average weight', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ weight: 100 }),
         createMockHistoryRow({ weight: 120 }),
         createMockHistoryRow({ weight: 140 })
@@ -352,8 +394,8 @@ describe('History Store', () => {
       expect(stats.avgWeight).toBe(120);
     });
 
-    it('should count unique sessions', () => {
-      appendHistoryRows([
+    it('should count unique sessions', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ date: '2026-01-01', workout_program_id: 'prog-1' }),
         createMockHistoryRow({ date: '2026-01-01', workout_program_id: 'prog-1' }),
         createMockHistoryRow({ date: '2026-01-03', workout_program_id: 'prog-1' }),
@@ -365,8 +407,8 @@ describe('History Store', () => {
       expect(stats.sessionCount).toBe(3);
     });
 
-    it('should track last performed date', () => {
-      appendHistoryRows([
+    it('should track last performed date', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ date: '2026-01-01' }),
         createMockHistoryRow({ date: '2026-01-05' }),
         createMockHistoryRow({ date: '2026-01-03' })
@@ -379,8 +421,8 @@ describe('History Store', () => {
   });
 
   describe('getLastPerformance', () => {
-    it('should return most recent row', () => {
-      appendHistoryRows([
+    it('should return most recent row', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ timestamp: '2026-01-01T10:00:00.000Z', weight: 100 }),
         createMockHistoryRow({ timestamp: '2026-01-05T10:00:00.000Z', weight: 130 }),
         createMockHistoryRow({ timestamp: '2026-01-03T10:00:00.000Z', weight: 120 })
@@ -400,8 +442,8 @@ describe('History Store', () => {
   });
 
   describe('exportHistoryCsv', () => {
-    it('should include CSV header', () => {
-      appendHistoryRow(createMockHistoryRow());
+    it('should include CSV header', async () => {
+      await appendHistoryRow(createMockHistoryRow());
 
       const csv = exportHistoryCsv();
       const lines = csv.split('\n');
@@ -409,8 +451,8 @@ describe('History Store', () => {
       expect(lines[0]).toContain('date,timestamp,workout_program_id');
     });
 
-    it('should export all rows', () => {
-      appendHistoryRows([
+    it('should export all rows', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ set_number: 1 }),
         createMockHistoryRow({ set_number: 2 }),
         createMockHistoryRow({ set_number: 3 })
@@ -422,8 +464,8 @@ describe('History Store', () => {
       expect(lines.length).toBe(4); // 1 header + 3 data rows
     });
 
-    it('should escape commas and quotes in values', () => {
-      appendHistoryRow(createMockHistoryRow({
+    it('should escape commas and quotes in values', async () => {
+      await appendHistoryRow(createMockHistoryRow({
         notes: 'Test, with "quotes" and commas'
       }));
 
@@ -434,8 +476,8 @@ describe('History Store', () => {
   });
 
   describe('derived stores', () => {
-    it('should track unique exercise names', () => {
-      appendHistoryRows([
+    it('should track unique exercise names', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ exercise_name: 'Bench Press' }),
         createMockHistoryRow({ exercise_name: 'Pull-ups' }),
         createMockHistoryRow({ exercise_name: 'Bench Press' }),
@@ -450,8 +492,8 @@ describe('History Store', () => {
       expect(names.length).toBe(3);
     });
 
-    it('should exclude compound parent names from exercise list', () => {
-      appendHistoryRows([
+    it('should exclude compound parent names from exercise list', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({ exercise_name: 'EMOM Block', is_compound_parent: true }),
         createMockHistoryRow({ exercise_name: 'Pull-ups', is_compound_parent: false })
       ]);
@@ -464,8 +506,8 @@ describe('History Store', () => {
   });
 
   describe('getStorageInfo', () => {
-    it('should return row count and estimated size', () => {
-      appendHistoryRows([
+    it('should return row count and estimated size', async () => {
+      await appendHistoryRows([
         createMockHistoryRow(),
         createMockHistoryRow(),
         createMockHistoryRow()
@@ -479,17 +521,27 @@ describe('History Store', () => {
   });
 
   describe('persistence', () => {
-    it('should save to localStorage', () => {
-      appendHistoryRow(createMockHistoryRow());
+    it('should persist to IndexedDB when adding rows', async () => {
+      // Import the mocked module to verify it was called
+      const historyDb = await import('$lib/stores/historyDb');
 
-      expect(mockStorage['shredly_exercise_history_v2']).toBeDefined();
+      await appendHistoryRow(createMockHistoryRow());
+
+      // Verify IndexedDB appendRows was called
+      expect(historyDb.appendRows).toHaveBeenCalled();
     });
 
-    it('should contain CSV data in localStorage', () => {
-      appendHistoryRow(createMockHistoryRow({ exercise_name: 'Test Exercise' }));
+    it('should persist row data to IndexedDB', async () => {
+      const historyDb = await import('$lib/stores/historyDb');
 
-      const stored = mockStorage['shredly_exercise_history_v2'];
-      expect(stored).toContain('Test Exercise');
+      await appendHistoryRow(createMockHistoryRow({ exercise_name: 'Test Exercise' }));
+
+      // Verify the row was passed to IndexedDB
+      expect(historyDb.appendRows).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ exercise_name: 'Test Exercise' })
+        ])
+      );
     });
   });
 
@@ -499,9 +551,9 @@ describe('History Store', () => {
       expect(result).toBe(null);
     });
 
-    it('should return rows for today\'s workout', () => {
+    it('should return rows for today\'s workout', async () => {
       const today = new Date().toISOString().split('T')[0];
-      appendHistoryRows([
+      await appendHistoryRows([
         createMockHistoryRow({
           date: today,
           workout_program_id: 'test-program',
@@ -526,9 +578,9 @@ describe('History Store', () => {
       expect(result?.length).toBe(2);
     });
 
-    it('should return all rows regardless of week/day values (resilient to start date changes)', () => {
+    it('should return all rows regardless of week/day values (resilient to start date changes)', async () => {
       const today = new Date().toISOString().split('T')[0];
-      appendHistoryRows([
+      await appendHistoryRows([
         createMockHistoryRow({
           date: today,
           workout_program_id: 'test-program',
@@ -554,9 +606,9 @@ describe('History Store', () => {
       expect(result?.length).toBe(2);
     });
 
-    it('should exclude rows from different dates', () => {
+    it('should exclude rows from different dates', async () => {
       const today = new Date().toISOString().split('T')[0];
-      appendHistoryRows([
+      await appendHistoryRows([
         createMockHistoryRow({
           date: today,
           workout_program_id: 'test-program',
@@ -576,9 +628,9 @@ describe('History Store', () => {
       expect(result?.length).toBe(1);
     });
 
-    it('should exclude rows from different programs', () => {
+    it('should exclude rows from different programs', async () => {
       const today = new Date().toISOString().split('T')[0];
-      appendHistoryRows([
+      await appendHistoryRows([
         createMockHistoryRow({
           date: today,
           workout_program_id: 'test-program',
@@ -598,9 +650,9 @@ describe('History Store', () => {
       expect(result?.length).toBe(1);
     });
 
-    it('should deduplicate by keeping latest timestamp', () => {
+    it('should deduplicate by keeping latest timestamp', async () => {
       const today = new Date().toISOString().split('T')[0];
-      appendHistoryRows([
+      await appendHistoryRows([
         createMockHistoryRow({
           date: today,
           timestamp: `${today}T10:00:00.000Z`,
@@ -636,9 +688,9 @@ describe('History Store', () => {
       expect(result).toBe(false);
     });
 
-    it('should return true when history exists for today', () => {
+    it('should return true when history exists for today', async () => {
       const today = new Date().toISOString().split('T')[0];
-      appendHistoryRow(createMockHistoryRow({
+      await appendHistoryRow(createMockHistoryRow({
         date: today,
         workout_program_id: 'test-program',
         week_number: 1,
@@ -649,9 +701,9 @@ describe('History Store', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true regardless of stored week/day values (resilient to start date changes)', () => {
+    it('should return true regardless of stored week/day values (resilient to start date changes)', async () => {
       const today = new Date().toISOString().split('T')[0];
-      appendHistoryRow(createMockHistoryRow({
+      await appendHistoryRow(createMockHistoryRow({
         date: today,
         workout_program_id: 'test-program',
         week_number: 99,  // Arbitrary week (shouldn't matter)
@@ -665,8 +717,8 @@ describe('History Store', () => {
   });
 
   describe('updateSessionDate', () => {
-    it('should update date for all matching rows', () => {
-      appendHistoryRows([
+    it('should update date for all matching rows', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({
           date: '2026-01-15',
           timestamp: '2026-01-15T10:00:00.000Z',
@@ -696,7 +748,10 @@ describe('History Store', () => {
         })
       ]);
 
-      const updatedCount = updateSessionDate(
+      // Set mock to return correct count (3 rows match)
+      setMockUpdateCount(3);
+
+      const updatedCount = await updateSessionDate(
         '2026-01-15',
         'test-program',
         1,
@@ -710,8 +765,8 @@ describe('History Store', () => {
       expect(rows.every(r => r.date === '2026-01-10')).toBe(true);
     });
 
-    it('should not update rows from different sessions', () => {
-      appendHistoryRows([
+    it('should not update rows from different sessions', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({
           date: '2026-01-15',
           workout_program_id: 'test-program',
@@ -728,7 +783,10 @@ describe('History Store', () => {
         })
       ]);
 
-      updateSessionDate(
+      // Set mock to return correct count (1 row matches - only Bench Press, not Squats)
+      setMockUpdateCount(1);
+
+      await updateSessionDate(
         '2026-01-15',
         'test-program',
         1,
@@ -741,8 +799,8 @@ describe('History Store', () => {
       expect(rows.find(r => r.exercise_name === 'Squats')?.date).toBe('2026-01-16');
     });
 
-    it('should update timestamp to preserve time but change date', () => {
-      appendHistoryRow(createMockHistoryRow({
+    it('should update timestamp to preserve time but change date', async () => {
+      await appendHistoryRow(createMockHistoryRow({
         date: '2026-01-15',
         timestamp: '2026-01-15T14:30:45.123Z',
         workout_program_id: 'test-program',
@@ -750,7 +808,10 @@ describe('History Store', () => {
         day_number: 1
       }));
 
-      updateSessionDate(
+      // Set mock to return correct count (1 row matches)
+      setMockUpdateCount(1);
+
+      await updateSessionDate(
         '2026-01-15',
         'test-program',
         1,
@@ -767,15 +828,18 @@ describe('History Store', () => {
       expect(timestamp.getUTCSeconds()).toBe(45);
     });
 
-    it('should return 0 when no matching rows exist', () => {
-      appendHistoryRow(createMockHistoryRow({
+    it('should return 0 when no matching rows exist', async () => {
+      await appendHistoryRow(createMockHistoryRow({
         date: '2026-01-15',
         workout_program_id: 'different-program',
         week_number: 1,
         day_number: 1
       }));
 
-      const updatedCount = updateSessionDate(
+      // Set mock to return 0 (no rows match test-program)
+      setMockUpdateCount(0);
+
+      const updatedCount = await updateSessionDate(
         '2026-01-15',
         'test-program',
         1,
@@ -786,8 +850,8 @@ describe('History Store', () => {
       expect(updatedCount).toBe(0);
     });
 
-    it('should only update rows matching all session identifiers', () => {
-      appendHistoryRows([
+    it('should only update rows matching all session identifiers', async () => {
+      await appendHistoryRows([
         createMockHistoryRow({
           date: '2026-01-15',
           workout_program_id: 'test-program',
@@ -811,7 +875,10 @@ describe('History Store', () => {
         })
       ]);
 
-      const updatedCount = updateSessionDate(
+      // Set mock to return correct count (only Exercise A matches all criteria)
+      setMockUpdateCount(1);
+
+      const updatedCount = await updateSessionDate(
         '2026-01-15',
         'test-program',
         1,

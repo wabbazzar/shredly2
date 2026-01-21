@@ -367,7 +367,8 @@ export function getMostRecentDataPoint(
 
 /**
  * Calculate the trend direction based on recent performance
- * Compares last 3 data points to determine if going up, down, or stable
+ * Uses best set per day to avoid trends from multiple sets in same session
+ * Requires at least 2 unique days of data to show a trend
  */
 export function calculateTrend(
 	dataPoints: OneRMDataPoint[]
@@ -376,13 +377,23 @@ export function calculateTrend(
 		return null;
 	}
 
-	// Take up to 5 most recent points
-	const recent = dataPoints.slice(0, 5);
+	// Use best set per day to avoid false trends from warmup/working sets in same session
+	const bestByDay = getBestSetPerDay(dataPoints, true);
 
-	// Calculate 1RM for each point
-	const estimates = recent.map((p) => calculateEpley1RM(p.weight, p.reps));
+	// Need at least 2 unique days to calculate trend
+	if (bestByDay.size < 2) {
+		return null;
+	}
 
-	// Compare most recent to average of previous
+	// Sort days by date descending (most recent first)
+	const sortedDays = Array.from(bestByDay.entries())
+		.sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime())
+		.slice(0, 5); // Take up to 5 most recent days
+
+	// Calculate 1RM for each day's best set
+	const estimates = sortedDays.map(([, point]) => calculateEpley1RM(point.weight, point.reps));
+
+	// Compare most recent day to average of previous days
 	const mostRecent = estimates[0];
 	const previousAvg = estimates.slice(1).reduce((a, b) => a + b, 0) / (estimates.length - 1);
 

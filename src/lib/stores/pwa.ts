@@ -57,18 +57,13 @@ function createPwaStore() {
 		});
 
 		// Listen for controller change (new SW activated)
+		// NOTE: We intentionally do NOT auto-reload here.
+		// Auto-reload was causing data loss on iOS PWAs due to snapshot restoration issues.
+		// Instead, we mark that an update was applied and let the user refresh when ready.
 		navigator.serviceWorker.addEventListener('controllerchange', () => {
-			// New service worker has taken control
-			// IMPORTANT: Don't reload immediately - give async operations time to complete
-			// This prevents data loss during reload if IndexedDB operations are in flight
-			console.log('[PWA] Service worker update detected, scheduling graceful reload...');
-
-			// Brief delay ensures any pending localStorage/IndexedDB writes complete
-			// Longer delays (30s) would be safer but hurt UX - 2s is a reasonable compromise
-			setTimeout(() => {
-				console.log('[PWA] Applying service worker update...');
-				window.location.reload();
-			}, 2000);
+			console.log('[PWA] New service worker has taken control');
+			// The new SW is now active - user will get new content on next navigation or refresh
+			// No automatic reload - this prevents data loss and respects the user's workflow
 		});
 	}
 

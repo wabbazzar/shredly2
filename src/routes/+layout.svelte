@@ -6,7 +6,7 @@
 	import { navigationStore } from '$lib/stores/navigation';
 	import { initializeScheduleStore } from '$lib/stores/schedule';
 	import { fullRecalculateCache } from '$lib/stores/oneRMCache';
-	import { hydrateHistory } from '$lib/stores/history';
+	import { initializeHistory } from '$lib/stores/history';
 	import { userStore } from '$lib/stores/user';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
@@ -91,14 +91,15 @@
 		// Request persistent storage FIRST - prevents browser from clearing our data
 		await requestPersistentStorage();
 
-		// Hydrate stores from localStorage (SSR sends empty arrays)
-		hydrateHistory();
+		// CRITICAL: Initialize history from IndexedDB (migrates from localStorage if needed)
+		// This uses the same robust pattern as schedules
+		await initializeHistory();
 
-		// CRITICAL: Await IndexedDB initialization before marking app ready
+		// CRITICAL: Await IndexedDB initialization for schedules
 		// Without this, reload during initialization can lose data
 		await initializeScheduleStore();
 
-		// Initialize 1RM cache with user overrides (depends on history being hydrated)
+		// Initialize 1RM cache with user overrides (depends on history being initialized)
 		const userData = get(userStore);
 		const userOverrides: Record<string, number> = {};
 		for (const orm of userData.oneRepMaxes) {

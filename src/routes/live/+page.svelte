@@ -39,6 +39,7 @@
 		getHistoryForSession,
 		getSessionRowsForDeletion,
 		deleteSession,
+		deleteExerciseRows,
 		updateSessionDate,
 		type WorkoutSession,
 		type HistoryRow
@@ -351,13 +352,14 @@
 		}
 	}
 
-	function handleStop() {
+	async function handleStop() {
 		timerEngine.stop();
 		const result = endWorkout();
 
 		// Save logs to history if session had data
 		if (result && result.logs.length > 0 && $liveSession) {
-			logSessionToHistory(
+			// MUST await before updating cache, otherwise cache uses stale data
+			await logSessionToHistory(
 				$liveSession.scheduleId,
 				$liveSession.weekNumber,
 				$liveSession.dayNumber,
@@ -607,6 +609,7 @@
 	// Sub-exercise weight type (matches DataEntryModal/SetReviewModal)
 	interface SubExerciseWeight {
 		name: string;
+		reps: number | null;
 		weight: string;
 		weightUnit: 'lbs' | 'kg';
 		showWeight: boolean;
@@ -653,7 +656,7 @@
 	}
 
 	// Review modal handlers (for viewing/editing any exercise)
-	function handleReviewSave(event: CustomEvent<{
+	async function handleReviewSave(event: CustomEvent<{
 		sets: SetLog[];
 		totalRounds?: number;
 		totalTime?: number;
@@ -685,17 +688,21 @@
 			// Build array of logs including sub-exercises
 			const logsToSave = [exerciseLog];
 
-			// Create sub-exercise logs if weights were entered
+			// Create sub-exercise logs if reps or weights were entered
 			if (subExerciseWeights && subExerciseWeights.length > 0) {
 				const now = new Date().toISOString();
 				for (const subEx of subExerciseWeights) {
-					if (!subEx.weight || !subEx.showWeight) continue;
-					const weight = parseFloat(subEx.weight);
-					if (isNaN(weight) || weight <= 0) continue;
+					// Check if we have weight OR reps (allows bodyweight exercises without weight)
+					const hasWeight = subEx.weight && subEx.showWeight;
+					const weight = hasWeight ? parseFloat(subEx.weight) : null;
+					const hasValidWeight = weight !== null && !isNaN(weight) && weight > 0;
+					const hasReps = subEx.reps !== null && subEx.reps > 0;
 
-					// Find the sub-exercise prescription for reps
-					const subExercise = reviewExercise.subExercises?.find(s => s.exerciseName === subEx.name);
-					const reps = subExercise?.prescription.reps ?? null;
+					// Skip only if we have neither valid weight nor reps
+					if (!hasValidWeight && !hasReps) continue;
+
+					// Use the user-entered reps from the modal, NOT the prescription
+					const reps = subEx.reps;
 
 					logsToSave.push({
 						exerciseName: subEx.name,
@@ -705,8 +712,8 @@
 						sets: [{
 							setNumber: 1,
 							reps,
-							weight,
-							weightUnit: subEx.weightUnit,
+							weight: hasValidWeight ? weight : null,
+							weightUnit: hasValidWeight ? subEx.weightUnit : null,
 							workTime: null,
 							rpe: null,
 							rir: null,
@@ -720,7 +727,21 @@
 			}
 
 			// Log to history (use historical date if editing a past workout)
-			logSessionToHistory(
+			// When editing an existing workout, we need to DELETE the old rows first
+			// to prevent duplicate entries ballooning in history
+			const sessionDate = $liveSession.historicalDate ?? new Date().toISOString().split('T')[0];
+
+			// Delete existing rows for this exercise before adding updated ones
+			await deleteExerciseRows(
+				sessionDate,
+				$liveSession.scheduleId,
+				$liveSession.weekNumber,
+				$liveSession.dayNumber,
+				reviewExerciseIndex
+			);
+
+			// MUST await before updating cache, otherwise cache uses stale data
+			await logSessionToHistory(
 				$liveSession.scheduleId,
 				$liveSession.weekNumber,
 				$liveSession.dayNumber,

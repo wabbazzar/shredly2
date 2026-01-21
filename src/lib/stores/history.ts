@@ -1,20 +1,38 @@
 /**
- * Exercise History Store - CSV-based workout history logging
+ * Exercise History Store - IndexedDB-backed workout history logging
  *
- * Stores workout history in localStorage as CSV format per EXERCISE_HISTORY_SPEC.md
- * - 20-column CSV schema
- * - Append-only (historical data never modified)
- * - Support for compound exercises (parent + sub-exercise rows)
+ * Stores workout history in IndexedDB for robust persistence.
+ * Each history row is stored as a separate entry with UUID for atomic operations.
+ *
+ * Key design principles:
+ * 1. IndexedDB as primary storage (like schedules)
+ * 2. Explicit saves only - NO auto-save on store changes
+ * 3. Append-only operations - never overwrite entire dataset
+ * 4. Verification on load - detect potential data loss
+ *
+ * Migration: Automatically migrates from old localStorage format on first run.
  */
 
 import { writable, derived, get } from 'svelte/store';
 import type { ExerciseLog, SetLog } from '$lib/engine/types';
+import {
+  openHistoryDatabase,
+  getAllRows,
+  appendRows as dbAppendRows,
+  deleteSessionRows as dbDeleteSessionRows,
+  deleteExerciseRows as dbDeleteExerciseRows,
+  updateSessionDate as dbUpdateSessionDate,
+  migrateFromLocalStorage,
+  saveBackupMetadata,
+  verifyDataIntegrity,
+  compactDatabase,
+  clearAllRows
+} from './historyDb';
 
 // ============================================================================
 // CONSTANTS
 // ============================================================================
 
-const HISTORY_KEY = 'shredly_exercise_history_v2';
 const isBrowser = typeof window !== 'undefined';
 
 /**
@@ -28,7 +46,7 @@ export function toLocalDateString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-// CSV column headers
+// CSV column headers (for export only now)
 const CSV_HEADERS = [
   'date',
   'timestamp',
@@ -86,7 +104,7 @@ export interface PersonalRecord {
   maxWeightDate: string | null;
   maxReps: number | null;
   maxRepsDate: string | null;
-  maxVolume: number | null; // weight * reps
+  maxVolume: number | null;
   maxVolumeDate: string | null;
 }
 
@@ -101,278 +119,122 @@ export interface ExerciseStats {
 }
 
 // ============================================================================
-// HELPER FUNCTIONS
+// STORE
 // ============================================================================
 
 /**
- * Escape CSV field value
+ * Track if we've initialized from IndexedDB
  */
-function escapeCSV(value: string | number | boolean | null | undefined): string {
-  if (value === null || value === undefined) {
-    return '';
-  }
-
-  const str = String(value);
-
-  // If contains comma, newline, or quote, wrap in quotes and escape inner quotes
-  if (str.includes(',') || str.includes('\n') || str.includes('"')) {
-    return `"${str.replace(/"/g, '""')}"`;
-  }
-
-  return str;
-}
+let isInitialized = false;
+let initializationPromise: Promise<void> | null = null;
 
 /**
- * Parse CSV field value
- */
-function parseCSVField(value: string): string {
-  // Remove surrounding quotes and unescape inner quotes
-  if (value.startsWith('"') && value.endsWith('"')) {
-    return value.slice(1, -1).replace(/""/g, '"');
-  }
-  return value;
-}
-
-/**
- * Convert HistoryRow to CSV line
- */
-function rowToCSV(row: HistoryRow): string {
-  return [
-    escapeCSV(row.date),
-    escapeCSV(row.timestamp),
-    escapeCSV(row.workout_program_id),
-    escapeCSV(row.week_number),
-    escapeCSV(row.day_number),
-    escapeCSV(row.exercise_name),
-    escapeCSV(row.exercise_order),
-    escapeCSV(row.is_compound_parent),
-    escapeCSV(row.compound_parent_name),
-    escapeCSV(row.set_number),
-    escapeCSV(row.reps),
-    escapeCSV(row.weight),
-    escapeCSV(row.weight_unit),
-    escapeCSV(row.work_time),
-    escapeCSV(row.rest_time),
-    escapeCSV(row.tempo),
-    escapeCSV(row.rpe),
-    escapeCSV(row.rir),
-    escapeCSV(row.completed),
-    escapeCSV(row.notes)
-  ].join(',');
-}
-
-/**
- * Parse CSV line to HistoryRow
- */
-function csvToRow(line: string): HistoryRow | null {
-  // Simple CSV parsing (handles quoted fields)
-  const values: string[] = [];
-  let current = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-
-    if (char === '"') {
-      if (inQuotes && line[i + 1] === '"') {
-        current += '"';
-        i++; // Skip next quote
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (char === ',' && !inQuotes) {
-      values.push(parseCSVField(current));
-      current = '';
-    } else {
-      current += char;
-    }
-  }
-  values.push(parseCSVField(current));
-
-  if (values.length !== 20) {
-    return null;
-  }
-
-  return {
-    date: values[0],
-    timestamp: values[1],
-    workout_program_id: values[2],
-    week_number: parseInt(values[3]) || 0,
-    day_number: parseInt(values[4]) || 0,
-    exercise_name: values[5],
-    exercise_order: parseInt(values[6]) || 0,
-    is_compound_parent: values[7] === 'true',
-    compound_parent_name: values[8] || null,
-    set_number: parseInt(values[9]) || 0,
-    reps: values[10] ? parseInt(values[10]) : null,
-    weight: values[11] ? parseFloat(values[11]) : null,
-    weight_unit: values[12] || null,
-    work_time: values[13] ? parseInt(values[13]) : null,
-    rest_time: values[14] ? parseInt(values[14]) : null,
-    tempo: values[15] || null,
-    rpe: values[16] ? parseInt(values[16]) : null,
-    rir: values[17] ? parseInt(values[17]) : null,
-    completed: values[18] === 'true',
-    notes: values[19] || null
-  };
-}
-
-/**
- * Load history from localStorage
- */
-function loadHistory(): HistoryRow[] {
-  if (!isBrowser) return [];
-
-  try {
-    const csv = localStorage.getItem(HISTORY_KEY);
-    if (!csv) return [];
-
-    const lines = csv.split('\n').filter(line => line.trim());
-
-    // Skip header if present
-    const startIndex = lines[0] === CSV_HEADERS.join(',') ? 1 : 0;
-
-    const rows: HistoryRow[] = [];
-    for (let i = startIndex; i < lines.length; i++) {
-      const row = csvToRow(lines[i]);
-      if (row) {
-        rows.push(row);
-      }
-    }
-
-    return rows;
-  } catch (e) {
-    console.error('Failed to load history:', e);
-    return [];
-  }
-}
-
-/**
- * Save history to localStorage with verification
- * Returns true if save succeeded, false otherwise
- */
-function saveHistory(rows: HistoryRow[]): boolean {
-  if (!isBrowser) return false;
-
-  try {
-    const header = CSV_HEADERS.join(',');
-    const lines = [header, ...rows.map(rowToCSV)];
-    const csv = lines.join('\n');
-
-    // Check size before writing (localStorage typically has 5-10MB limit)
-    const sizeInBytes = new Blob([csv]).size;
-    const sizeInMB = sizeInBytes / (1024 * 1024);
-    if (sizeInMB > 4.5) {
-      console.warn(`[History] Data size (${sizeInMB.toFixed(2)}MB) approaching localStorage limit`);
-    }
-
-    localStorage.setItem(HISTORY_KEY, csv);
-
-    // Verify write succeeded by reading back
-    const stored = localStorage.getItem(HISTORY_KEY);
-    if (!stored) {
-      console.error('[History] Write verification failed - data not persisted');
-      return false;
-    }
-
-    // Quick sanity check: row count should match
-    const storedLineCount = stored.split('\n').length;
-    const expectedLineCount = lines.length;
-    if (storedLineCount !== expectedLineCount) {
-      console.error(`[History] Write verification failed - expected ${expectedLineCount} lines, got ${storedLineCount}`);
-      return false;
-    }
-
-    return true;
-  } catch (e) {
-    // Handle quota exceeded specifically
-    if (e instanceof DOMException && (e.code === 22 || e.name === 'QuotaExceededError')) {
-      console.error('[History] localStorage quota exceeded - cannot save workout history');
-      console.error('[History] Consider exporting your data and clearing old entries');
-    } else {
-      console.error('[History] Failed to save history:', e);
-    }
-    return false;
-  }
-}
-
-// ============================================================================
-// STORES
-// ============================================================================
-
-/**
- * Track if we've hydrated on the client
- */
-let isHydrated = false;
-
-/**
- * Exercise history store (all rows)
- * Initialized empty during SSR, hydrated on client-side first access
+ * Exercise history store
+ * Initialized empty, populated from IndexedDB on client-side
+ *
+ * IMPORTANT: This store does NOT auto-save.
+ * Use appendHistoryRows() or logSessionToHistory() to persist data.
  */
 function createExerciseHistoryStore() {
-  // Start with empty array (SSR-safe)
   const { subscribe, set, update } = writable<HistoryRow[]>([]);
 
-  // Track if auto-save should be enabled (disabled during hydration)
-  let autoSaveEnabled = false;
-
-  // Custom subscribe that hydrates on first client-side access
-  const hydratingSubscribe: typeof subscribe = (run, invalidate) => {
-    // Hydrate on first client-side subscription
-    if (isBrowser && !isHydrated) {
-      isHydrated = true;
-      const rows = loadHistory();
-      set(rows);
-      autoSaveEnabled = true;
-    }
-
-    return subscribe(run, invalidate);
-  };
-
-  // Auto-save wrapper
-  subscribe(rows => {
-    if (autoSaveEnabled) {
-      saveHistory(rows);
-    }
-  });
-
   return {
-    subscribe: hydratingSubscribe,
-    set: (rows: HistoryRow[]) => {
-      if (isBrowser && !isHydrated) {
-        isHydrated = true;
-        autoSaveEnabled = true;
-      }
-      set(rows);
-    },
-    update
+    subscribe,
+    set,
+    update,
+    /**
+     * Initialize the store from IndexedDB
+     * Call this once at app startup
+     */
+    async initialize(): Promise<void> {
+      if (!isBrowser) return;
+      if (isInitialized) return;
+      if (initializationPromise) return initializationPromise;
+
+      initializationPromise = (async () => {
+        try {
+          // Open database
+          await openHistoryDatabase();
+
+          // Migrate from localStorage if needed
+          const migration = await migrateFromLocalStorage();
+          if (migration.migrated && migration.rowCount > 0) {
+            console.log(`[History] ${migration.message}`);
+          }
+
+          // Compact database (remove old tombstones)
+          await compactDatabase();
+
+          // Load all rows
+          const rows = await getAllRows();
+          set(rows);
+
+          // Verify data integrity
+          const integrity = await verifyDataIntegrity();
+          if (!integrity.intact) {
+            console.warn(`[History] ${integrity.message}`);
+          }
+
+          // Update backup metadata
+          if (rows.length > 0) {
+            const latestTimestamp = rows.reduce(
+              (latest, row) => (row.timestamp > latest ? row.timestamp : latest),
+              rows[0].timestamp
+            );
+            saveBackupMetadata(rows.length, latestTimestamp);
+          }
+
+          isInitialized = true;
+          console.log(`[History] Initialized with ${rows.length} rows from IndexedDB`);
+        } catch (e) {
+          console.error('[History] Failed to initialize:', e);
+          // Store remains empty but don't crash
+          isInitialized = true;
+        } finally {
+          initializationPromise = null;
+        }
+      })();
+
+      return initializationPromise;
+    }
   };
 }
 
 export const exerciseHistory = createExerciseHistoryStore();
 
 /**
- * Hydrate history from localStorage
- * Called on client-side after SSR hydration to load persisted data
- * Note: With the new self-hydrating store, this is mostly a no-op but kept for compatibility
+ * Initialize history from IndexedDB
+ * Call this on client-side after SSR hydration
  */
-export function hydrateHistory(): void {
-  if (!isBrowser) return;
-
-  // Force hydration if not already done
-  if (!isHydrated) {
-    isHydrated = true;
-    const rows = loadHistory();
-    exerciseHistory.set(rows);
-  }
+export async function initializeHistory(): Promise<void> {
+  return exerciseHistory.initialize();
 }
 
 /**
- * Reset hydration state (for testing only)
+ * Legacy function for backward compatibility
+ * @deprecated Use initializeHistory() instead
+ */
+export function hydrateHistory(): void {
+  // Start initialization but don't await (fire and forget for backward compat)
+  exerciseHistory.initialize();
+}
+
+/**
+ * Sync with storage - now a no-op since IndexedDB is source of truth
+ * Kept for backward compatibility with visibility change handlers
+ */
+export function syncWithStorage(): void {
+  // IndexedDB doesn't need this - it's always consistent
+  // This was only needed for the fragile localStorage approach
+}
+
+/**
+ * Reset initialization state (for testing only)
  * @internal
  */
-export function _resetHydrationState(): void {
-  isHydrated = false;
+export function _resetInitializationState(): void {
+  isInitialized = false;
+  initializationPromise = null;
 }
 
 // ============================================================================
@@ -382,12 +244,12 @@ export function _resetHydrationState(): void {
 /**
  * Total row count
  */
-export const historyRowCount = derived(exerciseHistory, $history => $history.length);
+export const historyRowCount = derived(exerciseHistory, ($history) => $history.length);
 
 /**
  * Unique exercise names in history
  */
-export const exerciseNames = derived(exerciseHistory, $history => {
+export const exerciseNames = derived(exerciseHistory, ($history) => {
   const names = new Set<string>();
   for (const row of $history) {
     if (!row.is_compound_parent) {
@@ -398,27 +260,44 @@ export const exerciseNames = derived(exerciseHistory, $history => {
 });
 
 // ============================================================================
-// ACTIONS
+// ACTIONS - These persist to IndexedDB
 // ============================================================================
 
 /**
- * Append a history row
+ * Append history rows and persist to IndexedDB
+ * This is the primary way to add new history entries
  */
-export function appendHistoryRow(row: HistoryRow): void {
-  exerciseHistory.update(rows => [...rows, row]);
+export async function appendHistoryRows(newRows: HistoryRow[]): Promise<void> {
+  if (newRows.length === 0) return;
+
+  // Persist to IndexedDB first (source of truth)
+  await dbAppendRows(newRows);
+
+  // Update in-memory store
+  exerciseHistory.update((rows) => [...rows, ...newRows]);
+
+  // Update backup metadata
+  const allRows = get(exerciseHistory);
+  if (allRows.length > 0) {
+    const latestTimestamp = allRows.reduce(
+      (latest, row) => (row.timestamp > latest ? row.timestamp : latest),
+      allRows[0].timestamp
+    );
+    saveBackupMetadata(allRows.length, latestTimestamp);
+  }
 }
 
 /**
- * Append multiple history rows
+ * Append a single history row
  */
-export function appendHistoryRows(newRows: HistoryRow[]): void {
-  exerciseHistory.update(rows => [...rows, ...newRows]);
+export async function appendHistoryRow(row: HistoryRow): Promise<void> {
+  await appendHistoryRows([row]);
 }
 
 /**
  * Log a completed set to history
  */
-export function logSetToHistory(
+export async function logSetToHistory(
   workoutProgramId: string,
   weekNumber: number,
   dayNumber: number,
@@ -431,7 +310,7 @@ export function logSetToHistory(
     restTime?: number | null;
     tempo?: string | null;
   }
-): void {
+): Promise<void> {
   const now = new Date();
   const row: HistoryRow = {
     date: toLocalDateString(now),
@@ -456,7 +335,7 @@ export function logSetToHistory(
     notes: setLog.notes
   };
 
-  appendHistoryRow(row);
+  await appendHistoryRow(row);
 }
 
 /**
@@ -468,16 +347,15 @@ export function logSetToHistory(
  * @param logs - Array of exercise logs to save
  * @param overrideDate - Optional date to use instead of today (for editing historical workouts)
  */
-export function logSessionToHistory(
+export async function logSessionToHistory(
   workoutProgramId: string,
   weekNumber: number,
   dayNumber: number,
   logs: ExerciseLog[],
   overrideDate?: string
-): void {
+): Promise<void> {
   const rows: HistoryRow[] = [];
   const now = new Date();
-  // Use override date if provided, otherwise use today
   const date = overrideDate ?? toLocalDateString(now);
 
   for (const log of logs) {
@@ -536,8 +414,12 @@ export function logSessionToHistory(
     }
   }
 
-  appendHistoryRows(rows);
+  await appendHistoryRows(rows);
 }
+
+// ============================================================================
+// QUERIES (read from in-memory store)
+// ============================================================================
 
 /**
  * Get personal records for an exercise
@@ -545,7 +427,7 @@ export function logSessionToHistory(
 export function getPersonalRecords(exerciseName: string): PersonalRecord {
   const history = get(exerciseHistory);
   const exerciseRows = history.filter(
-    r => r.exercise_name === exerciseName && !r.is_compound_parent && r.completed
+    (r) => r.exercise_name === exerciseName && !r.is_compound_parent && r.completed
   );
 
   const pr: PersonalRecord = {
@@ -560,20 +442,17 @@ export function getPersonalRecords(exerciseName: string): PersonalRecord {
   };
 
   for (const row of exerciseRows) {
-    // Max weight
     if (row.weight !== null && (pr.maxWeight === null || row.weight > pr.maxWeight)) {
       pr.maxWeight = row.weight;
       pr.maxWeightUnit = row.weight_unit;
       pr.maxWeightDate = row.date;
     }
 
-    // Max reps (at same or higher weight as current max)
     if (row.reps !== null && (pr.maxReps === null || row.reps > pr.maxReps)) {
       pr.maxReps = row.reps;
       pr.maxRepsDate = row.date;
     }
 
-    // Max volume (weight * reps)
     if (row.weight !== null && row.reps !== null) {
       const volume = row.weight * row.reps;
       if (pr.maxVolume === null || volume > pr.maxVolume) {
@@ -592,7 +471,7 @@ export function getPersonalRecords(exerciseName: string): PersonalRecord {
 export function getExerciseStats(exerciseName: string): ExerciseStats {
   const history = get(exerciseHistory);
   const exerciseRows = history.filter(
-    r => r.exercise_name === exerciseName && !r.is_compound_parent && r.completed
+    (r) => r.exercise_name === exerciseName && !r.is_compound_parent && r.completed
   );
 
   const stats: ExerciseStats = {
@@ -629,10 +508,8 @@ export function getExerciseStats(exerciseName: string): ExerciseStats {
       weightCount++;
     }
 
-    // Track unique sessions by date + workout_program_id
     sessions.add(`${row.date}-${row.workout_program_id}`);
 
-    // Track last performed
     if (!stats.lastPerformed || row.date > stats.lastPerformed) {
       stats.lastPerformed = row.date;
     }
@@ -651,42 +528,29 @@ export function getExerciseStats(exerciseName: string): ExerciseStats {
 export function getLastPerformance(exerciseName: string): HistoryRow | null {
   const history = get(exerciseHistory);
   const exerciseRows = history.filter(
-    r => r.exercise_name === exerciseName && !r.is_compound_parent && r.completed
+    (r) => r.exercise_name === exerciseName && !r.is_compound_parent && r.completed
   );
 
   if (exerciseRows.length === 0) return null;
 
-  // Sort by timestamp descending and return first
-  return exerciseRows.sort((a, b) =>
-    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  return exerciseRows.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   )[0];
 }
 
 /**
  * Get today's logged history for a specific workout program, deduplicated
- * Returns null if no history exists for today's workout
- *
- * Queries by date + program_id only - resilient to start date changes.
- * week_number and day_number are still stored in history but not used for filtering.
- *
- * Deduplication: If multiple rows exist for the same (exercise_name, set_number, is_compound_parent),
- * only the row with the latest timestamp is returned.
  */
-export function getTodaysHistoryForWorkout(
-  workoutProgramId: string
-): HistoryRow[] | null {
+export function getTodaysHistoryForWorkout(workoutProgramId: string): HistoryRow[] | null {
   const today = toLocalDateString(new Date());
   const history = get(exerciseHistory);
 
-  // Filter by date + program_id only - resilient to start date changes
   const todaysRows = history.filter(
-    r => r.date === today &&
-      r.workout_program_id === workoutProgramId
+    (r) => r.date === today && r.workout_program_id === workoutProgramId
   );
 
   if (todaysRows.length === 0) return null;
 
-  // Deduplicate: keep latest row per (exercise_name, set_number, is_compound_parent)
   const latestByKey = new Map<string, HistoryRow>();
   for (const row of todaysRows) {
     const key = `${row.exercise_name}|${row.set_number}|${row.is_compound_parent}`;
@@ -701,18 +565,14 @@ export function getTodaysHistoryForWorkout(
 
 /**
  * Check if user has logged any exercises for today's workout
- * Queries by date + program_id only - resilient to start date changes.
  */
-export function hasLoggedTodaysWorkout(
-  workoutProgramId: string
-): boolean {
+export function hasLoggedTodaysWorkout(workoutProgramId: string): boolean {
   const rows = getTodaysHistoryForWorkout(workoutProgramId);
   return rows !== null && rows.length > 0;
 }
 
 /**
  * Get performance from a specific week in a workout program
- * Used to show "what you did last week" for progressive overload guidance
  */
 export function getWeekPerformance(
   exerciseName: string,
@@ -727,9 +587,9 @@ export function getWeekPerformance(
 } | null {
   const history = get(exerciseHistory);
 
-  // Find rows for this exercise in the specified week of this program
   const weekRows = history.filter(
-    r => r.exercise_name === exerciseName &&
+    (r) =>
+      r.exercise_name === exerciseName &&
       r.workout_program_id === workoutProgramId &&
       r.week_number === weekNumber &&
       !r.is_compound_parent &&
@@ -738,10 +598,7 @@ export function getWeekPerformance(
 
   if (weekRows.length === 0) return null;
 
-  // Get the heaviest weight used (typical "working set" approach)
-  // If multiple sets, take the one with highest weight, or highest reps if same weight
   const sortedRows = weekRows.sort((a, b) => {
-    // Sort by weight desc, then reps desc
     if ((b.weight ?? 0) !== (a.weight ?? 0)) {
       return (b.weight ?? 0) - (a.weight ?? 0);
     }
@@ -750,11 +607,11 @@ export function getWeekPerformance(
 
   const bestSet = sortedRows[0];
 
-  // Also get average RPE if multiple sets logged RPE
-  const rpeValues = weekRows.filter(r => r.rpe !== null).map(r => r.rpe!);
-  const avgRpe = rpeValues.length > 0
-    ? Math.round(rpeValues.reduce((a, b) => a + b, 0) / rpeValues.length)
-    : bestSet.rpe;
+  const rpeValues = weekRows.filter((r) => r.rpe !== null).map((r) => r.rpe!);
+  const avgRpe =
+    rpeValues.length > 0
+      ? Math.round(rpeValues.reduce((a, b) => a + b, 0) / rpeValues.length)
+      : bestSet.rpe;
 
   return {
     weight: bestSet.weight,
@@ -765,44 +622,15 @@ export function getWeekPerformance(
   };
 }
 
-/**
- * Export history as CSV string
- */
-export function exportHistoryCsv(): string {
-  const rows = get(exerciseHistory);
-  const header = CSV_HEADERS.join(',');
-  const lines = [header, ...rows.map(rowToCSV)];
-  return lines.join('\n');
-}
-
-/**
- * Clear all history (use with caution!)
- */
-export function clearHistory(): void {
-  exerciseHistory.set([]);
-}
-
-/**
- * Get storage usage info
- */
-export function getStorageInfo(): { rowCount: number; estimatedSize: number } {
-  const rows = get(exerciseHistory);
-  const csv = exportHistoryCsv();
-  return {
-    rowCount: rows.length,
-    estimatedSize: new Blob([csv]).size
-  };
-}
-
 // ============================================================================
-// WORKOUT SESSION QUERIES
+// SESSION MANAGEMENT
 // ============================================================================
 
 /**
  * Summary of a completed workout session
  */
 export interface WorkoutSession {
-  date: string;                    // ISO date "2026-01-15"
+  date: string;
   workoutProgramId: string;
   weekNumber: number;
   dayNumber: number;
@@ -813,39 +641,27 @@ export interface WorkoutSession {
 
 /**
  * Get list of completed workout sessions from history
- *
- * Groups history rows by (date, workout_program_id, week_number, day_number).
- * This allows users to repeat weeks (e.g., doing week 1 twice) and log multiple
- * sessions on the same date without them being incorrectly merged.
- * Only includes sessions with at least 1 completed set.
- * Sorted by date descending (most recent first), then by timestamp for same-day sessions.
- *
- * @param limit Maximum number of sessions to return (default: 50)
  */
 export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
   const history = get(exerciseHistory);
 
-  // Group by (date, workout_program_id, week_number, day_number)
-  // This ensures repeated weeks and multiple sessions per day are tracked separately
-  const sessionMap = new Map<string, {
-    date: string;
-    workoutProgramId: string;
-    weekNumber: number;
-    dayNumber: number;
-    exerciseNames: Set<string>;
-    // Track deduplicated sets: key = exercise_name|set_number, value = latest timestamp
-    deduplicatedSets: Map<string, string>;
-    earliestTimestamp: string;
-  }>();
+  const sessionMap = new Map<
+    string,
+    {
+      date: string;
+      workoutProgramId: string;
+      weekNumber: number;
+      dayNumber: number;
+      exerciseNames: Set<string>;
+      deduplicatedSets: Map<string, string>;
+      earliestTimestamp: string;
+    }
+  >();
 
   for (const row of history) {
-    // Skip compound parent rows (they don't represent actual sets)
     if (row.is_compound_parent) continue;
-
-    // Only count completed sets
     if (!row.completed) continue;
 
-    // Include week and day in session key to prevent merging different week/day combinations
     const sessionKey = `${row.date}|${row.workout_program_id}|${row.week_number}|${row.day_number}`;
 
     if (!sessionMap.has(sessionKey)) {
@@ -863,54 +679,43 @@ export function getCompletedSessions(limit: number = 50): WorkoutSession[] {
     const session = sessionMap.get(sessionKey)!;
     session.exerciseNames.add(row.exercise_name);
 
-    // Deduplicate: only count the latest entry for each (exercise_name, set_number)
     const setKey = `${row.exercise_name}|${row.set_number}`;
     const existingTimestamp = session.deduplicatedSets.get(setKey);
-    if (!existingTimestamp || new Date(row.timestamp).getTime() > new Date(existingTimestamp).getTime()) {
+    if (
+      !existingTimestamp ||
+      new Date(row.timestamp).getTime() > new Date(existingTimestamp).getTime()
+    ) {
       session.deduplicatedSets.set(setKey, row.timestamp);
     }
 
-    // Track earliest timestamp
     if (row.timestamp < session.earliestTimestamp) {
       session.earliestTimestamp = row.timestamp;
     }
   }
 
-  // Convert to array and filter out empty sessions
   const sessions: WorkoutSession[] = Array.from(sessionMap.values())
-    .filter(s => s.deduplicatedSets.size > 0)
-    .map(s => ({
+    .filter((s) => s.deduplicatedSets.size > 0)
+    .map((s) => ({
       date: s.date,
       workoutProgramId: s.workoutProgramId,
       weekNumber: s.weekNumber,
       dayNumber: s.dayNumber,
       exerciseCount: s.exerciseNames.size,
-      completedSetCount: s.deduplicatedSets.size, // Use deduplicated count
+      completedSetCount: s.deduplicatedSets.size,
       earliestTimestamp: s.earliestTimestamp
     }));
 
-  // Sort by date descending (most recent first), then by timestamp for same-day sessions
   sessions.sort((a, b) => {
     const dateCompare = b.date.localeCompare(a.date);
     if (dateCompare !== 0) return dateCompare;
-    // For same-day sessions, sort by earliest timestamp (most recent first)
     return b.earliestTimestamp.localeCompare(a.earliestTimestamp);
   });
 
-  // Apply limit
   return sessions.slice(0, limit);
 }
 
 /**
  * Get history rows for a specific session
- *
- * Queries by date + program_id + week_number + day_number for precise session matching.
- * Returns deduplicated rows (latest per exercise_name + set_number + is_compound_parent).
- *
- * @param date ISO date string "2026-01-15"
- * @param workoutProgramId The schedule/program ID
- * @param weekNumber Week number (1-indexed)
- * @param dayNumber Day number (1-indexed)
  */
 export function getHistoryForSession(
   date: string,
@@ -920,9 +725,7 @@ export function getHistoryForSession(
 ): HistoryRow[] | null {
   const history = get(exerciseHistory);
 
-  // Filter by date + program_id + week/day for precise session matching
-  // Week/day are optional for backward compatibility but should be provided
-  const sessionRows = history.filter(r => {
+  const sessionRows = history.filter((r) => {
     if (r.date !== date || r.workout_program_id !== workoutProgramId) return false;
     if (weekNumber !== undefined && r.week_number !== weekNumber) return false;
     if (dayNumber !== undefined && r.day_number !== dayNumber) return false;
@@ -931,8 +734,6 @@ export function getHistoryForSession(
 
   if (sessionRows.length === 0) return null;
 
-  // Deduplicate: keep latest row per (exercise_name, set_number, is_compound_parent)
-  // This reuses the same deduplication logic from getTodaysHistoryForWorkout
   const latestByKey = new Map<string, HistoryRow>();
   for (const row of sessionRows) {
     const key = `${row.exercise_name}|${row.set_number}|${row.is_compound_parent}`;
@@ -947,13 +748,6 @@ export function getHistoryForSession(
 
 /**
  * Get ALL history rows for a session (not deduplicated) - for deletion preview
- *
- * This returns every row that would be deleted, including duplicates from re-logging.
- *
- * @param date ISO date string "2026-01-15"
- * @param workoutProgramId The schedule/program ID
- * @param weekNumber Week number (1-indexed)
- * @param dayNumber Day number (1-indexed)
  */
 export function getSessionRowsForDeletion(
   date: string,
@@ -963,45 +757,103 @@ export function getSessionRowsForDeletion(
 ): HistoryRow[] {
   const history = get(exerciseHistory);
 
-  return history.filter(r =>
-    r.date === date &&
-    r.workout_program_id === workoutProgramId &&
-    r.week_number === weekNumber &&
-    r.day_number === dayNumber
+  return history.filter(
+    (r) =>
+      r.date === date &&
+      r.workout_program_id === workoutProgramId &&
+      r.week_number === weekNumber &&
+      r.day_number === dayNumber
   );
 }
 
 /**
  * Delete a workout session from history
- *
- * Removes ALL rows matching the date/program/week/day combination.
- * This is a destructive operation - the data cannot be recovered.
- *
- * @param date ISO date string "2026-01-15"
- * @param workoutProgramId The schedule/program ID
- * @param weekNumber Week number (1-indexed)
- * @param dayNumber Day number (1-indexed)
- * @returns Number of rows deleted
+ * Persists to IndexedDB and updates in-memory store
  */
-export function deleteSession(
+export async function deleteSession(
   date: string,
   workoutProgramId: string,
   weekNumber: number,
   dayNumber: number
-): number {
-  const history = get(exerciseHistory);
-
-  const rowsToKeep = history.filter(r =>
-    !(r.date === date &&
-      r.workout_program_id === workoutProgramId &&
-      r.week_number === weekNumber &&
-      r.day_number === dayNumber)
-  );
-
-  const deletedCount = history.length - rowsToKeep.length;
+): Promise<number> {
+  // Delete from IndexedDB first (source of truth)
+  const deletedCount = await dbDeleteSessionRows(date, workoutProgramId, weekNumber, dayNumber);
 
   if (deletedCount > 0) {
-    exerciseHistory.set(rowsToKeep);
+    // Update in-memory store
+    exerciseHistory.update((rows) =>
+      rows.filter(
+        (r) =>
+          !(
+            r.date === date &&
+            r.workout_program_id === workoutProgramId &&
+            r.week_number === weekNumber &&
+            r.day_number === dayNumber
+          )
+      )
+    );
+
+    // Update backup metadata
+    const allRows = get(exerciseHistory);
+    const latestTimestamp =
+      allRows.length > 0
+        ? allRows.reduce(
+            (latest, row) => (row.timestamp > latest ? row.timestamp : latest),
+            allRows[0].timestamp
+          )
+        : null;
+    saveBackupMetadata(allRows.length, latestTimestamp);
+  }
+
+  return deletedCount;
+}
+
+/**
+ * Delete rows for a specific exercise within a session
+ * Used when editing a single exercise in a completed workout
+ * Persists to IndexedDB and updates in-memory store
+ */
+export async function deleteExerciseRows(
+  date: string,
+  workoutProgramId: string,
+  weekNumber: number,
+  dayNumber: number,
+  exerciseOrder: number
+): Promise<number> {
+  // Delete from IndexedDB first (source of truth)
+  const deletedCount = await dbDeleteExerciseRows(
+    date,
+    workoutProgramId,
+    weekNumber,
+    dayNumber,
+    exerciseOrder
+  );
+
+  if (deletedCount > 0) {
+    // Update in-memory store
+    exerciseHistory.update((rows) =>
+      rows.filter(
+        (r) =>
+          !(
+            r.date === date &&
+            r.workout_program_id === workoutProgramId &&
+            r.week_number === weekNumber &&
+            r.day_number === dayNumber &&
+            r.exercise_order === exerciseOrder
+          )
+      )
+    );
+
+    // Update backup metadata
+    const allRows = get(exerciseHistory);
+    const latestTimestamp =
+      allRows.length > 0
+        ? allRows.reduce(
+            (latest, row) => (row.timestamp > latest ? row.timestamp : latest),
+            allRows[0].timestamp
+          )
+        : null;
+    saveBackupMetadata(allRows.length, latestTimestamp);
   }
 
   return deletedCount;
@@ -1009,54 +861,131 @@ export function deleteSession(
 
 /**
  * Update the date of a workout session in history
- *
- * Changes the date field for ALL rows matching the session identifier.
- * This updates both the date and timestamp fields.
- *
- * @param originalDate Original ISO date string "2026-01-15"
- * @param workoutProgramId The schedule/program ID
- * @param weekNumber Week number (1-indexed)
- * @param dayNumber Day number (1-indexed)
- * @param newDate New ISO date string "2026-01-10"
- * @returns Number of rows updated
  */
-export function updateSessionDate(
+export async function updateSessionDate(
   originalDate: string,
   workoutProgramId: string,
   weekNumber: number,
   dayNumber: number,
   newDate: string
-): number {
-  const history = get(exerciseHistory);
-
-  let updatedCount = 0;
-  const updatedRows = history.map(r => {
-    if (r.date === originalDate &&
-        r.workout_program_id === workoutProgramId &&
-        r.week_number === weekNumber &&
-        r.day_number === dayNumber) {
-      updatedCount++;
-      // Update the date field
-      // Also update timestamp to preserve the time portion but change the date
-      const originalTimestamp = new Date(r.timestamp);
-      const newTimestamp = new Date(newDate + 'T00:00:00');
-      newTimestamp.setHours(originalTimestamp.getHours());
-      newTimestamp.setMinutes(originalTimestamp.getMinutes());
-      newTimestamp.setSeconds(originalTimestamp.getSeconds());
-      newTimestamp.setMilliseconds(originalTimestamp.getMilliseconds());
-
-      return {
-        ...r,
-        date: newDate,
-        timestamp: newTimestamp.toISOString()
-      };
-    }
-    return r;
-  });
+): Promise<number> {
+  // Update in IndexedDB first
+  const updatedCount = await dbUpdateSessionDate(
+    originalDate,
+    workoutProgramId,
+    weekNumber,
+    dayNumber,
+    newDate
+  );
 
   if (updatedCount > 0) {
-    exerciseHistory.set(updatedRows);
+    // Update in-memory store
+    exerciseHistory.update((rows) =>
+      rows.map((r) => {
+        if (
+          r.date === originalDate &&
+          r.workout_program_id === workoutProgramId &&
+          r.week_number === weekNumber &&
+          r.day_number === dayNumber
+        ) {
+          const originalTimestamp = new Date(r.timestamp);
+          const newTimestamp = new Date(newDate + 'T00:00:00');
+          newTimestamp.setHours(originalTimestamp.getHours());
+          newTimestamp.setMinutes(originalTimestamp.getMinutes());
+          newTimestamp.setSeconds(originalTimestamp.getSeconds());
+          newTimestamp.setMilliseconds(originalTimestamp.getMilliseconds());
+
+          return {
+            ...r,
+            date: newDate,
+            timestamp: newTimestamp.toISOString()
+          };
+        }
+        return r;
+      })
+    );
   }
 
   return updatedCount;
+}
+
+// ============================================================================
+// EXPORT / UTILITY
+// ============================================================================
+
+/**
+ * Escape CSV field value
+ */
+function escapeCSV(value: string | number | boolean | null | undefined): string {
+  if (value === null || value === undefined) return '';
+  const str = String(value);
+  if (str.includes(',') || str.includes('\n') || str.includes('"')) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+/**
+ * Convert HistoryRow to CSV line
+ */
+function rowToCSV(row: HistoryRow): string {
+  return [
+    escapeCSV(row.date),
+    escapeCSV(row.timestamp),
+    escapeCSV(row.workout_program_id),
+    escapeCSV(row.week_number),
+    escapeCSV(row.day_number),
+    escapeCSV(row.exercise_name),
+    escapeCSV(row.exercise_order),
+    escapeCSV(row.is_compound_parent),
+    escapeCSV(row.compound_parent_name),
+    escapeCSV(row.set_number),
+    escapeCSV(row.reps),
+    escapeCSV(row.weight),
+    escapeCSV(row.weight_unit),
+    escapeCSV(row.work_time),
+    escapeCSV(row.rest_time),
+    escapeCSV(row.tempo),
+    escapeCSV(row.rpe),
+    escapeCSV(row.rir),
+    escapeCSV(row.completed),
+    escapeCSV(row.notes)
+  ].join(',');
+}
+
+/**
+ * Export history as CSV string
+ */
+export function exportHistoryCsv(): string {
+  const rows = get(exerciseHistory);
+  const header = CSV_HEADERS.join(',');
+  const lines = [header, ...rows.map(rowToCSV)];
+  return lines.join('\n');
+}
+
+/**
+ * Clear all history
+ * WARNING: This is destructive!
+ */
+export async function clearHistory(): Promise<void> {
+  await clearAllRows();
+  exerciseHistory.set([]);
+  saveBackupMetadata(0, null);
+}
+
+/**
+ * Get storage usage info
+ */
+export function getStorageInfo(): { rowCount: number; estimatedSize: number } {
+  const rows = get(exerciseHistory);
+  const csv = exportHistoryCsv();
+  return {
+    rowCount: rows.length,
+    estimatedSize: new Blob([csv]).size
+  };
+}
+
+// Legacy exports for backward compatibility
+export function _resetHydrationState(): void {
+  _resetInitializationState();
 }

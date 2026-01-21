@@ -1469,9 +1469,19 @@ function reconstructLogsFromHistory(
     // Find compound parent row if exists
     const parentRow = rows.find(r => r.is_compound_parent);
 
-    // Build sets from non-parent rows
-    const sets: SetLog[] = rows
-      .filter(r => !r.is_compound_parent)
+    // Build sets from non-parent rows, deduplicating by set_number (keep latest timestamp)
+    const nonParentRows = rows.filter(r => !r.is_compound_parent);
+
+    // Deduplicate: for each set_number, keep only the row with the latest timestamp
+    const setsByNumber = new Map<number, HistoryRow>();
+    for (const row of nonParentRows) {
+      const existing = setsByNumber.get(row.set_number);
+      if (!existing || row.timestamp > existing.timestamp) {
+        setsByNumber.set(row.set_number, row);
+      }
+    }
+
+    const sets: SetLog[] = Array.from(setsByNumber.values())
       .sort((a, b) => a.set_number - b.set_number)
       .map(r => ({
         setNumber: r.set_number,

@@ -942,7 +942,7 @@ describe('getPRDisplayData Integration', () => {
 			}
 		];
 
-		logSessionToHistory('test-schedule-id', 1, 1, logs);
+		await logSessionToHistory('test-schedule-id', 1, 1, logs);
 
 		// Step 2: Simulate cache update (as in handleStop)
 		updateCacheForExercise('Yates Rows');

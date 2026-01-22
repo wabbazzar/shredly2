@@ -151,7 +151,7 @@
 
 		{#if prData.recentActivity.lastWeight !== null}
 			<span class="text-slate-500">
-				Last: {prData.recentActivity.lastWeight}{weightUnit}
+				Best: {prData.recentActivity.lastWeight}{weightUnit}
 				{#if prData.recentActivity.lastReps !== null}
 					x{prData.recentActivity.lastReps}
 				{/if}

@@ -591,7 +591,14 @@ export function getPRDisplayData(exerciseName: string): ExercisePRDisplay | null
 
 	const history = get(exerciseHistory);
 	const dataPoints = extractDataPointsFromHistory(exerciseName, history);
-	const mostRecent = dataPoints.length > 0 ? dataPoints[0] : null;
+
+	// Get the BEST set from the most recent day (not just the chronologically last set)
+	// This ensures we show 165x8 instead of 135x6 when both are logged in same session
+	const bestByDay = getBestSetPerDay(dataPoints, true);
+	const sortedDays = Array.from(bestByDay.entries()).sort(
+		(a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime()
+	);
+	const mostRecentBest = sortedDays.length > 0 ? sortedDays[0][1] : null;
 
 	// Calculate days since last performed
 	let daysSinceLastPerformed: number | null = null;
@@ -610,9 +617,9 @@ export function getPRDisplayData(exerciseName: string): ExercisePRDisplay | null
 		hasUserOverride: entry.user_override !== null,
 		userOverride: entry.user_override,
 		recentActivity: {
-			lastWeight: mostRecent?.weight ?? null,
-			lastReps: mostRecent?.reps ?? null,
-			lastRPE: mostRecent?.rpe ?? null,
+			lastWeight: mostRecentBest?.weight ?? null,
+			lastReps: mostRecentBest?.reps ?? null,
+			lastRPE: mostRecentBest?.rpe ?? null,
 			trend: calculateTrend(dataPoints)
 		}
 	};

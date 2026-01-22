@@ -10,6 +10,7 @@
 	let editing = false;
 	let inputValue: string;
 	let inputEl: HTMLInputElement;
+	let blurTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	// Calculate age for display
 	$: displayAge = calculateAge(birthday);
@@ -32,9 +33,36 @@
 	}
 
 	function save() {
+		if (blurTimeout) {
+			clearTimeout(blurTimeout);
+			blurTimeout = null;
+		}
 		editing = false;
 		if (inputValue && inputValue !== birthday) {
 			dispatch('change', inputValue);
+		}
+	}
+
+	function handleBlur() {
+		// Delay closing to allow iOS date picker interactions to complete.
+		// If user is still interacting with picker, focus will return and cancel this.
+		if (blurTimeout) {
+			clearTimeout(blurTimeout);
+		}
+		blurTimeout = setTimeout(() => {
+			// Check if input still doesn't have focus after delay
+			if (document.activeElement !== inputEl) {
+				save();
+			}
+			blurTimeout = null;
+		}, 150);
+	}
+
+	function handleFocus() {
+		// Cancel pending close if focus returns to input
+		if (blurTimeout) {
+			clearTimeout(blurTimeout);
+			blurTimeout = null;
 		}
 	}
 
@@ -58,7 +86,8 @@
 			type="date"
 			min={minDate}
 			max={maxDate}
-			onblur={save}
+			onblur={handleBlur}
+			onfocus={handleFocus}
 			onkeydown={handleKeydown}
 			class="bg-slate-700 text-white rounded px-2 py-1 text-sm
                border border-indigo-500 outline-none focus:ring-1 focus:ring-indigo-400"

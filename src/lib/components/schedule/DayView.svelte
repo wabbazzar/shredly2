@@ -456,6 +456,16 @@
 		replacingExerciseName = '';
 	}
 
+	// Calculate rest_time to stay on the minute boundary
+	// Formula: rest = 60 * ceil(work / 60) - work (all in seconds)
+	// e.g., work=40s -> rest=60-40=20s; work=90s -> rest=120-90=30s
+	function calculateComplementaryRestTime(workTimeMinutes: number): number {
+		const workSeconds = workTimeMinutes * 60;
+		const bucketSeconds = 60 * Math.ceil(workSeconds / 60);
+		const restSeconds = bucketSeconds - workSeconds;
+		return restSeconds / 60; // Return as minutes
+	}
+
 	// Handle progression modal save
 	async function handleProgressionSave(e: CustomEvent<{
 		exerciseIndex: number;
@@ -476,6 +486,10 @@
 			? exercise.sub_exercises[subExerciseIndex]
 			: exercise;
 
+		// Check if this is an interval sub-exercise work_time edit
+		const isIntervalSubExercise = isSubExercise && exercise.category === 'interval';
+		const shouldUpdateRestTime = isIntervalSubExercise && field === 'work_time_minutes';
+
 		// Apply values based on scope
 		const weekKeys = Object.keys(weekValues);
 		for (const weekKey of weekKeys) {
@@ -489,6 +503,12 @@
 				const weekParams = target[weekKey as keyof typeof target] as WeekParameters | undefined;
 				if (weekParams) {
 					(weekParams as Record<string, unknown>)[field] = weekValues[weekKey];
+
+					// Auto-calculate complementary rest_time for interval sub-exercises
+					if (shouldUpdateRestTime) {
+						const restTime = calculateComplementaryRestTime(weekValues[weekKey]);
+						(weekParams as Record<string, unknown>)['rest_time_minutes'] = restTime;
+					}
 				}
 			}
 		}

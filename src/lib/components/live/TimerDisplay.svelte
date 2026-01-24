@@ -63,14 +63,17 @@
 	$: phaseColorHex = getPhaseColor(timerState.phase);
 
 	// Set counter display
-	// During rest phase, show NEXT set number (anticipating what's coming)
+	// For strength/bodyweight: set increments AFTER rest completes, so show next set during rest
+	// For intervals: set increments AFTER work completes (when all sub-exercises done), so DON'T add 1 during rest
 	$: setDisplay = (() => {
 		if (timerState.exerciseType === 'emom' || timerState.exerciseType === 'amrap') {
 			return `Minute ${timerState.currentMinute} of ${timerState.totalMinutes}`;
 		}
 		if (timerState.totalSets > 1) {
-			// During rest, display the upcoming set number (e.g., after set 1 work, show "Set 2 of 5")
-			const displaySet = timerState.phase === 'rest'
+			// Intervals: set already incremented when work phase ended, so show currentSet as-is
+			// Strength/bodyweight: set increments after rest, so show currentSet + 1 during rest
+			const shouldShowNextSet = timerState.phase === 'rest' && timerState.exerciseType !== 'interval';
+			const displaySet = shouldShowNextSet
 				? Math.min(timerState.currentSet + 1, timerState.totalSets)
 				: timerState.currentSet;
 			return `Set ${displaySet} of ${timerState.totalSets}`;

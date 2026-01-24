@@ -439,7 +439,7 @@ export function navigateBack(): void {
 /**
  * Navigate up one level in the view hierarchy
  * Used when re-tapping the schedule tab
- * day -> week -> calendar -> library
+ * day -> week -> library
  * Returns true if navigation occurred, false if already at top level
  */
 export function navigateUp(): boolean {
@@ -448,11 +448,8 @@ export function navigateUp(): boolean {
   if (current.viewLevel === 'day') {
     navigateToView('week');
     return true;
-  } else if (current.viewLevel === 'week') {
-    navigateToView('calendar');
-    return true;
   } else if (!current.showLibrary) {
-    // At calendar view, go to library
+    // At week view (or legacy calendar), go to library
     showLibraryView();
     return true;
   }

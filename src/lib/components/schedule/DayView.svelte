@@ -490,6 +490,16 @@
 		const isIntervalSubExercise = isSubExercise && exercise.category === 'interval';
 		const shouldUpdateRestTime = isIntervalSubExercise && field === 'work_time_minutes';
 
+		// DEBUG: Log the interval rest time auto-calculation check
+		console.log('[handleProgressionSave] Debug:', {
+			field,
+			isSubExercise,
+			exerciseCategory: exercise.category,
+			isIntervalSubExercise,
+			shouldUpdateRestTime,
+			subExerciseIndex
+		});
+
 		// Apply values based on scope
 		const weekKeys = Object.keys(weekValues);
 		for (const weekKey of weekKeys) {
@@ -507,6 +517,11 @@
 					// Auto-calculate complementary rest_time for interval sub-exercises
 					if (shouldUpdateRestTime) {
 						const restTime = calculateComplementaryRestTime(weekValues[weekKey]);
+						console.log('[handleProgressionSave] Setting rest_time:', {
+							weekKey,
+							workTime: weekValues[weekKey],
+							calculatedRestTime: restTime
+						});
 						(weekParams as Record<string, unknown>)['rest_time_minutes'] = restTime;
 					}
 				}

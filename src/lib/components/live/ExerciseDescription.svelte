@@ -84,42 +84,42 @@
 		class="border-t border-white/20"
 		style="background-color: {phaseColor}"
 	>
-		<div class="px-5 py-4 overflow-y-auto max-h-72">
+		<div class="px-5 landscape:px-3 py-4 landscape:py-2 overflow-y-auto max-h-72 landscape:max-h-32">
 			{#if displayContent.type === 'full'}
 				<!-- Full description for regular exercise or active sub-exercise -->
-				<div class="space-y-3">
+				<div class="space-y-3 landscape:space-y-1.5">
 					{#if displayContent.description.overview}
 						<div>
-							<div class="text-white/70 text-xs font-semibold uppercase tracking-wide mb-1">Overview</div>
-							<p class="text-white/50 text-sm leading-relaxed">{displayContent.description.overview}</p>
+							<div class="text-white/70 text-xs landscape:text-[10px] font-semibold uppercase tracking-wide mb-1 landscape:mb-0.5">Overview</div>
+							<p class="text-white/50 text-sm landscape:text-xs leading-relaxed landscape:leading-snug">{displayContent.description.overview}</p>
 						</div>
 					{/if}
 					{#if displayContent.description.setup}
 						<div>
-							<div class="text-white/70 text-xs font-semibold uppercase tracking-wide mb-1">Setup</div>
-							<p class="text-white/50 text-sm leading-relaxed">{displayContent.description.setup}</p>
+							<div class="text-white/70 text-xs landscape:text-[10px] font-semibold uppercase tracking-wide mb-1 landscape:mb-0.5">Setup</div>
+							<p class="text-white/50 text-sm landscape:text-xs leading-relaxed landscape:leading-snug">{displayContent.description.setup}</p>
 						</div>
 					{/if}
 					{#if displayContent.description.movement}
 						<div>
-							<div class="text-white/70 text-xs font-semibold uppercase tracking-wide mb-1">Movement</div>
-							<p class="text-white/50 text-sm leading-relaxed">{displayContent.description.movement}</p>
+							<div class="text-white/70 text-xs landscape:text-[10px] font-semibold uppercase tracking-wide mb-1 landscape:mb-0.5">Movement</div>
+							<p class="text-white/50 text-sm landscape:text-xs leading-relaxed landscape:leading-snug">{displayContent.description.movement}</p>
 						</div>
 					{/if}
 					{#if displayContent.description.cues}
 						<div>
-							<div class="text-white/70 text-xs font-semibold uppercase tracking-wide mb-1">Cues</div>
-							<p class="text-white/50 text-sm leading-relaxed">{displayContent.description.cues}</p>
+							<div class="text-white/70 text-xs landscape:text-[10px] font-semibold uppercase tracking-wide mb-1 landscape:mb-0.5">Cues</div>
+							<p class="text-white/50 text-sm landscape:text-xs leading-relaxed landscape:leading-snug">{displayContent.description.cues}</p>
 						</div>
 					{/if}
 				</div>
 			{:else if displayContent.type === 'cues_list'}
 				<!-- Cues list for circuit/AMRAP -->
-				<div class="space-y-2.5">
+				<div class="space-y-2.5 landscape:space-y-1">
 					{#each displayContent.subCues as { name, cues }}
 						<div>
-							<div class="text-white/70 text-xs font-semibold uppercase tracking-wide mb-0.5">{name}</div>
-							<p class="text-white/50 text-sm leading-relaxed">{cues}</p>
+							<div class="text-white/70 text-xs landscape:text-[10px] font-semibold uppercase tracking-wide mb-0.5">{name}</div>
+							<p class="text-white/50 text-sm landscape:text-xs leading-relaxed landscape:leading-snug">{cues}</p>
 						</div>
 					{/each}
 				</div>

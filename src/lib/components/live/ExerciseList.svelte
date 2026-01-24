@@ -343,12 +343,12 @@
 </script>
 
 <div class="flex flex-col h-full bg-slate-900 overflow-y-auto">
-	<div class="p-3 border-b border-slate-700">
+	<div class="p-3 landscape:p-2 landscape:py-1.5 border-b border-slate-700">
 		<div class="flex items-center justify-between">
-			<h2 class="text-white/70 text-sm font-medium uppercase tracking-wider">Exercises</h2>
+			<h2 class="text-white/70 text-sm landscape:text-xs font-medium uppercase tracking-wider">Exercises</h2>
 			{#if estimatedTimeSeconds > 0}
-				<span class="text-xs text-indigo-400 font-medium flex items-center gap-1">
-					<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<span class="text-xs landscape:text-[10px] text-indigo-400 font-medium flex items-center gap-1">
+					<svg class="w-3.5 h-3.5 landscape:w-3 landscape:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 					</svg>
 					{estimatedTimeDisplay}
@@ -368,7 +368,7 @@
 
 			<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 			<div
-				class="flex items-start p-3 border-b border-slate-700/50 transition-colors
+				class="flex items-start p-3 landscape:p-2 landscape:py-1.5 border-b border-slate-700/50 transition-colors
 				{isCurrent ? 'bg-slate-800' : ''}
 				{isPast ? 'hover:bg-slate-800/30 cursor-pointer' : ''}
 				{isSkipped ? 'bg-yellow-900/20 hover:bg-yellow-900/30 cursor-pointer' : ''}
@@ -380,7 +380,7 @@
 			>
 				<!-- Status indicator -->
 				<button
-					class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-3 transition-colors
+					class="flex-shrink-0 w-8 h-8 landscape:w-6 landscape:h-6 rounded-full flex items-center justify-center mr-3 landscape:mr-2 transition-colors
 					{isCurrent ? 'bg-green-600' : ''}
 					{isPast ? 'bg-green-600/80 hover:bg-green-500' : ''}
 					{isSkipped ? 'bg-yellow-500 hover:bg-yellow-400' : ''}
@@ -389,23 +389,23 @@
 					aria-label={isPast || isSkipped ? 'View/edit logged data' : undefined}
 				>
 					{#if isSkipped}
-						<span class="text-black font-bold text-sm">!</span>
+						<span class="text-black font-bold text-sm landscape:text-xs">!</span>
 					{:else if isPast}
-						<svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+						<svg class="w-4 h-4 landscape:w-3 landscape:h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
 							<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
 						</svg>
 					{:else if isCurrent}
-						<span class="text-white font-bold text-sm">{index + 1}</span>
+						<span class="text-white font-bold text-sm landscape:text-xs">{index + 1}</span>
 					{:else}
-						<span class="text-slate-400 text-sm">{index + 1}</span>
+						<span class="text-slate-400 text-sm landscape:text-xs">{index + 1}</span>
 					{/if}
 				</button>
 
 				<!-- Exercise info -->
 				<div class="flex-1 min-w-0">
-					<div class="flex items-center gap-2 mb-1">
+					<div class="flex items-center gap-2 landscape:gap-1 mb-1 landscape:mb-0.5">
 						<span
-							class="font-medium truncate
+							class="font-medium truncate text-sm landscape:text-xs
 							{isPast ? 'line-through text-slate-400' : ''}
 							{isSkipped ? 'text-yellow-400' : ''}
 							{!isPast && !isSkipped ? 'text-white' : ''}"
@@ -415,7 +415,7 @@
 
 						{#if exercise.exerciseType !== 'strength'}
 							<span
-								class="flex-shrink-0 text-xs px-2 py-0.5 rounded-full text-white uppercase font-medium
+								class="flex-shrink-0 text-xs landscape:text-[9px] px-2 landscape:px-1.5 py-0.5 rounded-full text-white uppercase font-medium
 								{getTypeBadgeClass(exercise.exerciseType)}"
 							>
 								{exercise.exerciseType}
@@ -423,17 +423,17 @@
 						{/if}
 					</div>
 
-					<div class="text-slate-400 text-sm">
+					<div class="text-slate-400 text-sm landscape:text-xs">
 						{formatPrescription(exercise)}
 					</div>
 
 					<!-- Sub-exercises for compound blocks -->
 					{#if exercise.isCompoundParent && exercise.subExercises.length > 0}
-						<div class="mt-2 pl-2 border-l-2 border-slate-600">
+						<div class="mt-2 landscape:mt-1 pl-2 border-l-2 border-slate-600">
 							{#each exercise.subExercises as subEx, subIdx}
 								{@const isCurrentSub = isCurrent && subIdx === currentSubExerciseIndex}
 								{@const subPrescription = formatSubExercisePrescription(subEx)}
-								<div class="text-xs py-0.5 {isCurrentSub ? 'text-white font-medium' : 'text-slate-500'}">
+								<div class="text-xs landscape:text-[10px] py-0.5 landscape:py-0 {isCurrentSub ? 'text-white font-medium' : 'text-slate-500'}">
 									{#if isCurrentSub}
 										<span class="text-green-400 mr-1">▸</span>
 									{/if}
@@ -448,7 +448,7 @@
 
 					<!-- Progress indicator / Logged data -->
 					{#if isSkipped}
-						<div class="mt-1 text-xs text-yellow-400">
+						<div class="mt-1 landscape:mt-0.5 text-xs landscape:text-[10px] text-yellow-400">
 							{#if loggedData}
 								{loggedData} - tap to edit
 							{:else if exercise.completedSets > 0}
@@ -458,11 +458,11 @@
 							{/if}
 						</div>
 					{:else if isPast && loggedData}
-						<div class="mt-1 text-xs text-green-400">
+						<div class="mt-1 landscape:mt-0.5 text-xs landscape:text-[10px] text-green-400">
 							{loggedData}
 						</div>
 					{:else if getProgressText(exercise)}
-						<div class="mt-1 text-xs {isPast ? 'text-green-400' : 'text-slate-500'}">
+						<div class="mt-1 landscape:mt-0.5 text-xs landscape:text-[10px] {isPast ? 'text-green-400' : 'text-slate-500'}">
 							{getProgressText(exercise)}
 						</div>
 					{/if}
@@ -470,11 +470,11 @@
 
 				<!-- Info button -->
 				<button
-					class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-colors ml-2"
+					class="flex-shrink-0 w-8 h-8 landscape:w-6 landscape:h-6 rounded-full bg-slate-700 hover:bg-slate-600 text-slate-400 hover:text-white flex items-center justify-center transition-colors ml-2 landscape:ml-1"
 					on:click|stopPropagation={() => dispatch('info', { exercise, index })}
 					aria-label="Exercise info"
 				>
-					<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+					<svg class="w-4 h-4 landscape:w-3 landscape:h-3" fill="currentColor" viewBox="0 0 24 24">
 						<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
 					</svg>
 				</button>
@@ -483,9 +483,9 @@
 
 		<!-- Finish workout button (only during active workout, not review mode) -->
 		{#if currentIndex !== -1}
-			<div class="p-4">
+			<div class="p-4 landscape:p-2">
 				<button
-					class="w-full py-3 px-4 bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-medium rounded-lg transition-colors"
+					class="w-full py-3 landscape:py-2 px-4 bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-medium landscape:text-sm rounded-lg transition-colors"
 					on:click={() => dispatch('finish')}
 				>
 					Finish Workout & Review

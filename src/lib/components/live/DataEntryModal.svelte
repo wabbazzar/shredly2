@@ -166,7 +166,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3" on:click={handleCancel}>
 	<div
-		class="w-full max-w-xs bg-slate-800 rounded-xl shadow-xl overflow-hidden"
+		class="w-full max-w-xs landscape:max-w-md bg-slate-800 rounded-xl shadow-xl overflow-hidden max-h-[90vh] overflow-y-auto"
 		on:click|stopPropagation
 		use:keyboardAware
 	>

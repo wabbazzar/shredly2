@@ -71,7 +71,7 @@
 	aria-labelledby="exercise-info-title"
 	tabindex="-1"
 >
-	<div class="w-full max-w-md bg-slate-800 rounded-xl shadow-xl overflow-hidden max-h-[80vh] flex flex-col">
+	<div class="w-full max-w-md landscape:max-w-lg bg-slate-800 rounded-xl shadow-xl overflow-hidden max-h-[80vh] landscape:max-h-[90vh] flex flex-col">
 		<!-- Header -->
 		<div class="flex items-center justify-between p-4 border-b border-slate-700 flex-shrink-0">
 			<h2 id="exercise-info-title" class="text-lg font-semibold text-white truncate pr-4">{exercise.exerciseName}</h2>

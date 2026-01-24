@@ -796,8 +796,8 @@
 
 {#if $hasActiveSession && $liveSession}
 	<!-- Active workout view - calc height accounts for 4rem nav bar + safe area -->
-	<!-- Mobile: stacked (col), Desktop: side-by-side (row) -->
-	<div class="flex flex-col lg:flex-row bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
+	<!-- Mobile: stacked (col), Desktop/Landscape: side-by-side (row) -->
+	<div class="flex flex-col lg:flex-row landscape:flex-row bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
 		{#if $isWorkoutComplete}
 			<!-- Workout Complete - Full width review mode -->
 			<div class="flex-1 min-h-0 flex flex-col">
@@ -866,8 +866,8 @@
 				</div>
 			</div>
 		{:else}
-			<!-- Timer Side (left on desktop, top on mobile) -->
-			<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
+			<!-- Timer Side (left on desktop/landscape, top on mobile portrait) -->
+			<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none landscape:w-1/2 landscape:flex-none" style="flex-basis: 50%;">
 				<!-- Timer + Controls: centered vertically together -->
 				<div class="flex-1 min-h-0 flex flex-col items-center justify-center" style="background-color: {getPhaseColor(timerState.phase)}">
 					<TimerDisplay
@@ -891,8 +891,8 @@
 						/>
 					</div>
 				</div>
-				<!-- Exercise Description (desktop only, anchored to bottom) -->
-				<div class="hidden lg:block flex-shrink-0">
+				<!-- Exercise Description (desktop/landscape only, anchored to bottom) -->
+				<div class="hidden lg:block landscape:block flex-shrink-0">
 					<ExerciseDescription
 						currentExercise={$currentExercise}
 						{timerState}
@@ -901,8 +901,8 @@
 				</div>
 			</div>
 
-			<!-- Exercise List (right on desktop, bottom on mobile) -->
-			<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none" style="flex-basis: 50%;">
+			<!-- Exercise List (right on desktop/landscape, bottom on mobile portrait) -->
+			<div class="flex-1 min-h-0 flex flex-col lg:w-1/2 lg:flex-none landscape:w-1/2 landscape:flex-none" style="flex-basis: 50%;">
 				<ExerciseList
 					exercises={$liveSession.exercises}
 					currentIndex={$liveSession.currentExerciseIndex}

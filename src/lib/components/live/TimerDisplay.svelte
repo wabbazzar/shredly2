@@ -111,34 +111,34 @@
 </script>
 
 <div
-	class="flex flex-col items-center justify-center px-3 py-2"
+	class="flex flex-col items-center justify-center px-3 py-2 landscape:py-1"
 >
 	<!-- Phase Label -->
-	<div class="text-white/80 text-sm font-medium tracking-wider mb-1">
+	<div class="text-white/80 text-sm landscape:text-xs font-medium tracking-wider mb-1 landscape:mb-0.5">
 		{phaseLabel}
 	</div>
 
 	<!-- Timer Display -->
-	<div class="text-white text-5xl sm:text-6xl font-mono font-bold tracking-tight mb-1">
+	<div class="text-white text-5xl sm:text-6xl landscape:text-4xl font-mono font-bold tracking-tight mb-1 landscape:mb-0.5">
 		{timeDisplay}
 	</div>
 
 	<!-- Set Counter -->
 	{#if setDisplay}
-		<div class="text-white/90 text-base font-medium mb-1">
+		<div class="text-white/90 text-base landscape:text-sm font-medium mb-1 landscape:mb-0.5">
 			{setDisplay}
 		</div>
 	{/if}
 
 	<!-- Exercise Name with Type Badge -->
 	{#if exerciseName}
-		<div class="flex flex-wrap items-center justify-center gap-1.5 mb-1 max-w-full px-2">
+		<div class="flex flex-wrap items-center justify-center gap-1.5 landscape:gap-1 mb-1 landscape:mb-0.5 max-w-full px-2">
 			{#if exerciseTypeColor}
-				<span class="px-1.5 py-0.5 {exerciseTypeColor} text-white text-[10px] font-medium rounded uppercase flex-shrink-0">
+				<span class="px-1.5 py-0.5 {exerciseTypeColor} text-white text-[10px] landscape:text-[9px] font-medium rounded uppercase flex-shrink-0">
 					{timerState.exerciseType}
 				</span>
 			{/if}
-			<span class="text-white text-lg font-semibold text-center break-words">
+			<span class="text-white text-lg landscape:text-base font-semibold text-center break-words">
 				{exerciseName}
 			</span>
 		</div>
@@ -148,12 +148,12 @@
 	{#if currentSubExercise && (timerState.exerciseType === 'emom' || timerState.exerciseType === 'interval')}
 		{@const subWeightText = formatWeightPrescription(currentSubExercise.prescription.weightPrescription ?? null)}
 		{@const subPrevText = formatPreviousWeek(currentSubExercise.prescription.previousWeek ?? null)}
-		<div class="bg-white/20 rounded-lg px-3 py-1.5 mb-1 max-w-full">
-			<div class="text-white font-medium text-base truncate">
+		<div class="bg-white/20 rounded-lg px-3 landscape:px-2 py-1.5 landscape:py-1 mb-1 landscape:mb-0.5 max-w-full">
+			<div class="text-white font-medium text-base landscape:text-sm truncate">
 				{currentSubExercise.exerciseName}
 			</div>
 			<!-- Reps and weight info -->
-			<div class="flex items-center gap-1.5 text-white/80 text-xs flex-wrap justify-center">
+			<div class="flex items-center gap-1.5 text-white/80 text-xs landscape:text-[10px] flex-wrap justify-center">
 				{#if currentSubExercise.prescription.reps}
 					<span>{currentSubExercise.prescription.reps} reps</span>
 				{/if}
@@ -167,8 +167,8 @@
 				{/if}
 			</div>
 			{#if subPrevText}
-				<div class="text-white/50 text-[10px] flex items-center justify-center gap-1 mt-0.5">
-					<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<div class="text-white/50 text-[10px] landscape:text-[9px] flex items-center justify-center gap-1 mt-0.5">
+					<svg class="w-2.5 h-2.5 landscape:w-2 landscape:h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 					</svg>
 					<span>Last: {subPrevText}</span>
@@ -179,14 +179,14 @@
 
 	<!-- AMRAP/Circuit: Show all sub-exercises -->
 	{#if (timerState.exerciseType === 'amrap' || timerState.exerciseType === 'circuit') && allSubExercises.length > 0}
-		<div class="bg-white/10 rounded-lg px-3 py-1.5 mt-1 w-full max-w-xs">
-			<div class="text-white/60 text-[10px] font-medium uppercase mb-0.5">Sub-exercises</div>
+		<div class="bg-white/10 rounded-lg px-3 landscape:px-2 py-1.5 landscape:py-1 mt-1 landscape:mt-0.5 w-full max-w-xs">
+			<div class="text-white/60 text-[10px] landscape:text-[9px] font-medium uppercase mb-0.5">Sub-exercises</div>
 			{#each allSubExercises as subEx, idx}
 				{@const subWeightText = formatWeightPrescription(subEx.prescription.weightPrescription ?? null)}
 				{@const subWeight = subEx.prescription.weight}
 				{@const subUnit = subEx.prescription.weightUnit || 'lbs'}
 				<!-- Circuit: show all equal (self-paced), AMRAP: highlight current -->
-				<div class="text-white text-xs leading-tight py-0.5 {timerState.exerciseType === 'circuit' ? '' : (idx === timerState.currentSubExercise ? 'font-semibold' : 'opacity-70')}">
+				<div class="text-white text-xs landscape:text-[10px] leading-tight py-0.5 landscape:py-0 {timerState.exerciseType === 'circuit' ? '' : (idx === timerState.currentSubExercise ? 'font-semibold' : 'opacity-70')}">
 					<span class="truncate">{subEx.exerciseName}</span>
 					<span class="text-white/60 ml-1">
 						{#if subEx.prescription.reps}x{subEx.prescription.reps}{/if}
@@ -204,9 +204,9 @@
 
 	<!-- Weight Prescription Badge (for non-compound exercises) -->
 	{#if currentExercise && !currentExercise.isCompoundParent && (weightPrescriptionText || previousWeekText)}
-		<div class="mt-1.5 flex flex-col items-center gap-0.5">
+		<div class="mt-1.5 landscape:mt-1 flex flex-col items-center gap-0.5">
 			<!-- Prescription + Reps row -->
-			<div class="flex items-center gap-1.5 text-white/90 text-xs">
+			<div class="flex items-center gap-1.5 text-white/90 text-xs landscape:text-[10px]">
 				{#if currentExercise.prescription.reps}
 					<span class="font-medium">{currentExercise.prescription.reps} reps</span>
 				{/if}
@@ -223,8 +223,8 @@
 			</div>
 			<!-- Previous week row -->
 			{#if previousWeekText}
-				<div class="text-white/60 text-[10px] flex items-center gap-1">
-					<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<div class="text-white/60 text-[10px] landscape:text-[9px] flex items-center gap-1">
+					<svg class="w-2.5 h-2.5 landscape:w-2 landscape:h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 					</svg>
 					<span>Last: {previousWeekText}</span>
@@ -233,7 +233,7 @@
 		</div>
 	{:else if currentExercise && !currentExercise.isCompoundParent && timerState.phase !== 'idle'}
 		<!-- Fallback: show basic prescription if no weight prescription data -->
-		<div class="mt-1.5 text-white/70 text-xs flex gap-2">
+		<div class="mt-1.5 landscape:mt-1 text-white/70 text-xs landscape:text-[10px] flex gap-2">
 			{#if currentExercise.prescription.reps}
 				<span>{currentExercise.prescription.reps} reps</span>
 			{/if}

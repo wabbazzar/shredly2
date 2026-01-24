@@ -353,7 +353,7 @@
 	on:keydown={(e) => e.key === 'Escape' && handleClose()}
 >
 	<div
-		class="w-full max-w-sm bg-slate-800 rounded-xl shadow-2xl overflow-hidden flex flex-col"
+		class="w-full max-w-sm landscape:max-w-md bg-slate-800 rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
 		on:click|stopPropagation
 		use:keyboardAware
 	>

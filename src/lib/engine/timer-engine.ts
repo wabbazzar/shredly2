@@ -453,6 +453,7 @@ export class TimerEngine {
 
   /**
    * Skip to next phase or set
+   * For EMOM/AMRAP: skips to next minute instead of completing the block
    */
   skip(): void {
     if (this.state.phase === 'idle' || this.state.phase === 'complete') {
@@ -469,8 +470,13 @@ export class TimerEngine {
         break;
 
       case 'work':
-        // Skip work, move to rest or next set
-        this.handleWorkComplete();
+        // For EMOM/AMRAP: skip to next minute instead of completing
+        if (this.state.exerciseType === 'emom' || this.state.exerciseType === 'amrap') {
+          this.skipToNextMinute();
+        } else {
+          // Skip work, move to rest or next set
+          this.handleWorkComplete();
+        }
         break;
 
       case 'rest':
@@ -484,6 +490,40 @@ export class TimerEngine {
         this.skip();
         break;
     }
+  }
+
+  /**
+   * Skip to next minute for EMOM/AMRAP blocks
+   * If on last minute, completes the exercise
+   */
+  private skipToNextMinute(): void {
+    // Check if we're on the last minute
+    if (this.state.currentMinute >= this.state.totalMinutes) {
+      // On last minute - complete the block
+      this.handleWorkComplete();
+      return;
+    }
+
+    // Advance to next minute
+    this.state.currentMinute++;
+
+    // For EMOM, rotate to next sub-exercise
+    if (this.state.exerciseType === 'emom' && this.state.totalSubExercises > 0) {
+      this.state.currentSubExercise = (this.state.currentMinute - 1) % this.state.totalSubExercises;
+    }
+
+    // Emit minute marker
+    this.emit('minute_marker');
+
+    // Calculate new remaining time (time left from current minute to end)
+    const elapsedMinutes = this.state.currentMinute - 1;
+    const remainingSeconds = this.state.totalSeconds - (elapsedMinutes * 60);
+
+    this.state.remainingSeconds = remainingSeconds;
+    this.state.targetTimestamp = Date.now() + remainingSeconds * 1000;
+
+    // Resume ticking
+    this.startTicking();
   }
 
   /**

@@ -23,6 +23,8 @@ import {
 	extractDataPointsFromHistory,
 	calculate1RMEntry,
 	calculateTrend,
+	applyHighRPEDiscount,
+	calculateTrainingMax,
 	type OneRMDataPoint
 } from '$lib/stores/oneRMCache';
 import type { HistoryRow } from '$lib/stores/history';
@@ -148,6 +150,101 @@ describe('adjustForRPE', () => {
 		const at8_25 = adjustForRPE(100, 8.25);
 		expect(at8_25).toBeGreaterThan(at8_5);
 		expect(at8_25).toBeLessThan(at8);
+	});
+});
+
+// ============================================================================
+// HIGH RPE DISCOUNT TESTS
+// ============================================================================
+
+describe('applyHighRPEDiscount', () => {
+	it('returns value unchanged for RPE < 9', () => {
+		expect(applyHighRPEDiscount(200, 8)).toBe(200);
+		expect(applyHighRPEDiscount(200, 7)).toBe(200);
+		expect(applyHighRPEDiscount(200, 6)).toBe(200);
+	});
+
+	it('returns value unchanged for null RPE', () => {
+		expect(applyHighRPEDiscount(200, null)).toBe(200);
+	});
+
+	it('applies 0.96 discount for RPE 9', () => {
+		// 200 * 0.96 = 192
+		expect(applyHighRPEDiscount(200, 9)).toBeCloseTo(192, 1);
+	});
+
+	it('applies 0.98 discount for RPE 9.5', () => {
+		// 200 * 0.98 = 196
+		expect(applyHighRPEDiscount(200, 9.5)).toBeCloseTo(196, 1);
+	});
+
+	it('applies 1.0 (no discount) for RPE 10', () => {
+		expect(applyHighRPEDiscount(200, 10)).toBe(200);
+	});
+
+	it('interpolates for fractional RPE values', () => {
+		// RPE 9.25 should interpolate between 9 (0.96) and 9.5 (0.98)
+		// 0.96 + 0.5 * (0.98 - 0.96) = 0.97
+		// 200 * 0.97 = 194
+		const result = applyHighRPEDiscount(200, 9.25);
+		expect(result).toBeCloseTo(194, 0);
+	});
+
+	it('returns 0 for 0 input', () => {
+		expect(applyHighRPEDiscount(0, 9)).toBe(0);
+	});
+});
+
+// ============================================================================
+// CALCULATE TRAINING MAX TESTS
+// ============================================================================
+
+describe('calculateTrainingMax', () => {
+	it('treats 1 rep as max attempt - returns estimated 1RM (no TRM derivation)', () => {
+		// 315 x 1 = 315 (1RM)
+		const result = calculateTrainingMax(315, 1, null);
+		expect(result).toBe(315);
+	});
+
+	it('treats 2 reps as max attempt - returns estimated 1RM (no TRM derivation)', () => {
+		// 275 x 2 = 275 * (1 + 2/30) = 293.33 → 293 (not rounded yet)
+		const result = calculateTrainingMax(275, 2, null);
+		expect(result).toBeCloseTo(293.33, 1);
+	});
+
+	it('treats 3 reps as training set - returns TRM directly (rounded)', () => {
+		// 225 x 3 = 225 * (1 + 3/30) = 247.5 → 250 (rounded to nearest 5)
+		const result = calculateTrainingMax(225, 3, null);
+		expect(result).toBe(250);
+	});
+
+	it('treats 8 reps as training set - returns TRM directly with no RPE adjustment for RPE 8', () => {
+		// 165 x 8 = 165 * (1 + 8/30) = 209 → 210 (rounded to nearest 5)
+		const result = calculateTrainingMax(165, 8, 8);
+		expect(result).toBe(210);
+	});
+
+	it('validates problem statement example: 165x8 @ RPE8 = 210 TRM', () => {
+		// Explicit test for AC3 validation
+		// Formula: 165 * (1 + 8/30) = 209 → round to nearest 5 = 210
+		// RPE 8 < 9, so no RPE discount applied
+		const result = calculateTrainingMax(165, 8, 8);
+		expect(result).toBe(210);
+	});
+
+	it('applies high RPE discount for training sets with RPE 9', () => {
+		// 165 x 8 = 165 * (1 + 8/30) = 209
+		// RPE 9 discount: 209 * 0.96 = 200.64 → 200
+		const result = calculateTrainingMax(165, 8, 9);
+		expect(result).toBe(200);
+	});
+
+	it('returns 0 for 0 weight', () => {
+		expect(calculateTrainingMax(0, 5, null)).toBe(0);
+	});
+
+	it('returns 0 for 0 reps', () => {
+		expect(calculateTrainingMax(135, 0, null)).toBe(0);
 	});
 });
 
@@ -322,9 +419,10 @@ describe('getBestSetPerDay', () => {
 		expect(result.get(yesterdayStr)?.weight).toBe(140);
 	});
 
-	it('applies RPE adjustment when comparing sets', () => {
-		// 165x6 at RPE 8 = 165 * 1.2 / 0.92 = 215.2 1RM
-		// 135x6 at RPE 10 = 135 * 1.2 / 1.0 = 162 1RM
+	it('uses new training max calculation when comparing sets', () => {
+		// New calculation: 6 reps is a training set (>2 reps)
+		// 165x6 = 165 * 1.2 = 198, RPE 8 < 9 (no discount) → 195
+		// 135x6 = 135 * 1.2 = 162, RPE 10 (no discount) → 160
 		// 165x6 should win
 		const dataPoints: OneRMDataPoint[] = [
 			{ weight: 135, reps: 6, rpe: 10, date: today, timestamp: new Date().toISOString() },
@@ -375,7 +473,7 @@ describe('calculateTimeWeightedAverage', () => {
 		expect(result).toBeLessThan(235);
 	});
 
-	it('applies RPE adjustment by default', () => {
+	it('applies new calculation logic for 1-rep max attempts', () => {
 		const dataPoints: OneRMDataPoint[] = [
 			{
 				weight: 180,
@@ -386,12 +484,13 @@ describe('calculateTimeWeightedAverage', () => {
 			}
 		];
 
-		// 180 at RPE 8 -> 180 / 0.92 = 195.65 → 195 (rounded down to nearest 5)
+		// 1 rep is a max attempt: 180 x 1 = 180 (no further processing in calculateTrainingMax)
+		// Time-weighted average with single point = 180 → 180 (rounded down to nearest 5)
 		const result = calculateTimeWeightedAverage(dataPoints);
-		expect(result).toBe(195);
+		expect(result).toBe(180);
 	});
 
-	it('can disable RPE adjustment', () => {
+	it('includeRPEAdjustment option is deprecated but still supported', () => {
 		const dataPoints: OneRMDataPoint[] = [
 			{
 				weight: 180,
@@ -402,6 +501,7 @@ describe('calculateTimeWeightedAverage', () => {
 			}
 		];
 
+		// Option no longer used internally, but API still accepts it
 		const result = calculateTimeWeightedAverage(dataPoints, { includeRPEAdjustment: false });
 		expect(result).toBe(180);
 	});
@@ -417,9 +517,9 @@ describe('calculateTimeWeightedAverage', () => {
 			}
 		];
 
-		// 200 x 5 = 200 * (1 + 5/30) = 233.33 → 230 (rounded down to nearest 5)
+		// 200 x 5 = 200 * (1 + 5/30) = 233.33 → 235 (rounded to nearest 5)
 		const result = calculateTimeWeightedAverage(dataPoints);
-		expect(result).toBe(230);
+		expect(result).toBe(235);
 	});
 
 	it('uses best set per day, not average of all sets (fixes warmup set dilution)', () => {
@@ -444,10 +544,11 @@ describe('calculateTimeWeightedAverage', () => {
 
 		const result = calculateTimeWeightedAverage(dataPoints);
 
-		// 165x6 at RPE 8 = 165 * (1 + 6/30) / 0.92 = 198 / 0.92 = 215.2 → 215 (rounded down)
-		// 135x6 at RPE 6 = 135 * (1 + 6/30) / 0.85 = 162 / 0.85 = 190.6
-		// Best set is 165x6 with 215.2 1RM estimate - this is what should be used
-		expect(result).toBe(215);
+		// New calculation: 6 reps is a training set (>2 reps)
+		// 165x6 = 165 * (1 + 6/30) = 198, RPE 8 < 9 (no discount) → 200 (rounded to nearest 5)
+		// 135x6 = 135 * (1 + 6/30) = 162, RPE 6 < 9 (no discount) → 160 (rounded to nearest 5)
+		// Best set is 165x6 with 200 TRM
+		expect(result).toBe(200);
 	});
 
 	it('takes best from each day when multiple days have multiple sets', () => {
@@ -466,12 +567,13 @@ describe('calculateTimeWeightedAverage', () => {
 
 		const result = calculateTimeWeightedAverage(dataPoints);
 
-		// Today best: 135x8 at RPE 9 = 135 * 1.267 / 0.96 = 178.1
-		// Yesterday best: 130x8 at RPE 9 = 130 * 1.267 / 0.96 = 171.5
-		// Time-weighted average heavily favors today (more recent) → ~175
-		// Rounded down to nearest 5: 175
-		expect(result).toBeGreaterThanOrEqual(170);
-		expect(result).toBeLessThan(180);
+		// New calculation: 8 reps is a training set
+		// Today best: 135x8 = 135 * 1.267 = 171, RPE 9 discount: 171 * 0.96 = 164.16 → 160
+		// Yesterday best: 130x8 = 130 * 1.267 = 164.7, RPE 9 discount: 164.7 * 0.96 = 158.1 → 155
+		// Time-weighted average (1 day ago has ~0.95 weight vs 1.0 for today)
+		// Weighted avg ≈ 158-160, rounded down to nearest 5 = 155-160
+		expect(result).toBeGreaterThanOrEqual(155);
+		expect(result).toBeLessThanOrEqual(160);
 	});
 });
 
@@ -654,10 +756,9 @@ describe('calculate1RMEntry', () => {
 		const entry = calculate1RMEntry('Bench Press', history);
 
 		expect(entry.estimated_1rm).toBeGreaterThan(0);
-		// Both 1RM and TRM are rounded down to nearest 5lbs
-		// TRM should be roughly 90% of 1RM (within 10lbs due to double rounding)
-		expect(entry.trm).toBeLessThanOrEqual(entry.estimated_1rm * 0.9);
-		expect(entry.trm).toBeGreaterThan(entry.estimated_1rm * 0.8);
+		// 5 reps is a training set (>2 reps), so estimated_1rm IS the TRM
+		// No 90% discount applied
+		expect(entry.trm).toBe(entry.estimated_1rm);
 		expect(entry.data_points).toBe(1);
 		expect(entry.last_performed).toBe('2026-01-10');
 		expect(entry.user_override).toBeNull();
@@ -860,7 +961,7 @@ describe('getPRDisplayData Integration', () => {
 		expect(prData).toBeNull();
 	});
 
-	it('returns PR data with correct calculated 1RM using Epley formula', async () => {
+	it('returns PR data with correct calculated TRM using new logic', async () => {
 		const { updateCacheForExercise, getPRDisplayData, invalidateCache, calculateEpley1RM } =
 			await import('$lib/stores/oneRMCache');
 		const { exerciseHistory } = await import('$lib/stores/history');
@@ -897,10 +998,11 @@ describe('getPRDisplayData Integration', () => {
 		const prData = getPRDisplayData('Bench Press');
 
 		expect(prData).not.toBeNull();
-		// Epley: 225 * (1 + 5/30) = 225 * 1.167 = 262.5 → 260 (rounded down to nearest 5)
-		expect(prData!.estimated1RM).toBe(260);
-		// TRM: 260 * 0.9 = 234 → 230 (rounded down to nearest 5)
-		expect(prData!.trm).toBe(230);
+		// New calculation: 5 reps is a training set (>2 reps)
+		// 225 * (1 + 5/30) = 262.5, RPE 10 (no discount) → 265 (rounded to nearest 5)
+		// estimated1RM IS the TRM (no 90% discount)
+		expect(prData!.estimated1RM).toBe(265);
+		expect(prData!.trm).toBe(265);
 	});
 
 	it('PROFILE SCENARIO: shows PR for exercise in current program after workout completion', async () => {
@@ -1089,14 +1191,14 @@ describe('User Override Persistence (App Restart)', () => {
 		expect(squatEntry).not.toBeNull();
 		expect(squatEntry!.user_override).toBe(405);
 		expect(squatEntry!.estimated_1rm).toBe(0); // No history data
-		expect(squatEntry!.trm).toBe(360); // TRM: 405 * 0.9 = 364.5 → 360 (rounded down)
+		expect(squatEntry!.trm).toBe(360); // TRM: 405 * 0.9 = 364.5 → 360 (rounded down to nearest 5)
 
 		// Exercise C (Bench Press): both history and override
 		const benchEntry = getFromCache('Bench Press');
 		expect(benchEntry).not.toBeNull();
 		expect(benchEntry!.user_override).toBe(225);
 		expect(benchEntry!.estimated_1rm).toBeGreaterThan(0); // From history
-		expect(benchEntry!.trm).toBe(200); // TRM: 225 * 0.9 = 202.5 → 200 (rounded down)
+		expect(benchEntry!.trm).toBe(200); // TRM: 225 * 0.9 = 202.5 → 200 (rounded down to nearest 5)
 	});
 
 	it('user override persists after app restart simulation', async () => {
@@ -1167,11 +1269,11 @@ describe('User Override Persistence (App Restart)', () => {
 
 		// This must NOT be null - it should have the user override
 		expect(entry).not.toBeNull();
-		expect(entry!.trm).toBe(deriveTRM(135)); // 121.5
+		expect(entry!.trm).toBe(deriveTRM(135)); // 135 * 0.9 = 121.5 → 120
 
 		// Simulate DayView weight calculation: weight = TRM * (percent / 100)
 		const percentTM = 80; // 80% of TRM
 		const calculatedWeight = Math.round(entry!.trm * (percentTM / 100) / 5) * 5;
-		expect(calculatedWeight).toBe(95); // 121.5 * 0.8 = 97.2, rounded to nearest 5 = 95
+		expect(calculatedWeight).toBe(95); // 120 * 0.8 = 96, rounded to nearest 5 = 95
 	});
 });

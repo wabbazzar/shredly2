@@ -15,8 +15,7 @@
 	let editValue = '';
 
 	// Convert weights for display
-	$: displayed1RM = unitSystem === 'imperial' ? prData.estimated1RM : lbsToKg(prData.estimated1RM);
-	$: displayedTRM = unitSystem === 'imperial' ? prData.trm : lbsToKg(prData.trm);
+	$: displayedTrainingMax = unitSystem === 'imperial' ? prData.trm : lbsToKg(prData.trm);
 	$: displayedOverride = prData.userOverride
 		? (unitSystem === 'imperial' ? prData.userOverride : lbsToKg(prData.userOverride))
 		: null;
@@ -40,7 +39,7 @@
 		: null;
 
 	function startEdit() {
-		editValue = displayedOverride?.toString() ?? displayed1RM.toString();
+		editValue = displayedOverride?.toString() ?? displayedTrainingMax.toString();
 		isEditing = true;
 	}
 
@@ -115,7 +114,7 @@
 					class="group flex items-baseline gap-1 hover:bg-slate-700/50 rounded px-1 -mx-1 transition-colors"
 				>
 					<span class="text-2xl font-bold text-white">
-						{prData.estimated1RM > 0 ? Math.round(displayed1RM) : '--'}
+						{prData.trm > 0 ? Math.round(displayedTrainingMax) : '--'}
 					</span>
 					<span class="text-slate-400 text-sm">{weightUnit}</span>
 					<svg class="w-3 h-3 text-slate-500 opacity-0 group-hover:opacity-100 ml-1 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,14 +122,7 @@
 					</svg>
 				</button>
 			{/if}
-			<span class="text-xs text-slate-500">1RM</span>
-		</div>
-
-		<div class="text-right">
-			<div class="text-lg font-semibold text-slate-300">
-				{prData.trm > 0 ? Math.round(displayedTRM) : '--'}
-			</div>
-			<span class="text-xs text-slate-500">TRM (90%)</span>
+			<span class="text-xs text-slate-500">Training Max</span>
 		</div>
 	</div>
 

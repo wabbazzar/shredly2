@@ -6,7 +6,8 @@ function createNavigationStore() {
 		activeTab: 'schedule',
 		previousTab: null,
 		transitionDirection: null,
-		swipeDisabled: false
+		swipeDisabled: false,
+		isLandscape: false
 	});
 
 	return {
@@ -75,6 +76,12 @@ function createNavigationStore() {
 			update((state) => ({
 				...state,
 				swipeDisabled: false
+			}));
+		},
+		setLandscape: (isLandscape: boolean) => {
+			update((state) => ({
+				...state,
+				isLandscape
 			}));
 		}
 	};

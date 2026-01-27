@@ -34,6 +34,23 @@ const MAX_REPS_FOR_CALCULATION = 10;
 // Standard plate increment for rounding
 const PLATE_INCREMENT = 5;
 
+// Rep threshold for distinguishing max attempts from training sets
+// Sets with 1-2 reps are treated as max attempts (calculate 1RM, then derive TRM)
+// Sets with 3+ reps are treated as training sets (Epley result IS the TRM)
+const MAX_REPS_FOR_1RM_ESTIMATION = 2;
+
+// RPE threshold for applying discount
+// Only RPE 9+ gets a discount (near-maximal effort not sustainable for training)
+const HIGH_RPE_THRESHOLD = 9;
+
+// High RPE discount factors (multiply TRM, don't divide)
+// Only applies for RPE >= 9 (training sets at near-maximal effort)
+const HIGH_RPE_DISCOUNT: Record<number, number> = {
+	9: 0.96, // 1 rep in reserve
+	9.5: 0.98, // 0.5 reps in reserve
+	10: 1.0 // True max, no discount
+};
+
 /**
  * RPE to estimated max effort percentage
  * When RPE < 10, we divide by this factor to estimate true max
@@ -128,6 +145,15 @@ export function roundDownToNearest5(value: number): number {
 }
 
 /**
+ * Round to nearest 5 lbs (standard rounding, not always down)
+ * Use this for training max calculations where we want accurate rounding.
+ */
+export function roundToNearest5(value: number): number {
+	if (value <= 0) return 0;
+	return Math.round(value / PLATE_INCREMENT) * PLATE_INCREMENT;
+}
+
+/**
  * Calculate 1RM using Epley formula
  * Formula: 1RM = weight * (1 + reps/30)
  *
@@ -156,6 +182,7 @@ export function calculateEpley1RM(weight: number, reps: number): number {
  * Adjust calculated 1RM based on RPE
  * Divides by RPE factor to estimate true max from submaximal effort
  *
+ * @deprecated Use calculateTrainingMax() instead for rep-threshold logic
  * @param raw1RM - Raw 1RM from Epley formula
  * @param rpe - Rate of Perceived Exertion (1-10)
  * @returns Adjusted 1RM
@@ -232,6 +259,74 @@ export function deriveTRM(oneRM: number): number {
 }
 
 /**
+ * Apply high RPE discount for near-maximal training sets
+ * Only applies discount for RPE >= 9 (multiply, not divide)
+ *
+ * @param value - Calculated training max value
+ * @param rpe - Rate of Perceived Exertion (1-10)
+ * @returns Discounted value for near-maximal effort, unchanged otherwise
+ */
+export function applyHighRPEDiscount(value: number, rpe: number | null): number {
+	if (rpe === null || value <= 0) {
+		return value;
+	}
+
+	// Only apply discount for RPE >= 9
+	if (rpe < HIGH_RPE_THRESHOLD) {
+		return value;
+	}
+
+	// Clamp RPE to valid range
+	const clampedRPE = Math.max(HIGH_RPE_THRESHOLD, Math.min(10, rpe));
+
+	// Get discount factor (interpolate if needed)
+	let factor = HIGH_RPE_DISCOUNT[clampedRPE];
+	if (factor === undefined) {
+		// Interpolate between known values
+		const lowerRPE = Math.floor(clampedRPE * 2) / 2;
+		const upperRPE = Math.ceil(clampedRPE * 2) / 2;
+		const lowerFactor = HIGH_RPE_DISCOUNT[lowerRPE] ?? 1.0;
+		const upperFactor = HIGH_RPE_DISCOUNT[upperRPE] ?? 1.0;
+		const t = (clampedRPE - lowerRPE) / (upperRPE - lowerRPE || 1);
+		factor = lowerFactor + t * (upperFactor - lowerFactor);
+	}
+
+	// Multiply by discount factor (0.96-1.0)
+	return value * factor;
+}
+
+/**
+ * Calculate Training Max from weight, reps, and RPE
+ * Applies rep-threshold logic to avoid double-discount bug:
+ * - Reps 1-2: Max attempt → calculate estimated 1RM (no TRM derivation yet)
+ * - Reps 3+: Training set → Epley result IS the TRM (apply high RPE discount only)
+ *
+ * @param weight - Weight lifted
+ * @param reps - Reps completed
+ * @param rpe - Rate of Perceived Exertion (1-10)
+ * @returns Training max value, rounded to nearest 5 lbs
+ */
+export function calculateTrainingMax(weight: number, reps: number, rpe: number | null): number {
+	if (weight <= 0 || reps <= 0) {
+		return 0;
+	}
+
+	// Calculate base value using Epley formula
+	const epleyResult = calculateEpley1RM(weight, reps);
+
+	if (reps <= MAX_REPS_FOR_1RM_ESTIMATION) {
+		// Max attempt (1-2 reps): return estimated 1RM
+		// (TRM derivation happens later at the entry level)
+		return epleyResult;
+	} else {
+		// Training set (3+ reps): Epley result IS the TRM
+		// Apply high RPE discount (only for RPE >= 9)
+		const discounted = applyHighRPEDiscount(epleyResult, rpe);
+		return roundToNearest5(discounted);
+	}
+}
+
+/**
  * Get the best set per day from data points
  * "Best" = highest estimated 1RM (heaviest set takes precedence)
  *
@@ -243,18 +338,15 @@ export function getBestSetPerDay(
 	dataPoints: OneRMDataPoint[],
 	includeRPEAdjustment = true
 ): Map<string, OneRMDataPoint> {
-	const bestByDay = new Map<string, { point: OneRMDataPoint; estimated1RM: number }>();
+	const bestByDay = new Map<string, { point: OneRMDataPoint; estimatedValue: number }>();
 
 	for (const point of dataPoints) {
-		// Calculate estimated 1RM for this set
-		let estimated1RM = calculateEpley1RM(point.weight, point.reps);
-		if (includeRPEAdjustment) {
-			estimated1RM = adjustForRPE(estimated1RM, point.rpe);
-		}
+		// Calculate training max value for this set
+		const estimatedValue = calculateTrainingMax(point.weight, point.reps, point.rpe);
 
 		const existing = bestByDay.get(point.date);
-		if (!existing || estimated1RM > existing.estimated1RM) {
-			bestByDay.set(point.date, { point, estimated1RM });
+		if (!existing || estimatedValue > existing.estimatedValue) {
+			bestByDay.set(point.date, { point, estimatedValue });
 		}
 	}
 
@@ -295,18 +387,13 @@ export function calculateTimeWeightedAverage(
 	let totalWeight = 0;
 
 	bestByDay.forEach((point, date) => {
-		// Calculate raw 1RM from weight and reps
-		let estimated1RM = calculateEpley1RM(point.weight, point.reps);
-
-		// Apply RPE adjustment if enabled
-		if (includeRPEAdjustment) {
-			estimated1RM = adjustForRPE(estimated1RM, point.rpe);
-		}
+		// Calculate training max value for this set
+		const trainingMaxValue = calculateTrainingMax(point.weight, point.reps, point.rpe);
 
 		// Calculate time weight (recent data weighted higher)
 		const timeWeight = calculateTimeWeight(date, today, recencyHalfLifeDays);
 
-		weightedSum += estimated1RM * timeWeight;
+		weightedSum += trainingMaxValue * timeWeight;
 		totalWeight += timeWeight;
 	});
 
@@ -437,15 +524,35 @@ export function calculate1RMEntry(
 	const dataPoints = extractDataPointsFromHistory(exerciseName, history);
 	const lastPoint = dataPoints.length > 0 ? dataPoints[0] : null;
 
-	// Calculate time-weighted average 1RM
-	const estimated1RM = calculateTimeWeightedAverage(dataPoints, options);
+	// Calculate time-weighted average training max
+	const calculatedTRM = calculateTimeWeightedAverage(dataPoints, options);
 
-	// Use user override if provided
-	const effective1RM = userOverride !== null && userOverride > 0 ? userOverride : estimated1RM;
+	// Determine if most sets are max attempts (1-2 reps) or training sets (3+ reps)
+	const maxAttemptSets = dataPoints.filter(p => p.reps <= MAX_REPS_FOR_1RM_ESTIMATION).length;
+	const trainingSets = dataPoints.filter(p => p.reps > MAX_REPS_FOR_1RM_ESTIMATION).length;
+
+	let estimated1RM: number;
+	let trm: number;
+
+	if (userOverride !== null && userOverride > 0) {
+		// User override takes precedence
+		estimated1RM = calculatedTRM; // Keep calculated value for display
+		trm = deriveTRM(userOverride);
+	} else if (maxAttemptSets > trainingSets) {
+		// Most sets are max attempts (1-2 reps)
+		// calculatedTRM is an estimated 1RM, derive TRM from it
+		estimated1RM = calculatedTRM;
+		trm = deriveTRM(calculatedTRM);
+	} else {
+		// Most sets are training sets (3+ reps)
+		// calculatedTRM IS the TRM (no further discount)
+		estimated1RM = calculatedTRM;
+		trm = calculatedTRM;
+	}
 
 	return {
-		estimated_1rm: estimated1RM, // Already rounded down to nearest 5 by calculateTimeWeightedAverage
-		trm: deriveTRM(effective1RM),
+		estimated_1rm: estimated1RM,
+		trm: trm,
 		last_updated: new Date().toISOString(),
 		data_points: dataPoints.length,
 		is_stale: isStale(lastPoint?.date ?? null, staleThresholdDays),

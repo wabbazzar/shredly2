@@ -533,9 +533,24 @@ export function getLastPerformance(exerciseName: string): HistoryRow | null {
 
   if (exerciseRows.length === 0) return null;
 
-  return exerciseRows.sort(
+  // Sort by date descending to find the most recent session
+  const sorted = exerciseRows.sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-  )[0];
+  );
+
+  // Get the date of the most recent session
+  const lastSessionDate = sorted[0].date;
+
+  // Filter to only rows from that session, then find the heaviest set
+  const lastSessionRows = sorted.filter((r) => r.date === lastSessionDate);
+
+  // Return the row with the highest weight (for weighted exercises)
+  // Falls back to first row if no weights recorded
+  return lastSessionRows.reduce((heaviest, current) => {
+    const currentWeight = current.weight ?? 0;
+    const heaviestWeight = heaviest.weight ?? 0;
+    return currentWeight > heaviestWeight ? current : heaviest;
+  }, lastSessionRows[0]);
 }
 
 /**

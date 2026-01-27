@@ -792,12 +792,18 @@
 	// Get current set number from timer state
 	$: currentSet = timerState?.currentSet ?? 1;
 	$: totalSets = timerState?.totalSets ?? 1;
+
+	// Height style: full height when nav bar is hidden (landscape on mobile)
+	$: hideNavBar = $navigationStore.isLandscape;
+	$: containerHeight = hideNavBar
+		? '100dvh'
+		: 'calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))';
 </script>
 
 {#if $hasActiveSession && $liveSession}
-	<!-- Active workout view - calc height accounts for 4rem nav bar + safe area -->
+	<!-- Active workout view - full height when nav bar hidden (landscape), otherwise accounts for nav bar -->
 	<!-- Mobile: stacked (col), Desktop/Landscape: side-by-side (row) -->
-	<div class="flex flex-col lg:flex-row landscape:flex-row bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
+	<div class="flex flex-col lg:flex-row landscape:flex-row bg-slate-900" style="height: {containerHeight}">
 		{#if $isWorkoutComplete}
 			<!-- Workout Complete - Full width review mode -->
 			<div class="flex-1 min-h-0 flex flex-col">
@@ -919,8 +925,8 @@
 	</div>
 
 {:else}
-	<!-- No workout / empty state with history list - calc height accounts for nav bar -->
-	<div class="flex flex-col bg-slate-900" style="height: calc(100dvh - 4rem - env(safe-area-inset-bottom, 0px))">
+	<!-- No workout / empty state with history list - full height when nav bar hidden -->
+	<div class="flex flex-col bg-slate-900" style="height: {containerHeight}">
 		{#if $activeSchedule}
 			{@const todaysWorkout = getTodaysWorkout($activeSchedule)}
 

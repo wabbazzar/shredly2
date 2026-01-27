@@ -31,4 +31,5 @@ export interface NavigationState {
 	previousTab: TabId | null;
 	transitionDirection: 'left' | 'right' | null;
 	swipeDisabled: boolean;
+	isLandscape: boolean;
 }

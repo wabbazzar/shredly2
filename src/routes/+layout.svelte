@@ -9,8 +9,9 @@
 	import { initializeHistory } from '$lib/stores/history';
 	import { userStore } from '$lib/stores/user';
 	import { get } from 'svelte/store';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
 
 	let isAppReady = false;
 	let minTimeElapsed = false;
@@ -19,6 +20,17 @@
 
 	const MIN_LOADING_TIME = 800; // ms - enough to see, not enough to annoy
 	const FADE_DURATION = 300; // ms - matches transition-opacity duration-300
+
+	// Landscape mode detection for hiding nav bar on live view (mobile only)
+	let landscapeMediaQuery: MediaQueryList | null = null;
+
+	function handleLandscapeChange(e: MediaQueryListEvent | MediaQueryList) {
+		navigationStore.setLandscape(e.matches);
+	}
+
+	// Determine if nav bar should be hidden (live tab + landscape mode on mobile)
+	$: isLiveTab = $page.url.pathname.includes('/live');
+	$: hideNavBar = isLiveTab && $navigationStore.isLandscape;
 
 	// Track transition state
 	let transitionDirection: 'left' | 'right' | null = null;
@@ -88,6 +100,13 @@
 			minTimeElapsed = true;
 		}, MIN_LOADING_TIME);
 
+		// Set up landscape mode detection (mobile only - max-height prevents desktop from matching)
+		if (browser) {
+			landscapeMediaQuery = window.matchMedia('(orientation: landscape) and (max-height: 600px)');
+			handleLandscapeChange(landscapeMediaQuery);
+			landscapeMediaQuery.addEventListener('change', handleLandscapeChange);
+		}
+
 		// Request persistent storage FIRST - prevents browser from clearing our data
 		await requestPersistentStorage();
 
@@ -112,6 +131,12 @@
 		// App is ready ONLY after all async initialization is complete
 		isAppReady = true;
 	});
+
+	onDestroy(() => {
+		if (landscapeMediaQuery) {
+			landscapeMediaQuery.removeEventListener('change', handleLandscapeChange);
+		}
+	});
 </script>
 
 {#if showLoadingScreen}
@@ -121,7 +146,7 @@
 <div class="h-full flex flex-col bg-slate-900 overflow-hidden">
 	<!-- Main content area with swipe handling -->
 	<SwipeContainer>
-		<main class="h-full overflow-auto pb-nav">
+		<main class="h-full overflow-auto {hideNavBar ? '' : 'pb-nav'}">
 			<div
 				class="h-full {isTransitioning ? 'will-change-transform' : ''} {animationClass}"
 				on:animationend={handleAnimationEnd}
@@ -131,8 +156,10 @@
 		</main>
 	</SwipeContainer>
 
-	<!-- Bottom tab navigation -->
-	<BottomTabBar />
+	<!-- Bottom tab navigation - hidden in landscape mode on mobile live view -->
+	{#if !hideNavBar}
+		<BottomTabBar />
+	{/if}
 </div>
 
 <style>

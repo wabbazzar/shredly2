@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { StoredSchedule, DayMapping, Weekday } from '$lib/types/schedule';
 	import type { ParameterizedDay, ParameterizedExercise, WeekParameters } from '$lib/engine/types';
-	import { activeSchedule, saveScheduleToDb } from '$lib/stores/schedule';
+	import { activeSchedule, saveScheduleToDb, viewState, navigateToWeek } from '$lib/stores/schedule';
 
 	export let schedule: StoredSchedule;
 
@@ -21,8 +21,8 @@
 	$: totalWeeks = currentSchedule.weeks || 4;
 	$: allWeekNumbers = Array.from({ length: totalWeeks }, (_, i) => i + 1);
 
-	// Currently selected week
-	let selectedWeek = 1;
+	// Currently selected week - synced from viewState store
+	$: selectedWeek = $viewState.selectedWeek;
 
 	const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
@@ -363,7 +363,7 @@
 				<button
 					class="week-btn"
 					class:active={selectedWeek === weekNum}
-					on:click={() => selectedWeek = weekNum}
+					on:click={() => navigateToWeek(weekNum)}
 				>
 					{weekNum}
 				</button>

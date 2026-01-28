@@ -258,6 +258,16 @@ export async function initializeScheduleStore(): Promise<void> {
 
       scheduleLibrary.set(schedules);
       activeSchedule.set(active);
+
+      // Default to current calendar week for active schedule
+      if (active) {
+        const currentWeek = calculateCurrentWeek(active);
+        viewState.update(s => ({
+          ...s,
+          selectedWeek: currentWeek
+        }));
+      }
+
       isInitialized = true;
     } catch (e) {
       console.error('Failed to initialize schedule store:', e);
@@ -281,13 +291,15 @@ export async function setActiveSchedule(id: string): Promise<void> {
     // Update stores
     const schedules = await getAllSchedules();
     scheduleLibrary.set(schedules);
-    activeSchedule.set(schedules.find(s => s.id === id) || null);
+    const schedule = schedules.find(s => s.id === id) || null;
+    activeSchedule.set(schedule);
 
-    // Reset view to calendar
+    // Navigate to week view, defaulting to current calendar week
+    const currentWeek = schedule ? calculateCurrentWeek(schedule) : 1;
     viewState.update(s => ({
       ...s,
       viewLevel: 'week',
-      selectedWeek: 1,
+      selectedWeek: currentWeek,
       selectedDay: 1
     }));
   } catch (e) {
@@ -508,6 +520,43 @@ export function closeModal(): void {
 export function getWeekKeyForView(): WeekKey {
   const state = get(viewState);
   return `week${state.selectedWeek}` as WeekKey;
+}
+
+/**
+ * Calculate which week of the program we're currently in based on the schedule's start date
+ * Returns 1 if before start date, totalWeeks if after program ends
+ */
+export function calculateCurrentWeek(schedule: StoredSchedule): number {
+  const startDateStr = schedule.scheduleMetadata.startDate;
+  if (!startDateStr) return 1;
+
+  // Parse YYYY-MM-DD as local date (not UTC)
+  const [year, month, day] = startDateStr.split('-').map(Number);
+  const startDate = new Date(year, month - 1, day);
+  startDate.setHours(0, 0, 0, 0);
+
+  // Get Monday of start week
+  const startDay = startDate.getDay();
+  const startDiff = startDay === 0 ? -6 : 1 - startDay;
+  const programStartMonday = new Date(startDate);
+  programStartMonday.setDate(startDate.getDate() + startDiff);
+
+  // Get today at midnight
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Calculate days since program start Monday
+  const daysDiff = Math.floor((today.getTime() - programStartMonday.getTime()) / (1000 * 60 * 60 * 24));
+
+  // If before program start, return week 1
+  if (daysDiff < 0) return 1;
+
+  // Calculate week number (1-indexed)
+  const weekNumber = Math.floor(daysDiff / 7) + 1;
+
+  // Clamp to valid range (1 to totalWeeks)
+  const totalWeeks = schedule.weeks || 4;
+  return Math.max(1, Math.min(weekNumber, totalWeeks));
 }
 
 /**
